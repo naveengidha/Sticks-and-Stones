@@ -1,7 +1,6 @@
-const CACHE = 'golf-pwa-v64';
+const CACHE = 'golf-pwa-v65';
 const BASE = self.location.pathname.replace(/\/sw\.js$/, '');
 const ASSETS = [
-  BASE + '/',
   BASE + '/index.html',
   BASE + '/games.html',
   BASE + '/edit-round.html',
@@ -24,7 +23,13 @@ const ASSETS = [
 
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE).then(cache => cache.addAll(ASSETS))
+    caches.open(CACHE).then(cache =>
+      Promise.all(
+        ASSETS.map(url =>
+          cache.add(url).catch(err => console.warn('Failed to cache:', url, err))
+        )
+      )
+    )
   );
   self.skipWaiting();
 });
