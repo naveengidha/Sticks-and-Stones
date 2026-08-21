@@ -1,15 +1,25 @@
-const CACHE = 'golf-pwa-v39';
+const CACHE = 'golf-pwa-v64';
+const BASE = self.location.pathname.replace(/\/sw\.js$/, '');
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/f1.html',
-  '/banker.html',
-  '/practice.html',
-  '/history.html',
-  '/courses.json',
-  '/manifest.json',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png'
+  BASE + '/',
+  BASE + '/index.html',
+  BASE + '/games.html',
+  BASE + '/edit-round.html',
+  BASE + '/f1.html',
+  BASE + '/banker.html',
+  BASE + '/practice.html',
+  BASE + '/history.html',
+  BASE + '/wolf.html',
+  BASE + '/scramble.html',
+  BASE + '/foursomes.html',
+  BASE + '/vegas.html',
+  BASE + '/season.html',
+  BASE + '/season.js',
+  BASE + '/matchplay.html',
+  BASE + '/courses.json',
+  BASE + '/manifest.json',
+  BASE + '/icons/icon-192.png',
+  BASE + '/icons/icon-512.png'
 ];
 
 self.addEventListener('install', e => {

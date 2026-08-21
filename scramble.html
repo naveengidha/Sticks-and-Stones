@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#080f0a">
+<title>Scramble</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:Arial,Helvetica,sans-serif;background:#080f0a;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;}
+.topnav{display:flex;align-items:center;background:#0e1a12;padding:10px 16px;gap:12px;flex-shrink:0;border-bottom:2px solid #8B6914;box-shadow:0 2px 12px rgba(0,0,0,0.5);}
+.back-btn{background:none;border:none;color:#ffd447;font-size:15px;font-weight:bold;cursor:pointer;padding:4px 8px 4px 0;white-space:nowrap;display:flex;align-items:center;gap:6px;width:auto;}
+.back-btn:hover{color:#ffcc2a;}
+.topnav-title{font-size:15px;font-weight:bold;color:#ffd447;flex:1;text-align:center;letter-spacing:1.5px;text-transform:uppercase;}
+.topnav-spacer{width:70px;}
+h2{text-align:center;margin-top:0;color:#ffd447;letter-spacing:.5px;text-transform:uppercase;font-size:17px;}
+.scroll-area{flex:1;overflow-y:auto;padding:20px 16px 40px;display:flex;justify-content:center;}
+.container{
+  background:
+    repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),
+    repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),
+    #0e1a12;
+  border:3px solid #8B6914;
+  padding:24px 20px;border-radius:14px;width:100%;max-width:480px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.7);position:relative;
+}
+.name-input{flex:1;padding:10px;border-radius:6px;border:1px solid rgba(184,150,46,0.3);border-bottom:2px solid rgba(184,150,46,0.5);color:white;font-size:15px;background:rgba(0,0,0,0.3);}
+.name-input::placeholder{color:rgba(255,255,255,0.35);}
+.name-input.team-a{border-left:3px solid rgba(255,212,71,0.6)!important;}
+.name-input.team-b{border-left:3px solid rgba(100,160,220,0.7)!important;}
+.row-setting{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.row-setting label{font-size:12px;white-space:nowrap;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:.5px;}
+.select-input{padding:8px 10px;border-radius:6px;border:1px solid rgba(184,150,46,0.3);font-size:15px;background:rgba(0,0,0,0.3);color:white;}
+.course-input{width:100%;margin-bottom:12px;padding:10px;border-radius:6px;border:1px solid rgba(184,150,46,0.3);font-size:15px;background:rgba(0,0,0,0.3);color:white;}
+.course-input::placeholder{color:rgba(255,255,255,0.3);}
+.setup-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+#nameError{color:#ff6b6b;font-size:13px;display:none;margin-bottom:8px;}
+button{width:100%;padding:13px;border:none;border-radius:8px;font-size:15px;font-weight:bold;background:linear-gradient(135deg,#8B6914,#ffd447,#8B6914);color:#0a0a00;cursor:pointer;margin-bottom:4px;box-shadow:0 2px 8px rgba(184,150,46,0.4);letter-spacing:.5px;text-transform:uppercase;}
+button:hover,button:active{opacity:.9;}
+button.btn-secondary{background:transparent;border:1px solid rgba(255,212,71,0.3);color:rgba(255,212,71,0.7);font-size:14px;padding:10px;box-shadow:none;letter-spacing:.5px;text-transform:none;}
+button.btn-secondary:hover,button.btn-secondary:active{background:rgba(255,212,71,0.06);border-color:rgba(255,212,71,0.6);color:#ffd447;}
+.hidden{display:none!important;}
+.hole-info-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;}
+.par-btns{display:flex;align-items:center;gap:4px;}
+.par-btns-label{font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:.5px;text-transform:uppercase;margin-right:2px;}
+.par-btn{width:34px;height:34px;padding:0;border-radius:6px;font-size:14px;font-weight:bold;background:rgba(0,0,0,0.25);border:1px solid rgba(184,150,46,0.3);color:rgba(255,255,255,0.5);box-shadow:none;margin:0;letter-spacing:0;text-transform:none;}
+.par-btn.active{background:rgba(184,150,46,0.25);border-color:#ffd447;color:#ffd447;}
+.dist-input{width:72px;padding:7px 8px;border-radius:6px;border:1px solid rgba(184,150,46,0.3);background:rgba(0,0,0,0.25);color:#fff;font-size:14px;text-align:center;}
+.score-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+.score-col-wrap{display:flex;flex-direction:column;align-items:center;}
+.team-col-label{font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;text-align:center;}
+.team-col-label.a{color:#ffd447;}
+.team-col-label.b{color:#64a0dc;}
+.score-big{padding:10px 4px;border-radius:6px;text-align:center;font-size:26px;font-weight:bold;width:100%;background:rgba(0,0,0,0.35);color:white;font-family:'Courier New',monospace;}
+.score-big.team-a{border:1px solid rgba(255,212,71,0.3);border-bottom:2px solid rgba(255,212,71,0.5);}
+.score-big.team-b{border:1px solid rgba(100,160,220,0.3);border-bottom:2px solid rgba(100,160,220,0.5);}
+.vspar-label{font-size:13px;margin-top:6px;font-family:'Courier New',monospace;font-weight:bold;}
+.vspar-under{color:#2ecc71;}
+.vspar-over{color:#ff6b6b;}
+.vspar-even{color:rgba(255,255,255,0.4);}
+.standings-panel{margin-top:16px;background:rgba(0,0,0,0.25);padding:14px;border-radius:8px;border:1px solid rgba(184,150,46,0.2);}
+.standings-panel h3{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.6);margin:0 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(184,150,46,0.2);}
+.standing-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.07);font-size:14px;}
+.standing-row:last-child{border-bottom:none;}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;justify-content:center;align-items:center;z-index:1000;}
+.modal-content{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:2px solid #8B6914;width:92%;max-width:620px;max-height:88vh;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;}
+.modal-header{background:rgba(0,0,0,0.5);border-bottom:1px solid rgba(255,212,71,0.2);color:#ffd447;display:flex;justify-content:space-between;align-items:center;padding:10px 14px;font-weight:bold;font-size:15px;letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;}
+.modal-body{overflow-y:auto;padding:10px;}
+.close-btn{background:none;border:none;color:white;font-size:22px;cursor:pointer;width:auto;padding:0 4px;}
+.final-team-cards{display:flex;gap:10px;margin-bottom:16px;}
+.final-team-card{flex:1;background:rgba(0,0,0,0.3);border-radius:8px;padding:14px;text-align:center;border:1px solid rgba(184,150,46,0.2);}
+.final-team-card.winner{border-color:rgba(255,212,71,0.5);box-shadow:0 0 0 1px rgba(255,212,71,0.15);}
+.final-team-name{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:4px;}
+.final-team-score{font-size:28px;font-weight:bold;font-family:'Courier New',monospace;}
+.final-team-vspar{font-size:14px;font-family:'Courier New',monospace;}
+table{width:100%;border-collapse:collapse;margin-top:6px;}
+th,td{border:1px solid rgba(184,150,46,0.15);padding:5px 4px;text-align:center;font-size:11px;}
+thead th{background:rgba(0,0,0,0.4);color:#ffd447;letter-spacing:.5px;text-transform:uppercase;font-size:9px;}
+td{font-family:'Courier New',monospace;}
+.td-a{color:#ffd447;}
+.td-b{color:#64a0dc;}
+.section-label{font-size:11px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.5);margin-bottom:8px;margin-top:14px;padding-bottom:4px;border-bottom:1px solid rgba(184,150,46,0.15);}
+.flip-card{width:100%;}
+.flip-inner{position:relative;transform-style:preserve-3d;transition:transform 0.45s ease;}
+.flip-inner.flipped{transform:rotateY(180deg);}
+.flip-front{position:relative;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
+.flip-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);
+  background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;
+  border:2px solid #8B6914;padding:24px 20px;border-radius:14px;}
+.flip-inner.flipped .flip-front{position:absolute;inset:0;}
+.flip-inner.flipped .flip-back{position:relative;inset:auto;}
+.flip-btn{position:absolute;bottom:14px;right:14px;width:28px;height:28px;border-radius:50%;background:rgba(255,212,71,0.12);border:1px solid rgba(255,212,71,0.35);color:#ffd447;font-size:13px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;text-transform:none;z-index:10;box-shadow:none;letter-spacing:0;}
+.flip-btn:hover,.flip-btn:active{background:rgba(255,212,71,0.25);}
+.flip-back-btn{background:none;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.65);font-size:13px;font-weight:bold;padding:6px 14px;border-radius:4px;cursor:pointer;width:auto;margin-bottom:20px;letter-spacing:.5px;text-transform:none;box-shadow:none;}
+.rules-title{font-size:18px;font-weight:bold;color:#ffd447;text-align:center;margin:0 0 6px;letter-spacing:1px;text-transform:uppercase;}
+.rules-sub{text-align:center;color:rgba(255,255,255,0.5);font-size:12px;margin:0 0 20px;letter-spacing:1px;text-transform:uppercase;}
+.rules-note{font-size:12px;color:rgba(255,255,255,0.35);line-height:1.8;text-align:center;}
+</style>
+</head>
+<body>
+<div class="topnav">
+  <button class="back-btn" onclick="goBack()">‹ Menu</button>
+  <div class="topnav-title" id="topnavTitle">Scramble</div>
+  <div class="topnav-spacer"></div>
+</div>
+<div class="scroll-area">
+<div class="container">
+
+<!-- SETUP -->
+<div id="setupScreen">
+  <div class="flip-card">
+    <div class="flip-inner" id="setupFlip">
+      <div class="flip-front">
+        <h2>New Game</h2>
+        <input class="course-input" id="courseInput" placeholder="Course name (optional)">
+        <input type="date" class="course-input" id="roundDate">
+
+        <div class="section-label">Team A</div>
+        <div class="row-setting" style="margin-bottom:12px;">
+          <label style="font-size:12px;white-space:nowrap;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:.5px;">Season:</label>
+          <select id="seasonSelect" class="select-input" onchange="onSeasonPick()" style="flex:1;">
+            <option value="">None (casual round)</option>
+          </select>
+        </div>
+        <div class="setup-row"><input class="name-input team-a" id="teamNameA" placeholder="Team A name"></div>
+        <div class="setup-row"><input class="name-input" id="name0" placeholder="Player 1"></div>
+        <div class="setup-row"><input class="name-input" id="name1" placeholder="Player 2"></div>
+
+        <div class="section-label">Team B</div>
+        <div class="setup-row"><input class="name-input team-b" id="teamNameB" placeholder="Team B name"></div>
+        <div class="setup-row"><input class="name-input" id="name2" placeholder="Player 3"></div>
+        <div class="setup-row"><input class="name-input" id="name3" placeholder="Player 4"></div>
+
+        <div class="row-setting" style="margin-top:12px;">
+          <label>Holes:</label>
+          <select id="holesSelect" class="select-input">
+            <option value="9">9</option>
+            <option value="18" selected>18</option>
+          </select>
+        </div>
+        <button onclick="startGame()">Start Game</button>
+        <div id="nameError">Please fill in all team and player names.</div>
+      </div>
+      <div class="flip-back">
+        <button class="flip-back-btn" onclick="flipCard('setupFlip')">‹ Back</button>
+        <div class="rules-title">🤝 Scramble</div>
+        <div class="rules-sub">2 teams · 2 players each</div>
+        <div class="rules-note">
+          All 4 players tee off each hole.<br>
+          The team picks the best shot — everyone plays from there.<br>
+          Repeat until the ball is holed.<br><br>
+          Enter each team's final hole score.<br><br>
+          Lowest total score at the end wins.<br><br>
+          Running score vs par is tracked throughout.
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="flip-btn" onclick="flipCard('setupFlip')" title="How to play">i</button>
+</div>
+
+<!-- GAME -->
+<div id="gameScreen" class="hidden">
+  <div style="text-align:center;">
+    <span id="courseNameLabel" style="font-size:11px;color:rgba(255,212,71,0.55);letter-spacing:.5px;text-transform:uppercase;display:none;"></span>
+    <h2 style="margin-top:2px;">Hole <span id="holeLabel">1</span></h2>
+  </div>
+  <div class="hole-info-row">
+    <div class="par-btns">
+      <span class="par-btns-label">Par</span>
+      <button type="button" class="par-btn" onclick="setPar(3)">3</button>
+      <button type="button" class="par-btn" onclick="setPar(4)">4</button>
+      <button type="button" class="par-btn" onclick="setPar(5)">5</button>
+    </div>
+    <input type="number" class="dist-input" id="distInput" inputmode="numeric" placeholder="Yds" min="1">
+  </div>
+
+  <div class="score-cols">
+    <div class="score-col-wrap">
+      <div class="team-col-label a" id="teamALabel">Team A</div>
+      <input class="score-big team-a" type="number" inputmode="numeric" id="scoreA" placeholder="–" min="1">
+      <div class="vspar-label" id="vspA"></div>
+    </div>
+    <div class="score-col-wrap">
+      <div class="team-col-label b" id="teamBLabel">Team B</div>
+      <input class="score-big team-b" type="number" inputmode="numeric" id="scoreB" placeholder="–" min="1">
+      <div class="vspar-label" id="vspB"></div>
+    </div>
+  </div>
+
+  <button onclick="nextHole()">✓ Next Hole</button>
+  <div id="holeError" style="color:#ff6b6b;font-size:13px;margin:6px 0 0;display:none;"></div>
+
+  <div class="standings-panel">
+    <h3>Standings</h3>
+    <div id="standingsList"></div>
+  </div>
+
+  <br>
+  <button class="btn-secondary" onclick="openScorecard()">📋 View Scorecard</button>
+
+  <!-- Scorecard modal -->
+  <div id="scorecardModal" class="hidden modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span>Scorecard</span>
+        <button class="close-btn" onclick="closeScorecard()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="overflow-x:auto;">
+          <table id="scorecardTable"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FINAL -->
+<div id="finalScreen" class="hidden">
+  <h2>Final Results</h2>
+  <h3 id="finalWinner" style="margin-bottom:16px;text-align:center;"></h3>
+  <div class="final-team-cards" id="finalTeamCards"></div>
+  <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.7);margin-bottom:8px;">Scorecard</div>
+  <div style="overflow-x:auto;">
+    <table>
+      <thead>
+        <tr><th>Hole</th><th>Par</th><th>Yds</th><th id="fhA" class="td-a"></th><th>+/-</th><th id="fhB" class="td-b"></th><th>+/-</th></tr>
+      </thead>
+      <tbody id="finalBody"></tbody>
+      <tfoot id="finalFoot"></tfoot>
+    </table>
+  </div>
+  <br>
+  <button onclick="window.location.href='games.html'">‹ Menu</button>
+</div>
+
+</div>
+</div>
+<script>
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+
+let hole = 1, totalHoles = 18;
+let teamNames = ['Team A','Team B'];
+let playerNames = [['',''],['','']];
+let teamScores = [0,0];
+let teamVsPar = [0,0];
+let holeHistory = [];
+let currentPar = 4;
+let courseName = '';
+
+document.getElementById('roundDate').value = new Date().toLocaleDateString('en-CA');
+
+function goBack(){
+  if(holeHistory.length > 0 && !confirm('Abandon this round? Scores will be lost.')) return;
+  window.location.href = 'games.html';
+}
+
+function startGame(){
+  let tA = document.getElementById('teamNameA').value.trim();
+  let tB = document.getElementById('teamNameB').value.trim();
+  let ns = ['name0','name1','name2','name3'].map(id => document.getElementById(id).value.trim());
+  let errEl = document.getElementById('nameError');
+  errEl.style.display = 'none';
+  if(!tA || !tB || ns.some(n => !n)){ errEl.style.display = 'block'; return; }
+  teamNames = [tA, tB];
+  playerNames = [[ns[0],ns[1]],[ns[2],ns[3]]];
+  totalHoles = Number(document.getElementById('holesSelect').value)||18;
+  courseName = document.getElementById('courseInput').value.trim();
+  currentPar = 4;
+  document.getElementById('teamALabel').textContent = tA;
+  document.getElementById('teamBLabel').textContent = tB;
+  document.getElementById('fhA').textContent = tA;
+  document.getElementById('fhB').textContent = tB;
+  document.getElementById('setupScreen').classList.add('hidden');
+  document.getElementById('gameScreen').classList.remove('hidden');
+  updateHoleInfo();
+  renderStandings();
+}
+
+function setPar(p){
+  currentPar = p;
+  document.querySelectorAll('.par-btn').forEach(b => b.classList.toggle('active', Number(b.textContent) === p));
+}
+
+function updateHoleInfo(){
+  document.getElementById('holeLabel').textContent = hole;
+  let cnl = document.getElementById('courseNameLabel');
+  cnl.textContent = courseName; cnl.style.display = courseName ? '' : 'none';
+  document.querySelectorAll('.par-btn').forEach(b => b.classList.toggle('active', Number(b.textContent) === currentPar));
+  document.getElementById('distInput').value = '';
+  document.getElementById('scoreA').value = '';
+  document.getElementById('scoreB').value = '';
+  document.getElementById('vspA').textContent = '';
+  document.getElementById('vspB').textContent = '';
+  document.getElementById('holeError').style.display = 'none';
+  document.getElementById('scoreA').focus();
+}
+
+function fmtVsPar(v){ return v > 0 ? '+'+v : v === 0 ? 'E' : String(v); }
+
+function nextHole(){
+  let sA = Number(document.getElementById('scoreA').value);
+  let sB = Number(document.getElementById('scoreB').value);
+  if(!sA || !sB){
+    document.getElementById('holeError').textContent = 'Please enter both team scores.';
+    document.getElementById('holeError').style.display = 'block';
+    return;
+  }
+  document.getElementById('holeError').style.display = 'none';
+  let vpA = sA - currentPar, vpB = sB - currentPar;
+  teamScores[0] += sA; teamScores[1] += sB;
+  teamVsPar[0] += vpA; teamVsPar[1] += vpB;
+  let dist = document.getElementById('distInput').value || '';
+  holeHistory.push({ par: currentPar, dist, scores:[sA, sB], vsPar:[vpA, vpB] });
+  renderStandings();
+  if(hole === totalHoles){ endGame(); return; }
+  hole++;
+  updateHoleInfo();
+}
+
+function renderStandings(){
+  // Show running vs par under each input
+  [0,1].forEach(t => {
+    let el = document.getElementById(t===0?'vspA':'vspB');
+    if(!holeHistory.length){ el.textContent=''; return; }
+    let v = teamVsPar[t];
+    let cls = v < 0 ? 'vspar-under' : v > 0 ? 'vspar-over' : 'vspar-even';
+    el.className = 'vspar-label ' + cls;
+    el.textContent = fmtVsPar(v) + ' vs par';
+  });
+
+  let aLeads = teamScores[0] < teamScores[1];
+  let tie = teamScores[0] === teamScores[1];
+
+  // Sort: leading team on top (lower strokes = leading)
+  let order = tie ? [0,1] : (aLeads ? [0,1] : [1,0]);
+
+  document.getElementById('standingsList').innerHTML = order.map(t => {
+    let name = teamNames[t];
+    let score = teamScores[t];
+    let vp = teamVsPar[t];
+    let vpCls = vp < 0 ? 'vspar-under' : vp > 0 ? 'vspar-over' : 'vspar-even';
+    let colorStyle = t===0 ? 'color:#ffd447' : 'color:#64a0dc';
+    return `<div class="standing-row">
+      <span style="${colorStyle};font-weight:bold;">${esc(name)}</span>
+      <span><span style="font-family:'Courier New',monospace;margin-right:8px;">${score}</span><span class="${vpCls}">(${fmtVsPar(vp)})</span></span>
+    </div>`;
+  }).join('');
+}
+
+let lastSavedRecord = null;
+
+(function populateSeasonPicker(){
+  try{
+    let seasons = JSON.parse(localStorage.getItem('seasons')||'[]')
+      .filter(s=>s.status==='active'&&s.allowedGames&&s.allowedGames.includes('scramble'));
+    let sel = document.getElementById('seasonSelect');
+    if(!sel) return;
+    seasons.forEach(s=>{
+      let o = document.createElement('option');
+      o.value = s.id; o.textContent = s.name; sel.appendChild(o);
+    });
+    // Auto-select if seasonId passed via URL
+    let urlSeasonId = new URLSearchParams(location.search).get('seasonId');
+    if(urlSeasonId){
+      sel.value = urlSeasonId;
+      if(sel.value === urlSeasonId) onSeasonPick();
+    }
+  }catch(e){}
+})();
+
+function onSeasonPick(){
+  try{
+    let seasonId = parseInt(document.getElementById('seasonSelect').value);
+    if(!seasonId) return;
+    let season = JSON.parse(localStorage.getItem('seasons')||'[]').find(s=>s.id===seasonId);
+    if(!season) return;
+
+    // Fill team names from season teams
+    if(season.teams && season.teams.length >= 2){
+      let tA = document.getElementById('teamNameA');
+      let tB = document.getElementById('teamNameB');
+      if(tA) tA.value = season.teams[0].name;
+      if(tB) tB.value = season.teams[1].name;
+    }
+
+    // Split players by team assignment (team 0 → name0/name1, team 1 → name2/name3)
+    let teamPlayers = [[],[]];
+    season.players.forEach(p=>{
+      let t = (p.team === 0 || p.team === 1) ? p.team : (teamPlayers[0].length <= teamPlayers[1].length ? 0 : 1);
+      if(teamPlayers[t].length < 2) teamPlayers[t].push(p.name);
+    });
+    let slots = ['name0','name1','name2','name3'];
+    [...teamPlayers[0], ...teamPlayers[1]].forEach((name, i)=>{
+      let inp = document.getElementById(slots[i]);
+      if(inp) inp.value = name;
+    });
+  }catch(e){}
+}
+
+function saveGameResult(){
+  try{
+    let history = JSON.parse(localStorage.getItem('gameHistory')||'[]');
+    let record = {
+      id: Date.now(), game:'scramble',
+      course: document.getElementById('courseInput').value.trim()||'',
+      date: new Date(document.getElementById('roundDate').value+'T12:00:00').toISOString(),
+      teamNames:[...teamNames], playerNames,
+      teamScores:[...teamScores], teamVsPar:[...teamVsPar], holeHistory
+    };
+    lastSavedRecord = record;
+    history.push(record);
+    localStorage.setItem('gameHistory', JSON.stringify(history));
+    // Auto-save to season if selected
+    try{
+      let seasonId = parseInt(document.getElementById('seasonSelect').value);
+      if(seasonId && typeof derivePositions==='function' && typeof _addRoundToSeason==='function'){
+        let positions = derivePositions(record);
+        _addRoundToSeason(seasonId, record, positions);
+      }
+    }catch(e){}
+  }catch(e){}
+}
+
+function endGame(){
+  saveGameResult();
+  document.getElementById('gameScreen').classList.add('hidden');
+  document.getElementById('finalScreen').classList.remove('hidden');
+  let aWins = teamScores[0] < teamScores[1];
+  let bWins = teamScores[1] < teamScores[0];
+  let tiedMatch = teamScores[0] === teamScores[1];
+  let winnerEl = document.getElementById('finalWinner');
+  if(tiedMatch) winnerEl.textContent = 'Match Tied';
+  else winnerEl.textContent = (aWins ? teamNames[0] : teamNames[1]) + ' wins!';
+
+  document.getElementById('finalTeamCards').innerHTML = [0,1].map(t => {
+    let isWinner = (t===0&&aWins)||(t===1&&bWins);
+    let vp = teamVsPar[t];
+    let vpCls = vp<0?'vspar-under':vp>0?'vspar-over':'vspar-even';
+    let teamColor = t===0 ? '#ffd447' : '#64a0dc';
+    return `<div class="final-team-card ${isWinner?'winner':''}">
+      <div class="final-team-name" style="color:${teamColor}">${esc(teamNames[t])}</div>
+      <div class="final-team-score">${teamScores[t]}</div>
+      <div class="final-team-vspar ${vpCls}">${fmtVsPar(vp)}</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:4px;">${esc(playerNames[t][0])} &amp; ${esc(playerNames[t][1])}</div>
+    </div>`;
+  }).join('');
+
+  let tbody = document.getElementById('finalBody');
+  tbody.innerHTML = holeHistory.map((h,i) => {
+    let aWinsHole = h.scores[0] < h.scores[1];
+    let bWinsHole = h.scores[1] < h.scores[0];
+    return `<tr>
+      <td>${i+1}</td><td>${h.par}</td><td>${h.dist||'–'}</td>
+      <td class="${aWinsHole?'td-a':''}" style="${aWinsHole?'font-weight:bold':''}">${h.scores[0]}</td>
+      <td>${fmtVsPar(h.vsPar[0])}</td>
+      <td class="${bWinsHole?'td-b':''}" style="${bWinsHole?'font-weight:bold':''}">${h.scores[1]}</td>
+      <td>${fmtVsPar(h.vsPar[1])}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('finalFoot').innerHTML = `<tr style="font-weight:bold;background:rgba(0,0,0,0.4);">
+    <td colspan="3" style="color:#ffd447;text-align:left;padding-left:6px;">Total</td>
+    <td>${teamScores[0]}</td><td style="${teamVsPar[0]<0?'color:#2ecc71':teamVsPar[0]>0?'color:#ff6b6b':''}">${fmtVsPar(teamVsPar[0])}</td>
+    <td>${teamScores[1]}</td><td style="${teamVsPar[1]<0?'color:#2ecc71':teamVsPar[1]>0?'color:#ff6b6b':''}">${fmtVsPar(teamVsPar[1])}</td>
+  </tr>`;
+}
+
+function buildScorecardTable(){
+  let cols = teamNames;
+  let thead = `<thead><tr><th>Hole</th><th>Par</th><th>Yds</th>${cols.map((c,i)=>`<th class="${i===0?'td-a':'td-b'}">${esc(c)}</th><th>+/-</th>`).join('')}</tr></thead>`;
+  let rows = holeHistory.map((h,i)=>{
+    let aWinsHole = h.scores[0] < h.scores[1];
+    let bWinsHole = h.scores[1] < h.scores[0];
+    return `<tr>
+      <td>${i+1}</td><td>${h.par}</td><td>${h.dist||'–'}</td>
+      <td class="${aWinsHole?'td-a':''}" style="${aWinsHole?'font-weight:bold':''}">${h.scores[0]}</td>
+      <td>${fmtVsPar(h.vsPar[0])}</td>
+      <td class="${bWinsHole?'td-b':''}" style="${bWinsHole?'font-weight:bold':''}">${h.scores[1]}</td>
+      <td>${fmtVsPar(h.vsPar[1])}</td>
+    </tr>`;
+  }).join('');
+  let tfoot = `<tfoot><tr style="font-weight:bold;background:rgba(0,0,0,0.4);">
+    <td colspan="3" style="color:#ffd447;text-align:left;padding-left:6px;">Total</td>
+    <td>${teamScores[0]}</td><td style="${teamVsPar[0]<0?'color:#2ecc71':teamVsPar[0]>0?'color:#ff6b6b':''}">${fmtVsPar(teamVsPar[0])}</td>
+    <td>${teamScores[1]}</td><td style="${teamVsPar[1]<0?'color:#2ecc71':teamVsPar[1]>0?'color:#ff6b6b':''}">${fmtVsPar(teamVsPar[1])}</td>
+  </tr></tfoot>`;
+  return `<table>${thead}<tbody>${rows}</tbody>${tfoot}</table>`;
+}
+
+function openScorecard(){
+  if(!holeHistory.length) return;
+  document.getElementById('scorecardTable').innerHTML = buildScorecardTable();
+  document.getElementById('scorecardModal').classList.remove('hidden');
+}
+function closeScorecard(){
+  document.getElementById('scorecardModal').classList.add('hidden');
+}
+document.getElementById('scorecardModal').addEventListener('click', function(e){
+  if(e.target === this) closeScorecard();
+});
+
+function flipCard(id){
+  const inner = document.getElementById(id);
+  inner.classList.toggle('flipped');
+  const btn = document.querySelector('.flip-btn');
+  if(btn) btn.style.display = inner.classList.contains('flipped') ? 'none' : 'flex';
+}
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+<script src="season.js"></script>
+</body>
+</html>

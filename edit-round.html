@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#080f0a">
+<title>Edit Round</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{--bg:#080f0a;--bg-card:#0e1a12;--gold:#ffd447;--border-gold:#8B6914;}
+body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;}
+.topnav{display:flex;align-items:center;background:var(--bg-card);padding:10px 16px;gap:12px;flex-shrink:0;border-bottom:2px solid var(--border-gold);box-shadow:0 2px 12px rgba(0,0,0,0.5);}
+.back-btn{background:none;border:none;color:var(--gold);font-size:15px;font-weight:bold;cursor:pointer;padding:4px 8px 4px 0;white-space:nowrap;text-decoration:none;}
+.back-btn:hover{color:#ffcc2a;}
+.topnav-title{font-size:15px;font-weight:bold;color:var(--gold);flex:1;text-align:center;letter-spacing:.5px;}
+.topnav-spacer{width:70px;}
+.scroll-area{flex:1;overflow-y:auto;padding:16px 14px 60px;}
+.meta-row{font-size:12px;color:rgba(255,255,255,0.45);margin-bottom:16px;text-align:center;letter-spacing:.3px;}
+.sc-wrap{overflow-x:auto;margin-bottom:20px;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{background:rgba(0,0,0,0.45);color:var(--gold);border:1px solid rgba(184,150,46,0.15);padding:6px 4px;text-align:center;font-size:10px;letter-spacing:.8px;text-transform:uppercase;}
+th:first-child{text-align:left;}
+td{border:1px solid rgba(184,150,46,0.08);padding:4px 3px;text-align:center;color:rgba(255,255,255,0.75);}
+td:first-child{color:rgba(255,212,71,0.6);font-size:11px;font-weight:bold;}
+td.derived{color:rgba(255,255,255,0.35);font-size:10px;}
+input.score-inp{width:46px;padding:4px 2px;border-radius:4px;border:1px solid rgba(184,150,46,0.3);border-bottom:2px solid rgba(184,150,46,0.5);background:rgba(0,0,0,0.35);color:#fff;font-size:14px;font-weight:bold;text-align:center;font-family:'Courier New',monospace;}
+input.score-inp:focus{outline:none;border-color:var(--gold);}
+.totals-row td{background:rgba(0,0,0,0.35);color:var(--gold);font-weight:bold;font-family:'Courier New',monospace;}
+.save-bar{position:fixed;bottom:0;left:0;right:0;background:var(--bg-card);border-top:1px solid rgba(255,212,71,0.25);padding:10px 16px;display:flex;gap:10px;}
+.btn-primary{flex:1;padding:12px;border:none;border-radius:8px;font-size:14px;font-weight:bold;background:linear-gradient(135deg,#8B6914,#ffd447,#8B6914);color:#0a0a00;cursor:pointer;letter-spacing:.5px;}
+.btn-primary:active{opacity:.85;}
+.btn-secondary{flex:1;padding:12px;border-radius:8px;font-size:14px;font-weight:bold;background:transparent;border:1px solid rgba(255,212,71,0.3);color:rgba(255,212,71,0.7);cursor:pointer;}
+.btn-secondary:active{background:rgba(255,212,71,0.08);}
+.unsupported{text-align:center;color:rgba(255,255,255,0.35);padding:40px 20px;font-size:13px;line-height:2;}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a2e1a;border:1px solid #8B6914;color:var(--gold);font-size:13px;font-weight:bold;padding:10px 20px;border-radius:20px;z-index:9999;pointer-events:none;font-family:Arial,sans-serif;box-shadow:0 2px 12px rgba(0,0,0,0.6);}
+.par-badge{display:inline-block;background:rgba(255,212,71,0.08);border:1px solid rgba(255,212,71,0.2);color:rgba(255,212,71,0.6);font-size:9px;border-radius:3px;padding:1px 4px;margin-left:3px;}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <a class="back-btn" id="backBtn" href="history.html">‹ Back</a>
+  <div class="topnav-title" id="pageTitle">Edit Round</div>
+  <div class="topnav-spacer"></div>
+</div>
+
+<div class="scroll-area" id="scrollArea">
+  <div style="text-align:center;padding:40px;color:rgba(255,255,255,0.3);">Loading…</div>
+</div>
+
+<div class="save-bar" id="saveBar" style="display:none;">
+  <button class="btn-secondary" id="cancelBtn">Cancel</button>
+  <button class="btn-primary" id="saveBtn">Save Changes</button>
+</div>
+
+<script src="season.js"></script>
+<script>
+const GAME_LABELS = {
+  f1:'Grand Prix', stableford:'Stableford', wolf:'Wolf', banker:'Banker',
+  matchplay:'Match Play', scramble:'Scramble', foursomes:'Foursomes', vegas:'Vegas', stroke:'Stroke Play'
+};
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmtDate(d){ if(!d) return ''; let dt=new Date(d); if(isNaN(dt)) return d; return dt.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}); }
+
+// Parse URL params
+let params = new URLSearchParams(location.search);
+let roundId = parseInt(params.get('id'));
+let seasonId = params.get('seasonId') ? parseInt(params.get('seasonId')) : null;
+let backUrl = params.get('back') || 'history.html';
+
+document.getElementById('backBtn').href = backUrl;
+
+// Load record
+function loadHistory(){ try{ return JSON.parse(localStorage.getItem('gameHistory')||'[]'); }catch(e){ return []; } }
+function saveHistory(arr){ localStorage.setItem('gameHistory', JSON.stringify(arr)); }
+
+let record = loadHistory().find(r => r.id === roundId);
+
+if(!record){
+  document.getElementById('scrollArea').innerHTML = '<div class="unsupported">Round not found.</div>';
+} else {
+  document.getElementById('pageTitle').textContent = GAME_LABELS[record.game] || record.game;
+  render(record);
+}
+
+// ── Stableford points ──
+function stablefordPts(score, par){
+  let d = score - par;
+  if(d <= -2) return 4;
+  if(d === -1) return 3;
+  if(d === 0)  return 2;
+  if(d === 1)  return 1;
+  return 0;
+}
+
+// ── F1 points (per-hole position-based) ──
+// F1: 4 players, each hole rank by score (ascending), points [4,3,2,1]
+function f1HolePts(scores){
+  let n = scores.length;
+  let pairs = scores.map((s,i)=>({s,i})).sort((a,b)=>a.s-b.s);
+  let pts = new Array(n).fill(0);
+  let F1_PTS = [4,3,2,1];
+  let rank = 0;
+  for(let i=0;i<pairs.length;){
+    let j=i;
+    while(j<pairs.length && pairs[j].s===pairs[i].s) j++;
+    let tied = pairs.slice(i,j);
+    let total = 0;
+    for(let k=0;k<tied.length;k++) total += F1_PTS[rank+k]||0;
+    let share = total/tied.length;
+    tied.forEach(p=>pts[p.i]=share);
+    rank+=tied.length;
+    i=j;
+  }
+  return pts;
+}
+
+function render(r){
+  let area = document.getElementById('scrollArea');
+  let supported = ['stableford','f1','wolf','scramble'].includes(r.game);
+
+  let meta = `<div class="meta-row">${esc(GAME_LABELS[r.game]||r.game)} &nbsp;·&nbsp; ${esc(fmtDate(r.date))}${r.course?' &nbsp;·&nbsp; '+esc(r.course):''}</div>`;
+
+  if(!supported){
+    area.innerHTML = meta + `<div class="unsupported">
+      Full scorecard editing is not yet supported for <strong style="color:var(--gold);">${esc(GAME_LABELS[r.game]||r.game)}</strong>.<br><br>
+      Supported formats: Stableford, Grand Prix, Wolf, Scramble.
+    </div>`;
+    return;
+  }
+
+  // Build editable table
+  let html = meta + '<div class="sc-wrap"><table id="scTable">';
+
+  if(r.game === 'stableford'){
+    let players = r.players;
+    let n = players.length;
+    html += '<thead><tr><th>Hole</th><th>Par</th>';
+    players.forEach(p => html += `<th>${esc(p)}<br><span style="font-size:8px;opacity:.5">Score / Pts</span></th>`);
+    html += '</tr></thead><tbody>';
+    for(let h=0; h<r.scoreHistory.length; h++){
+      let par = r.holeParDist[h]?.par || 4;
+      let dist = r.holeParDist[h]?.dist || '';
+      html += `<tr><td>${h+1}${dist?`<span class="par-badge">${esc(dist)}</span>`:''}</td><td>${par}</td>`;
+      for(let p=0;p<n;p++){
+        let sc = r.scoreHistory[h][p];
+        html += `<td><input class="score-inp" data-hole="${h}" data-player="${p}" type="number" min="1" max="15" value="${sc}" inputmode="numeric"><br><span class="derived" id="pts_${h}_${p}">${stablefordPts(sc,par)}pt</span></td>`;
+      }
+      html += '</tr>';
+    }
+    html += '<tr class="totals-row"><td colspan="2">TOTAL</td>';
+    for(let p=0;p<n;p++){
+      html += `<td id="total_${p}">${r.playerTotals[p]}pts</td>`;
+    }
+    html += '</tr></tbody>';
+  }
+
+  else if(r.game === 'f1'){
+    let players = r.players;
+    let n = players.length;
+    html += '<thead><tr><th>Hole</th><th>Par</th>';
+    players.forEach(p => html += `<th>${esc(p)}<br><span style="font-size:8px;opacity:.5">Score / Pts</span></th>`);
+    html += '</tr></thead><tbody>';
+    for(let h=0; h<r.scoreHistory.length; h++){
+      let par = r.holeParDist[h]?.par || 4;
+      let dist = r.holeParDist[h]?.dist || '';
+      let holePts = f1HolePts(r.scoreHistory[h]);
+      html += `<tr><td>${h+1}${dist?`<span class="par-badge">${esc(dist)}</span>`:''}</td><td>${par}</td>`;
+      for(let p=0;p<n;p++){
+        let sc = r.scoreHistory[h][p];
+        html += `<td><input class="score-inp" data-hole="${h}" data-player="${p}" type="number" min="1" max="15" value="${sc}" inputmode="numeric"><br><span class="derived" id="pts_${h}_${p}">${holePts[p]}pt</span></td>`;
+      }
+      html += '</tr>';
+    }
+    html += '<tr class="totals-row"><td colspan="2">TOTAL</td>';
+    for(let p=0;p<n;p++){
+      html += `<td id="total_${p}">${r.playerTotals[p]}pts</td>`;
+    }
+    html += '</tr></tbody>';
+  }
+
+  else if(r.game === 'wolf'){
+    let players = r.players;
+    let n = players.length;
+    html += '<thead><tr><th>Hole</th><th>Par</th>';
+    players.forEach(p => html += `<th>${esc(p)}</th>`);
+    html += '</tr></thead><tbody>';
+    for(let h=0; h<(r.scoreHistory||[]).length; h++){
+      let par = r.holeParDist[h]?.par || 4;
+      let dist = r.holeParDist[h]?.dist || '';
+      html += `<tr><td>${h+1}${dist?`<span class="par-badge">${esc(dist)}</span>`:''}</td><td>${par}</td>`;
+      for(let p=0;p<n;p++){
+        let sc = (r.scoreHistory[h]||[])[p] ?? '';
+        html += `<td><input class="score-inp" data-hole="${h}" data-player="${p}" type="number" min="1" max="15" value="${sc}" inputmode="numeric"></td>`;
+      }
+      html += '</tr>';
+    }
+    html += '<tr class="totals-row"><td colspan="2">TOTAL</td>';
+    for(let p=0;p<n;p++){
+      html += `<td id="total_${p}">${r.playerTotals[p]??0}</td>`;
+    }
+    html += '</tr></tbody>';
+  }
+
+  else if(r.game === 'scramble'){
+    let teams = r.teamNames || ['Team A','Team B'];
+    html += '<thead><tr><th>Hole</th><th>Par</th>';
+    teams.forEach(t => html += `<th>${esc(t)}<br><span style="font-size:8px;opacity:.5">Strokes</span></th>`);
+    html += '</tr></thead><tbody>';
+    for(let h=0; h<r.holeHistory.length; h++){
+      let hh = r.holeHistory[h];
+      let par = hh.par || 4;
+      let dist = hh.dist || '';
+      html += `<tr><td>${h+1}${dist?`<span class="par-badge">${esc(dist)}</span>`:''}</td><td>${par}</td>`;
+      for(let t=0;t<2;t++){
+        let sc = hh.scores[t] ?? '';
+        html += `<td><input class="score-inp" data-hole="${h}" data-team="${t}" type="number" min="1" max="15" value="${sc}" inputmode="numeric"></td>`;
+      }
+      html += '</tr>';
+    }
+    html += '<tr class="totals-row"><td colspan="2">TOTAL</td>';
+    teams.forEach((t,ti) => html += `<td id="total_${ti}">${r.teamScores[ti]}</td>`);
+    html += '</tr></tbody>';
+  }
+
+  html += '</table></div>';
+  area.innerHTML = html;
+  document.getElementById('saveBar').style.display = 'flex';
+
+  // Live recalc on input change
+  document.getElementById('scTable').addEventListener('input', e=>{
+    if(e.target.classList.contains('score-inp')) liveRecalc(r);
+  });
+}
+
+function liveRecalc(r){
+  if(r.game === 'stableford'){
+    let n = r.players.length;
+    let newTotals = new Array(n).fill(0);
+    for(let h=0; h<r.scoreHistory.length; h++){
+      let par = r.holeParDist[h]?.par || 4;
+      for(let p=0;p<n;p++){
+        let inp = document.querySelector(`input[data-hole="${h}"][data-player="${p}"]`);
+        let sc = parseInt(inp?.value)||0;
+        let pts = stablefordPts(sc, par);
+        let el = document.getElementById(`pts_${h}_${p}`);
+        if(el) el.textContent = pts+'pt';
+        newTotals[p] += pts;
+      }
+    }
+    for(let p=0;p<n;p++){
+      let el = document.getElementById(`total_${p}`);
+      if(el) el.textContent = newTotals[p]+'pts';
+    }
+  }
+  else if(r.game === 'f1'){
+    let n = r.players.length;
+    let newTotals = new Array(n).fill(0);
+    for(let h=0; h<r.scoreHistory.length; h++){
+      let scores = [];
+      for(let p=0;p<n;p++){
+        let inp = document.querySelector(`input[data-hole="${h}"][data-player="${p}"]`);
+        scores.push(parseInt(inp?.value)||0);
+      }
+      let holePts = f1HolePts(scores);
+      for(let p=0;p<n;p++){
+        let el = document.getElementById(`pts_${h}_${p}`);
+        if(el) el.textContent = holePts[p]+'pt';
+        newTotals[p] += holePts[p];
+      }
+    }
+    for(let p=0;p<n;p++){
+      let el = document.getElementById(`total_${p}`);
+      if(el) el.textContent = newTotals[p]+'pts';
+    }
+  }
+  else if(r.game === 'scramble'){
+    let totals = [0,0];
+    for(let h=0; h<r.holeHistory.length; h++){
+      for(let t=0;t<2;t++){
+        let inp = document.querySelector(`input[data-hole="${h}"][data-team="${t}"]`);
+        totals[t] += parseInt(inp?.value)||0;
+      }
+    }
+    for(let t=0;t<2;t++){
+      let el = document.getElementById(`total_${t}`);
+      if(el) el.textContent = totals[t];
+    }
+  }
+}
+
+// ── Save ──
+document.getElementById('saveBtn').addEventListener('click', ()=>{
+  if(!record) return;
+  let history = loadHistory();
+  let idx = history.findIndex(r=>r.id===roundId);
+  if(idx === -1){ showToast('Round not found'); return; }
+
+  let updated = JSON.parse(JSON.stringify(record)); // deep clone
+
+  if(record.game === 'stableford'){
+    let n = record.players.length;
+    updated.playerTotals = new Array(n).fill(0);
+    for(let h=0;h<updated.scoreHistory.length;h++){
+      let par = updated.holeParDist[h]?.par || 4;
+      for(let p=0;p<n;p++){
+        let inp = document.querySelector(`input[data-hole="${h}"][data-player="${p}"]`);
+        let sc = parseInt(inp?.value)||updated.scoreHistory[h][p];
+        updated.scoreHistory[h][p] = sc;
+        let pts = stablefordPts(sc, par);
+        updated.pointHistory[h][p] = pts;
+        updated.playerTotals[p] += pts;
+      }
+    }
+  }
+  else if(record.game === 'f1'){
+    let n = record.players.length;
+    updated.playerTotals = new Array(n).fill(0);
+    for(let h=0;h<updated.scoreHistory.length;h++){
+      let scores = [];
+      for(let p=0;p<n;p++){
+        let inp = document.querySelector(`input[data-hole="${h}"][data-player="${p}"]`);
+        scores.push(parseInt(inp?.value)||updated.scoreHistory[h][p]);
+      }
+      updated.scoreHistory[h] = scores;
+      let holePts = f1HolePts(scores);
+      updated.pointHistory[h] = holePts;
+      for(let p=0;p<n;p++) updated.playerTotals[p] += holePts[p];
+    }
+  }
+  else if(record.game === 'wolf'){
+    let n = record.players.length;
+    // wolf: just update raw scores, don't recalc complex wolf points
+    for(let h=0;h<(updated.scoreHistory||[]).length;h++){
+      for(let p=0;p<n;p++){
+        let inp = document.querySelector(`input[data-hole="${h}"][data-player="${p}"]`);
+        if(inp && updated.scoreHistory[h]) updated.scoreHistory[h][p] = parseInt(inp.value)||updated.scoreHistory[h][p];
+      }
+    }
+  }
+  else if(record.game === 'scramble'){
+    let totals = [0,0];
+    for(let h=0;h<updated.holeHistory.length;h++){
+      for(let t=0;t<2;t++){
+        let inp = document.querySelector(`input[data-hole="${h}"][data-team="${t}"]`);
+        let sc = parseInt(inp?.value)||updated.holeHistory[h].scores[t];
+        updated.holeHistory[h].scores[t] = sc;
+        updated.holeHistory[h].vsPar = [
+          updated.holeHistory[h].scores[0] - updated.holeHistory[h].par,
+          updated.holeHistory[h].scores[1] - updated.holeHistory[h].par
+        ];
+        totals[t] += sc;
+      }
+    }
+    updated.teamScores = totals;
+    updated.teamVsPar = [0,0];
+    updated.holeHistory.forEach(h=>{
+      updated.teamVsPar[0] += h.scores[0]-h.par;
+      updated.teamVsPar[1] += h.scores[1]-h.par;
+    });
+  }
+
+  history[idx] = updated;
+  saveHistory(history);
+
+  // If linked to a season, update season round too
+  if(seasonId && typeof _updateSeasonRound === 'function'){
+    _updateSeasonRound(seasonId, updated.id, updated);
+  }
+
+  showToast('Saved ✓');
+  setTimeout(()=>{ window.location.href = backUrl; }, 900);
+});
+
+document.getElementById('cancelBtn').addEventListener('click', ()=>{
+  window.location.href = backUrl;
+});
+
+function showToast(msg){
+  let t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 2500);
+}
+</script>
+</body>
+</html>

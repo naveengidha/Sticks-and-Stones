@@ -5,27 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#1f4d2b">
+<meta name="theme-color" content="#080f0a">
 <title>Regular Round</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{font-family:Arial,Helvetica,sans-serif;background:#1f4d2b;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;}
-.topnav{display:flex;align-items:center;background:#1c4729;padding:10px 16px;gap:12px;flex-shrink:0;border-bottom:2px solid #ffd447;box-shadow:0 2px 12px rgba(0,0,0,0.5);}
+body{font-family:Arial,Helvetica,sans-serif;background:#080f0a;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;}
+.topnav{display:flex;align-items:center;background:#0e1a12;padding:10px 16px;gap:12px;flex-shrink:0;border-bottom:2px solid #8B6914;box-shadow:0 2px 12px rgba(0,0,0,0.5);}
 .back-btn{background:none;border:none;color:#ffd447;font-size:15px;font-weight:bold;cursor:pointer;padding:4px 8px 4px 0;white-space:nowrap;display:flex;align-items:center;gap:6px;width:auto;}
 .back-btn:hover{color:#ffcc2a;}
-.topnav-title{font-size:15px;font-weight:bold;color:#ffd447;flex:1;text-align:center;letter-spacing:.5px;}
+.topnav-title{font-size:15px;font-weight:bold;color:#ffd447;flex:1;text-align:center;letter-spacing:.5px;font-family:'Georgia',serif;}
 .topnav-spacer{width:70px;}
-h2{text-align:center;margin-top:0;color:#ffd447;letter-spacing:.5px;}
+h2{text-align:center;margin-top:0;color:#ffd447;letter-spacing:.5px;font-family:'Georgia',serif;}
 h3{text-align:center;margin-top:0;color:rgba(255,255,255,0.75);}
 .scroll-area{flex:1;overflow-y:auto;padding:20px 16px 40px;display:flex;justify-content:center;}
 .container{
   background:
-    repeating-linear-gradient(45deg, rgba(0,0,0,0.07) 0px, rgba(0,0,0,0.07) 1px, transparent 1px, transparent 8px),
-    repeating-linear-gradient(-45deg, rgba(0,0,0,0.07) 0px, rgba(0,0,0,0.07) 1px, transparent 1px, transparent 8px),
-    #14281c;
-  border:1px solid rgba(184,150,46,0.35);
+    repeating-linear-gradient(45deg, rgba(255,212,71,0.03) 0px, rgba(255,212,71,0.03) 1px, transparent 1px, transparent 10px),
+    repeating-linear-gradient(-45deg, rgba(255,212,71,0.03) 0px, rgba(255,212,71,0.03) 1px, transparent 1px, transparent 10px),
+    #0e1a12;
+  border:3px solid #8B6914;
   padding:24px 20px;border-radius:12px;width:100%;max-width:480px;
   box-shadow:0 8px 32px rgba(0,0,0,0.6);position:relative;
 }
@@ -37,13 +37,13 @@ h3{text-align:center;margin-top:0;color:rgba(255,255,255,0.75);}
 .select-input{padding:8px 10px;border-radius:6px;border:1px solid rgba(184,150,46,0.3);font-size:15px;background:rgba(0,0,0,0.3);color:white;}
 .course-input{width:100%;margin-bottom:12px;padding:10px;border-radius:6px;border:1px solid rgba(184,150,46,0.3);font-size:15px;background:rgba(0,0,0,0.3);color:white;}
 #nameError{color:#ff6b6b;font-size:13px;display:none;}
-button{width:100%;padding:13px;border:none;border-radius:8px;font-size:15px;font-weight:bold;background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);color:#1a1a0a;cursor:pointer;margin-bottom:4px;box-shadow:0 2px 8px rgba(184,150,46,0.4);letter-spacing:.5px;}
-button:hover,button:active{background:linear-gradient(135deg,#b8912e,#ffc93a,#b8912e);}
+button{width:100%;padding:13px;border:none;border-radius:8px;font-size:15px;font-weight:bold;background:linear-gradient(135deg,#8B6914,#ffd447,#8B6914);color:#0a0a00;cursor:pointer;margin-bottom:4px;box-shadow:0 2px 8px rgba(184,150,46,0.4);letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;}
+button:hover,button:active{background:linear-gradient(135deg,#7a5c10,#ffc93a,#7a5c10);}
 button.btn-secondary{background:transparent;border:1px solid rgba(184,150,46,0.4);color:rgba(255,212,71,0.75);font-size:14px;padding:10px;box-shadow:none;letter-spacing:.5px;}
 .sc-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;overflow-y:auto;padding:20px 12px;}
 .sc-modal-overlay.open{display:block;}
-.sc-modal{background:#1e4d1e;border-radius:12px;border:1px solid rgba(184,150,46,0.25);padding:20px 16px;max-width:480px;margin:0 auto;}
-.sc-modal h3{margin:0 0 14px;font-size:16px;letter-spacing:.5px;color:#ffd447;text-align:center;}
+.sc-modal{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border-radius:16px;border:2px solid #8B6914;padding:20px 16px;max-width:480px;margin:0 auto;}
+.sc-modal h3{margin:0 0 14px;font-size:16px;letter-spacing:.5px;color:#ffd447;text-align:center;font-family:'Georgia','Times New Roman',serif;background:rgba(0,0,0,0.5);border-bottom:1px solid rgba(255,212,71,0.2);padding-bottom:10px;}
 button.btn-secondary:hover,button.btn-secondary:active{background:rgba(184,150,46,0.08);border-color:rgba(255,212,71,0.6);color:#ffd447;}
 .hidden{display:none!important;}
 .add-player-btn{background:rgba(255,212,71,0.12);border:1px solid rgba(255,212,71,0.35);color:#ffd447;font-size:18px;font-weight:bold;width:36px;height:36px;border-radius:6px;cursor:pointer;flex-shrink:0;padding:0;margin-bottom:0;box-shadow:none;letter-spacing:0;}
@@ -146,10 +146,10 @@ td.sc-eagle{color:#ffd447;font-weight:bold;}
   backface-visibility:hidden;-webkit-backface-visibility:hidden;
   transform:rotateY(180deg);
   background:
-    repeating-linear-gradient(45deg, rgba(0,0,0,0.07) 0px, rgba(0,0,0,0.07) 1px, transparent 1px, transparent 8px),
-    repeating-linear-gradient(-45deg, rgba(0,0,0,0.07) 0px, rgba(0,0,0,0.07) 1px, transparent 1px, transparent 8px),
-    #14281c;
-  border:1px solid rgba(184,150,46,0.35);
+    repeating-linear-gradient(45deg, rgba(255,212,71,0.03) 0px, rgba(255,212,71,0.03) 1px, transparent 1px, transparent 10px),
+    repeating-linear-gradient(-45deg, rgba(255,212,71,0.03) 0px, rgba(255,212,71,0.03) 1px, transparent 1px, transparent 10px),
+    #0e1a12;
+  border:2px solid #8B6914;
   padding:24px 20px;border-radius:12px;
 }
 .flip-inner.flipped .flip-front{position:absolute;inset:0;}
@@ -192,6 +192,13 @@ td.sc-eagle{color:#ffd447;font-weight:bold;}
             <div class="legend-pill">Par <span class="par">E</span></div>
             <div class="legend-pill">Bogey <span class="bogey">+1</span></div>
             <div class="legend-pill">Double <span class="double">+2</span></div>
+          </div>
+
+          <div class="row-setting" style="margin-bottom:12px;">
+            <label>Season:</label>
+            <select id="seasonSelect" class="select-input" onchange="onSeasonPick()" style="flex:1;">
+              <option value="">None (casual round)</option>
+            </select>
           </div>
 
           <input class="course-input" id="courseInput" placeholder="Course name (optional)">
@@ -270,7 +277,7 @@ td.sc-eagle{color:#ffd447;font-weight:bold;}
     </div>
     <br>
     <button onclick="window.location.reload()">New Round</button>
-    <button class="btn-secondary" style="margin-top:4px;" onclick="window.location.href='index.html'">‹ Menu</button>
+    <button class="btn-secondary" style="margin-top:4px;" onclick="window.location.href='games.html'">‹ Menu</button>
   </div>
 
 </div>
@@ -285,6 +292,7 @@ td.sc-eagle{color:#ffd447;font-weight:bold;}
   </div>
 </div>
 
+<script src="season.js"></script>
 <script>
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js').catch(()=>{});
@@ -297,6 +305,49 @@ let players = [];      // [{name, data:[{par,distance,score,pts,teeDir,air,airDi
 let holeIdx = 0;
 let expandedIdx = 0;
 let playerCount = 1;
+
+/* ── Season picker ── */
+(function populateSeasonPicker(){
+  try{
+    let seasons = JSON.parse(localStorage.getItem('seasons')||'[]')
+      .filter(s => s.status==='active' && s.allowedGames && s.allowedGames.includes('stroke'));
+    let sel = document.getElementById('seasonSelect');
+    seasons.forEach(s => {
+      let o = document.createElement('option');
+      o.value = s.id; o.textContent = s.name; sel.appendChild(o);
+    });
+    let urlSeasonId = new URLSearchParams(location.search).get('seasonId');
+    if(urlSeasonId){
+      sel.value = urlSeasonId;
+      if(sel.value === urlSeasonId) onSeasonPick();
+    }
+  }catch(e){}
+})();
+
+function onSeasonPick(){
+  try{
+    let seasonId = parseInt(document.getElementById('seasonSelect').value);
+    if(!seasonId) return;
+    let season = JSON.parse(localStorage.getItem('seasons')||'[]').find(s=>s.id===seasonId);
+    if(!season) return;
+    // Remove extra player rows first, reset to 1
+    playerCount = 1;
+    document.getElementById('playerRows').innerHTML = `
+      <div class="setup-player-row" id="row1">
+        <input class="name-input" id="name0" placeholder="Player 1 (required)">
+        <button class="add-player-btn" onclick="addPlayer()" title="Add player">+</button>
+      </div>`;
+    // Add players from season
+    season.players.forEach((p, i) => {
+      if(i === 0){
+        document.getElementById('name0').value = p.name;
+      } else {
+        addPlayer();
+        document.getElementById('name'+(i)).value = p.name;
+      }
+    });
+  }catch(e){}
+}
 
 /* ── Course loading ── */
 document.getElementById('roundDate').value = new Date().toLocaleDateString('en-CA');
@@ -595,6 +646,11 @@ function playerStats(p){
 
 /* ── Finish ── */
 function promptFinish(){
+  // Commit current hole — treat null scores as par (same as goToHole)
+  players.forEach(p => {
+    let h = p.data[holeIdx];
+    if(h.score === null) h.score = h.par;
+  });
   let anyUnscored = players.some(p=>p.data.some(h=>h.score===null));
   if(anyUnscored){
     if(!confirm('Some holes have no score. Finish anyway?')) return;
@@ -644,20 +700,31 @@ function saveRound(){
   try{
     let now = Date.now();
     let dateStr = new Date(document.getElementById('roundDate').value+'T12:00:00').toISOString();
-    let course = document.getElementById('courseInput').value.trim() || 'Unknown Course';
-    let existing = JSON.parse(localStorage.getItem('fieldRounds')||'[]');
-    players.forEach((p,index)=>{
-      if(p.data.every(h=>h.score===null)) return;
-      existing.push({
-        id: now+index,
-        player: p.name,
-        course,
-        courseIdx: '',
-        date: dateStr,
-        holes: p.data.map(h=>({...h}))
-      });
-    });
-    localStorage.setItem('fieldRounds', JSON.stringify(existing));
+    let course = document.getElementById('courseInput').value.trim() || '';
+    let activePlayers = players.filter(p=>p.data.some(h=>h.score!==null));
+    if(!activePlayers.length) return;
+    let record = {
+      id: now,
+      game: 'stroke',
+      date: dateStr,
+      course,
+      players: activePlayers.map(p=>p.name),
+      playerTotals: activePlayers.map(p=>p.data.reduce((s,h)=>s+(h.score||0),0)),
+      scoreHistory: activePlayers[0].data.map((_,hi)=>activePlayers.map(p=>p.data[hi]?.score??null)),
+      holeParDist: activePlayers[0].data.map(h=>({par:h.par||4,dist:h.distance||0})),
+      holes: activePlayers.map(p=>p.data.map(h=>({...h})))
+    };
+    let existing = JSON.parse(localStorage.getItem('gameHistory')||'[]');
+    existing.push(record);
+    localStorage.setItem('gameHistory', JSON.stringify(existing));
+    // Save to season if one is selected
+    let seasonId = parseInt(document.getElementById('seasonSelect').value);
+    if(seasonId && typeof _addRoundToSeason === 'function'){
+      // Sort by lowest score to assign positions
+      let ranked = record.playerTotals.map((t,i)=>({i,t})).sort((a,b)=>a.t-b.t);
+      let positions = ranked.map((s,rank)=>({name: record.players[s.i], position: rank+1}));
+      _addRoundToSeason(seasonId, record, positions);
+    }
   }catch(e){}
 }
 
@@ -719,7 +786,7 @@ function closeScorecardModal(e){
 function goBack(){
   const hasScores = players.length > 0 && players.some(p => p.data.some(h => h.score !== null));
   if(hasScores && !confirm('Abandon this round? Scores will be lost.')) return;
-  window.location.href = 'index.html';
+  window.location.href = 'games.html';
 }
 
 function flipCard(id){

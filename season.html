@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#080f0a">
+<title>Season</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Helvetica Neue',Arial,sans-serif;background:#080f0a;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;}
+.topnav{display:flex;align-items:center;background:#0e1a12;padding:10px 16px;gap:12px;flex-shrink:0;border-bottom:2px solid #8B6914;box-shadow:0 2px 12px rgba(0,0,0,0.5);}
+.back-btn{background:none;border:none;color:#ffd447;font-size:15px;font-weight:bold;cursor:pointer;padding:4px 8px 4px 0;white-space:nowrap;display:flex;align-items:center;gap:6px;width:auto;}
+.back-btn:hover{color:#ffcc2a;}
+.topnav-title{font-size:15px;font-weight:bold;color:#ffd447;flex:1;text-align:center;letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;}
+.topnav-spacer{width:70px;}
+.scroll-area{flex:1;overflow-y:auto;padding:20px 16px 40px;display:flex;justify-content:center;}
+.container{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:3px solid #8B6914;padding:24px 20px;border-radius:20px;width:100%;max-width:480px;box-shadow:0 8px 32px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,212,71,0.08);position:relative;}
+h2{text-align:center;margin-top:0;color:#ffd447;letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;}
+button{width:100%;padding:13px;border:none;border-radius:8px;font-size:15px;font-weight:bold;background:linear-gradient(135deg,#8B6914,#ffd447,#8B6914);color:#0a0a00;cursor:pointer;margin-bottom:4px;box-shadow:0 2px 8px rgba(184,150,46,0.4);letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;}
+button:hover,button:active{opacity:.9;}
+button.btn-secondary{background:transparent;border:1px solid rgba(255,212,71,0.3);color:rgba(255,212,71,0.7);font-size:14px;padding:10px;box-shadow:none;letter-spacing:.5px;font-family:inherit;}
+button.btn-secondary:hover,button.btn-secondary:active{background:rgba(255,212,71,0.06);border-color:rgba(255,212,71,0.6);color:#ffd447;}
+button.btn-danger{background:transparent;border:1px solid rgba(255,77,77,0.35);color:rgba(255,100,100,0.7);font-size:14px;padding:10px;box-shadow:none;letter-spacing:.5px;font-family:inherit;}
+button.btn-danger:hover,button.btn-danger:active{background:rgba(255,77,77,0.08);border-color:rgba(255,100,100,0.6);color:#ff6464;}
+.hidden{display:none!important;}
+.name-input,.course-input,.select-input,.number-input,.textarea-input{width:100%;padding:10px;border-radius:6px;border:1px solid rgba(184,150,46,0.3);border-bottom:2px solid rgba(184,150,46,0.5);color:white;font-size:15px;background:rgba(0,0,0,0.3);margin-bottom:10px;}
+.name-input::placeholder,.course-input::placeholder,.textarea-input::placeholder{color:rgba(255,255,255,0.35);}
+.select-input{color:white;-webkit-appearance:none;}
+.number-input{width:80px;text-align:center;font-size:15px;margin-bottom:10px;}
+.row-setting{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.row-setting label{font-size:12px;white-space:nowrap;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:.5px;}
+.section-label{font-size:11px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.5);margin-bottom:10px;margin-top:16px;padding-bottom:4px;border-bottom:1px solid rgba(184,150,46,0.15);}
+.error-msg{color:#ff6b6b;font-size:13px;display:none;margin-bottom:8px;}
+
+/* ── Flip card ── */
+.flip-card{width:100%;}
+.flip-inner{position:relative;transform-style:preserve-3d;transition:transform 0.45s ease;}
+.flip-inner.flipped{transform:rotateY(180deg);}
+.flip-front{position:relative;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
+.flip-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:2px solid #8B6914;padding:24px 20px;border-radius:16px;}
+.flip-inner.flipped .flip-front{position:absolute;inset:0;}
+.flip-inner.flipped .flip-back{position:relative;inset:auto;}
+.flip-btn{position:absolute;bottom:14px;right:14px;width:28px;height:28px;border-radius:50%;background:rgba(255,212,71,0.12);border:1px solid rgba(255,212,71,0.35);color:#ffd447;font-size:13px;font-weight:bold;letter-spacing:0;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;text-transform:none;z-index:10;box-shadow:none;}
+.flip-btn:hover,.flip-btn:active{background:rgba(255,212,71,0.25);}
+.flip-back-btn{background:none;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);font-size:13px;font-weight:bold;padding:6px 14px;border-radius:4px;cursor:pointer;width:auto;margin-bottom:20px;letter-spacing:.5px;text-transform:none;box-shadow:none;}
+.flip-back-btn:hover,.flip-back-btn:active{background:rgba(255,255,255,0.07);color:#fff;}
+.rules-title{font-size:18px;font-weight:bold;color:#ffd447;text-align:center;margin:0 0 6px;letter-spacing:1px;}
+.rules-sub{text-align:center;color:rgba(255,255,255,0.5);font-size:12px;margin:0 0 20px;letter-spacing:1px;text-transform:uppercase;}
+.rules-table{width:100%;border-collapse:collapse;margin-bottom:16px;}
+.rules-table td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.07);font-size:14px;}
+.rules-table td:first-child{color:rgba(255,255,255,0.5);width:55%;}
+.rules-table td:last-child{font-weight:bold;font-family:'Courier New',monospace;color:#ffd447;}
+.rules-note{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.7;text-align:center;margin-top:4px;}
+
+/* ── Season list ── */
+.season-item{background:rgba(0,0,0,0.3);border:1px solid rgba(184,150,46,0.2);border-radius:10px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s,background .15s;}
+.season-item:hover,.season-item:active{border-color:rgba(255,212,71,0.5);background:rgba(255,212,71,0.04);}
+.season-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.season-item-name{font-weight:bold;font-size:15px;color:#ffd447;letter-spacing:.3px;}
+.status-badge{font-size:10px;font-weight:bold;padding:2px 8px;border-radius:20px;letter-spacing:.5px;}
+.status-badge.active{background:rgba(46,204,113,0.15);color:#2ecc71;border:1px solid rgba(46,204,113,0.3);}
+.status-badge.complete{background:rgba(255,212,71,0.12);color:#ffd447;border:1px solid rgba(255,212,71,0.25);}
+.season-item-meta{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.6;}
+.empty-state{text-align:center;padding:32px 0;color:rgba(255,255,255,0.3);font-size:14px;line-height:2;}
+.empty-state .empty-icon{font-size:36px;margin-bottom:8px;}
+
+/* ── Players setup ── */
+.player-setup-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;}
+.player-setup-row .name-input{flex:2;margin-bottom:0;}
+.hdcp-input{width:60px;flex-shrink:0;padding:10px 6px;border-radius:6px;border:1px solid rgba(184,150,46,0.3);border-bottom:2px solid rgba(184,150,46,0.5);color:white;font-size:13px;background:rgba(0,0,0,0.3);text-align:center;}
+.team-sel{flex:1;min-width:70px;padding:10px 6px;border-radius:6px;border:1px solid rgba(184,150,46,0.3);border-bottom:2px solid rgba(184,150,46,0.5);color:white;font-size:13px;background:rgba(0,0,0,0.3);}
+.del-player-btn{background:none;border:none;color:rgba(255,77,77,0.45);font-size:18px;cursor:pointer;padding:8px 4px;width:auto;margin:0;box-shadow:none;}
+.del-player-btn:hover{color:#ff4d4d;}
+.add-player-btn{background:none;border:1px dashed rgba(255,212,71,0.3);color:rgba(255,212,71,0.6);font-size:13px;padding:8px;border-radius:6px;cursor:pointer;margin-bottom:8px;box-shadow:none;letter-spacing:.5px;}
+.add-player-btn:hover{border-color:rgba(255,212,71,0.6);color:#ffd447;background:rgba(255,212,71,0.04);}
+.team-inputs{display:flex;gap:8px;margin-bottom:8px;}
+.team-inputs input{flex:1;}
+.randomise-btn{background:none;border:1px solid rgba(255,212,71,0.25);color:rgba(255,212,71,0.6);font-size:13px;padding:8px;border-radius:6px;cursor:pointer;margin-bottom:12px;box-shadow:none;letter-spacing:.5px;}
+.randomise-btn:hover{border-color:rgba(255,212,71,0.5);color:#ffd447;}
+
+/* ── Games checkbox grid ── */
+.games-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:12px;}
+.game-check-label{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.25);border:1px solid rgba(184,150,46,0.2);border-radius:6px;padding:8px 10px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.7);transition:border-color .1s,color .1s;}
+.game-check-label:has(input:checked){border-color:rgba(255,212,71,0.45);color:#ffd447;background:rgba(255,212,71,0.05);}
+.game-check-label input{accent-color:#ffd447;width:14px;height:14px;}
+
+/* ── Tabs ── */
+.tab-bar{display:flex;gap:0;margin-bottom:16px;border-radius:8px;overflow:hidden;border:1px solid rgba(184,150,46,0.25);}
+.tab-btn{flex:1;padding:10px 4px;background:transparent;border:none;color:rgba(255,255,255,0.45);font-size:13px;font-weight:bold;letter-spacing:.5px;cursor:pointer;border-radius:0;box-shadow:none;margin:0;transition:background .15s,color .15s;}
+.tab-btn:hover{color:rgba(255,255,255,0.7);}
+.tab-btn.active{background:rgba(255,212,71,0.12);color:#ffd447;border-bottom:2px solid #ffd447;}
+
+/* ── Standings ── */
+.standings-table{width:100%;border-collapse:collapse;margin-bottom:16px;}
+.standings-table th{background:rgba(0,0,0,0.4);color:#ffd447;font-size:10px;letter-spacing:.5px;text-transform:uppercase;padding:6px 4px;border-bottom:1px solid rgba(184,150,46,0.2);text-align:center;}
+.standings-table th:first-child,.standings-table td:nth-child(2){text-align:left;}
+.standings-table td{padding:8px 4px;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;text-align:center;font-family:'Courier New',monospace;}
+.standings-table td:nth-child(2){font-family:inherit;font-size:14px;font-weight:bold;color:#fff;}
+.standings-table tr:last-child td{border-bottom:none;}
+.standings-table tr.leader td:nth-child(2){color:#ffd447;}
+.rank-badge{display:inline-block;width:20px;height:20px;line-height:20px;border-radius:3px;text-align:center;font-size:10px;font-weight:bold;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);font-family:inherit;}
+.rank-badge.r1{background:#d4af37;color:#fff;box-shadow:0 0 6px rgba(212,175,55,0.6);}
+.rank-badge.r2{background:#4a90d9;color:#fff;box-shadow:0 0 6px rgba(74,144,217,0.5);}
+.rank-badge.r3{background:#c0392b;color:#fff;box-shadow:0 0 6px rgba(192,57,43,0.5);}
+.team-summary{margin-top:8px;background:rgba(0,0,0,0.25);border:1px solid rgba(184,150,46,0.15);border-radius:8px;padding:10px 12px;}
+.team-summary-title{font-size:10px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.5);margin-bottom:8px;}
+.team-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:14px;}
+.team-row:last-child{border-bottom:none;}
+.team-pts{font-family:'Courier New',monospace;font-weight:bold;color:#ffd447;}
+.no-rounds-note{text-align:center;color:rgba(255,255,255,0.25);font-size:12px;padding:24px 0;line-height:2;}
+
+/* ── Rounds list ── */
+.progress-bar-wrap{margin-bottom:14px;}
+.progress-bar-label{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:4px;letter-spacing:.5px;}
+.progress-bar{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,#8B6914,#ffd447);border-radius:3px;transition:width .3s;}
+.play-round-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:16px;}
+.play-round-card{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;background:rgba(255,212,71,0.04);border:1px solid rgba(255,212,71,0.2);border-radius:10px;text-decoration:none;color:#fff;cursor:pointer;transition:background .15s,border-color .15s;text-align:center;}
+.play-round-card:hover,.play-round-card:active{background:rgba(255,212,71,0.1);border-color:#ffd447;}
+.play-round-card-icon{font-size:22px;}
+.play-round-card-label{font-size:11px;font-weight:bold;color:rgba(255,212,71,0.85);letter-spacing:.3px;}
+.play-section-label{font-size:10px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.4);margin:0 0 10px;}
+.logged-section-label{font-size:10px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.4);margin:16px 0 8px;}
+.round-item{background:rgba(0,0,0,0.3);border:1px solid rgba(184,150,46,0.15);border-radius:8px;margin-bottom:8px;overflow:hidden;}
+.round-item-header{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;cursor:pointer;}
+.round-item-header:hover{background:rgba(255,212,71,0.03);}
+.round-item-left .round-game{font-size:14px;font-weight:bold;color:#ffd447;letter-spacing:.3px;}
+.round-item-left .round-meta{font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px;}
+.round-item-right{display:flex;align-items:center;gap:8px;}
+.round-del-btn{background:none;border:none;color:rgba(255,77,77,0.35);font-size:16px;cursor:pointer;padding:4px;width:auto;box-shadow:none;margin:0;}
+.round-del-btn:hover{color:#ff4d4d;}
+.round-expand-btn{background:none;border:none;color:rgba(255,212,71,0.3);font-size:13px;cursor:pointer;padding:4px;width:auto;box-shadow:none;margin:0;}
+.round-item-body{display:none;border-top:1px solid rgba(184,150,46,0.1);padding:10px 12px;}
+.round-item-body.open{display:block;}
+.round-finish-row{display:flex;justify-content:space-between;padding:4px 0;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.04);}
+.round-finish-row:last-child{border-bottom:none;}
+.round-finish-player{color:rgba(255,255,255,0.75);}
+.round-finish-pts{font-family:'Courier New',monospace;color:#ffd447;}
+
+/* ── Modal ── */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;justify-content:center;align-items:flex-start;z-index:1000;padding:20px 16px;overflow-y:auto;}
+.modal-content{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:2px solid #8B6914;width:100%;max-width:460px;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;margin:auto;}
+.modal-header{background:rgba(0,0,0,0.5);border-bottom:1px solid rgba(255,212,71,0.2);color:#ffd447;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;font-weight:bold;font-size:15px;letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;}
+.modal-body{overflow-y:auto;padding:16px;}
+.close-btn{background:none;border:none;color:white;font-size:22px;cursor:pointer;width:auto;padding:0 4px;}
+.modal-section-label{font-size:10px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.5);margin:14px 0 8px;}
+.modal-section-label:first-child{margin-top:0;}
+.finish-entry-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.finish-entry-row label{flex:1;font-size:14px;color:rgba(255,255,255,0.8);}
+.pos-input{width:54px;padding:8px 6px;border-radius:6px;border:1px solid rgba(184,150,46,0.3);border-bottom:2px solid rgba(184,150,46,0.5);color:white;font-size:15px;background:rgba(0,0,0,0.3);text-align:center;font-family:'Courier New',monospace;}
+.dnp-toggle{background:none;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.4);font-size:12px;padding:6px 8px;border-radius:4px;cursor:pointer;width:auto;box-shadow:none;margin:0;letter-spacing:.3px;}
+.dnp-toggle.active{border-color:rgba(255,100,100,0.4);color:rgba(255,100,100,0.8);background:rgba(255,77,77,0.06);}
+.pts-preview{font-size:13px;color:#ffd447;font-family:'Courier New',monospace;min-width:40px;text-align:right;}
+
+/* ── Settings tab ── */
+.settings-row{margin-bottom:16px;}
+.settings-row label{display:block;font-size:12px;color:rgba(255,255,255,0.5);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <button class="back-btn" onclick="goBack()">‹ Menu</button>
+  <div class="topnav-title" id="topnavTitle">Seasons</div>
+  <div class="topnav-spacer"></div>
+</div>
+
+<div class="scroll-area">
+<div class="container">
+
+  <!-- ══ SCREEN 1: Season List ══ -->
+  <div id="seasonListScreen">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 style="margin:0;">Seasons</h2>
+      <button onclick="showSetup()" style="width:auto;padding:8px 16px;font-size:13px;margin:0;">+ New</button>
+    </div>
+    <div id="seasonListBody"></div>
+  </div>
+
+  <!-- ══ SCREEN 2: Setup ══ -->
+  <div id="setupScreen" class="hidden">
+    <div class="flip-card">
+      <div class="flip-inner" id="setupFlip">
+
+        <div class="flip-front">
+          <h2>New Season</h2>
+
+          <div class="section-label" style="margin-top:0;">Season Info</div>
+          <input class="name-input" id="seasonName" placeholder="Season name (e.g. Summer Cup)">
+          <div class="row-setting" style="align-items:flex-start;flex-direction:column;gap:6px;">
+            <label>Rounds to play:</label>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <input type="number" class="number-input" id="seasonLength" value="2" min="1" max="99" inputmode="numeric">
+              <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,0.55);cursor:pointer;text-transform:none;letter-spacing:0;">
+                <input type="checkbox" id="openEnded" onchange="toggleOpenEnded()" style="width:16px;height:16px;accent-color:#ffd447;">
+                Open-ended
+              </label>
+            </div>
+          </div>
+
+          <div class="section-label">Games to Include</div>
+          <div class="games-grid" id="gamesGrid"></div>
+
+          <div class="section-label">Players <span style="font-size:10px;color:rgba(255,255,255,0.3);font-weight:normal;text-transform:none;letter-spacing:0;">(up to 8)</span></div>
+          <div id="playerRows"></div>
+          <button class="add-player-btn" onclick="addPlayerRow()">+ Add Player</button>
+
+          <div class="section-label">Teams <span style="font-size:10px;color:rgba(255,255,255,0.3);font-weight:normal;text-transform:none;letter-spacing:0;">(optional)</span></div>
+          <div class="team-inputs">
+            <input class="name-input" id="teamA" placeholder="Team A name" style="margin-bottom:0;">
+            <input class="name-input" id="teamB" placeholder="Team B name" style="margin-bottom:0;">
+          </div>
+          <button class="randomise-btn" onclick="randomiseTeams()">🔀 Randomise Teams</button>
+
+          <div id="setupError" class="error-msg">Please enter a season name and at least 2 player names.</div>
+          <button onclick="startSeason()">Start Season</button>
+          <button class="btn-secondary" onclick="cancelSetup()">Cancel</button>
+        </div>
+
+        <div class="flip-back">
+          <button class="flip-back-btn" onclick="flipSetup()">‹ Back</button>
+          <div class="rules-title">🏆 Season Mode</div>
+          <div class="rules-sub">Multi-round season</div>
+          <table class="rules-table">
+            <tr><td>1st place</td><td>3 pts</td></tr>
+            <tr><td>2nd place</td><td>2 pts</td></tr>
+            <tr><td>3rd place</td><td>1 pt</td></tr>
+            <tr><td>4th place+</td><td>0 pts</td></tr>
+            <tr><td>DNP</td><td>0 pts</td></tr>
+          </table>
+          <div class="rules-note">
+            Ties split the combined points for those positions equally.<br><br>
+            For team games (Scramble, Foursomes, Vegas), both players on the winning team get 1st-place points; both on the losing team get last-place points.<br><br>
+            Team totals are derived from the sum of each player's individual points.
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <button class="flip-btn" onclick="flipSetup()" title="How scoring works">i</button>
+  </div>
+
+  <!-- ══ SCREEN 3: Season Detail ══ -->
+  <div id="seasonScreen" class="hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+      <h2 id="seasonDetailName" style="margin:0;font-size:17px;text-align:left;"></h2>
+      <span id="seasonDetailBadge" class="status-badge active"></span>
+    </div>
+    <div id="seasonDetailMeta" style="font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:16px;"></div>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tabStandingsBtn" onclick="showTab('standings')">Standings</button>
+      <button class="tab-btn" id="tabRoundsBtn" onclick="showTab('rounds')">Rounds</button>
+      <button class="tab-btn" id="tabSettingsBtn" onclick="showTab('settings')">Settings</button>
+    </div>
+
+    <!-- Standings tab -->
+    <div id="tabStandings">
+      <div id="standingsBody"></div>
+    </div>
+
+    <!-- Rounds tab -->
+    <div id="tabRounds" class="hidden">
+      <div id="progressBarSection"></div>
+      <button onclick="openLogRound()" style="margin-bottom:12px;">+ Log Round</button>
+      <div id="roundsBody"></div>
+    </div>
+
+    <!-- Settings tab -->
+    <div id="tabSettings" class="hidden">
+      <div class="settings-row">
+        <label>Season Name</label>
+        <input class="name-input" id="settingsName" style="margin-bottom:0;">
+      </div>
+      <button class="btn-secondary" onclick="saveName()" style="margin-bottom:12px;">Save Name</button>
+      <button class="btn-secondary" id="completeBtn" onclick="toggleComplete()" style="margin-bottom:12px;"></button>
+      <button class="btn-danger" onclick="confirmDelete()">Delete Season</button>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══ Log Round Modal ══ -->
+<div id="logRoundModal" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span>Log Round</span>
+      <button class="close-btn" onclick="closeLogRound()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section-label">Game</div>
+      <select class="select-input" id="logGame" style="margin-bottom:10px;"></select>
+
+      <div class="modal-section-label">Date</div>
+      <input type="date" class="name-input" id="logDate">
+
+      <div class="modal-section-label">Course <span style="font-size:10px;color:rgba(255,255,255,0.3);font-weight:normal;text-transform:none;letter-spacing:0;">(optional)</span></div>
+      <input class="name-input" id="logCourse" placeholder="Course name">
+
+      <div class="modal-section-label">Finishes</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:8px;">Enter position (1, 2, 3…) or mark DNP. Points calculated automatically.</div>
+      <div id="logFinishRows"></div>
+
+      <div id="logError" class="error-msg">Please enter a valid finish for at least 2 players.</div>
+      <button onclick="saveRound()">Save Round</button>
+    </div>
+  </div>
+</div>
+
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+
+const GAME_LABELS = {
+  f1:         'Grand Prix',
+  matchplay:  'Match Play',
+  stableford: 'Stableford',
+  stroke:     'Stroke Play',
+  wolf:       'Wolf',
+  scramble:   'Scramble',
+  foursomes:  'Foursomes',
+  vegas:      'Vegas'
+};
+const GAME_FILES = {
+  f1:'f1.html', matchplay:'matchplay.html', stableford:'stableford.html',
+  stroke:'practice.html', wolf:'wolf.html', scramble:'scramble.html',
+  foursomes:'foursomes.html', vegas:'vegas.html', banker:'banker.html'
+};
+const GAME_ICONS = {
+  f1:'🏎️', matchplay:'⚔️', stableford:'🎯', stroke:'🏌️',
+  wolf:'🐺', scramble:'🤝', foursomes:'🔄', vegas:'🎰', banker:'🏦'
+};
+
+const TEAM_GAMES = new Set(['scramble','foursomes','vegas']);
+
+/* ── Storage ── */
+function loadSeasons(){ try{ return JSON.parse(localStorage.getItem('seasons')||'[]'); }catch(e){ return []; } }
+function saveSeasons(arr){ localStorage.setItem('seasons', JSON.stringify(arr)); }
+
+/* ── State ── */
+let activeSeason = null;   // the currently-open season object (reference)
+let expandedRounds = new Set();
+
+/* ── Navigation ── */
+function goBack(){
+  if(activeSeason){
+    activeSeason = null;
+    showSeasonList();
+    return;
+  }
+  window.location.href = 'index.html';
+}
+
+function showSeasonList(){
+  document.getElementById('topnavTitle').textContent = 'Seasons';
+  document.getElementById('seasonListScreen').classList.remove('hidden');
+  document.getElementById('setupScreen').classList.add('hidden');
+  document.getElementById('seasonScreen').classList.add('hidden');
+  renderSeasonList();
+}
+
+function showSetup(){
+  document.getElementById('seasonListScreen').classList.add('hidden');
+  document.getElementById('seasonScreen').classList.add('hidden');
+  document.getElementById('setupScreen').classList.remove('hidden');
+  document.getElementById('topnavTitle').textContent = 'New Season';
+  initSetupForm();
+}
+
+function cancelSetup(){
+  showSeasonList();
+}
+
+function openSeason(id){
+  let seasons = loadSeasons();
+  let s = seasons.find(x=>x.id===id);
+  if(!s) return;
+  activeSeason = s;
+  document.getElementById('seasonListScreen').classList.add('hidden');
+  document.getElementById('setupScreen').classList.add('hidden');
+  document.getElementById('seasonScreen').classList.remove('hidden');
+  document.getElementById('topnavTitle').textContent = s.name;
+  renderSeasonDetail();
+  showTab('standings');
+}
+
+function showTab(tab){
+  ['standings','rounds','settings'].forEach(t=>{
+    document.getElementById('tab'+cap(t)).classList.toggle('hidden', t!==tab);
+    document.getElementById('tab'+cap(t)+'Btn').classList.toggle('active', t===tab);
+  });
+  if(tab==='standings') renderStandings();
+  if(tab==='rounds') renderRounds();
+  if(tab==='settings') renderSettings();
+}
+
+function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+
+/* ── Season List ── */
+function renderSeasonList(){
+  let seasons = loadSeasons();
+  let body = document.getElementById('seasonListBody');
+  if(!seasons.length){
+    body.innerHTML = `<div class="empty-state"><div class="empty-icon">🏆</div>No seasons yet.<br>Create your first season to get started.</div>
+      <button onclick="showSetup()">+ Create Season</button>`;
+    return;
+  }
+  body.innerHTML = seasons.slice().reverse().map(s=>{
+    let played = s.rounds.length;
+    let roundsMeta = s.seasonLength ? `${played}/${s.seasonLength} rounds played` : `${played} round${played!==1?'s':''} played`;
+    return `<div class="season-item" onclick="openSeason(${s.id})">
+      <div class="season-item-header">
+        <span class="season-item-name">${esc(s.name)}</span>
+        <span class="status-badge ${s.status}">${s.status==='active'?'Active':'Complete'}</span>
+      </div>
+      <div class="season-item-meta">
+        ${roundsMeta}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function leadStr(s){
+  if(!s.rounds.length) return 'No rounds yet';
+  let ind = calcIndividualStandings(s);
+  if(!ind.length) return 'No rounds yet';
+  return 'Leading: '+ind[0].name+' ('+fmtPts(ind[0].pts)+')';
+}
+
+/* ── Setup Form ── */
+function initSetupForm(){
+  // Reset
+  document.getElementById('seasonName').value = '';
+  document.getElementById('seasonLength').value = '2';
+  document.getElementById('openEnded').checked = false;
+  document.getElementById('seasonLength').disabled = false;
+  document.getElementById('setupError').style.display = 'none';
+
+  // Flip card back to front
+  let fi = document.getElementById('setupFlip');
+  fi.classList.remove('flipped');
+  let btn = document.querySelector('.flip-btn');
+  if(btn) btn.style.display = 'flex';
+
+  // Games grid — unchecked by default
+  let grid = document.getElementById('gamesGrid');
+  grid.innerHTML = Object.entries(GAME_LABELS).map(([key, label])=>`
+    <label class="game-check-label">
+      <input type="checkbox" value="${key}"> ${label}
+    </label>`).join('');
+
+  // Player rows — start with 4
+  document.getElementById('playerRows').innerHTML = '';
+  for(let i=0;i<4;i++) addPlayerRow(i<2);
+}
+
+function addPlayerRow(required){
+  let rows = document.getElementById('playerRows');
+  let count = rows.querySelectorAll('.player-setup-row').length;
+  if(count >= 8) return;
+  let idx = count;
+  let div = document.createElement('div');
+  div.className = 'player-setup-row';
+  div.dataset.idx = idx;
+  div.innerHTML = `
+    <input class="name-input" placeholder="Player ${idx+1}" style="margin-bottom:0;">
+    <input type="number" class="hdcp-input" placeholder="HCP" min="0" max="54" value="0" inputmode="numeric" title="Handicap index">
+    <select class="team-sel">
+      <option value="">—</option>
+      <option value="0">Team A</option>
+      <option value="1">Team B</option>
+    </select>
+    <button class="del-player-btn" onclick="removePlayerRow(this)" title="Remove">✕</button>`;
+  rows.appendChild(div);
+}
+
+function removePlayerRow(btn){
+  let row = btn.closest('.player-setup-row');
+  let rows = document.getElementById('playerRows');
+  if(rows.querySelectorAll('.player-setup-row').length <= 2) return;
+  row.remove();
+  // re-number placeholders
+  rows.querySelectorAll('.player-setup-row').forEach((r,i)=>{
+    r.dataset.idx = i;
+    r.querySelector('input[type=text], input:not([type])').placeholder = 'Player '+(i+1);
+  });
+}
+
+function randomiseTeams(){
+  let rows = [...document.getElementById('playerRows').querySelectorAll('.player-setup-row')];
+  let filled = rows.filter(r=>r.querySelector('input:not([type="number"])').value.trim());
+  if(filled.length < 2) return;
+  // shuffle filled rows then assign first half to Team A, rest to Team B
+  for(let i=filled.length-1;i>0;i--){
+    let j=Math.floor(Math.random()*(i+1));
+    [filled[i],filled[j]]=[filled[j],filled[i]];
+  }
+  filled.forEach((r,i)=>{
+    r.querySelector('select').value = i < Math.ceil(filled.length/2) ? '0' : '1';
+  });
+}
+
+function flipSetup(){
+  let fi = document.getElementById('setupFlip');
+  fi.classList.toggle('flipped');
+  let btn = document.querySelector('.flip-btn');
+  if(btn) btn.style.display = fi.classList.contains('flipped') ? 'none' : 'flex';
+}
+
+/* ── Open-ended toggle ── */
+function toggleOpenEnded(){
+  let openEnded = document.getElementById('openEnded').checked;
+  let lengthInput = document.getElementById('seasonLength');
+  lengthInput.disabled = openEnded;
+  if(openEnded) lengthInput.value = '';
+  else lengthInput.value = '2';
+}
+
+/* ── Start Season ── */
+function startSeason(){
+  let name = document.getElementById('seasonName').value.trim();
+  let rows = [...document.getElementById('playerRows').querySelectorAll('.player-setup-row')];
+  let players = rows.map(r=>({
+    name: r.querySelector('input:not([type="number"])').value.trim(),
+    handicap: parseInt(r.querySelector('input[type="number"]').value)||0,
+    team: r.querySelector('select').value==='' ? null : parseInt(r.querySelector('select').value)
+  })).filter(p=>p.name);
+
+  let allowedGames = [...document.getElementById('gamesGrid').querySelectorAll('input:checked')].map(i=>i.value);
+  let errEl = document.getElementById('setupError');
+
+  if(!name || players.length < 2){
+    errEl.textContent = 'Please enter a season name and at least 2 player names.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if(!allowedGames.length){
+    errEl.textContent = 'Select at least one game format.';
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+
+  let teamAName = document.getElementById('teamA').value.trim()||'Team A';
+  let teamBName = document.getElementById('teamB').value.trim()||'Team B';
+  let hasTeams = players.some(p=>p.team!==null);
+
+  let season = {
+    id: Date.now(),
+    name,
+    createdAt: new Date().toISOString(),
+    status: 'active',
+    seasonLength: document.getElementById('openEnded').checked ? null : Math.max(1, parseInt(document.getElementById('seasonLength').value)||2),
+    players,
+    teams: hasTeams ? [{name:teamAName},{name:teamBName}] : [],
+    allowedGames,
+    rounds: []
+  };
+
+  let seasons = loadSeasons();
+  seasons.push(season);
+  saveSeasons(seasons);
+  activeSeason = season;
+
+  document.getElementById('setupScreen').classList.add('hidden');
+  document.getElementById('seasonScreen').classList.remove('hidden');
+  document.getElementById('topnavTitle').textContent = season.name;
+  renderSeasonDetail();
+  showTab('standings');
+}
+
+/* ── Season Detail ── */
+function renderSeasonDetail(){
+  let s = activeSeason;
+  document.getElementById('seasonDetailName').textContent = s.name;
+  let badge = document.getElementById('seasonDetailBadge');
+  badge.textContent = s.status==='active'?'Active':'Complete';
+  badge.className = 'status-badge '+s.status;
+  let roundsMeta = s.seasonLength ? s.rounds.length+'/'+s.seasonLength+' rounds' : s.rounds.length+' round'+(s.rounds.length!==1?'s':'')+' played';
+  document.getElementById('seasonDetailMeta').textContent = roundsMeta + ' · ' + s.players.length + ' players';
+}
+
+/* ── Standings Tab ── */
+function renderStandings(){
+  let s = activeSeason;
+  let body = document.getElementById('standingsBody');
+  let ind = calcIndividualStandings(s);
+  let rankCls = ['r1','r2','r3'];
+
+  let hasTeamCol = s.teams && s.teams.length > 0;
+
+  let thead = `<thead><tr>
+    <th>Rank</th><th>Player</th>
+    <th>Rds</th><th>Pts</th>
+  </tr></thead>`;
+
+  let rows = ind.map((p,rank)=>`
+    <tr class="${rank===0&&p.pts>0?'leader':''}">
+      <td><span class="rank-badge ${rankCls[rank]||''}">${rank+1}</span></td>
+      <td>${esc(p.name)}${p.teamName?`<br><span style="font-size:10px;color:rgba(255,255,255,0.4);font-family:inherit;font-weight:normal;">${esc(p.teamName)}</span>`:''}</td>
+      <td>${p.rounds}</td>
+      <td style="color:#ffd447;font-weight:bold;">${fmtPts(p.pts)}</td>
+    </tr>`).join('');
+
+  body.innerHTML = `<table class="standings-table">${thead}<tbody>${rows}</tbody></table>`;
+
+  if(!s.rounds.length){
+    body.innerHTML += '<div class="no-rounds-note" style="margin-top:8px;">No rounds logged yet — standings will update as rounds are added.</div>';
+  }
+
+  // Team summary
+  if(hasTeamCol){
+    let teamTotals = calcTeamTotals(s, ind);
+    let teamRows = teamTotals.map(t=>`
+      <div class="team-row">
+        <span>${esc(t.name)}</span>
+        <span class="team-pts">${fmtPts(t.pts)} pts</span>
+      </div>`).join('');
+    body.innerHTML += `<div class="team-summary"><div class="team-summary-title">Team Standings</div>${teamRows}</div>`;
+  }
+}
+
+function calcIndividualStandings(s){
+  let totals = s.players.map((p,i)=>({
+    idx:i, name:p.name, handicap:p.handicap,
+    team: p.team,
+    teamName: (p.team!==null && s.teams[p.team]) ? s.teams[p.team].name : '',
+    pts:0, rounds:0
+  }));
+  s.rounds.forEach(r=>{
+    r.playerFinishes.forEach(f=>{
+      if(f && totals[f.playerIdx]){
+        totals[f.playerIdx].pts += f.points;
+        totals[f.playerIdx].rounds += 1;
+      }
+    });
+  });
+  return totals.sort((a,b)=>b.pts-a.pts||b.rounds-a.rounds||a.idx-b.idx);
+}
+
+function calcTeamTotals(s, ind){
+  if(!s.teams || !s.teams.length) return [];
+  let teams = s.teams.map((t,i)=>({name:t.name, idx:i, pts:0}));
+  ind.forEach(p=>{
+    if(p.team!==null && teams[p.team]) teams[p.team].pts += p.pts;
+  });
+  return teams.sort((a,b)=>b.pts-a.pts);
+}
+
+/* ── Rounds Tab ── */
+function renderRounds(){
+  let s = activeSeason;
+  let played = s.rounds.length;
+  let total = s.seasonLength;
+  let pct = total > 0 ? Math.min(100, Math.round(played/total*100)) : 0;
+  let progressLabel = total ? `${played}/${total} rounds` : `${played} round${played!==1?'s':''}`;
+
+  document.getElementById('progressBarSection').innerHTML = `
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-label">
+        <span>Progress</span><span>${progressLabel}</span>
+      </div>
+      ${total ? `<div class="progress-bar"><div class="progress-bar-fill" style="width:${pct}%"></div></div>` : ''}
+    </div>`;
+
+  let body = document.getElementById('roundsBody');
+
+  // Play a Round cards
+  let playCards = '';
+  if(s.allowedGames && s.allowedGames.length){
+    let cards = s.allowedGames.map(g=>{
+      let file = GAME_FILES[g];
+      if(!file) return '';
+      return `<a class="play-round-card" href="${file}?seasonId=${s.id}">
+        <span class="play-round-card-icon">${GAME_ICONS[g]||'⛳'}</span>
+        <span class="play-round-card-label">${esc(GAME_LABELS[g]||g)}</span>
+      </a>`;
+    }).join('');
+    playCards = `<div class="play-section-label">Play a Round</div>
+      <div class="play-round-grid">${cards}</div>`;
+  }
+
+  if(!played){
+    body.innerHTML = playCards + '<div class="no-rounds-note">No rounds logged yet.</div>';
+    return;
+  }
+
+  body.innerHTML = playCards + `<div class="logged-section-label">Logged Rounds</div>` + [...s.rounds].reverse().map(r=>{
+    let date = new Date(r.date).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
+    let expanded = expandedRounds.has(r.id);
+    let finishHtml = r.playerFinishes.map(f=>{
+      let player = s.players[f.playerIdx];
+      if(!player) return '';
+      return `<div class="round-finish-row">
+        <span class="round-finish-player">${esc(player.name)}</span>
+        <span class="round-finish-pts">${f.position ? `${ord(f.position)} · ${fmtPts(f.points)}` : 'DNP · 0'}</span>
+      </div>`;
+    }).join('');
+    if(r.notes) finishHtml += `<div style="margin-top:8px;font-size:12px;color:rgba(255,255,255,0.4);font-style:italic;">${esc(r.notes)}</div>`;
+
+    return `<div class="round-item">
+      <div class="round-item-header" onclick="toggleRound(${r.id})">
+        <div class="round-item-left">
+          <div class="round-game">${GAME_LABELS[r.game]||r.game}</div>
+          <div class="round-meta">${date}${r.course?' · '+esc(r.course):''}</div>
+        </div>
+        <div class="round-item-right">
+          <a href="edit-round.html?id=${r.sourceGameId}&seasonId=${s.id}&back=season.html" onclick="event.stopPropagation()" style="font-size:11px;color:rgba(255,212,71,0.55);text-decoration:none;border:1px solid rgba(255,212,71,0.2);border-radius:4px;padding:2px 8px;margin-right:4px;">Edit</a>
+          <button class="round-del-btn" onclick="event.stopPropagation();deleteRound(${r.id})" title="Delete">✕</button>
+          <button class="round-expand-btn">${expanded?'▲':'▼'}</button>
+        </div>
+      </div>
+      <div class="round-item-body ${expanded?'open':''}" id="roundBody_${r.id}">${finishHtml}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleRound(id){
+  if(expandedRounds.has(id)) expandedRounds.delete(id);
+  else expandedRounds.add(id);
+  renderRounds();
+}
+
+function deleteRound(id){
+  if(!confirm('Delete this round? Points will be recalculated.')) return;
+  let seasons = loadSeasons();
+  let s = seasons.find(x=>x.id===activeSeason.id);
+  if(!s) return;
+  s.rounds = s.rounds.filter(r=>r.id!==id);
+  // Re-evaluate completion status after deletion
+  if(s.status === 'complete' && s.seasonLength !== null && s.rounds.length < s.seasonLength){
+    s.status = 'active';
+  }
+  saveSeasons(seasons);
+  activeSeason = s;
+  expandedRounds.delete(id);
+  renderRounds();
+}
+
+/* ── Settings Tab ── */
+function renderSettings(){
+  let s = activeSeason;
+  document.getElementById('settingsName').value = s.name;
+  let btn = document.getElementById('completeBtn');
+  btn.textContent = s.status==='active' ? '✓ Mark Season Complete' : '↩ Reopen Season';
+}
+
+function saveName(){
+  let newName = document.getElementById('settingsName').value.trim();
+  if(!newName) return;
+  let seasons = loadSeasons();
+  let s = seasons.find(x=>x.id===activeSeason.id);
+  if(!s) return;
+  s.name = newName;
+  saveSeasons(seasons);
+  activeSeason = s;
+  document.getElementById('topnavTitle').textContent = newName;
+  document.getElementById('seasonDetailName').textContent = newName;
+  renderSeasonDetail();
+}
+
+function toggleComplete(){
+  let seasons = loadSeasons();
+  let s = seasons.find(x=>x.id===activeSeason.id);
+  if(!s) return;
+  s.status = s.status==='active' ? 'complete' : 'active';
+  saveSeasons(seasons);
+  activeSeason = s;
+  renderSeasonDetail();
+  renderSettings();
+}
+
+function confirmDelete(){
+  if(!confirm('Delete "'+activeSeason.name+'"? This cannot be undone.')) return;
+  let seasons = loadSeasons().filter(x=>x.id!==activeSeason.id);
+  saveSeasons(seasons);
+  activeSeason = null;
+  showSeasonList();
+}
+
+/* ── Log Round Modal ── */
+function openLogRound(){
+  let s = activeSeason;
+  // Populate game selector
+  let gameSel = document.getElementById('logGame');
+  gameSel.innerHTML = s.allowedGames.map(g=>`<option value="${g}">${GAME_LABELS[g]||g}</option>`).join('');
+  // Default date to today
+  document.getElementById('logDate').value = new Date().toLocaleDateString('en-CA');
+  document.getElementById('logCourse').value = '';
+  document.getElementById('logError').style.display = 'none';
+  renderFinishRows();
+  gameSel.onchange = renderFinishRows;
+  document.getElementById('logRoundModal').classList.remove('hidden');
+}
+
+function closeLogRound(){
+  document.getElementById('logRoundModal').classList.add('hidden');
+}
+
+function renderFinishRows(){
+  let s = activeSeason;
+  let rows = document.getElementById('logFinishRows');
+  rows.innerHTML = s.players.map((p,i)=>`
+    <div class="finish-entry-row" data-player="${i}">
+      <label>${esc(p.name)}</label>
+      <input type="number" class="pos-input" id="pos_${i}" inputmode="numeric" min="1" placeholder="—" oninput="updatePtsPreview()">
+      <button class="dnp-toggle" id="dnp_${i}" onclick="toggleDnp(${i})">DNP</button>
+      <span class="pts-preview" id="pts_${i}">–</span>
+    </div>`).join('');
+}
+
+function toggleDnp(idx){
+  let btn = document.getElementById('dnp_'+idx);
+  let inp = document.getElementById('pos_'+idx);
+  let active = btn.classList.contains('active');
+  btn.classList.toggle('active', !active);
+  inp.disabled = !active;
+  if(!active){ inp.value=''; }
+  updatePtsPreview();
+}
+
+function updatePtsPreview(){
+  let s = activeSeason;
+  let positions = s.players.map((_,i)=>{
+    let dnp = document.getElementById('dnp_'+i).classList.contains('active');
+    if(dnp) return {playerIdx:i, position:null};
+    let v = parseInt(document.getElementById('pos_'+i).value);
+    return {playerIdx:i, position:isNaN(v)||v<1 ? null : v};
+  });
+
+  let game = document.getElementById('logGame').value;
+  let calculated = calcPoints(positions, game, s);
+
+  s.players.forEach((_,i)=>{
+    let f = calculated.find(x=>x.playerIdx===i);
+    let el = document.getElementById('pts_'+i);
+    el.textContent = (f && f.points > 0) ? '+'+fmtPts(f.points) : f ? fmtPts(f.points) : '–';
+  });
+}
+
+function saveRound(){
+  let s = activeSeason;
+  let positions = s.players.map((_,i)=>{
+    let dnp = document.getElementById('dnp_'+i).classList.contains('active');
+    if(dnp) return {playerIdx:i, position:null};
+    let v = parseInt(document.getElementById('pos_'+i).value);
+    return {playerIdx:i, position:isNaN(v)||v<1 ? null : v};
+  });
+
+  let validCount = positions.filter(p=>p.position!==null).length;
+  if(validCount < 1){
+    document.getElementById('logError').style.display = 'block';
+    return;
+  }
+  document.getElementById('logError').style.display = 'none';
+
+  let game = document.getElementById('logGame').value;
+  let playerFinishes = calcPoints(positions, game, s);
+
+  let round = {
+    id: Date.now(),
+    game,
+    date: new Date(document.getElementById('logDate').value+'T12:00:00').toISOString(),
+    course: document.getElementById('logCourse').value.trim(),
+    playerFinishes,
+    notes: ''
+  };
+
+  let seasons = loadSeasons();
+  let sv = seasons.find(x=>x.id===s.id);
+  if(!sv) return;
+  sv.rounds.push(round);
+  // Auto-complete if season length reached
+  if(sv.seasonLength !== null && sv.rounds.length >= sv.seasonLength) sv.status = 'complete';
+  saveSeasons(seasons);
+  activeSeason = sv;
+
+  closeLogRound();
+  renderSeasonDetail();
+  showTab('rounds');
+}
+
+/* ── Points Calculation ── */
+function calcPoints(positions, game, season){
+  const BASE_PTS = [3,2,1];
+
+  // For team games: all position-1 players get 3pts, all position-2 players get 0pts
+  if(TEAM_GAMES.has(game)){
+    return positions.map(p=>({
+      playerIdx: p.playerIdx,
+      position: p.position,
+      points: p.position===1 ? BASE_PTS[0] : 0
+    }));
+  }
+
+  // Individual / group games: proper position-based points with ties
+  let playing = positions.filter(p=>p.position!==null);
+  // Group by position
+  let byPos = {};
+  playing.forEach(p=>{
+    if(!byPos[p.position]) byPos[p.position] = [];
+    byPos[p.position].push(p.playerIdx);
+  });
+
+  let result = positions.map(p=>({playerIdx:p.playerIdx, position:p.position, points:0}));
+
+  // Sorted unique positions
+  let sortedPos = Object.keys(byPos).map(Number).sort((a,b)=>a-b);
+  let rank = 0; // 0-indexed rank for BASE_PTS lookup
+  sortedPos.forEach(pos=>{
+    let tied = byPos[pos];
+    let slots = tied.length;
+    // Sum points for these rank slots
+    let total = 0;
+    for(let i=0;i<slots;i++){
+      total += BASE_PTS[rank+i] || 0;
+    }
+    let share = total / slots;
+    tied.forEach(idx=>{
+      let r = result.find(x=>x.playerIdx===idx);
+      if(r) r.points = share;
+    });
+    rank += slots;
+  });
+
+  return result;
+}
+
+/* ── Helpers ── */
+function fmtPts(v){
+  if(v===0) return '0';
+  // Round to 1 decimal only if not whole
+  return v % 1 === 0 ? String(v) : v.toFixed(1);
+}
+
+function ord(n){
+  if(n===1) return '1st';
+  if(n===2) return '2nd';
+  if(n===3) return '3rd';
+  return n+'th';
+}
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ── Modal backdrop close ── */
+document.getElementById('logRoundModal').addEventListener('click', function(e){
+  if(e.target===this) closeLogRound();
+});
+
+/* ── Init ── */
+(function(){
+  let params = new URLSearchParams(location.search);
+  let idParam = parseInt(params.get('id'));
+  if(idParam){
+    let s = loadSeasons().find(x=>x.id===idParam);
+    if(s){ openSeason(s.id); return; }
+  }
+  showSeasonList();
+})();
+</script>
+</body>
+</html>

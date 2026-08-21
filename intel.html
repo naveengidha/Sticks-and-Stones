@@ -5,37 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#1f4d2b">
+<meta name="theme-color" content="#080f0a">
 <title>Round Analysis</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{font-family:Arial,Helvetica,sans-serif;background:#1f4d2b;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;}
-.topnav{display:flex;align-items:center;background:#1c4729;padding:10px 16px;gap:12px;flex-shrink:0;border-bottom:2px solid #ffd447;box-shadow:0 2px 12px rgba(0,0,0,0.5);}
+body{font-family:Arial,Helvetica,sans-serif;background:#080f0a;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;}
+.topnav{display:flex;align-items:center;background:#0e1a12;padding:10px 16px;gap:12px;flex-shrink:0;border-bottom:2px solid #8B6914;box-shadow:0 2px 12px rgba(0,0,0,0.5);}
 .back-btn{background:none;border:none;color:#ffd447;font-size:15px;font-weight:bold;cursor:pointer;padding:4px 8px 4px 0;white-space:nowrap;display:flex;align-items:center;gap:6px;width:auto;text-decoration:none;}
 .back-btn:hover{color:#ffcc2a;}
-.topnav-title{font-size:15px;font-weight:bold;color:#ffd447;flex:1;text-align:center;letter-spacing:.5px;}
+.topnav-title{font-size:15px;font-weight:bold;color:#ffd447;flex:1;text-align:center;letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;}
 .topnav-spacer{width:70px;}
-.tab-bar{display:flex;background:#1c4729;border-bottom:1px solid rgba(255,212,71,0.2);flex-shrink:0;}
+.tab-bar{display:flex;background:#0e1a12;border-bottom:1px solid rgba(255,212,71,0.2);flex-shrink:0;}
 .tab{flex:1;padding:11px 8px;text-align:center;font-size:13px;font-weight:bold;cursor:pointer;color:rgba(255,255,255,0.5);border-bottom:3px solid transparent;transition:color .15s,border-color .15s;-webkit-user-select:none;}
 .tab.active{color:#ffd447;border-bottom-color:#ffd447;}
 .scroll-area{flex:1;overflow-y:auto;padding:16px 14px 80px;display:block;}
 .analysis-filters{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
-.analysis-filters select{width:100%;padding:10px;border-radius:4px;border:1px solid rgba(255,212,71,0.2);background:#1c4729;color:#fff;font-size:14px;color-scheme:dark;}
+.analysis-filters select{width:100%;padding:10px;border-radius:4px;border:1px solid rgba(255,212,71,0.2);background:#0e1a12;color:#fff;font-size:14px;color-scheme:dark;}
 .analysis-par-row{display:flex;gap:6px;}
-.analysis-par-row button{flex:1;padding:7px 4px;background:#1c4729;color:rgba(255,255,255,0.45);border:1px solid rgba(255,212,71,0.2);border-radius:20px;font-size:12px;cursor:pointer;letter-spacing:.5px;width:auto;margin-bottom:0;box-shadow:none;text-transform:none;font-weight:normal;letter-spacing:.5px;}
+.analysis-par-row button{flex:1;padding:7px 4px;background:#0e1a12;color:rgba(255,255,255,0.45);border:1px solid rgba(255,212,71,0.2);border-radius:20px;font-size:12px;cursor:pointer;letter-spacing:.5px;width:auto;margin-bottom:0;box-shadow:none;text-transform:none;font-weight:normal;letter-spacing:.5px;}
 .analysis-par-row button.active{background:rgba(255,212,71,0.15);color:#ffd447;border-color:rgba(255,212,71,0.5);font-weight:bold;}
 .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
-.stat-tile{background:#1c4729;border:1px solid rgba(184,150,46,0.15);border-top:2px solid rgba(255,212,71,0.35);border-radius:4px;padding:14px 10px;text-align:center;}
+.stat-tile{background:#0e1a12;border:1px solid rgba(184,150,46,0.15);border-top:2px solid #8B6914;border-radius:4px;padding:14px 10px;text-align:center;}
 .stat-tile .sv{font-size:24px;font-weight:bold;margin-bottom:4px;font-family:'Courier New',monospace;}
 .stat-tile .sl{font-size:9px;color:rgba(255,212,71,0.45);letter-spacing:1.5px;text-transform:uppercase;}
 .sv.good{color:#2ecc71;}
 .sv.bad{color:#ff4d4d;}
 .sv.neutral{color:#ffd447;}
 .analysis-section{margin-bottom:20px;}
-.analysis-section h4{color:rgba(255,212,71,0.7);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin:0 0 8px;border-bottom:1px solid rgba(255,212,71,0.15);padding-bottom:6px;}
-.field-insights-box{margin:14px 0 6px;background:#1c4729;border:1px solid rgba(255,212,71,0.18);border-left:3px solid rgba(255,212,71,0.5);border-radius:4px;padding:12px 14px;font-size:13px;line-height:1.8;}
+.analysis-section h4{color:rgba(255,212,71,0.7);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin:0 0 8px;border-bottom:1px solid rgba(255,212,71,0.15);padding-bottom:6px;font-family:'Georgia',serif;}
+.field-insights-box{margin:14px 0 6px;background:#0e1a12;border:1px solid rgba(255,212,71,0.18);border-left:3px solid rgba(255,212,71,0.5);border-radius:4px;padding:12px 14px;font-size:13px;line-height:1.8;}
 .field-insights-box b{color:#ffd447;}
 .field-table-wrap{overflow-x:auto;}
 .analysis-empty{text-align:center;color:rgba(255,255,255,0.2);font-size:12px;padding:40px 20px;line-height:2;letter-spacing:.5px;}
@@ -43,7 +43,7 @@ body{font-family:Arial,Helvetica,sans-serif;background:#1f4d2b;margin:0;padding:
 .tag-bad{color:#ff4d4d;font-weight:bold;}
 .tag-neutral{color:#ffd447;}
 .rounds-empty{text-align:center;color:rgba(255,255,255,0.2);font-size:12px;padding:40px 20px;line-height:2;letter-spacing:.5px;}
-.round-entry{background:rgba(255,255,255,0.03);border:1px solid rgba(255,212,71,0.12);border-radius:8px;margin-bottom:10px;overflow:hidden;}
+.round-entry{background:rgba(255,255,255,0.03);border:2px solid #8B6914;border-radius:8px;margin-bottom:10px;overflow:hidden;}
 .round-entry-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;user-select:none;}
 .round-entry-header:active{background:rgba(255,255,255,0.04);}
 .round-entry-left{display:flex;flex-direction:column;gap:3px;}
@@ -56,7 +56,7 @@ body{font-family:Arial,Helvetica,sans-serif;background:#1f4d2b;margin:0;padding:
 .round-entry-detail{display:none;border-top:1px solid rgba(255,212,71,0.1);padding:10px 14px 14px;}
 .round-entry.expanded .round-entry-detail{display:block;}
 .round-sc-table{width:100%;border-collapse:collapse;font-size:11px;}
-.round-sc-table th{background:#1c4729;color:#ffd447;border:1px solid rgba(255,212,71,0.12);padding:4px 3px;text-align:center;font-size:9px;letter-spacing:1px;text-transform:uppercase;}
+.round-sc-table th{background:#0e1a12;color:#ffd447;border:1px solid rgba(255,212,71,0.12);padding:4px 3px;text-align:center;font-size:9px;letter-spacing:1px;text-transform:uppercase;}
 .round-sc-table td{border:1px solid rgba(255,212,71,0.08);padding:4px 3px;text-align:center;color:rgba(255,255,255,0.75);}
 .sc-eagle{color:#f1c40f;font-weight:bold;}
 .sc-birdie{color:#2ecc71;font-weight:bold;}
@@ -64,7 +64,7 @@ body{font-family:Arial,Helvetica,sans-serif;background:#1f4d2b;margin:0;padding:
 .sc-double{color:#ff4d4d;font-weight:bold;}
 .round-sc-stats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
 .round-sc-stat{background:rgba(255,255,255,0.04);border:1px solid rgba(255,212,71,0.1);border-radius:4px;padding:4px 8px;font-size:10px;color:rgba(255,212,71,0.7);}
-.bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:#1c4729;border-top:1px solid rgba(255,212,71,0.25);z-index:200;}
+.bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:#0e1a12;border-top:1px solid rgba(255,212,71,0.25);z-index:200;}
 .bn-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px 12px;gap:3px;cursor:pointer;text-decoration:none;color:rgba(255,212,71,0.4);font-size:10px;font-weight:bold;letter-spacing:.5px;text-transform:uppercase;-webkit-user-select:none;}
 .bn-tab.active{color:#ffd447;}
 .bn-tab-icon{font-size:18px;line-height:1;}
@@ -89,7 +89,7 @@ body{font-family:Arial,Helvetica,sans-serif;background:#1f4d2b;margin:0;padding:
   <a class="bn-tab" href="history.html">
     <span class="bn-tab-icon">🏆</span>Trophy Room
   </a>
-  <a class="bn-tab" href="insights.html">
+  <a class="bn-tab" href="history.html">
     <span class="bn-tab-icon">📈</span>Insights
   </a>
   <a class="bn-tab active" href="intel.html">

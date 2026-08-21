@@ -5,53 +5,53 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#1f4d2b">
+<meta name="theme-color" content="#080f0a">
 <title>Grand Prix</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{font-family:Arial,Helvetica,sans-serif;background:#1f4d2b;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;}
-.topnav{display:flex;align-items:center;background:#1c4729;padding:10px 16px;gap:12px;flex-shrink:0;border-bottom:2px solid #ffd447;box-shadow:0 2px 12px rgba(0,0,0,0.5);}
+body{font-family:'Helvetica Neue',Arial,sans-serif;background:#080f0a;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;}
+.topnav{display:flex;align-items:center;background:#0e1a12;padding:10px 16px;gap:12px;flex-shrink:0;border-bottom:2px solid #8B6914;box-shadow:0 2px 12px rgba(0,0,0,0.5);}
 .back-btn{background:none;border:none;color:#ffd447;font-size:15px;font-weight:bold;cursor:pointer;padding:4px 8px 4px 0;white-space:nowrap;display:flex;align-items:center;gap:6px;width:auto;}
 .back-btn:hover{color:#ffcc2a;}
-.topnav-title{font-size:15px;font-weight:bold;color:#ffd447;flex:1;text-align:center;letter-spacing:.5px;}
+.topnav-title{font-size:15px;font-weight:bold;color:#ffd447;flex:1;text-align:center;letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;}
 .topnav-spacer{width:70px;}
-h2{text-align:center;margin-top:0;color:#ffd447;letter-spacing:.5px;}
+h2{text-align:center;margin-top:0;color:#ffd447;letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;}
 h3{text-align:center;margin-top:0;color:rgba(255,255,255,0.75);}
 .scroll-area{flex:1;overflow-y:auto;padding:20px 16px 40px;display:flex;justify-content:center;}
 .container{
   background:
-    repeating-linear-gradient(45deg, rgba(0,0,0,0.07) 0px, rgba(0,0,0,0.07) 1px, transparent 1px, transparent 8px),
-    repeating-linear-gradient(-45deg, rgba(0,0,0,0.07) 0px, rgba(0,0,0,0.07) 1px, transparent 1px, transparent 8px),
-    #1e4d1e;
-  border:1px solid rgba(225,6,0,0.4);
+    repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),
+    repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),
+    #0e1a12;
+  border:3px solid #8B6914;
   padding:24px 20px;border-radius:12px;width:100%;max-width:480px;
-  box-shadow:0 8px 32px rgba(0,0,0,0.6);position:relative;
+  box-shadow:0 8px 32px rgba(0,0,0,0.7);position:relative;
 }
 .setup-player-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
-.name-input{flex:1;padding:10px;border-radius:6px;border:1px solid rgba(225,6,0,0.3);border-bottom:2px solid rgba(255,255,255,0.15);color:white;font-size:15px;background:rgba(0,0,0,0.3);}
+.name-input{flex:1;padding:10px;border-radius:6px;border:1px solid rgba(255,212,71,0.2);border-bottom:2px solid rgba(255,255,255,0.15);color:white;font-size:15px;background:rgba(0,0,0,0.4);}
 .name-input.black{border-left:3px solid #000!important;border-bottom:2px solid #000!important;}
 .name-input.red{border-left:3px solid #e10600!important;border-bottom:2px solid rgba(225,6,0,0.5)!important;}
 .name-input::placeholder{color:rgba(255,255,255,0.35);}
 .row-setting{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
 .row-setting label{font-size:12px;white-space:nowrap;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:.5px;}
-.select-input{padding:8px 10px;border-radius:6px;border:1px solid rgba(225,6,0,0.3);font-size:15px;background:rgba(0,0,0,0.3);color:white;}
-.course-input{width:100%;margin-bottom:12px;padding:10px;border-radius:6px;border:1px solid rgba(225,6,0,0.3);font-size:15px;background:rgba(0,0,0,0.3);color:white;}
+.select-input{padding:8px 10px;border-radius:6px;border:1px solid rgba(255,212,71,0.25);font-size:15px;background:rgba(0,0,0,0.4);color:white;}
+.course-input{width:100%;margin-bottom:12px;padding:10px;border-radius:6px;border:1px solid rgba(255,212,71,0.2);border-bottom:2px solid rgba(255,212,71,0.4);font-size:15px;background:rgba(0,0,0,0.4);color:white;}
 #nameError{color:#ff6b6b;font-size:13px;display:none;}
 button{width:100%;padding:13px;border:none;border-radius:8px;font-size:15px;font-weight:bold;background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);color:#1a1a0a;cursor:pointer;margin-bottom:4px;box-shadow:0 2px 8px rgba(184,150,46,0.4);letter-spacing:.5px;}
 button:hover,button:active{background:linear-gradient(135deg,#b8912e,#ffc93a,#b8912e);}
-button.btn-secondary{background:transparent;border:1px solid rgba(225,6,0,0.4);color:rgba(255,100,80,0.85);font-size:14px;padding:10px;box-shadow:none;letter-spacing:.5px;}
-button.btn-secondary:hover,button.btn-secondary:active{background:rgba(225,6,0,0.08);border-color:rgba(225,6,0,0.6);color:#ff4422;}
+button.btn-secondary{background:transparent;border:1px solid rgba(255,212,71,0.3);color:rgba(255,212,71,0.7);font-size:14px;padding:10px;box-shadow:none;letter-spacing:.5px;}
+button.btn-secondary:hover,button.btn-secondary:active{background:rgba(255,212,71,0.08);border-color:rgba(255,212,71,0.6);color:#ffd447;}
 .hidden{display:none!important;}
 .score-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:20px;}
 .player-box{display:flex;flex-direction:column;align-items:center;}
 .player-box>label{font-size:12px;font-weight:bold;margin-bottom:6px;text-align:center;color:rgba(255,255,255,0.8);letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px;}
-.player-box input[type=number]{padding:10px 4px;border-radius:6px;border:1px solid rgba(225,6,0,0.25);text-align:center;font-size:22px;font-weight:bold;width:100%;background:rgba(0,0,0,0.35);color:white;font-family:'Courier New',monospace;}
+.player-box input[type=number]{padding:10px 4px;border-radius:6px;border:1px solid rgba(255,212,71,0.2);text-align:center;font-size:22px;font-weight:bold;width:100%;background:rgba(0,0,0,0.4);color:white;font-family:'Courier New',monospace;}
 .player-box input.black{border-color:rgba(255,255,255,0.2);border-bottom:2px solid #000;}
 .player-box input.red{border-bottom:2px solid rgba(225,6,0,0.5);}
-.results{margin-top:16px;background:rgba(0,0,0,0.3);padding:14px;border-radius:8px;border:1px solid rgba(225,6,0,0.2);}
-.results h3{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,100,80,0.6);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(225,6,0,0.2);}
+.results{margin-top:16px;background:rgba(0,0,0,0.3);padding:14px;border-radius:8px;border:1px solid rgba(255,212,71,0.15);border-top:2px solid rgba(255,212,71,0.3);}
+.results h3{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.6);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(255,212,71,0.15);font-family:'Georgia',serif;}
 .result-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.07);font-size:15px;}
 .result-row:last-child{border-bottom:none;}
 .pos-badge{display:inline-block;width:26px;height:26px;line-height:26px;border-radius:3px;text-align:center;font-size:11px;font-weight:bold;margin-right:6px;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);letter-spacing:0;}
@@ -60,13 +60,13 @@ button.btn-secondary:hover,button.btn-secondary:active{background:rgba(225,6,0,0
 .pos-badge.p3{background:#cd7f32;color:#111;}
 .team{margin-top:12px;font-weight:bold;font-size:15px;text-align:center;letter-spacing:.5px;}
 table{width:100%;border-collapse:collapse;margin-top:6px;}
-th,td{border:1px solid rgba(225,6,0,0.15);padding:5px 4px;text-align:center;font-size:12px;}
-thead th{background:rgba(0,0,0,0.4);color:#ffd447;letter-spacing:.5px;text-transform:uppercase;font-size:10px;}
+th,td{border:1px solid rgba(255,212,71,0.12);padding:5px 4px;text-align:center;font-size:12px;}
+thead th{background:rgba(0,0,0,0.5);color:#ffd447;letter-spacing:.5px;text-transform:uppercase;font-size:10px;}
 td{font-family:'Courier New',monospace;}
 .current-hole td{background:rgba(225,6,0,0.08);font-weight:bold;}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;justify-content:center;align-items:center;z-index:1000;}
-.modal-content{background:#1e4d1e;border:1px solid rgba(225,6,0,0.5);width:92%;max-width:620px;max-height:88vh;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;}
-.modal-header{background:rgba(0,0,0,0.3);border-bottom:1px solid rgba(225,6,0,0.3);color:#ffd447;display:flex;justify-content:space-between;align-items:center;padding:10px 14px;font-weight:bold;font-size:15px;letter-spacing:.5px;}
+.modal-content{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:2px solid #8B6914;width:92%;max-width:620px;max-height:88vh;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;}
+.modal-header{background:rgba(0,0,0,0.5);border-bottom:1px solid rgba(255,212,71,0.2);color:#ffd447;display:flex;justify-content:space-between;align-items:center;padding:10px 14px;font-weight:bold;font-size:15px;letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;}
 .modal-body{overflow-y:auto;padding:10px;}
 .close-btn{background:none;border:none;color:white;font-size:22px;cursor:pointer;width:auto;padding:0 4px;}
 .flip-card{width:100%;}
@@ -78,10 +78,10 @@ td{font-family:'Courier New',monospace;}
   backface-visibility:hidden;-webkit-backface-visibility:hidden;
   transform:rotateY(180deg);
   background:
-    repeating-linear-gradient(45deg, rgba(0,0,0,0.07) 0px, rgba(0,0,0,0.07) 1px, transparent 1px, transparent 8px),
-    repeating-linear-gradient(-45deg, rgba(0,0,0,0.07) 0px, rgba(0,0,0,0.07) 1px, transparent 1px, transparent 8px),
-    #1e4d1e;
-  border:1px solid rgba(255,255,255,0.07);
+    repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),
+    repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),
+    #0e1a12;
+  border:1px solid rgba(255,212,71,0.15);
   padding:24px 20px;border-radius:12px;
 }
 .flip-inner.flipped .flip-front{position:absolute;inset:0;}
@@ -128,6 +128,12 @@ td{font-family:'Courier New',monospace;}
           <input type="date" class="course-input" id="roundDate">
           <div id="playerRows">
             <div class="setup-player-row">
+          <div class="row-setting" style="margin-bottom:12px;">
+            <label style="font-size:12px;white-space:nowrap;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:.5px;">Season:</label>
+            <select id="seasonSelect" class="select-input" onchange="onSeasonPick()" style="flex:1;">
+              <option value="">None (casual round)</option>
+            </select>
+          </div>
               <input class="name-input black" id="name0" placeholder="Player 1 (Black Team)">
             </div>
             <div class="setup-player-row">
@@ -263,7 +269,7 @@ td{font-family:'Courier New',monospace;}
       </table>
     </div>
     <br>
-    <button onclick="newGame()">New Game</button>
+    <button onclick="window.location.href='games.html'">‹ Menu</button>
   </div>
 
 </div><!-- /container -->
@@ -300,7 +306,7 @@ document.querySelectorAll('.name-input').forEach(input => {
 
 function goBack(){
   if(scoreHistory.length > 0 && !confirm('Abandon this round? Scores will be lost.')) return;
-  window.location.href = 'index.html';
+  window.location.href = 'games.html';
 }
 
 function startGame(){
@@ -404,12 +410,12 @@ function calculateHole(){
 }
 
 function renderStandings(){
-  let sorted = playerNames.map((name,i) => ({name, points:playerTotals[i]}))
+  let sorted = playerNames.map((name,i) => ({name, points:playerTotals[i], team:i<2?0:1}))
     .sort((a,b) => b.points - a.points);
   let posCls = ['p1','p2','p3',''];
   document.getElementById('standingsList').innerHTML = sorted.map((p,i) =>
     `<div class="result-row">
-      <span><span class="pos-badge ${posCls[i]||''}">P${i+1}</span>${p.name}</span>
+      <span><span class="pos-badge ${posCls[i]||''}">P${i+1}</span>${p.name}<span style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:6px;background:${p.team===0?'#222':'#c0392b'};border:1.5px solid ${p.team===0?'rgba(255,255,255,0.4)':'#e74c3c'};vertical-align:middle;"></span></span>
       <span>${p.points.toFixed(1)} pts</span>
     </div>`
   ).join('');
@@ -440,10 +446,44 @@ function renderPreviewTable(){
   }
 }
 
+let lastSavedRecord = null;
+
+(function populateSeasonPicker(){
+  try{
+    let seasons = JSON.parse(localStorage.getItem('seasons')||'[]')
+      .filter(s=>s.status==='active'&&s.allowedGames&&s.allowedGames.includes('f1'));
+    let sel = document.getElementById('seasonSelect');
+    if(!sel) return;
+    seasons.forEach(s=>{
+      let o = document.createElement('option');
+      o.value = s.id; o.textContent = s.name; sel.appendChild(o);
+    });
+    // Auto-select if seasonId passed via URL
+    let urlSeasonId = new URLSearchParams(location.search).get('seasonId');
+    if(urlSeasonId){
+      sel.value = urlSeasonId;
+      if(sel.value === urlSeasonId) onSeasonPick();
+    }
+  }catch(e){}
+})();
+
+function onSeasonPick(){
+  try{
+    let seasonId = parseInt(document.getElementById('seasonSelect').value);
+    if(!seasonId) return;
+    let season = JSON.parse(localStorage.getItem('seasons')||'[]').find(s=>s.id===seasonId);
+    if(!season) return;
+    season.players.forEach((p,i)=>{
+      let inp = document.getElementById('name'+i);
+      if(inp) inp.value = p.name;
+    });
+  }catch(e){}
+}
+
 function saveGameResult(){
   try{
     let history = JSON.parse(localStorage.getItem('gameHistory')||'[]');
-    history.push({
+    let record = {
       id: Date.now(),
       game: 'f1',
       course: document.getElementById('courseInput').value.trim() || '',
@@ -456,8 +496,18 @@ function saveGameResult(){
       scoreHistory: scoreHistory.map(h=>[...h]),
       pointHistory: pointHistory.map(h=>[...h]),
       holeParDist: holeParDist.map(h=>({...h}))
-    });
+    };
+    lastSavedRecord = record;
+    history.push(record);
     localStorage.setItem('gameHistory', JSON.stringify(history));
+    // Auto-save to season if selected
+    try{
+      let seasonId = parseInt(document.getElementById('seasonSelect').value);
+      if(seasonId && typeof derivePositions==='function' && typeof _addRoundToSeason==='function'){
+        let positions = derivePositions(record);
+        _addRoundToSeason(seasonId, record, positions);
+      }
+    }catch(e){}
   }catch(e){}
 }
 
@@ -509,5 +559,6 @@ function flipCard(id){
   if(btn) btn.style.display = inner.classList.contains('flipped') ? 'none' : 'flex';
 }
 </script>
+<script src="season.js"></script>
 </body>
 </html>

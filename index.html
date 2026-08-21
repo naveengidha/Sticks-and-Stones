@@ -6,47 +6,64 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Sticks &amp; Stones">
-<meta name="theme-color" content="#1f4d2b">
+<meta name="theme-color" content="#080f0a">
 <title>Sticks &amp; Stones</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{font-family:Arial,Helvetica,sans-serif;background:#1f4d2b;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;justify-content:flex-start;align-items:center;padding:40px 20px;}
-.container{background:#2e6b3f;padding:30px 24px;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,0.4);width:100%;max-width:480px;position:relative;}
+body{font-family:Arial,Helvetica,sans-serif;background:#080f0a;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;justify-content:flex-start;align-items:center;padding:20px 20px;}
+.container{background:#0e1a12;border:3px solid #8B6914;padding:16px 24px 30px;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,0.4);width:100%;max-width:480px;position:relative;}
 .logo{text-align:center;margin-bottom:8px;display:block;width:100%;}
 .logo svg{margin:auto;display:block;}
-h1{text-align:center;color:#ffd447;margin:0 0 4px;font-size:26px;letter-spacing:1px;}
+h1{text-align:center;color:#ffd447;margin:0 0 4px;font-size:26px;letter-spacing:1px;font-family:'Georgia','Times New Roman',serif;}
 h2{text-align:center;margin-top:0;color:#ffd447;letter-spacing:.5px;}
 h3{text-align:center;margin-top:0;color:rgba(255,255,255,0.75);}
 .subtitle{text-align:center;color:rgba(255,255,255,0.6);font-size:13px;margin:0 0 32px;}
-.section-label{font-size:11px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:12px;}
-.game-card{display:flex;align-items:center;gap:16px;background:#1c4729;border:2px solid transparent;border-radius:10px;padding:16px;margin-bottom:12px;cursor:pointer;text-decoration:none;color:#fff;transition:border-color .15s,background .15s;-webkit-user-select:none;}
-.game-card:hover,.game-card:active{border-color:#ffd447;background:#245733;}
-.game-card-icon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
-.icon-f1{background:#800000;}
-.icon-banker{background:#1a3a6b;}
-.icon-history{background:#4a3800;}
-.icon-bag{background:#2a1a00;}
-.icon-practice{background:#1a2e1a;}
-.icon-intel{background:#0d1a2e;border:1px solid rgba(76,175,118,0.3);}
-.icon-coming{background:#333;opacity:.6;}
-.game-card-info{flex:1;}
-.game-card-title{font-size:16px;font-weight:bold;margin-bottom:3px;}
-.game-card-desc{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.4;}
-.game-card-arrow{color:rgba(255,255,255,0.3);font-size:20px;}
-.coming-soon{opacity:.5;pointer-events:none;}
+.section-label{font-size:11px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.5);margin-bottom:12px;text-align:center;}
+.game-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:16px;}
+.game-grid .game-badge{width:calc(25% - 8px);min-width:60px;}
+.game-badge{display:flex;flex-direction:column;align-items:center;text-decoration:none;color:#fff;-webkit-user-select:none;cursor:pointer;border:1px solid rgba(255,212,71,0.25);border-radius:14px;padding:8px 4px 8px;background:rgba(255,212,71,0.05);transition:border-color .15s,background .15s;}
+.game-badge:hover,.game-badge:active{background:rgba(255,212,71,0.1);border-color:#ffd447;}
+.game-badge:active .game-badge-icon{transform:scale(0.92);opacity:.85;}
+.game-badge-icon{width:52%;aspect-ratio:1/1;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;transition:transform .1s,opacity .1s;margin:4px 0 6px;}
+.game-badge-label{font-size:10px;font-weight:bold;text-align:center;color:rgba(255,255,255,0.85);letter-spacing:.3px;line-height:1.2;max-width:100%;white-space:normal;padding:0 4px;margin-bottom:2px;}
+.game-badge-desc{font-size:9px;text-align:center;color:rgba(255,255,255,0.7);line-height:1.3;padding:0 4px;}
+.icon-f1{background:linear-gradient(160deg,#5a0000,#800000);}
+.icon-banker{background:linear-gradient(160deg,#0d2a55,#1a3a6b);}
+.icon-history{background:linear-gradient(160deg,#2e1e00,#4a3800);}
+.icon-bag{background:linear-gradient(160deg,#1a0d00,#2a1a00);}
+.icon-practice{background:linear-gradient(160deg,#0d1f0d,#1a2e1a);}
+.icon-intel{background:linear-gradient(160deg,#061222,#0d1a2e);border:1px solid rgba(76,175,118,0.3);}
+.icon-coming{background:#222;opacity:.5;}
+.icon-caddy{background:linear-gradient(160deg,#0d2218,#1a3320);}
+.icon-matchplay{background:linear-gradient(160deg,#280606,#3a0a0a);}
+.icon-stableford{background:linear-gradient(160deg,#0d1a2a,#1a2a3a);}
+.icon-wolf{background:linear-gradient(160deg,#1a0d2a,#2a1a3a);}
+.icon-scramble{background:linear-gradient(160deg,#061a0d,#0d2a1a);}
+.icon-foursomes{background:linear-gradient(160deg,#0d1a06,#1a2a0d);}
+.icon-vegas{background:linear-gradient(160deg,#1a0d00,#2a1a00);}
+.icon-season{background:linear-gradient(160deg,#1a1a00,#2a2a00);}
+.divider{border:none;border-top:1px solid rgba(255,212,71,0.35);margin:16px 0 0;}
 .utility-link{display:flex;align-items:center;gap:12px;padding:9px 12px;margin-bottom:12px;border-radius:8px;cursor:pointer;text-decoration:none;color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);transition:background .15s,color .15s;-webkit-user-select:none;}
 .utility-link:hover,.utility-link:active{background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.75);}
 .utility-link-icon{font-size:16px;flex-shrink:0;}
 .utility-link-label{font-size:13px;font-weight:bold;letter-spacing:.3px;}
-.stats-link{display:flex;align-items:center;gap:14px;padding:14px 16px;margin-bottom:12px;border-radius:10px;cursor:pointer;text-decoration:none;color:rgba(255,212,71,0.85);border:1px solid rgba(255,212,71,0.25);background:rgba(255,212,71,0.05);transition:border-color .15s,background .15s,color .15s;-webkit-user-select:none;}
-.stats-link:hover,.stats-link:active{border-color:#ffd447;background:rgba(255,212,71,0.1);color:#ffd447;}
+.stats-link{display:flex;align-items:center;gap:14px;padding:14px 16px;margin-bottom:12px;border-radius:10px;cursor:pointer;text-decoration:none;color:rgba(255,212,71,0.85);border:1px solid rgba(255,212,71,0.25);background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;transition:border-color .15s,color .15s;-webkit-user-select:none;}
+.stats-link:hover,.stats-link:active{border-color:rgba(255,212,71,0.6);color:#ffd447;}
 .stats-link-icon{font-size:22px;flex-shrink:0;}
 .stats-link-label{font-size:14px;font-weight:bold;letter-spacing:.3px;}
 .stats-link-arrow{color:rgba(255,212,71,0.35);font-size:20px;margin-left:auto;}
 .badge{display:inline-block;font-size:9px;font-weight:bold;background:#ffd447;color:#222;padding:2px 6px;border-radius:20px;margin-left:6px;vertical-align:middle;letter-spacing:.5px;}
-.footer{text-align:center;margin-top:28px;font-size:11px;color:rgba(255,255,255,0.3);}
+.active-season-card{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:8px;border-radius:10px;cursor:pointer;text-decoration:none;color:#fff;border:1px solid rgba(255,212,71,0.25);background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;transition:border-color .15s;}
+.active-season-card:hover,.active-season-card:active{border-color:rgba(255,212,71,0.6);}
+.asc-icon{font-size:18px;flex-shrink:0;}
+.asc-body{flex:1;min-width:0;}
+.asc-name{font-size:13px;font-weight:bold;color:#ffd447;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.asc-meta{font-size:11px;color:rgba(255,255,255,0.4);margin-top:1px;}
+.asc-leader{font-size:11px;color:rgba(255,212,71,0.6);margin-top:2px;}
+.asc-arrow{color:rgba(255,212,71,0.35);font-size:18px;flex-shrink:0;}
+.active-seasons-label{font-size:10px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.4);margin:16px 0 8px;}
 button{width:100%;padding:13px;border:none;border-radius:8px;font-size:15px;font-weight:bold;background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);color:#1a1a0a;cursor:pointer;margin-bottom:4px;box-shadow:0 2px 8px rgba(184,150,46,0.4);letter-spacing:.5px;}
 button:hover,button:active{background:linear-gradient(135deg,#b8912e,#ffc93a,#b8912e);}
 button.btn-secondary{background:transparent;border:1px solid rgba(184,150,46,0.4);color:rgba(255,212,71,0.75);font-size:14px;padding:10px;box-shadow:none;letter-spacing:.5px;}
@@ -57,23 +74,23 @@ button.btn-secondary:hover,button.btn-secondary:active{background:rgba(184,150,4
 .field-bag-edit-btn:active{background:rgba(255,212,71,0.1);}
 .bag-section-label{font-size:10px;font-weight:bold;letter-spacing:3px;text-transform:uppercase;color:rgba(255,212,71,0.35);margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(184,150,46,0.15);}
 .bag-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:6px;}
-.bag-table th{background:#0f2a18;color:#ffd447;border:1px solid rgba(184,150,46,0.12);padding:6px 8px;text-align:center;font-size:9px;letter-spacing:1px;text-transform:uppercase;}
+.bag-table th{background:#0a1409;color:#ffd447;border:1px solid rgba(184,150,46,0.12);padding:6px 8px;text-align:center;font-size:9px;letter-spacing:1px;text-transform:uppercase;}
 .bag-table th:first-child{text-align:left;}
 .bag-table td{border:1px solid rgba(184,150,46,0.08);padding:8px;text-align:center;color:rgba(255,255,255,0.75);}
 .bag-table td:first-child{text-align:left;color:#ffd447;font-weight:bold;letter-spacing:.5px;}
 .bag-table td.bag-dist{font-family:'Courier New',monospace;font-size:14px;font-weight:bold;}
 .bag-table td.bag-empty{color:rgba(255,255,255,0.2);}
 .bag-edit-row td{background:rgba(255,212,71,0.03);}
-.bag-name-input{width:64px;padding:5px 6px;border-radius:3px;background:#163520;border:1px solid rgba(184,150,46,0.25);color:#fff;font-size:13px;}
-.bag-dist-input{width:54px;padding:5px 6px;border-radius:3px;background:#163520;border:1px solid rgba(184,150,46,0.25);color:#fff;font-size:13px;text-align:center;font-family:'Courier New',monospace;}
+.bag-name-input{width:64px;padding:5px 6px;border-radius:3px;background:#0a1409;border:1px solid rgba(184,150,46,0.25);color:#fff;font-size:13px;}
+.bag-dist-input{width:54px;padding:5px 6px;border-radius:3px;background:#0a1409;border:1px solid rgba(184,150,46,0.25);color:#fff;font-size:13px;text-align:center;font-family:'Courier New',monospace;}
 .bag-del-btn{background:none;border:none;color:rgba(255,77,77,0.4);cursor:pointer;font-size:15px;padding:0 2px;}
 .bag-del-btn:hover{color:#ff4d4d;}
 .bag-add-btn{width:100%;padding:10px;margin-top:8px;border:1px dashed rgba(184,150,46,0.25);border-radius:4px;background:none;color:rgba(255,212,71,0.5);font-size:12px;letter-spacing:1px;cursor:pointer;}
 .bag-add-btn:active{background:rgba(184,150,46,0.06);}
 /* ── Field Mode overlay ── */
-.field-overlay{display:none;position:fixed;inset:0;background:#0f2a18;z-index:2000;flex-direction:column;overflow:hidden;}
+.field-overlay{display:none;position:fixed;inset:0;background:#0a1409;z-index:2000;flex-direction:column;overflow:hidden;}
 .field-overlay.open{display:flex;}
-.field-topnav{display:flex;align-items:center;background:#122d1c;padding:10px 14px;gap:10px;flex-shrink:0;border-bottom:1px solid rgba(184,150,46,0.3);box-shadow:0 2px 12px rgba(0,0,0,0.6);}
+.field-topnav{display:flex;align-items:center;background:#0e1a12;padding:10px 14px;gap:10px;flex-shrink:0;border-bottom:1px solid rgba(184,150,46,0.3);box-shadow:0 2px 12px rgba(0,0,0,0.6);}
 .field-back{background:none;border:none;color:rgba(255,212,71,0.8);font-size:15px;font-weight:bold;cursor:pointer;padding:4px 8px 4px 0;white-space:nowrap;letter-spacing:.5px;}
 .field-back:active{color:#ffd700;}
 .field-topnav-title{flex:1;text-align:center;color:#ffd447;font-size:13px;font-weight:bold;letter-spacing:3px;text-transform:uppercase;}
@@ -84,22 +101,22 @@ button.btn-secondary:hover,button.btn-secondary:active{background:rgba(184,150,4
 #fieldMenu .field-menu-logo svg{display:inline-block;}
 #fieldMenu h2{text-align:center;color:#ffd447;margin:0 0 4px;font-size:18px;letter-spacing:4px;text-transform:uppercase;}
 #fieldMenu .field-subtitle{text-align:center;color:rgba(255,255,255,0.3);font-size:11px;margin:0 0 32px;letter-spacing:2px;text-transform:uppercase;}
-.field-card{display:flex;align-items:center;gap:16px;background:#122d1c;border:1px solid rgba(184,150,46,0.2);border-left:3px solid rgba(184,150,46,0.5);border-radius:4px;padding:16px;margin-bottom:10px;cursor:pointer;color:#fff;transition:border-color .15s,background .15s;-webkit-user-select:none;}
-.field-card:hover,.field-card:active{border-color:rgba(255,212,71,0.7);border-left-color:#ffd447;background:#163520;}
+.field-card{display:flex;align-items:center;gap:16px;background:#0e1a12;border:1px solid rgba(184,150,46,0.2);border-left:3px solid rgba(184,150,46,0.5);border-radius:4px;padding:16px;margin-bottom:10px;cursor:pointer;color:#fff;transition:border-color .15s,background .15s;-webkit-user-select:none;}
+.field-card:hover,.field-card:active{border-color:rgba(255,212,71,0.7);border-left-color:#ffd447;background:#0a1409;}
 .field-card-icon{width:44px;height:44px;border-radius:4px;background:rgba(184,150,46,0.08);border:1px solid rgba(184,150,46,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
 .field-card-info{flex:1;}
 .field-card-title{font-size:14px;font-weight:bold;margin-bottom:3px;color:#ffd447;letter-spacing:1px;text-transform:uppercase;}
 .field-card-desc{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.4;}
 .field-card-arrow{color:rgba(184,150,46,0.3);font-size:18px;}
 .field-rounds-label{font-size:10px;font-weight:bold;letter-spacing:3px;text-transform:uppercase;color:rgba(255,212,71,0.35);margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(184,150,46,0.15);}
-.field-round-item{display:flex;justify-content:space-between;align-items:center;background:#122d1c;border:1px solid rgba(184,150,46,0.12);border-radius:4px;padding:10px 12px;margin-bottom:6px;font-size:13px;}
+.field-round-item{display:flex;justify-content:space-between;align-items:center;background:#0e1a12;border:1px solid rgba(184,150,46,0.12);border-radius:4px;padding:10px 12px;margin-bottom:6px;font-size:13px;}
 .field-round-item .sri-name{font-weight:bold;color:#ffd447;letter-spacing:.5px;}
 .field-round-item .sri-meta{color:rgba(255,255,255,0.35);font-size:11px;margin-top:2px;}
 .field-round-item .sri-del{background:none;border:none;color:rgba(255,77,77,0.4);cursor:pointer;font-size:16px;padding:0 4px;}
 .field-round-item .sri-del:hover{color:#ff4d4d;}
 .field-no-rounds{text-align:center;color:rgba(255,255,255,0.2);font-size:12px;margin-top:16px;letter-spacing:1px;}
 .field-form-row{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
-.field-input,.field-select{width:100%;padding:10px;border-radius:4px;border:1px solid rgba(184,150,46,0.2);border-bottom:2px solid rgba(184,150,46,0.35);background:#122d1c;color:#fff;font-size:15px;color-scheme:dark;}
+.field-input,.field-select{width:100%;padding:10px;border-radius:4px;border:1px solid rgba(184,150,46,0.2);border-bottom:2px solid rgba(184,150,46,0.35);background:#0e1a12;color:#fff;font-size:15px;color-scheme:dark;}
 .field-input::placeholder{color:rgba(255,255,255,0.25);}
 .field-input:focus,.field-select:focus{outline:none;border-color:rgba(255,212,71,0.6);}
 .field-btn-primary{width:100%;padding:13px;border:none;border-radius:4px;font-size:14px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;background:linear-gradient(135deg,#b8962e,#ffd700,#b8962e);color:#0a0a0f;cursor:pointer;box-shadow:0 2px 12px rgba(180,150,46,0.3);}
@@ -107,55 +124,55 @@ button.btn-secondary:hover,button.btn-secondary:active{background:rgba(184,150,4
 .field-btn-secondary{width:100%;padding:11px;border:1px solid rgba(184,150,46,0.35);border-radius:4px;font-size:13px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;background:none;color:rgba(255,212,71,0.7);cursor:pointer;margin-top:8px;}
 .field-btn-secondary:active{background:rgba(184,150,46,0.08);}
 .field-filters{display:flex;justify-content:center;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
-.field-filters button{padding:5px 12px;background:#122d1c;color:rgba(255,255,255,0.5);border:1px solid rgba(184,150,46,0.2);border-radius:20px;font-size:12px;cursor:pointer;letter-spacing:.5px;}
+.field-filters button{padding:5px 12px;background:#0e1a12;color:rgba(255,255,255,0.5);border:1px solid rgba(184,150,46,0.2);border-radius:20px;font-size:12px;cursor:pointer;letter-spacing:.5px;}
 .field-filters button.active{background:rgba(184,150,46,0.15);color:#ffd447;border-color:rgba(255,212,71,0.5);font-weight:bold;}
-.hole-card{background:#122d1c;border:1px solid rgba(184,150,46,0.2);border-left:3px solid rgba(184,150,46,0.5);border-radius:4px;margin-bottom:16px;overflow:hidden;}
+.hole-card{background:#0e1a12;border:1px solid rgba(184,150,46,0.2);border-left:3px solid rgba(184,150,46,0.5);border-radius:4px;margin-bottom:16px;overflow:hidden;}
 .hole-card-header{padding:10px 16px;border-bottom:1px solid rgba(184,150,46,0.15);border-top:1px solid rgba(184,150,46,0.1);display:flex;justify-content:space-between;align-items:baseline;}
 .hole-card-num{font-size:20px;font-weight:bold;color:#ffd447;letter-spacing:2px;}
 .hole-card-meta{font-size:11px;color:rgba(255,212,71,0.45);letter-spacing:1.5px;text-transform:uppercase;}
 .hole-card-field{padding:12px 16px;border-bottom:1px solid rgba(184,150,46,0.08);}
 .hole-card-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.4);margin-bottom:8px;}
-.hole-card-score-input{width:100%;padding:12px;border-radius:4px;background:#163520;border:1px solid rgba(184,150,46,0.2);border-bottom:2px solid rgba(184,150,46,0.4);color:#fff;font-size:36px;font-weight:bold;font-family:'Courier New',monospace;text-align:center;}
+.hole-card-score-input{width:100%;padding:12px;border-radius:4px;background:#0a1409;border:1px solid rgba(184,150,46,0.2);border-bottom:2px solid rgba(184,150,46,0.4);color:#fff;font-size:36px;font-weight:bold;font-family:'Courier New',monospace;text-align:center;}
 .yn-group{display:flex;gap:8px;}
-.yn-btn{flex:1;padding:9px;border-radius:4px;font-size:13px;font-weight:bold;cursor:pointer;border:1px solid rgba(184,150,46,0.2);background:#122d1c;color:rgba(255,255,255,0.4);letter-spacing:1px;}
+.yn-btn{flex:1;padding:9px;border-radius:4px;font-size:13px;font-weight:bold;cursor:pointer;border:1px solid rgba(184,150,46,0.2);background:#0e1a12;color:rgba(255,255,255,0.4);letter-spacing:1px;}
 .yn-btn.active-yes{background:rgba(46,180,100,0.15);color:#2ecc71;border-color:rgba(46,204,113,0.4);}
 .yn-btn.active-no{background:rgba(180,46,46,0.15);color:#e07070;border-color:rgba(204,46,46,0.4);}
 .miss-dir-row{display:flex;gap:6px;margin-top:8px;}
-.miss-dir-btn{padding:5px 12px;border-radius:3px;font-size:12px;cursor:pointer;background:#122d1c;color:rgba(255,255,255,0.4);border:1px solid rgba(184,150,46,0.2);}
+.miss-dir-btn{padding:5px 12px;border-radius:3px;font-size:12px;cursor:pointer;background:#0e1a12;color:rgba(255,255,255,0.4);border:1px solid rgba(184,150,46,0.2);}
 .miss-dir-btn.active{background:rgba(180,100,46,0.25);color:#e8a070;border-color:rgba(200,130,70,0.5);font-weight:bold;}
 .putts-pen-row{display:flex;gap:12px;}
 .putts-pen-row>div{flex:1;}
 .stepper{display:flex;justify-content:center;align-items:center;gap:6px;}
-.stepper button{width:32px;height:32px;background:#122d1c;color:rgba(255,212,71,0.7);border:1px solid rgba(184,150,46,0.2);border-radius:3px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;padding:0;}
+.stepper button{width:32px;height:32px;background:#0e1a12;color:rgba(255,212,71,0.7);border:1px solid rgba(184,150,46,0.2);border-radius:3px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;padding:0;}
 .stepper span{min-width:28px;text-align:center;font-size:18px;font-weight:bold;color:#fff;font-family:'Courier New',monospace;}
 .hole-nav{display:flex;gap:10px;padding:14px 16px 0;}
 .hole-nav button{flex:1;}
 .scorecard-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:3500;}
 .scorecard-backdrop.open{display:block;}
-.scorecard-panel{position:fixed;bottom:0;left:0;right:0;background:#122d1c;border-radius:12px 12px 0 0;padding:12px 16px 36px;z-index:3501;max-height:70vh;overflow-y:auto;transform:translateY(100%);transition:transform .25s ease;border-top:1px solid rgba(184,150,46,0.3);}
+.scorecard-panel{position:fixed;bottom:0;left:0;right:0;background:#0e1a12;border-radius:12px 12px 0 0;padding:12px 16px 36px;z-index:3501;max-height:70vh;overflow-y:auto;transform:translateY(100%);transition:transform .25s ease;border-top:1px solid rgba(184,150,46,0.3);}
 .scorecard-panel.open{transform:translateY(0);}
 .scorecard-handle{width:36px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 12px;}
 .scorecard-panel-title{font-size:10px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.4);text-align:center;margin-bottom:12px;font-family:Arial,sans-serif;}
 table.sc-mini-table{width:100%;border-collapse:collapse;font-size:12px;}
-table.sc-mini-table th{background:#0f2a18;color:#ffd447;border:1px solid rgba(184,150,46,0.12);padding:5px 4px;text-align:center;font-size:9px;letter-spacing:1px;text-transform:uppercase;}
+table.sc-mini-table th{background:#0a1409;color:#ffd447;border:1px solid rgba(184,150,46,0.12);padding:5px 4px;text-align:center;font-size:9px;letter-spacing:1px;text-transform:uppercase;}
 table.sc-mini-table td{border:1px solid rgba(184,150,46,0.08);padding:4px 3px;text-align:center;}
 table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 .hole-actions{display:flex;flex-direction:column;gap:8px;margin-bottom:8px;}
-.field-summary-bar{position:fixed;bottom:0;left:0;right:0;background:#0f2a18;border-top:1px solid rgba(184,150,46,0.3);display:none;justify-content:space-around;padding:10px 8px;font-size:13px;z-index:3000;}
+.field-summary-bar{position:fixed;bottom:0;left:0;right:0;background:#0a1409;border-top:1px solid rgba(184,150,46,0.3);display:none;justify-content:space-around;padding:10px 8px;font-size:13px;z-index:3000;}
 .field-summary-bar.active{display:flex;}
 .field-sum-item{text-align:center;line-height:1.4;}
 .field-sum-item small{display:block;color:rgba(255,212,71,0.4);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;}
 .field-good{color:#2ecc71;font-weight:bold;}
 .field-bad{color:#ff4d4d;font-weight:bold;}
-.field-insights-box{margin:14px 0 6px;background:#122d1c;border:1px solid rgba(184,150,46,0.18);border-left:3px solid rgba(184,150,46,0.5);border-radius:4px;padding:12px 14px;font-size:13px;line-height:1.8;}
+.field-insights-box{margin:14px 0 6px;background:#0e1a12;border:1px solid rgba(184,150,46,0.18);border-left:3px solid rgba(184,150,46,0.5);border-radius:4px;padding:12px 14px;font-size:13px;line-height:1.8;}
 .field-insights-box b{color:#ffd447;}
 .momentum-line{text-align:center;font-size:13px;margin:10px 0;color:rgba(255,255,255,0.6);letter-spacing:.5px;}
 .intel-player-row{display:flex;align-items:center;gap:6px;}
 .intel-player-row .field-input{flex:1;}
-.intel-add-btn{background:#122d1c;border:1px solid rgba(184,150,46,0.3);color:#ffd447;font-size:20px;width:36px;height:36px;border-radius:4px;cursor:pointer;flex-shrink:0;}
+.intel-add-btn{background:#0e1a12;border:1px solid rgba(184,150,46,0.3);color:#ffd447;font-size:20px;width:36px;height:36px;border-radius:4px;cursor:pointer;flex-shrink:0;}
 .intel-remove-btn{background:none;border:none;color:rgba(255,77,77,0.5);font-size:18px;cursor:pointer;flex-shrink:0;padding:0 4px;}
 .player-accordion{border-top:1px solid rgba(184,150,46,0.1);}
-.player-acc-header{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;background:#122d1c;-webkit-user-select:none;}
+.player-acc-header{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;background:#0e1a12;-webkit-user-select:none;}
 .player-acc-header.expanded{background:rgba(255,212,71,0.06);border-left:3px solid rgba(255,212,71,0.5);}
 .player-acc-chevron{font-size:10px;color:rgba(255,212,71,0.4);width:14px;flex-shrink:0;}
 .player-acc-name{flex:1;font-size:13px;font-weight:bold;color:#ffd447;letter-spacing:1px;text-transform:uppercase;}
@@ -164,12 +181,12 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 .player-acc-body{display:none;background:rgba(255,212,71,0.02);}
 .player-acc-body.open{display:block;}
 .analysis-filters{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
-.analysis-filters select{width:100%;padding:10px;border-radius:4px;border:1px solid rgba(184,150,46,0.2);background:#122d1c;color:#fff;font-size:14px;}
+.analysis-filters select{width:100%;padding:10px;border-radius:4px;border:1px solid rgba(184,150,46,0.2);background:#0e1a12;color:#fff;font-size:14px;}
 .analysis-par-row{display:flex;gap:6px;}
-.analysis-par-row button{flex:1;padding:7px 4px;background:#122d1c;color:rgba(255,255,255,0.45);border:1px solid rgba(184,150,46,0.2);border-radius:20px;font-size:12px;cursor:pointer;letter-spacing:.5px;}
+.analysis-par-row button{flex:1;padding:7px 4px;background:#0e1a12;color:rgba(255,255,255,0.45);border:1px solid rgba(184,150,46,0.2);border-radius:20px;font-size:12px;cursor:pointer;letter-spacing:.5px;}
 .analysis-par-row button.active{background:rgba(184,150,46,0.15);color:#ffd447;border-color:rgba(255,212,71,0.5);font-weight:bold;}
 .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
-.stat-tile{background:#122d1c;border:1px solid rgba(184,150,46,0.15);border-top:2px solid rgba(184,150,46,0.35);border-radius:4px;padding:14px 10px;text-align:center;}
+.stat-tile{background:#0e1a12;border:1px solid rgba(184,150,46,0.15);border-top:2px solid rgba(184,150,46,0.35);border-radius:4px;padding:14px 10px;text-align:center;}
 .stat-tile .sv{font-size:24px;font-weight:bold;margin-bottom:4px;font-family:'Courier New',monospace;}
 .stat-tile .sl{font-size:9px;color:rgba(255,212,71,0.45);letter-spacing:1.5px;text-transform:uppercase;}
 .sv.good{color:#2ecc71;}
@@ -178,12 +195,12 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 .analysis-section{margin-bottom:20px;}
 .analysis-section h4{color:rgba(255,212,71,0.7);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin:0 0 8px;border-bottom:1px solid rgba(184,150,46,0.15);padding-bottom:6px;}
 .hole-breakdown-table{width:100%;border-collapse:collapse;font-size:12px;}
-.hole-breakdown-table th{background:#122d1c;color:#ffd447;border:1px solid rgba(184,150,46,0.12);padding:5px 3px;text-align:center;font-size:9px;letter-spacing:1px;text-transform:uppercase;}
+.hole-breakdown-table th{background:#0e1a12;color:#ffd447;border:1px solid rgba(184,150,46,0.12);padding:5px 3px;text-align:center;font-size:9px;letter-spacing:1px;text-transform:uppercase;}
 .hole-breakdown-table td{border:1px solid rgba(184,150,46,0.08);padding:4px 3px;text-align:center;}
 .hole-breakdown-table tr.hb-good{background:rgba(46,204,113,.06);}
 .hole-breakdown-table tr.hb-bad{background:rgba(255,77,77,.06);}
 .rounds-list-table{width:100%;border-collapse:collapse;font-size:12px;}
-.rounds-list-table th{background:#122d1c;color:#ffd447;border:1px solid rgba(184,150,46,0.12);padding:5px 4px;text-align:center;font-size:9px;letter-spacing:1px;text-transform:uppercase;}
+.rounds-list-table th{background:#0e1a12;color:#ffd447;border:1px solid rgba(184,150,46,0.12);padding:5px 4px;text-align:center;font-size:9px;letter-spacing:1px;text-transform:uppercase;}
 .rounds-list-table td{border:1px solid rgba(184,150,46,0.08);padding:4px 3px;text-align:center;}
 .analysis-empty{text-align:center;color:rgba(255,255,255,0.2);font-size:12px;padding:40px 20px;line-height:2;letter-spacing:.5px;}
 .tag-good{color:#2ecc71;font-weight:bold;}
@@ -201,79 +218,56 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 <div class="container">
 
   <div class="logo" id="logoEl">
-    <svg width="64" height="64" viewBox="0 0 64 64">
-      <!-- dark background circle -->
-      <circle cx="32" cy="32" r="32" fill="#1c4729"/>
-      <!-- golf ball -->
-      <circle cx="32" cy="32" r="16" fill="white"/>
+    <!-- viewBox: 140 wide x 120 tall — extra height at top for arc text -->
+    <svg width="130" height="112" viewBox="0 0 180 155">
+      <defs>
+        <!-- arc path: centre 90,97 radius 72, sweeping from ~200° to ~340° (upper semicircle) -->
+        <path id="titleArc" d="M 22,97 A 68,68 0 0,1 158,97" fill="none"/>
+      </defs>
+      <!-- curved title text -->
+      <text font-family="Georgia,'Times New Roman',serif" font-size="16" font-weight="bold" fill="#ffd447" letter-spacing="2">
+        <textPath href="#titleArc" startOffset="50%" text-anchor="middle">STICKS &amp; STONES</textPath>
+      </text>
+      <!-- ball group, centred at 90,97, radius 52 outer -->
+      <circle cx="90" cy="97" r="52" fill="#1c4729"/>
+      <circle cx="90" cy="97" r="26" fill="white"/>
       <!-- dimples -->
-      <circle cx="26" cy="27" r="2" fill="#ddd"/>
-      <circle cx="33" cy="24" r="2" fill="#ddd"/>
-      <circle cx="39" cy="29" r="2" fill="#ddd"/>
-      <circle cx="28" cy="34" r="2" fill="#ddd"/>
-      <circle cx="36" cy="36" r="2" fill="#ddd"/>
+      <circle cx="82" cy="91" r="3" fill="#ddd"/>
+      <circle cx="91" cy="87" r="3" fill="#ddd"/>
+      <circle cx="100" cy="93" r="3" fill="#ddd"/>
+      <circle cx="84" cy="101" r="3" fill="#ddd"/>
+      <circle cx="95" cy="103" r="3" fill="#ddd"/>
       <!-- crosshair ring -->
-      <circle cx="32" cy="32" r="22" fill="none" stroke="#ffd447" stroke-width="1.5" stroke-opacity="0.85"/>
-      <!-- crosshair ticks — top, right, bottom, left -->
-      <line x1="32" y1="4"  x2="32" y2="10" stroke="#ffd447" stroke-width="1.5" stroke-opacity="0.85" stroke-linecap="round"/>
-      <line x1="60" y1="32" x2="54" y2="32" stroke="#ffd447" stroke-width="1.5" stroke-opacity="0.85" stroke-linecap="round"/>
-      <line x1="32" y1="60" x2="32" y2="54" stroke="#ffd447" stroke-width="1.5" stroke-opacity="0.85" stroke-linecap="round"/>
-      <line x1="4"  y1="32" x2="10" y2="32" stroke="#ffd447" stroke-width="1.5" stroke-opacity="0.85" stroke-linecap="round"/>
+      <circle cx="90" cy="97" r="38" fill="none" stroke="#ffd447" stroke-width="1.5" stroke-opacity="0.85"/>
+      <!-- crosshair ticks -->
+      <line x1="90" y1="53"  x2="90" y2="62"  stroke="#ffd447" stroke-width="1.5" stroke-opacity="0.85" stroke-linecap="round"/>
+      <line x1="134" y1="97" x2="125" y2="97" stroke="#ffd447" stroke-width="1.5" stroke-opacity="0.85" stroke-linecap="round"/>
+      <line x1="90" y1="141" x2="90" y2="132" stroke="#ffd447" stroke-width="1.5" stroke-opacity="0.85" stroke-linecap="round"/>
+      <line x1="46" y1="97"  x2="55" y2="97"  stroke="#ffd447" stroke-width="1.5" stroke-opacity="0.85" stroke-linecap="round"/>
     </svg>
   </div>
 
-  <h1>Sticks &amp; Stones</h1>
-  <p class="subtitle">Golf games &amp; scoring</p>
-  <div class="section-label">Select A Game</div>
-
-  <a class="game-card" href="f1.html">
-    <div class="game-card-icon icon-f1">🏎️</div>
-    <div class="game-card-info">
-      <div class="game-card-title">Grand Prix</div>
-      <div class="game-card-desc">4-player team game. Two sides, two teams. Points by finishing position each hole.</div>
-    </div>
-    <div class="game-card-arrow">›</div>
-  </a>
-
-  <a class="game-card" href="banker.html">
-    <div class="game-card-icon icon-banker">🏦</div>
-    <div class="game-card-info">
-      <div class="game-card-title">The Banker</div>
-      <div class="game-card-desc">Hole-by-hole money game. Double up, carry over, and collect.</div>
-    </div>
-    <div class="game-card-arrow">›</div>
-  </a>
-
-  <a class="game-card" href="practice.html">
-    <div class="game-card-icon icon-practice">🏌️</div>
-    <div class="game-card-info">
-      <div class="game-card-title">Regular Round</div>
-      <div class="game-card-desc">Track a round for 1–4 players. Gross scores, hole by hole.</div>
-    </div>
-    <div class="game-card-arrow">›</div>
-  </a>
-
-  <div class="section-label" style="margin-top:20px;">Stats &amp; History</div>
-
-  <a class="stats-link" href="history.html">
-    <span class="stats-link-icon">📊</span>
-    <span class="stats-link-label">Results, Insights &amp; Round History</span>
-    <span class="stats-link-arrow">›</span>
-  </a>
-
+  <hr class="divider" style="margin-top:8px;">
+  <div id="activeSeasonsSection"></div>
+  <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px;margin-bottom:4px;">
+    <a class="stats-link" href="games.html">
+      <span class="stats-link-icon">⛳</span>
+      <span class="stats-link-label">Play a Game</span>
+      <span class="stats-link-arrow">›</span>
+    </a>
+    <a class="stats-link" href="season.html">
+      <span class="stats-link-icon">🏆</span>
+      <span class="stats-link-label">Start a Season</span>
+      <span class="stats-link-arrow">›</span>
+    </a>
+    <a class="stats-link" href="history.html">
+      <span class="stats-link-icon">📊</span>
+      <span class="stats-link-label">Scorecards &amp; Stats</span>
+      <span class="stats-link-arrow">›</span>
+    </a>
   </div>
 
-<!-- ══════════════════════════════════
-     GOLF BAG
-     ══════════════════════════════════ -->
-<div class="field-overlay" id="golfBagOverlay">
-  <div class="field-topnav">
-    <button class="field-back" onclick="closeGolfBag()">‹ Menu</button>
-    <div class="field-topnav-title">⚙️ Q Branch</div>
-    <button class="field-bag-edit-btn" id="bagEditBtn" onclick="toggleBagEdit()">Edit</button>
   </div>
-  <div class="field-scroll" id="golfBagBody"></div>
-</div>
 
 <!-- ══════════════════════════════════
      SPY MENU
@@ -419,168 +413,6 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 <script>
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js').catch(()=>{});
-}
-
-/* ══════════════════════════════════
-   GOLF BAG
-   ══════════════════════════════════ */
-const BAG_DEFAULT = [
-  {name:'Driver', carry:null, isWedge:false},
-  {name:'3W',     carry:null, isWedge:false},
-  {name:'5W',     carry:null, isWedge:false},
-  {name:'4H',     carry:null, isWedge:false},
-  {name:'5H',     carry:null, isWedge:false},
-  {name:'6i',     carry:null, isWedge:false},
-  {name:'7i',     carry:null, isWedge:false},
-  {name:'8i',     carry:null, isWedge:false},
-  {name:'9i',     carry:null, isWedge:false},
-  {name:'PW',     carry:null, isWedge:true, full:null, twoThird:null, oneThird:null, chip:null},
-  {name:'GW',     carry:null, isWedge:true, full:null, twoThird:null, oneThird:null, chip:null},
-  {name:'SW',     carry:null, isWedge:true, full:null, twoThird:null, oneThird:null, chip:null},
-  {name:'LW',     carry:null, isWedge:true, full:null, twoThird:null, oneThird:null, chip:null},
-];
-
-let bagEditMode = false;
-
-function loadBag(){
-  try{ return JSON.parse(localStorage.getItem('golfBag')||'null') || {clubs:[...BAG_DEFAULT.map(c=>({...c}))]};
-  }catch(e){ return {clubs:[...BAG_DEFAULT.map(c=>({...c}))]};  }
-}
-function saveBag(data){ localStorage.setItem('golfBag', JSON.stringify(data)); }
-
-function openGolfBag(){
-  bagEditMode = false;
-  document.getElementById('bagEditBtn').textContent = 'Edit';
-  renderBag();
-  document.getElementById('golfBagOverlay').classList.add('open');
-}
-
-// Triple-click logo → sandbox
-(function(){
-  let clicks = 0, timer;
-  document.getElementById('logoEl').addEventListener('click', ()=>{
-    clicks++;
-    clearTimeout(timer);
-    timer = setTimeout(()=>{ clicks = 0; }, 600);
-    if(clicks >= 3){ clicks = 0; clearTimeout(timer); window.location.href = 'sandbox.html'; }
-  });
-})();
-function closeGolfBag(){
-  document.getElementById('golfBagOverlay').classList.remove('open');
-}
-function toggleBagEdit(){
-  bagEditMode = !bagEditMode;
-  document.getElementById('bagEditBtn').textContent = bagEditMode ? 'Done' : 'Edit';
-  renderBag();
-}
-
-function bagVal(v){ return v!==null && v!=='' ? v : null; }
-function bagDisp(v){ return v!==null ? v : '–'; }
-
-function renderBag(){
-  let bag = loadBag();
-  let clubs = bag.clubs;
-  let nonWedges = clubs.filter(c=>!c.isWedge);
-  let wedges = clubs.filter(c=>c.isWedge);
-  let el = document.getElementById('golfBagBody');
-
-  // ── Carry distances section (non-wedges only) ──
-  let distHtml = `<div class="bag-section-label">Armoury</div>`;
-  if(!bagEditMode){
-    distHtml += `<table class="bag-table"><thead><tr><th>Weapon</th><th>Range (yds)</th></tr></thead><tbody>`;
-    nonWedges.forEach(c=>{
-      let isEmpty = c.carry===null;
-      distHtml += `<tr><td>${esc(c.name)}</td><td class="bag-dist ${isEmpty?'bag-empty':''}">${bagDisp(c.carry)}</td></tr>`;
-    });
-    distHtml += `</tbody></table>`;
-  } else {
-    distHtml += `<table class="bag-table"><thead><tr><th>Weapon</th><th>Range</th><th></th></tr></thead><tbody>`;
-    nonWedges.forEach(c=>{
-      let idx = clubs.indexOf(c);
-      distHtml += `<tr class="bag-edit-row">
-        <td><input class="bag-name-input" value="${esc(c.name)}" onchange="bagSetName(${idx},this.value)"></td>
-        <td><input class="bag-dist-input" type="number" inputmode="numeric" placeholder="–" value="${c.carry!==null?c.carry:''}" onchange="bagSetCarry(${idx},this.value)"></td>
-        <td><button class="bag-del-btn" onclick="bagDelClub(${idx})">✕</button></td>
-      </tr>`;
-    });
-    distHtml += `</tbody></table>
-      <button class="bag-add-btn" onclick="bagAddClub()">+ Add Club</button>`;
-  }
-
-  // ── Wedge matrix section ──
-  let wedgeHtml = `<div class="bag-section-label">Precision Kit</div>`;
-  if(!wedges.length){
-    wedgeHtml += `<div style="color:rgba(255,255,255,0.2);font-size:12px;text-align:center;padding:16px;">${bagEditMode?'':'Tap Edit then '}Add a wedge to get started.</div>`;
-    if(bagEditMode) wedgeHtml += `<button class="bag-add-btn" onclick="bagAddWedge()">+ Add Wedge</button>`;
-  } else if(!bagEditMode){
-    wedgeHtml += `<div style="overflow-x:auto;"><table class="bag-table">
-      <thead><tr><th>Wedge</th><th>Full</th><th>Attack</th><th>Control</th><th>Close Quarters</th></tr></thead><tbody>`;
-    wedges.forEach(c=>{
-      let globalIdx = clubs.indexOf(c);
-      let cells = ['full','twoThird','oneThird','chip'].map(k=>{
-        let isEmpty = c[k]===null;
-        return `<td class="bag-dist ${isEmpty?'bag-empty':''}">${bagDisp(c[k])}</td>`;
-      }).join('');
-      wedgeHtml += `<tr><td>${esc(c.name)}</td>${cells}</tr>`;
-    });
-    wedgeHtml += `</tbody></table></div>`;
-  } else {
-    wedgeHtml += `<div style="overflow-x:auto;"><table class="bag-table">
-      <thead><tr><th>Wedge</th><th>Full</th><th>Attack</th><th>Control</th><th>Close Quarters</th><th></th></tr></thead><tbody>`;
-    wedges.forEach(c=>{
-      let idx = clubs.indexOf(c);
-      let mkInput = (key) => `<input class="bag-dist-input" type="number" inputmode="numeric" placeholder="–" value="${c[key]!==null?c[key]:''}" onchange="bagSetWedge(${idx},'${key}',this.value)" style="width:46px;">`;
-      wedgeHtml += `<tr class="bag-edit-row">
-        <td><input class="bag-name-input" value="${esc(c.name)}" onchange="bagSetName(${idx},this.value)" style="width:48px;"></td>
-        <td>${mkInput('full')}</td>
-        <td>${mkInput('twoThird')}</td>
-        <td>${mkInput('oneThird')}</td>
-        <td>${mkInput('chip')}</td>
-        <td><button class="bag-del-btn" onclick="bagDelClub(${idx})">✕</button></td>
-      </tr>`;
-    });
-    wedgeHtml += `</tbody></table></div>
-      <button class="bag-add-btn" onclick="bagAddWedge()">+ Add Wedge</button>`;
-  }
-
-  el.innerHTML = distHtml + wedgeHtml;
-}
-
-function bagSetName(idx, val){
-  let bag = loadBag();
-  bag.clubs[idx].name = val.trim()||bag.clubs[idx].name;
-  saveBag(bag); renderBag();
-}
-function bagSetCarry(idx, val){
-  let bag = loadBag();
-  let n = parseInt(val);
-  bag.clubs[idx].carry = isNaN(n)||val==='' ? null : n;
-  // sync carry → full for wedges if full is still null
-  if(bag.clubs[idx].isWedge && bag.clubs[idx].full===null && bag.clubs[idx].carry!==null){
-    bag.clubs[idx].full = bag.clubs[idx].carry;
-  }
-  saveBag(bag); renderBag();
-}
-function bagSetWedge(idx, key, val){
-  let bag = loadBag();
-  let n = parseInt(val);
-  bag.clubs[idx][key] = isNaN(n)||val==='' ? null : n;
-  saveBag(bag); renderBag();
-}
-function bagDelClub(idx){
-  let bag = loadBag();
-  bag.clubs.splice(idx,1);
-  saveBag(bag); renderBag();
-}
-function bagAddClub(){
-  let bag = loadBag();
-  bag.clubs.push({name:'Club', carry:null, isWedge:false});
-  saveBag(bag); renderBag();
-}
-function bagAddWedge(){
-  let bag = loadBag();
-  bag.clubs.push({name:'Wedge', carry:null, isWedge:true, full:null, twoThird:null, oneThird:null, chip:null});
-  saveBag(bag); renderBag();
 }
 
 /* ══════════════════════════════════
@@ -1356,6 +1188,29 @@ function buildInsights(stats,name){
 }
 
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+(function renderActiveSeasons(){
+  try{
+    let seasons = JSON.parse(localStorage.getItem('seasons')||'[]').filter(s=>s.status==='active');
+    let el = document.getElementById('activeSeasonsSection');
+    if(!seasons.length){ el.innerHTML=''; return; }
+
+    let html = '<div class="active-seasons-label">Active Seasons</div>';
+    seasons.forEach(s=>{
+      let metaRounds = s.seasonLength ? `${s.rounds.length}/${s.seasonLength} rounds` : `${s.rounds.length} round${s.rounds.length!==1?'s':''}`;
+      html += `<a class="active-season-card" href="season.html?id=${s.id}">
+        <span class="asc-icon">🏆</span>
+        <div class="asc-body">
+          <div class="asc-name">${esc(s.name)}</div>
+          <div class="asc-meta">${metaRounds} · ${s.players.length} players</div>
+        </div>
+        <span class="asc-arrow">›</span>
+      </a>`;
+    });
+    el.innerHTML = html + '<hr class="divider" style="margin:16px 0;">';
+  }catch(e){}
+})();
+
 </script>
 </body>
 </html>
