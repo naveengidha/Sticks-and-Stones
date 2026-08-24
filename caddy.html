@@ -196,6 +196,7 @@ table.wedge-table tr.wt-roll-row td{padding-top:0;padding-bottom:10px;}
             </tr></thead>
             <tbody id="carry-body"></tbody>
           </table>
+          <button onclick="openAddClubModal()" style="width:100%;background:none;border:1px dashed rgba(255,212,71,0.3);color:rgba(255,212,71,0.6);font-size:13px;padding:10px;border-radius:8px;cursor:pointer;margin-top:10px;letter-spacing:.5px;font-family:inherit;">+ Add Club</button>
         </div>
       </div>
     </div>
@@ -248,6 +249,32 @@ table.wedge-table tr.wt-roll-row td{padding-top:0;padding-bottom:10px;}
   </div>
 </div>
 
+<!-- ══ ADD CLUB MODAL ══ -->
+<div id="custom-club-scrim" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;align-items:flex-end;justify-content:center;">
+  <div class="modal-sheet" style="padding-bottom:90px;">
+    <div class="modal-header">
+      <span class="modal-title" id="custom-club-title">Add Club</span>
+      <button class="modal-close" onclick="closeCustomClubModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;">Club Name</div>
+          <input id="custom-club-name" type="text" placeholder="e.g. 3 Wood, 2 Hybrid…" style="width:100%;padding:10px;border-radius:6px;border:1px solid rgba(184,150,46,0.3);border-bottom:2px solid rgba(184,150,46,0.5);color:white;font-size:15px;background:rgba(0,0,0,0.3);box-sizing:border-box;">
+        </div>
+        <div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;">Carry Distance (yds)</div>
+          <input id="custom-club-carry" type="number" inputmode="numeric" min="1" max="400" placeholder="e.g. 210" style="width:100%;padding:10px;border-radius:6px;border:1px solid rgba(184,150,46,0.3);border-bottom:2px solid rgba(184,150,46,0.5);color:white;font-size:15px;background:rgba(0,0,0,0.3);box-sizing:border-box;">
+        </div>
+      </div>
+      <div class="modal-actions" style="margin-top:16px;display:flex;flex-direction:column;gap:8px;">
+        <button class="mbtn-primary" onclick="saveCustomClub()">Save Club</button>
+        <button class="mbtn-danger" id="custom-club-delete-btn" onclick="deleteCustomClub()" style="display:none;">Delete Club</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ══ PILL NAV ══ -->
 <nav class="bottom-nav">
   <div class="nav-pill">
@@ -292,14 +319,14 @@ const SPEC = { driver:215,'5w':198,'4h':183,'5i':160,'6i':145,'7i':135,'8i':125,
 const WEDGE_CLUBS = ['pw','aw','sw'];
 const SWING_MULT  = [1.00, 0.83, 0.65];
 // ── State ────────────────────────────────────────────────────────
-const state = { isSetupComplete:false, anchors:null, carries:{}, locked:{}, targetYds:150 };
+const state = { isSetupComplete:false, anchors:null, carries:{}, locked:{}, targetYds:150, customClubs:[], hiddenClubs:[] };
 
 function loadState() {
-  try { const s = JSON.parse(localStorage.getItem('club-caddy-v3')||'null'); if(s) Object.assign(state,s); } catch(e){}
+  try { const s = JSON.parse(localStorage.getItem('club-caddy-v3')||'null'); if(s) Object.assign(state,s); if(!state.customClubs) state.customClubs=[]; if(!state.hiddenClubs) state.hiddenClubs=[]; } catch(e){}
 }
 function saveState() {
-  const { isSetupComplete,anchors,carries,locked,targetYds } = state;
-  localStorage.setItem('club-caddy-v3', JSON.stringify({ isSetupComplete,anchors,carries,locked,targetYds }));
+  const { isSetupComplete,anchors,carries,locked,targetYds,customClubs,hiddenClubs } = state;
+  localStorage.setItem('club-caddy-v3', JSON.stringify({ isSetupComplete,anchors,carries,locked,targetYds,customClubs,hiddenClubs }));
 }
 
 // ── Math ─────────────────────────────────────────────────────────
@@ -342,7 +369,8 @@ function initSetupListeners() {
 
 // ── Render ────────────────────────────────────────────────────────
 function renderCarryTable() {
-  document.getElementById('carry-body').innerHTML=CLUBS.map(({id,label})=>{
+  const hidden = state.hiddenClubs||[];
+  const standardRows = CLUBS.filter(({id})=>!hidden.includes(id)).map(({id,label})=>{
     const base=state.carries[id]??SPEC[id];
     const lockMark=state.locked[id]?'<span class="lock-badge">●</span>':'';
     return `<tr class="${state.locked[id]?'locked':''}" data-id="${id}">
@@ -350,8 +378,19 @@ function renderCarryTable() {
       <td class="col-adj">${adjustedCarry(base)}</td>
     </tr>`;
   }).join('');
-  document.querySelectorAll('#carry-body tr').forEach(row=>
+  const customRows = (state.customClubs||[]).map((c,i)=>{
+    return `<tr data-custom="${i}">
+      <td class="col-club">${c.label}</td>
+      <td class="col-adj">${c.carry}</td>
+    </tr>`;
+  }).join('');
+  const restoreRow = hidden.length ? `<tr><td colspan="2" style="text-align:center;padding:10px 0;"><button onclick="restoreAllClubs()" style="background:none;border:none;color:rgba(255,212,71,0.5);font-size:12px;cursor:pointer;letter-spacing:.4px;font-family:inherit;">↩ Restore ${hidden.length} removed club${hidden.length>1?'s':''}</button></td></tr>` : '';
+  document.getElementById('carry-body').innerHTML = standardRows + customRows + restoreRow;
+  document.querySelectorAll('#carry-body tr[data-id]').forEach(row=>
     row.addEventListener('click',()=>openClubModal(row.dataset.id))
+  );
+  document.querySelectorAll('#carry-body tr[data-custom]').forEach(row=>
+    row.addEventListener('click',()=>openEditCustomClub(parseInt(row.dataset.custom)))
   );
 }
 const SWING_LABELS=['Full','¾','½'];
@@ -393,8 +432,12 @@ function renderTarget(){
       bomb&&bomb!==full&&{r:bomb,type:'bomb',badgeLabel:'Bomb',swingLabel:bomb.swingLabel},
     ].filter(Boolean);
   } else {
-    const rows=CLUBS.map(({id,label})=>{
-      const base=state.carries[id]??SPEC[id], adj=adjustedCarry(base), roll=Math.round(adj*0.08);
+    const allClubs=[
+      ...CLUBS.filter(({id})=>!(state.hiddenClubs||[]).includes(id)).map(({id,label})=>{const base=state.carries[id]??SPEC[id];return{label,base};}),
+      ...(state.customClubs||[]).map(c=>({label:c.name,base:c.carry}))
+    ];
+    const rows=allClubs.map(({label,base})=>{
+      const adj=adjustedCarry(base), roll=Math.round(adj*0.08);
       const total=adj+roll, diff=total-t;
       return {label,adj,roll,total,diff,sign:diff>0?'+':'',cls:diff>0?'over':'under',absDiff:Math.abs(diff)};
     });
@@ -457,7 +500,12 @@ function openClubModal(id){
   modalTitle.textContent=club.label; modalHint.textContent=`Set base carry for ${club.label}`;
   modalInput.value=state.carries[id]??SPEC[id];
   document.getElementById('modal-stepper-row').style.display='';
-  modalActions.innerHTML=`<button class="mbtn-secondary" id="modal-reset">Reset to bag</button><button class="mbtn-primary" id="modal-save">Save</button>`;
+  modalActions.innerHTML=`<button class="mbtn-danger" id="modal-remove" style="margin-right:auto;">Remove</button><button class="mbtn-secondary" id="modal-reset">Reset to bag</button><button class="mbtn-primary" id="modal-save">Save</button>`;
+  document.getElementById('modal-remove').addEventListener('click',()=>{
+    if(!state.hiddenClubs) state.hiddenClubs=[];
+    state.hiddenClubs.push(modalClubId);
+    saveState();renderAll();closeModal();
+  });
   document.getElementById('modal-reset').addEventListener('click',()=>{
     delete state.locked[modalClubId];
     state.carries=extrapolate(state.anchors.driver,state.anchors.fiveIron);
@@ -470,8 +518,54 @@ function openClubModal(id){
   modalScrim.classList.add('open');
 }
 function closeModal(){ modalScrim.classList.remove('open'); modalClubId=null; }
+function restoreAllClubs(){ state.hiddenClubs=[]; saveState(); renderAll(); }
 document.getElementById('modal-close').addEventListener('click',closeModal);
 modalScrim.addEventListener('click',e=>{if(e.target===modalScrim)closeModal();});
+
+// ── Custom Club Modal ─────────────────────────────────────────────
+let editingCustomIdx = null;
+const customScrim = document.getElementById('custom-club-scrim');
+
+function openAddClubModal(){
+  editingCustomIdx = null;
+  document.getElementById('custom-club-title').textContent = 'Add Club';
+  document.getElementById('custom-club-name').value = '';
+  document.getElementById('custom-club-carry').value = '';
+  document.getElementById('custom-club-delete-btn').style.display = 'none';
+  customScrim.style.display = 'flex';
+}
+
+function openEditCustomClub(idx){
+  editingCustomIdx = idx;
+  const c = state.customClubs[idx];
+  if(!c) return;
+  document.getElementById('custom-club-title').textContent = 'Edit Club';
+  document.getElementById('custom-club-name').value = c.label;
+  document.getElementById('custom-club-carry').value = c.carry;
+  document.getElementById('custom-club-delete-btn').style.display = '';
+  customScrim.style.display = 'flex';
+}
+
+function saveCustomClub(){
+  const label = document.getElementById('custom-club-name').value.trim();
+  const carry = parseInt(document.getElementById('custom-club-carry').value);
+  if(!label || isNaN(carry) || carry < 1) return;
+  if(editingCustomIdx !== null){
+    state.customClubs[editingCustomIdx] = {label, carry};
+  } else {
+    state.customClubs.push({label, carry});
+  }
+  saveState(); renderCarryTable(); renderTarget(); closeCustomClubModal();
+}
+
+function deleteCustomClub(){
+  if(editingCustomIdx === null) return;
+  state.customClubs.splice(editingCustomIdx, 1);
+  saveState(); renderCarryTable(); renderTarget(); closeCustomClubModal();
+}
+
+function closeCustomClubModal(){ customScrim.style.display = 'none'; editingCustomIdx = null; }
+customScrim.addEventListener('click', e=>{ if(e.target===customScrim) closeCustomClubModal(); });
 document.getElementById('btn-minus').addEventListener('click',()=>{const v=parseInt(modalInput.value,10);if(!isNaN(v)&&v>1)modalInput.value=v-1;});
 document.getElementById('btn-plus').addEventListener('click',()=>{const v=parseInt(modalInput.value,10);if(!isNaN(v))modalInput.value=v+1;});
 
