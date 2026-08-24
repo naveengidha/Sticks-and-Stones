@@ -152,9 +152,26 @@ button.btn-danger:hover,button.btn-danger:active{background:rgba(255,77,77,0.08)
 .dnp-toggle.active{border-color:rgba(255,100,100,0.4);color:rgba(255,100,100,0.8);background:rgba(255,77,77,0.06);}
 .pts-preview{font-size:13px;color:#ffd447;font-family:'Courier New',monospace;min-width:40px;text-align:right;}
 
-/* ── Settings tab ── */
-.settings-row{margin-bottom:16px;}
+/* ── Setup cards ── */
+.setup-card{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.18);border-radius:12px;padding:16px;margin-bottom:12px;}
+.setup-card-title{font-size:10px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.5);margin:0 0 12px;}
 .settings-row label{display:block;font-size:12px;color:rgba(255,255,255,0.5);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;}
+/* ── Bracket styles ── */
+.bracket-match{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:10px;padding:12px 14px;margin-bottom:10px;}
+.bracket-match-title{font-size:10px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.5);margin-bottom:8px;}
+.bracket-team{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:14px;}
+.bracket-team:last-child{border-bottom:none;}
+.bracket-team.winner{color:#ffd447;font-weight:bold;}
+.bracket-team.loser{color:rgba(255,255,255,0.35);}
+.bracket-team-name{flex:1;}
+.bracket-result{font-size:11px;font-family:'Courier New',monospace;color:rgba(255,212,71,0.6);margin-left:8px;}
+.bracket-pending{color:rgba(255,255,255,0.2);font-style:italic;font-size:13px;padding:8px 0;}
+.bracket-log-btn{background:none;border:1px solid rgba(255,212,71,0.3);color:rgba(255,212,71,0.7);font-size:12px;padding:6px 12px;border-radius:6px;cursor:pointer;width:auto;box-shadow:none;margin:8px 0 0;letter-spacing:.3px;}
+.bracket-log-btn:hover{border-color:#ffd447;color:#ffd447;}
+.bracket-connector{text-align:center;color:rgba(255,212,71,0.2);font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:4px 0 8px;}
+.bgroup-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
+.bgroup-row .name-input{flex:2;margin-bottom:0;}
+.bgroup-sel{flex:1;min-width:80px;padding:10px 6px;border-radius:6px;border:1px solid rgba(184,150,46,0.3);border-bottom:2px solid rgba(184,150,46,0.5);color:white;font-size:13px;background:rgba(0,0,0,0.3);}
 </style>
 </head>
 <body>
@@ -176,32 +193,67 @@ button.btn-danger:hover,button.btn-danger:active{background:rgba(255,77,77,0.08)
 
         <div class="flip-front">
 
-          <div class="section-label" style="margin-top:0;">Tournament Info</div>
-          <input class="name-input" id="seasonName" placeholder="Tournament name (e.g. Summer Cup)">
-          <div class="row-setting" style="align-items:flex-start;flex-direction:column;gap:6px;">
-            <label>Rounds to play:</label>
-            <div style="display:flex;align-items:center;gap:10px;">
-              <input type="number" class="number-input" id="seasonLength" value="2" min="1" max="99" inputmode="numeric">
-              <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,0.55);cursor:pointer;text-transform:none;letter-spacing:0;">
-                <input type="checkbox" id="openEnded" onchange="toggleOpenEnded()" style="width:16px;height:16px;accent-color:#ffd447;">
-                Open-ended
-              </label>
+          <div class="setup-card">
+            <div class="setup-card-title">Tournament Info</div>
+            <input class="name-input" id="seasonName" placeholder="Tournament name (e.g. Summer Cup)">
+            <div class="row-setting" style="align-items:flex-start;flex-direction:column;gap:6px;">
+              <label>Mode:</label>
+              <div style="display:flex;gap:8px;">
+                <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,0.7);cursor:pointer;text-transform:none;letter-spacing:0;background:rgba(0,0,0,0.25);border:1px solid rgba(184,150,46,0.25);border-radius:6px;padding:8px 12px;">
+                  <input type="radio" name="tourneyMode" id="modeStandard" value="standard" checked onchange="onModeChange()" style="accent-color:#ffd447;">
+                  Standard
+                </label>
+                <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,0.7);cursor:pointer;text-transform:none;letter-spacing:0;background:rgba(0,0,0,0.25);border:1px solid rgba(184,150,46,0.25);border-radius:6px;padding:8px 12px;">
+                  <input type="radio" name="tourneyMode" id="modeBracket" value="bracket" onchange="onModeChange()" style="accent-color:#ffd447;">
+                  Bracket
+                </label>
+              </div>
+            </div>
+            <div id="standardOptions" style="margin-top:10px;">
+              <label style="font-size:12px;color:rgba(255,255,255,0.5);letter-spacing:.3px;text-transform:uppercase;">Rounds to play:</label>
+              <input type="number" class="number-input" id="seasonLength" value="2" min="1" max="99" inputmode="numeric" style="margin-top:6px;">
+            </div>
+            <div id="bracketInfo" class="hidden" style="margin-top:10px;font-size:12px;color:rgba(255,255,255,0.4);line-height:1.7;">
+              2 groups of 4 · Semi-finals (9 holes) → Winners Final + Losers Final (back 9)
             </div>
           </div>
 
-          <div class="section-label">Games to Include</div>
-          <div class="games-grid" id="gamesGrid"></div>
-
-          <div class="section-label">Players <span style="font-size:10px;color:rgba(255,255,255,0.3);font-weight:normal;text-transform:none;letter-spacing:0;">(up to 8)</span></div>
-          <div id="playerRows"></div>
-          <button class="add-player-btn" onclick="addPlayerRow()">+ Add Player</button>
-
-          <div class="section-label">Teams <span style="font-size:10px;color:rgba(255,255,255,0.3);font-weight:normal;text-transform:none;letter-spacing:0;">(optional)</span></div>
-          <div class="team-inputs">
-            <input class="name-input" id="teamA" placeholder="Team A name" style="margin-bottom:0;">
-            <input class="name-input" id="teamB" placeholder="Team B name" style="margin-bottom:0;">
+          <div class="setup-card">
+            <div class="setup-card-title">Games to Include</div>
+            <div class="games-grid" id="gamesGrid"></div>
           </div>
-          <button class="randomise-btn" onclick="randomiseTeams()">🔀 Randomise Teams</button>
+
+          <div class="setup-card">
+            <div class="setup-card-title">Players <span style="font-size:10px;color:rgba(255,255,255,0.3);font-weight:normal;text-transform:none;letter-spacing:0;">(up to 8)</span></div>
+            <div id="playerRows"></div>
+            <button class="add-player-btn" onclick="addPlayerRow()">+ Add Player</button>
+          </div>
+
+          <div class="setup-card" id="teamsCard">
+            <div class="setup-card-title">Teams <span style="font-size:10px;color:rgba(255,255,255,0.3);font-weight:normal;text-transform:none;letter-spacing:0;">(optional names)</span></div>
+            <div id="teamRows"></div>
+          </div>
+
+          <div class="setup-card" id="bracketGroupsCard" style="display:none;">
+            <div class="setup-card-title">Bracket Matchups</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:12px;">Set the semi-final pairings:</div>
+            <div style="margin-bottom:10px;">
+              <div style="font-size:11px;font-weight:bold;letter-spacing:.5px;color:rgba(255,212,71,0.6);margin-bottom:6px;text-transform:uppercase;">Semi-Final A</div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <select class="bgroup-sel" id="semiATeam1" style="flex:1;" onchange="onMatchupChange()"></select>
+                <span style="color:rgba(255,255,255,0.3);font-size:13px;">vs</span>
+                <select class="bgroup-sel" id="semiATeam2" style="flex:1;" onchange="onMatchupChange()"></select>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:11px;font-weight:bold;letter-spacing:.5px;color:rgba(255,212,71,0.6);margin-bottom:6px;text-transform:uppercase;">Semi-Final B</div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <select class="bgroup-sel" id="semiBTeam1" style="flex:1;" onchange="onMatchupChange()"></select>
+                <span style="color:rgba(255,255,255,0.3);font-size:13px;">vs</span>
+                <select class="bgroup-sel" id="semiBTeam2" style="flex:1;" onchange="onMatchupChange()"></select>
+              </div>
+            </div>
+          </div>
 
           <div id="setupError" class="error-msg">Please enter a tournament name and at least 2 player names.</div>
           <button onclick="startSeason()">Start Tournament</button>
@@ -239,8 +291,10 @@ button.btn-danger:hover,button.btn-danger:active{background:rgba(255,77,77,0.08)
     </div>
     <div id="seasonDetailMeta" style="font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:16px;"></div>
 
-    <div class="tab-bar">
+    <div class="tab-bar" id="mainTabBar">
       <button class="tab-btn active" id="tabStandingsBtn" onclick="showTab('standings')">Standings</button>
+      <button class="tab-btn" id="tabBracketBtn" onclick="showTab('bracket')" style="display:none;">Bracket</button>
+      <button class="tab-btn" id="tabBracketStandingsBtn" onclick="showTab('bracketStandings')" style="display:none;">Results</button>
       <button class="tab-btn" id="tabRoundsBtn" onclick="showTab('rounds')">Rounds</button>
       <button class="tab-btn" id="tabSettingsBtn" onclick="showTab('settings')">Settings</button>
     </div>
@@ -248,6 +302,18 @@ button.btn-danger:hover,button.btn-danger:active{background:rgba(255,77,77,0.08)
     <!-- Standings tab -->
     <div id="tabStandings">
       <div id="standingsBody"></div>
+    </div>
+
+    <!-- Bracket tab -->
+    <div id="tabBracket" class="hidden">
+      <div id="bracketBody"></div>
+    </div>
+
+    <!-- Bracket Results tab -->
+    <div id="tabBracketStandings" class="hidden">
+      <div id="bracketStandingsBody"></div>
+    </div>
+      <div id="bracketBody"></div>
     </div>
 
     <!-- Rounds tab -->
@@ -299,6 +365,17 @@ button.btn-danger:hover,button.btn-danger:active{background:rgba(255,77,77,0.08)
   </div>
 </div>
 
+<!-- ══ Bracket Result Modal ══ -->
+<div id="bracketResultModal" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span id="bracketModalTitle">Log Result</span>
+      <button class="close-btn" onclick="document.getElementById('bracketResultModal').classList.add('hidden')">✕</button>
+    </div>
+    <div class="modal-body" id="bracketModalBody"></div>
+  </div>
+</div>
+
 <script>
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js').catch(()=>{});
@@ -306,22 +383,16 @@ if('serviceWorker' in navigator){
 
 const GAME_LABELS = {
   f1:         'Grand Prix',
-  matchplay:  'Match Play',
   stableford: 'Stableford',
   stroke:     'Stroke Play',
-  wolf:       'Wolf',
-  scramble:   'Scramble',
-  foursomes:  'Foursomes',
-  vegas:      'Vegas'
+  scramble:   'Scramble'
 };
 const GAME_FILES = {
-  f1:'f1.html', matchplay:'matchplay.html', stableford:'stableford.html',
-  stroke:'practice.html', wolf:'wolf.html', scramble:'scramble.html',
-  foursomes:'foursomes.html', vegas:'vegas.html', banker:'banker.html'
+  f1:'f1.html', stableford:'stableford.html',
+  stroke:'practice.html', scramble:'scramble.html'
 };
 const GAME_ICONS = {
-  f1:'🏎️', matchplay:'⚔️', stableford:'🎯', stroke:'🏌️',
-  wolf:'🐺', scramble:'🤝', foursomes:'🔄', vegas:'🎰', banker:'🏦'
+  f1:'🏎️', stableford:'🎯', stroke:'🏌️', scramble:'🤝'
 };
 
 const TEAM_GAMES = new Set(['scramble','foursomes','vegas']);
@@ -356,7 +427,7 @@ function showSetup(){
   document.getElementById('seasonListScreen').classList.add('hidden');
   document.getElementById('seasonScreen').classList.add('hidden');
   document.getElementById('setupScreen').classList.remove('hidden');
-  document.getElementById('topnavTitle').textContent = 'New Season';
+  document.getElementById('topnavTitle').textContent = 'New Tournament';
   initSetupForm();
 }
 
@@ -373,16 +444,26 @@ function openSeason(id){
   document.getElementById('setupScreen').classList.add('hidden');
   document.getElementById('seasonScreen').classList.remove('hidden');
   document.getElementById('topnavTitle').textContent = s.name;
+  // Show/hide bracket tab
+  let isBracket = !!s.bracketMode;
+  document.getElementById('tabBracketBtn').style.display = isBracket ? '' : 'none';
+  document.getElementById('tabBracketStandingsBtn').style.display = isBracket ? '' : 'none';
+  document.getElementById('tabStandingsBtn').style.display = isBracket ? 'none' : '';
+  document.getElementById('tabRoundsBtn').style.display = isBracket ? 'none' : '';
   renderSeasonDetail();
-  showTab('standings');
+  showTab(isBracket ? 'bracket' : 'standings');
 }
 
 function showTab(tab){
-  ['standings','rounds','settings'].forEach(t=>{
-    document.getElementById('tab'+cap(t)).classList.toggle('hidden', t!==tab);
-    document.getElementById('tab'+cap(t)+'Btn').classList.toggle('active', t===tab);
+  ['standings','bracket','bracketStandings','rounds','settings'].forEach(t=>{
+    let el = document.getElementById('tab'+cap(t));
+    if(el) el.classList.toggle('hidden', t!==tab);
+    let btn = document.getElementById('tab'+cap(t)+'Btn');
+    if(btn) btn.classList.toggle('active', t===tab);
   });
   if(tab==='standings') renderStandings();
+  if(tab==='bracket') renderBracket();
+  if(tab==='bracketStandings') renderBracketStandings();
   if(tab==='rounds') renderRounds();
   if(tab==='settings') renderSettings();
 }
@@ -398,15 +479,22 @@ function renderSeasonList(){
     return;
   }
   body.innerHTML = seasons.slice().reverse().map(s=>{
-    let played = s.rounds.length;
-    let roundsMeta = s.seasonLength ? `${played}/${s.seasonLength} rounds played` : `${played} round${played!==1?'s':''} played`;
+    let meta;
+    if(s.bracketMode){
+      let m = s.bracketMatches;
+      let done = [m.semiA,m.semiB,m.winnersF,m.losersF].filter(x=>x.result).length;
+      meta = `${s.players.length} players · Bracket · ${done}/4 matches`;
+    } else {
+      let played = s.rounds.length;
+      meta = s.seasonLength ? `${played}/${s.seasonLength} rounds played` : `${played} round${played!==1?'s':''} played`;
+    }
     return `<div class="season-item" onclick="openSeason(${s.id})">
       <div class="season-item-header">
         <span class="season-item-name">${esc(s.name)}</span>
         <span class="status-badge ${s.status}">${s.status==='active'?'Active':'Complete'}</span>
       </div>
       <div class="season-item-meta">
-        ${roundsMeta}
+        ${meta}
       </div>
     </div>`;
   }).join('') + `<button onclick="showSetup()" style="margin-top:6px;">+ New Tournament</button>`;
@@ -421,12 +509,13 @@ function leadStr(s){
 
 /* ── Setup Form ── */
 function initSetupForm(){
-  // Reset
   document.getElementById('seasonName').value = '';
   document.getElementById('seasonLength').value = '2';
-  document.getElementById('openEnded').checked = false;
-  document.getElementById('seasonLength').disabled = false;
+  document.getElementById('modeStandard').checked = true;
   document.getElementById('setupError').style.display = 'none';
+  document.getElementById('standardOptions').style.display = '';
+  document.getElementById('bracketInfo').classList.add('hidden');
+  document.getElementById('bracketGroupsCard').style.display = 'none';
 
   // Flip card back to front
   let fi = document.getElementById('setupFlip');
@@ -441,12 +530,78 @@ function initSetupForm(){
       <input type="checkbox" value="${key}"> ${label}
     </label>`).join('');
 
-  // Player rows — start with 4
+  // Player rows — start with 4 for standard, 8 for bracket
   document.getElementById('playerRows').innerHTML = '';
-  for(let i=0;i<4;i++) addPlayerRow(i<2);
+  for(let i=0;i<4;i++) addPlayerRow();
 }
 
-function addPlayerRow(required){
+function onModeChange(){
+  let isBracket = document.getElementById('modeBracket').checked;
+  document.getElementById('standardOptions').style.display = isBracket ? 'none' : '';
+  document.getElementById('bracketInfo').classList.toggle('hidden', !isBracket);
+  document.getElementById('bracketGroupsCard').style.display = isBracket ? '' : 'none';
+  if(isBracket){
+    let rows = document.getElementById('playerRows');
+    while(rows.querySelectorAll('.player-setup-row').length < 8) addPlayerRow();
+    renderTeamRows();
+    renderMatchupSelects();
+  }
+}
+
+function getPlayerNames(){
+  return [...document.getElementById('playerRows').querySelectorAll('.player-setup-row')]
+    .map(r=>r.querySelector('input').value.trim());
+}
+
+function getTeamName(idx){
+  let el = document.getElementById('teamName_'+idx);
+  if(el && el.value.trim()) return el.value.trim();
+  // fallback: player1 / player2
+  let names = getPlayerNames();
+  let p1 = names[idx*2]||''; let p2 = names[idx*2+1]||'';
+  return p1&&p2 ? p1+' / '+p2 : p1||p2||('Team '+(idx+1));
+}
+
+function renderTeamRows(){
+  let names = getPlayerNames();
+  let numTeams = Math.ceil(names.length / 2);
+  let cont = document.getElementById('teamRows');
+  cont.innerHTML = '';
+  for(let ti=0; ti<numTeams; ti++){
+    let p1 = names[ti*2]||''; let p2 = names[ti*2+1]||'';
+    let placeholder = p1&&p2 ? p1+' / '+p2 : 'Team '+(ti+1);
+    let div = document.createElement('div');
+    div.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:8px;';
+    div.innerHTML = `<span style="font-size:11px;color:rgba(255,255,255,0.35);min-width:16px;text-align:right;">${ti+1}</span>
+      <input class="name-input" id="teamName_${ti}" placeholder="${esc(placeholder)}" style="margin-bottom:0;">`;
+    cont.appendChild(div);
+  }
+  renderMatchupSelects();
+}
+
+function renderMatchupSelects(){
+  let names = getPlayerNames();
+  let numTeams = Math.ceil(names.length / 2);
+  let opts = Array.from({length:numTeams},(_,ti)=>`<option value="${ti}">${esc(getTeamName(ti))}</option>`).join('');
+  ['semiATeam1','semiATeam2','semiBTeam1','semiBTeam2'].forEach((id,i)=>{
+    let el = document.getElementById(id);
+    if(!el) return;
+    let cur = el.value;
+    el.innerHTML = opts;
+    el.value = cur||String(i<2?i:i); // defaults: semiA→0v1, semiB→2v3
+  });
+  // sensible defaults
+  let sa1=document.getElementById('semiATeam1'), sa2=document.getElementById('semiATeam2');
+  let sb1=document.getElementById('semiBTeam1'), sb2=document.getElementById('semiBTeam2');
+  if(sa1&&!sa1.dataset.set){sa1.value='0';sa1.dataset.set='1';}
+  if(sa2&&!sa2.dataset.set){sa2.value='1';sa2.dataset.set='1';}
+  if(sb1&&!sb1.dataset.set){sb1.value=numTeams>2?'2':'0';sb1.dataset.set='1';}
+  if(sb2&&!sb2.dataset.set){sb2.value=numTeams>3?'3':'1';sb2.dataset.set='1';}
+}
+
+function onMatchupChange(){ /* no-op, values read at save time */ }
+
+function addPlayerRow(){
   let rows = document.getElementById('playerRows');
   let count = rows.querySelectorAll('.player-setup-row').length;
   if(count >= 8) return;
@@ -455,15 +610,10 @@ function addPlayerRow(required){
   div.className = 'player-setup-row';
   div.dataset.idx = idx;
   div.innerHTML = `
-    <input class="name-input" placeholder="Player ${idx+1}" style="margin-bottom:0;">
-    <input type="number" class="hdcp-input" placeholder="HCP" min="0" max="54" value="0" inputmode="numeric" title="Handicap index">
-    <select class="team-sel">
-      <option value="">—</option>
-      <option value="0">Team A</option>
-      <option value="1">Team B</option>
-    </select>
+    <input class="name-input" placeholder="Player ${idx+1}" style="margin-bottom:0;" oninput="renderTeamRows()">
     <button class="del-player-btn" onclick="removePlayerRow(this)" title="Remove">✕</button>`;
   rows.appendChild(div);
+  renderTeamRows();
 }
 
 function removePlayerRow(btn){
@@ -471,25 +621,11 @@ function removePlayerRow(btn){
   let rows = document.getElementById('playerRows');
   if(rows.querySelectorAll('.player-setup-row').length <= 2) return;
   row.remove();
-  // re-number placeholders
   rows.querySelectorAll('.player-setup-row').forEach((r,i)=>{
     r.dataset.idx = i;
-    r.querySelector('input[type=text], input:not([type])').placeholder = 'Player '+(i+1);
+    r.querySelector('input').placeholder = 'Player '+(i+1);
   });
-}
-
-function randomiseTeams(){
-  let rows = [...document.getElementById('playerRows').querySelectorAll('.player-setup-row')];
-  let filled = rows.filter(r=>r.querySelector('input:not([type="number"])').value.trim());
-  if(filled.length < 2) return;
-  // shuffle filled rows then assign first half to Team A, rest to Team B
-  for(let i=filled.length-1;i>0;i--){
-    let j=Math.floor(Math.random()*(i+1));
-    [filled[i],filled[j]]=[filled[j],filled[i]];
-  }
-  filled.forEach((r,i)=>{
-    r.querySelector('select').value = i < Math.ceil(filled.length/2) ? '0' : '1';
-  });
+  renderTeamRows();
 }
 
 function flipSetup(){
@@ -499,30 +635,20 @@ function flipSetup(){
   if(btn) btn.style.display = fi.classList.contains('flipped') ? 'none' : 'flex';
 }
 
-/* ── Open-ended toggle ── */
-function toggleOpenEnded(){
-  let openEnded = document.getElementById('openEnded').checked;
-  let lengthInput = document.getElementById('seasonLength');
-  lengthInput.disabled = openEnded;
-  if(openEnded) lengthInput.value = '';
-  else lengthInput.value = '2';
-}
-
 /* ── Start Season ── */
 function startSeason(){
   let name = document.getElementById('seasonName').value.trim();
+  let isBracket = document.getElementById('modeBracket').checked;
   let rows = [...document.getElementById('playerRows').querySelectorAll('.player-setup-row')];
   let players = rows.map(r=>({
-    name: r.querySelector('input:not([type="number"])').value.trim(),
-    handicap: parseInt(r.querySelector('input[type="number"]').value)||0,
-    team: r.querySelector('select').value==='' ? null : parseInt(r.querySelector('select').value)
+    name: r.querySelector('input').value.trim()
   })).filter(p=>p.name);
 
   let allowedGames = [...document.getElementById('gamesGrid').querySelectorAll('input:checked')].map(i=>i.value);
   let errEl = document.getElementById('setupError');
 
   if(!name || players.length < 2){
-    errEl.textContent = 'Please enter a season name and at least 2 player names.';
+    errEl.textContent = 'Please enter a tournament name and at least 2 player names.';
     errEl.style.display = 'block';
     return;
   }
@@ -531,23 +657,58 @@ function startSeason(){
     errEl.style.display = 'block';
     return;
   }
+  if(isBracket && players.length < 4){
+    errEl.textContent = 'Bracket mode requires at least 4 players.';
+    errEl.style.display = 'block';
+    return;
+  }
   errEl.style.display = 'none';
 
-  let teamAName = document.getElementById('teamA').value.trim()||'Team A';
-  let teamBName = document.getElementById('teamB').value.trim()||'Team B';
-  let hasTeams = players.some(p=>p.team!==null);
+  // Build teams array — pairs of players with optional custom name
+  let numTeams = Math.ceil(players.length / 2);
+  let teams = Array.from({length:numTeams},(_,ti)=>{
+    let customName = document.getElementById('teamName_'+ti)?.value.trim()||'';
+    let p1 = players[ti*2]?.name||''; let p2 = players[ti*2+1]?.name||'';
+    let name = customName || (p1&&p2?p1+' / '+p2:p1||p2||('Team '+(ti+1)));
+    return {name, playerIndices:[ti*2,ti*2+1].filter(i=>i<players.length)};
+  });
 
-  let season = {
-    id: Date.now(),
-    name,
-    createdAt: new Date().toISOString(),
-    status: 'active',
-    seasonLength: document.getElementById('openEnded').checked ? null : Math.max(1, parseInt(document.getElementById('seasonLength').value)||2),
-    players,
-    teams: hasTeams ? [{name:teamAName},{name:teamBName}] : [],
-    allowedGames,
-    rounds: []
-  };
+  let season;
+  if(isBracket){
+    let semiAT1 = parseInt(document.getElementById('semiATeam1')?.value||'0');
+    let semiAT2 = parseInt(document.getElementById('semiATeam2')?.value||'1');
+    let semiBT1 = parseInt(document.getElementById('semiBTeam1')?.value||'2');
+    let semiBT2 = parseInt(document.getElementById('semiBTeam2')?.value||'3');
+    season = {
+      id: Date.now(),
+      name,
+      createdAt: new Date().toISOString(),
+      status: 'active',
+      bracketMode: true,
+      players,
+      teams,
+      allowedGames,
+      bracketMatches: {
+        semiA: {teamA: semiAT1, teamB: semiAT2, result:null},
+        semiB: {teamA: semiBT1, teamB: semiBT2, result:null},
+        winnersF: {result:null},
+        losersF: {result:null}
+      },
+      rounds: []
+    };
+  } else {
+    season = {
+      id: Date.now(),
+      name,
+      createdAt: new Date().toISOString(),
+      status: 'active',
+      seasonLength: Math.max(1, parseInt(document.getElementById('seasonLength').value)||2),
+      players,
+      teams: [],
+      allowedGames,
+      rounds: []
+    };
+  }
 
   let seasons = loadSeasons();
   seasons.push(season);
@@ -557,8 +718,13 @@ function startSeason(){
   document.getElementById('setupScreen').classList.add('hidden');
   document.getElementById('seasonScreen').classList.remove('hidden');
   document.getElementById('topnavTitle').textContent = season.name;
+  let isBracketSeason = !!season.bracketMode;
+  document.getElementById('tabBracketBtn').style.display = isBracketSeason ? '' : 'none';
+  document.getElementById('tabBracketStandingsBtn').style.display = isBracketSeason ? '' : 'none';
+  document.getElementById('tabStandingsBtn').style.display = isBracketSeason ? 'none' : '';
+  document.getElementById('tabRoundsBtn').style.display = isBracketSeason ? 'none' : '';
   renderSeasonDetail();
-  showTab('standings');
+  showTab(isBracketSeason ? 'bracket' : 'standings');
 }
 
 /* ── Season Detail ── */
@@ -568,8 +734,15 @@ function renderSeasonDetail(){
   let badge = document.getElementById('seasonDetailBadge');
   badge.textContent = s.status==='active'?'Active':'Complete';
   badge.className = 'status-badge '+s.status;
-  let roundsMeta = s.seasonLength ? s.rounds.length+'/'+s.seasonLength+' rounds' : s.rounds.length+' round'+(s.rounds.length!==1?'s':'')+' played';
-  document.getElementById('seasonDetailMeta').textContent = roundsMeta + ' · ' + s.players.length + ' players';
+  let meta;
+  if(s.bracketMode){
+    let m = s.bracketMatches;
+    let done = [m.semiA,m.semiB,m.winnersF,m.losersF].filter(x=>x.result).length;
+    meta = `Bracket · ${done}/4 matches · ${s.players.length} players`;
+  } else {
+    meta = (s.seasonLength ? s.rounds.length+'/'+s.seasonLength+' rounds' : s.rounds.length+' round'+(s.rounds.length!==1?'s':'')+' played') + ' · ' + s.players.length + ' players';
+  }
+  document.getElementById('seasonDetailMeta').textContent = meta;
 }
 
 /* ── Standings Tab ── */
@@ -589,7 +762,7 @@ function renderStandings(){
   let rows = ind.map((p,rank)=>`
     <tr class="${rank===0&&p.pts>0?'leader':''}">
       <td><span class="rank-badge ${rankCls[rank]||''}">${rank+1}</span></td>
-      <td>${esc(p.name)}${p.teamName?`<br><span style="font-size:10px;color:rgba(255,255,255,0.4);font-family:inherit;font-weight:normal;">${esc(p.teamName)}</span>`:''}</td>
+      <td>${esc(p.name)}</td>
       <td>${p.rounds}</td>
       <td style="color:#ffd447;font-weight:bold;">${fmtPts(p.pts)}</td>
     </tr>`).join('');
@@ -599,24 +772,11 @@ function renderStandings(){
   if(!s.rounds.length){
     body.innerHTML += '<div class="no-rounds-note" style="margin-top:8px;">No rounds logged yet — standings will update as rounds are added.</div>';
   }
-
-  // Team summary
-  if(hasTeamCol){
-    let teamTotals = calcTeamTotals(s, ind);
-    let teamRows = teamTotals.map(t=>`
-      <div class="team-row">
-        <span>${esc(t.name)}</span>
-        <span class="team-pts">${fmtPts(t.pts)} pts</span>
-      </div>`).join('');
-    body.innerHTML += `<div class="team-summary"><div class="team-summary-title">Team Standings</div>${teamRows}</div>`;
-  }
 }
 
 function calcIndividualStandings(s){
   let totals = s.players.map((p,i)=>({
-    idx:i, name:p.name, handicap:p.handicap,
-    team: p.team,
-    teamName: (p.team!==null && s.teams[p.team]) ? s.teams[p.team].name : '',
+    idx:i, name:p.name,
     pts:0, rounds:0
   }));
   s.rounds.forEach(r=>{
@@ -637,6 +797,165 @@ function calcTeamTotals(s, ind){
     if(p.team!==null && teams[p.team]) teams[p.team].pts += p.pts;
   });
   return teams.sort((a,b)=>b.pts-a.pts);
+}
+
+/* ── Bracket Tab ── */
+function renderBracket(){
+  let s = activeSeason;
+  let body = document.getElementById('bracketBody');
+  let m = s.bracketMatches;
+  let teams = s.teams || [];
+
+  function teamCard(matchKey, label, teamAIdx, teamBIdx, result){
+    let tA = teams[teamAIdx] || {name:'Team '+(teamAIdx+1)};
+    let tB = teams[teamBIdx] || {name:'Team '+(teamBIdx+1)};
+    return `<div class="bracket-match">
+      <div class="bracket-match-title">${label}</div>
+      ${result
+        ? `<div class="bracket-team winner"><div class="bracket-team-name">🏆 ${esc(result.winnerName)}</div>${result.score?`<span class="bracket-result">${esc(result.score)}</span>`:''}</div>
+           <div class="bracket-team loser"><div class="bracket-team-name">${esc(result.loserName)}</div></div>
+           <button class="bracket-log-btn" onclick="openBracketResult('${matchKey}')">Edit</button>`
+        : `<div class="bracket-team"><div class="bracket-team-name">${esc(tA.name)}</div></div>
+           <div class="bracket-team"><div class="bracket-team-name">${esc(tB.name)}</div></div>
+           <button class="bracket-log-btn" onclick="openBracketResult('${matchKey}')">+ Log Result</button>`
+      }
+    </div>`;
+  }
+
+  function finalCard(matchKey, label, medal1, medal2, nameA, labelA, nameB, labelB, result, locked){
+    return `<div class="bracket-match">
+      <div class="bracket-match-title">${label}</div>
+      ${locked
+        ? `<div class="bracket-pending">Waiting for semi-finals…</div>`
+        : result
+          ? `<div class="bracket-team winner"><div class="bracket-team-name">${medal1} ${esc(result.winnerName)}</div>${result.score?`<span class="bracket-result">${esc(result.score)}</span>`:''}</div>
+             <div class="bracket-team loser"><div class="bracket-team-name">${medal2} ${esc(result.loserName)}</div></div>
+             <button class="bracket-log-btn" onclick="openBracketResult('${matchKey}')">Edit</button>`
+          : `<div class="bracket-team"><div class="bracket-team-name">${esc(nameA)}</div><div class="bracket-team-players">${esc(labelA)}</div></div>
+             <div class="bracket-team"><div class="bracket-team-name">${esc(nameB)}</div><div class="bracket-team-players">${esc(labelB)}</div></div>
+             <button class="bracket-log-btn" onclick="openBracketResult('${matchKey}')">+ Log Result</button>`
+      }
+    </div>`;
+  }
+
+  let semisLogged = m.semiA.result && m.semiB.result;
+  let wA = m.semiA.result?.winnerName||'?', wB = m.semiB.result?.winnerName||'?';
+  let lA = m.semiA.result?.loserName||'?',  lB = m.semiB.result?.loserName||'?';
+
+  body.innerHTML =
+    teamCard('semiA', 'Semi-Final A · Holes 1–9', m.semiA.teamA??0, m.semiA.teamB??1, m.semiA.result) +
+    teamCard('semiB', 'Semi-Final B · Holes 1–9', m.semiB.teamA??2, m.semiB.teamB??3, m.semiB.result) +
+    `<div class="bracket-connector">▼ Finals</div>` +
+    finalCard('winnersF','🏆 Winners Final · Holes 10–18','🥇','🥈', wA,'Winner Semi A', wB,'Winner Semi B', m.winnersF.result, !semisLogged) +
+    finalCard('losersF','Losers Final · Holes 10–18','🥉','4th', lA,'Loser Semi A', lB,'Loser Semi B', m.losersF.result, !semisLogged);
+}
+
+function renderBracketStandings(){
+  let s = activeSeason;
+  let m = s.bracketMatches;
+  let body = document.getElementById('bracketStandingsBody');
+
+  let positions = [];
+  if(m.winnersF.result){
+    positions.push({pos:1, medal:'🥇', label:'1st Place', name: m.winnersF.result.winnerName, score: m.winnersF.result.score, highlight:true});
+    positions.push({pos:2, medal:'🥈', label:'2nd Place', name: m.winnersF.result.loserName, score: null, highlight:false});
+  }
+  if(m.losersF.result){
+    positions.push({pos:3, medal:'🥉', label:'3rd Place', name: m.losersF.result.winnerName, score: m.losersF.result.score, highlight:false});
+    positions.push({pos:4, medal:'',   label:'4th Place', name: m.losersF.result.loserName,  score: null, highlight:false});
+  }
+
+  if(!positions.length){
+    body.innerHTML = '<div class="no-rounds-note">Finals not yet played — results will appear here once all matches are complete.</div>';
+    return;
+  }
+
+  let cards = positions.map(p=>`
+    <div style="background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid ${p.highlight?'rgba(255,212,71,0.45)':'rgba(255,212,71,0.15)'};border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;">
+      <div style="font-size:28px;flex-shrink:0;min-width:36px;text-align:center;">${p.medal||p.pos}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:11px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.45);margin-bottom:2px;">${p.label}</div>
+        <div style="font-size:16px;font-weight:bold;color:${p.highlight?'#ffd447':'#fff'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(p.name)}</div>
+        ${p.score?`<div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px;font-family:'Courier New',monospace;">${esc(p.score)}</div>`:''}
+      </div>
+    </div>`).join('');
+
+  body.innerHTML = cards;
+  if(positions.length < 4){
+    body.innerHTML += '<div class="no-rounds-note" style="margin-top:4px;">Losers final not yet played.</div>';
+  }
+}
+
+let bracketResultMatch = null;
+
+function openBracketResult(matchKey){
+  let s = activeSeason;
+  let m = s.bracketMatches;
+  bracketResultMatch = matchKey;
+  let teams = s.teams || [];
+
+  let teamOptions = [];
+  if(matchKey==='semiA'){
+    let ti = m.semiA.teamA??0, tj = m.semiA.teamB??1;
+    teamOptions = [teams[ti]?.name||'Team '+(ti+1), teams[tj]?.name||'Team '+(tj+1)];
+  } else if(matchKey==='semiB'){
+    let ti = m.semiB.teamA??2, tj = m.semiB.teamB??3;
+    teamOptions = [teams[ti]?.name||'Team '+(ti+1), teams[tj]?.name||'Team '+(tj+1)];
+  } else if(matchKey==='winnersF'){
+    teamOptions = [m.semiA.result?.winnerName||'?', m.semiB.result?.winnerName||'?'];
+  } else if(matchKey==='losersF'){
+    teamOptions = [m.semiA.result?.loserName||'?', m.semiB.result?.loserName||'?'];
+  }
+
+  let existing = m[matchKey]?.result;
+  let titles = {semiA:'Semi-Final A',semiB:'Semi-Final B',winnersF:'Winners Final',losersF:'Losers Final'};
+
+  document.getElementById('bracketModalTitle').textContent = titles[matchKey]||matchKey;
+  let body = document.getElementById('bracketModalBody');
+  body.innerHTML = `
+    <div class="modal-section-label">Winner</div>
+    <select class="select-input" id="brWinner">
+      ${teamOptions.map(p=>`<option value="${esc(p)}" ${existing?.winnerName===p?'selected':''}>${esc(p)}</option>`).join('')}
+    </select>
+    <div class="modal-section-label">Score / Notes <span style="font-size:10px;opacity:.5;">(optional)</span></div>
+    <input class="name-input" id="brScore" placeholder="e.g. −3 vs par, won 4&3…" value="${esc(existing?.score||'')}">
+    <button onclick="saveBracketResult()">Save Result</button>`;
+
+  document.getElementById('bracketResultModal').classList.remove('hidden');
+}
+
+function saveBracketResult(){
+  let s = activeSeason;
+  let matchKey = bracketResultMatch;
+  let m = s.bracketMatches;
+  let teams = s.teams || [];
+
+  let winnerName = document.getElementById('brWinner').value;
+  let score = document.getElementById('brScore').value.trim();
+
+  let opts = [];
+  if(matchKey==='semiA'){ let ti=m.semiA.teamA??0,tj=m.semiA.teamB??1; opts=[teams[ti]?.name||'Team '+(ti+1),teams[tj]?.name||'Team '+(tj+1)]; }
+  else if(matchKey==='semiB'){ let ti=m.semiB.teamA??2,tj=m.semiB.teamB??3; opts=[teams[ti]?.name||'Team '+(ti+1),teams[tj]?.name||'Team '+(tj+1)]; }
+  else if(matchKey==='winnersF') opts=[m.semiA.result?.winnerName||'?',m.semiB.result?.winnerName||'?'];
+  else if(matchKey==='losersF') opts=[m.semiA.result?.loserName||'?',m.semiB.result?.loserName||'?'];
+
+  let loserName = opts.find(p=>p!==winnerName) || opts[1] || '?';
+
+  let seasons = loadSeasons();
+  let sv = seasons.find(x=>x.id===s.id);
+  if(!sv) return;
+  sv.bracketMatches[matchKey].result = {winnerName, loserName, score};
+  // Auto-complete if all 4 matches done
+  if(sv.bracketMatches.semiA.result && sv.bracketMatches.semiB.result &&
+     sv.bracketMatches.winnersF.result && sv.bracketMatches.losersF.result){
+    sv.status = 'complete';
+  }
+  saveSeasons(seasons);
+  activeSeason = sv;
+
+  document.getElementById('bracketResultModal').classList.add('hidden');
+  renderBracket();
+  renderSeasonDetail();
 }
 
 /* ── Rounds Tab ── */
@@ -937,6 +1256,9 @@ function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
 /* ── Modal backdrop close ── */
 document.getElementById('logRoundModal').addEventListener('click', function(e){
   if(e.target===this) closeLogRound();
+});
+document.getElementById('bracketResultModal').addEventListener('click', function(e){
+  if(e.target===this) document.getElementById('bracketResultModal').classList.add('hidden');
 });
 
 /* ── Init ── */
