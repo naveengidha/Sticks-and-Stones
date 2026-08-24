@@ -62,7 +62,7 @@ input[type=number]{-moz-appearance:textfield;}
 .btn-ghost:hover{color:var(--gold);}
 
 /* ── Carry table ── */
-.carry-table-wrap{flex:1;overflow-y:auto;padding:12px 16px 110px;}
+.carry-table-wrap{flex:1;overflow-y:auto;padding:12px 16px 130px;}
 .carry-card{background:var(--texture),var(--bg-card);border:1px solid rgba(255,212,71,0.2);border-radius:12px;overflow:hidden;}
 table.carry-table{width:100%;border-collapse:collapse;font-size:14px;}
 table.carry-table thead th{padding:8px 14px;text-align:left;font-size:9px;font-weight:bold;text-transform:uppercase;letter-spacing:.08em;color:var(--gold-dim);border-bottom:1px solid rgba(255,212,71,0.15);background:rgba(0,0,0,0.2);}
@@ -73,7 +73,6 @@ table.carry-table tbody tr:hover,table.carry-table tbody tr:active{background:rg
 table.carry-table tbody tr.locked .col-club{color:var(--gold);}
 table.carry-table td{padding:11px 14px;}
 .col-club{font-weight:bold;font-size:14px;}
-.col-base{color:var(--muted);font-size:13px;text-align:right;font-variant-numeric:tabular-nums;}
 .col-adj{font-weight:bold;font-size:15px;color:var(--gold);text-align:right;font-variant-numeric:tabular-nums;}
 .lock-badge{font-size:9px;color:var(--gold);margin-left:4px;opacity:.7;}
 
@@ -145,7 +144,7 @@ table.wedge-table tr.wt-roll-row td{padding-top:0;padding-bottom:10px;}
 .nav-item.active{color:#ffd447;}
 .nav-item svg{width:20px;height:20px;flex-shrink:0;}
 .nav-center{background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;margin:0 4px;cursor:pointer;box-shadow:0 2px 10px rgba(184,150,46,0.5);flex-shrink:0;text-decoration:none;}
-.nav-center svg{width:26px;height:26px;}
+.nav-center svg{width:36px;height:36px;}
 </style>
 </head>
 <body>
@@ -193,7 +192,6 @@ table.wedge-table tr.wt-roll-row td{padding-top:0;padding-bottom:10px;}
           <table class="carry-table">
             <thead><tr>
               <th>Club</th>
-              <th class="col-r">Base</th>
               <th class="col-r">Carry</th>
             </tr></thead>
             <tbody id="carry-body"></tbody>
@@ -262,7 +260,7 @@ table.wedge-table tr.wt-roll-row td{padding-top:0;padding-bottom:10px;}
       Stats
     </a>
     <a class="nav-center" href="games.html">
-      <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#1a1a0a"/><circle cx="12" cy="12" r="4" fill="white"/><circle cx="9.5" cy="10.5" r="1" fill="#ccc"/><circle cx="12" cy="9" r="1" fill="#ccc"/><circle cx="14.5" cy="11" r="1" fill="#ccc"/></svg>
+      <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" fill="#1a1a0a"/><circle cx="12" cy="12" r="6.2" fill="white"/><circle cx="10.2" cy="11.2" r="1" fill="#ccc"/><circle cx="12" cy="9.5" r="1" fill="#ccc"/><circle cx="13.8" cy="11.2" r="1" fill="#ccc"/></svg>
     </a>
     <a class="nav-item" href="tournaments.html">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
@@ -349,7 +347,6 @@ function renderCarryTable() {
     const lockMark=state.locked[id]?'<span class="lock-badge">●</span>':'';
     return `<tr class="${state.locked[id]?'locked':''}" data-id="${id}">
       <td class="col-club">${label}${lockMark}</td>
-      <td class="col-base">${base}</td>
       <td class="col-adj">${adjustedCarry(base)}</td>
     </tr>`;
   }).join('');

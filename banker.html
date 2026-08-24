@@ -15,7 +15,7 @@ body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;color:#fff
 button{font-family:inherit;cursor:pointer;}
 
 /* ── Scroll area ── */
-.scroll-area{flex:1;overflow-y:auto;padding:12px 14px 16px;display:flex;justify-content:center;align-items:stretch;}
+.scroll-area{flex:1;overflow-y:auto;padding:12px 14px 110px;display:flex;justify-content:center;align-items:stretch;}
 
 /* ── Container ── */
 .container{width:100%;max-width:480px;display:flex;flex-direction:column;}
@@ -27,35 +27,13 @@ button{font-family:inherit;cursor:pointer;}
 button{width:auto;padding:0;border:none;border-radius:0;font-size:inherit;font-weight:inherit;background:none;box-shadow:none;margin:0;letter-spacing:normal;}
 
 /* ── Setup card ── */
-.setup-card{
-  background:
-    repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),
-    repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),
-    #0e1a12;
-  border-radius:20px;
-  border:3px solid #8B6914;
-  box-shadow:0 8px 32px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,212,71,0.08);
-  padding:20px 20px 20px;
-  position:relative;
-  overflow:hidden;
-}
-.setup-card::before{
-  content:'♠';
-  position:absolute;
-  font-size:320px;
-  color:rgba(255,212,71,0.025);
-  top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  pointer-events:none;
-  line-height:1;
-}
+.setup-card{background:none;border:none;box-shadow:none;padding:0;}
 .setup-card h2{
   text-align:center;
   color:#ffd447;
-  font-size:20px;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  margin-bottom:4px;
+  font-size:22px;
+  letter-spacing:.5px;
+  margin:0 0 2px;
   font-family:'Georgia','Times New Roman',serif;
 }
 .setup-card-sub{
@@ -64,67 +42,78 @@ button{width:auto;padding:0;border:none;border-radius:0;font-size:inherit;font-w
   letter-spacing:2px;
   text-transform:uppercase;
   color:rgba(255,212,71,0.4);
-  margin-bottom:14px;
-  border-bottom:1px solid rgba(255,212,71,0.15);
-  padding-bottom:10px;
+  margin-bottom:10px;
+}
+.setup-section{
+  background:
+    repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),
+    repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),
+    #0e1a12;
+  border:1px solid rgba(255,212,71,0.2);
+  border-radius:10px;
+  padding:10px 12px;
+  margin-bottom:8px;
 }
 .setup-section-label{
   font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;
-  color:rgba(255,212,71,0.4);
-  margin:12px 0 8px;
-  text-align:center;
-  border-bottom:1px solid rgba(255,212,71,0.15);
+  color:rgba(255,212,71,0.45);
+  margin:0 0 10px;
   padding-bottom:6px;
+  border-bottom:1px solid rgba(255,212,71,0.1);
 }
-.setup-player-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.setup-player-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.player-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.player-grid .setup-player-row{margin-bottom:0;}
+.date-course-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .mode-toggle{display:flex;border:1px solid rgba(255,212,71,0.3);border-radius:4px;overflow:hidden;cursor:pointer;}
-.mode-opt{padding:5px 12px;font-size:12px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.35);background:rgba(0,0,0,0.3);transition:all .15s;user-select:none;-webkit-user-select:none;}
+.mode-opt{padding:4px 10px;font-size:12px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.35);background:rgba(0,0,0,0.3);transition:all .15s;user-select:none;-webkit-user-select:none;}
 .mode-opt.active{color:#ffd447;background:rgba(255,212,71,0.12);font-weight:bold;}
 .name-input{
-  flex:1;padding:8px 12px;
+  flex:1;padding:7px 10px;
   box-sizing:border-box;
   border-radius:4px;
   border:1px solid rgba(255,212,71,0.2);
   border-bottom:2px solid rgba(255,212,71,0.4);
-  color:#fff;font-size:15px;
+  color:#fff;font-size:14px;
   background:rgba(0,0,0,0.4);
   font-family:'Courier New',monospace;
-  letter-spacing:.3px;
+  letter-spacing:.3px;width:100%;
 }
 .name-input::placeholder{color:rgba(255,255,255,0.25);}
 .name-input:focus{outline:none;border-color:rgba(255,212,71,0.7);background:rgba(0,0,0,0.55);}
 .course-input{
-  width:100%;max-width:100%;box-sizing:border-box;margin-bottom:8px;
-  padding:10px 12px;
+  width:100%;max-width:100%;box-sizing:border-box;margin-bottom:0;
+  padding:7px 10px;
   border-radius:4px;
   border:1px solid rgba(255,212,71,0.2);
   border-bottom:2px solid rgba(255,212,71,0.4);
-  font-size:15px;
+  font-size:14px;
   background:rgba(0,0,0,0.4);
   color:#fff;font-family:'Courier New',monospace;
 }
 .course-input::placeholder{color:rgba(255,255,255,0.25);}
 .course-input:focus{outline:none;border-color:rgba(255,212,71,0.7);background:rgba(0,0,0,0.55);}
 input[type="date"].course-input{-webkit-appearance:none;appearance:none;}
-.row-setting{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:8px;margin-bottom:8px;}
+.row-setting{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:6px;margin-bottom:6px;}
+.row-setting:last-child{margin-bottom:0;}
 .row-setting label{font-size:11px;white-space:nowrap;color:rgba(255,212,71,0.55);text-transform:uppercase;letter-spacing:.8px;text-align:right;}
 .row-setting .row-control{display:flex;align-items:center;gap:6px;}
 .select-input{
   box-sizing:border-box;
-  padding:8px 10px;border-radius:4px;
+  padding:6px 8px;border-radius:4px;
   border:1px solid rgba(255,212,71,0.25);
-  font-size:14px;
+  font-size:13px;
   background:rgba(0,0,0,0.4);
   color:#ffd447;
   font-family:'Courier New',monospace;
 }
 .start-btn{
-  width:100%;padding:12px;
+  width:100%;padding:11px;
   border:none;border-radius:6px;
   font-size:14px;font-weight:bold;
   background:linear-gradient(135deg,#8B6914,#ffd447,#8B6914);
   color:#0a0a00;cursor:pointer;
-  margin-top:6px;
+  margin-top:8px;
   box-shadow:0 2px 16px rgba(184,150,46,0.5);
   letter-spacing:2px;text-transform:uppercase;
   font-family:'Georgia','Times New Roman',serif;
@@ -160,11 +149,6 @@ input[type="date"].course-input{-webkit-appearance:none;appearance:none;}
   font-family:'Georgia',serif;
 }
 .flip-btn:active{background:rgba(255,212,71,0.2);color:#ffd447;}
-.topnav{display:flex;align-items:center;background:#0e1a12;padding:10px 16px;gap:12px;flex-shrink:0;border-bottom:2px solid #8B6914;box-shadow:0 2px 12px rgba(0,0,0,0.5);}
-.back-btn{background:none;border:none;color:#ffd447;font-size:15px;font-weight:bold;cursor:pointer;padding:4px 8px 4px 0;white-space:nowrap;display:flex;align-items:center;gap:6px;width:auto;}
-.back-btn:hover{color:#ffcc2a;}
-.topnav-title{font-size:15px;font-weight:bold;color:#ffd447;flex:1;text-align:center;letter-spacing:.5px;}
-.topnav-spacer{width:70px;}
 .flip-back-btn{
   background:none;
   border:1px solid rgba(255,212,71,0.2);
@@ -790,15 +774,16 @@ td{font-family:'Courier New',monospace;color:rgba(255,255,255,0.75);}
 }
 
 .hidden{display:none!important;}
+.bottom-nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:1000;pointer-events:none;}
+.nav-pill{display:flex;align-items:center;gap:2px;background:#0e1a12;border:1px solid rgba(255,212,71,0.28);border-radius:50px;padding:6px 10px;box-shadow:0 4px 24px rgba(0,0,0,0.6);pointer-events:all;}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 14px;border-radius:40px;cursor:pointer;text-decoration:none;color:rgba(255,212,71,0.35);font-size:9px;font-weight:bold;letter-spacing:.5px;text-transform:uppercase;transition:color .15s;}
+.nav-item.active{color:#ffd447;}
+.nav-item svg{width:20px;height:20px;flex-shrink:0;}
+.nav-center{background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;margin:0 4px;cursor:pointer;box-shadow:0 2px 10px rgba(184,150,46,0.5);flex-shrink:0;border:none;}.nav-center svg{width:36px;height:36px;}
 </style>
 </head>
 <body>
 
-<div class="topnav">
-  <button class="back-btn" onclick="goBack()">‹ Menu</button>
-  <div class="topnav-title">The Banker</div>
-  <div class="topnav-spacer"></div>
-</div>
 
 <div class="scroll-area">
 <div class="container">
@@ -812,58 +797,61 @@ td{font-family:'Courier New',monospace;color:rgba(255,255,255,0.75);}
           <div class="flip-front">
             <h2 onclick="handleInsightTap()" style="cursor:default;-webkit-user-select:none;user-select:none;">Banker</h2>
             <div class="setup-card-sub">New Round</div>
-            <div class="setup-section-label">Date</div>
-            <input type="date" class="course-input" id="roundDate">
-            <div class="setup-section-label">Players</div>
-            <div id="playerRows">
-              <div class="setup-player-row"><input class="name-input" id="name0" placeholder="Player 1"></div>
-              <div class="setup-player-row"><input class="name-input" id="name1" placeholder="Player 2"></div>
-              <div class="setup-player-row"><input class="name-input" id="name2" placeholder="Player 3"></div>
-              <div class="setup-player-row"><input class="name-input" id="name3" placeholder="Player 4"></div>
-            </div>
-            <div class="setup-section-label">Settings</div>
-            <div class="row-setting">
-              <label>Starting Banker:</label>
-              <div class="row-control">
-                <select id="startBankerSelect" class="select-input">
-                  <option value="0">Player 1</option>
-                  <option value="1">Player 2</option>
-                  <option value="2">Player 3</option>
-                  <option value="3">Player 4</option>
-                </select>
+
+            <div class="setup-section">
+              <div class="setup-section-label">Date &amp; Course</div>
+              <div class="date-course-row">
+                <input type="date" class="course-input" id="roundDate">
+                <input type="text" class="course-input" id="courseInput" placeholder="Course (optional)" autocomplete="off">
               </div>
             </div>
-            <div class="row-setting">
-              <label>Mode:</label>
-              <div class="row-control">
-                <div class="mode-toggle" id="modeToggle" onclick="togglePointsMode()">
-                  <span class="mode-opt active" id="modeOptMoney">$</span>
-                  <span class="mode-opt" id="modeOptPoints">pts</span>
+
+            <div class="setup-section">
+              <div class="setup-section-label">Players</div>
+              <div class="player-grid" id="playerRows">
+                <div class="setup-player-row"><input class="name-input" id="name0" placeholder="Player 1"></div>
+                <div class="setup-player-row"><input class="name-input" id="name1" placeholder="Player 2"></div>
+                <div class="setup-player-row"><input class="name-input" id="name2" placeholder="Player 3"></div>
+                <div class="setup-player-row"><input class="name-input" id="name3" placeholder="Player 4"></div>
+              </div>
+            </div>
+
+            <div class="setup-section">
+              <div class="setup-section-label">Settings</div>
+              <div class="row-setting">
+                <label>Starting Banker:</label>
+                <div class="row-control">
+                  <select id="startBankerSelect" class="select-input">
+                    <option value="0">Player 1</option>
+                    <option value="1">Player 2</option>
+                    <option value="2">Player 3</option>
+                    <option value="3">Player 4</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row-setting">
+                <label id="holeValueLabel">Hole Value:</label>
+                <div class="row-control">
+                  <input type="number" id="minValue" value="1" min="1" inputmode="numeric" class="select-input" style="width:56px;">
+                  <span style="color:rgba(255,255,255,0.4);font-size:13px;">to</span>
+                  <input type="number" id="maxValue" value="5" min="1" inputmode="numeric" class="select-input" style="width:56px;">
+                </div>
+              </div>
+              <div class="row-setting">
+                <label>Holes:</label>
+                <div class="row-control">
+                  <select id="holesSelect" class="select-input">
+                    <option value="3">3</option>
+                    <option value="6">6</option>
+                    <option value="9">9</option>
+                    <option value="18" selected>18</option>
+                  </select>
                 </div>
               </div>
             </div>
-            <div class="row-setting">
-              <label id="holeValueLabel">Hole Value:</label>
-              <div class="row-control">
-                <input type="number" id="minValue" value="1" min="1" inputmode="numeric" class="select-input" style="width:56px;">
-                <span style="color:rgba(255,255,255,0.4);font-size:13px;">to</span>
-                <input type="number" id="maxValue" value="5" min="1" inputmode="numeric" class="select-input" style="width:56px;">
-              </div>
-            </div>
-            <div class="row-setting">
-              <label>Holes:</label>
-              <div class="row-control">
-                <select id="holesSelect" class="select-input">
-                  <option value="3">3</option>
-                  <option value="6">6</option>
-                  <option value="9">9</option>
-                  <option value="18" selected>18</option>
-                </select>
-              </div>
-            </div>
+
             <button class="start-btn" onclick="startGame()">Deal In</button>
             <div id="nameError">Enter at least 2 player names.</div>
-            <div style="padding-bottom:32px;"></div>
           </div>
 
           <div class="flip-back">
@@ -889,16 +877,6 @@ td{font-family:'Courier New',monospace;color:rgba(255,255,255,0.75);}
       <button class="flip-btn" onclick="flipCard('setupFlip')" title="How to play">i</button>
     </div>
 
-    <div class="trophy-card">
-      <a class="trophy-card-link" href="history.html?tab=banker">
-        <div class="trophy-card-icon">🏆</div>
-        <div class="trophy-card-text">
-          <div class="trophy-card-title">Standings &amp; Scorecards</div>
-          <div class="trophy-card-sub">All-time results &amp; round history</div>
-        </div>
-        <div class="trophy-card-chevron">›</div>
-      </a>
-    </div>
   </div>
 
   <!-- ══ GAME ══ -->
@@ -1039,6 +1017,42 @@ if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js').catch(()=>{});
 }
 
+function saveActiveState(){
+  let existing = {};
+  try{ existing = JSON.parse(localStorage.getItem('activeGame_banker')||'{}'); }catch(e){}
+  localStorage.setItem('activeGame_banker', JSON.stringify({
+    hole, totalHoles, courseName, playerNames: [...playerNames], playerWagersBase: [...playerWagersBase],
+    bankerIdx, minValue, maxValue,
+    playerNetTotals: [...playerNetTotals],
+    holeHistory: holeHistory.map(h=>({...h, scores:[...h.scores], matchups:h.matchups.map(m=>({...m}))})),
+    holePar, holeYards, casinoTitlesMode,
+    carryovers: [...carryovers], playerScores: [...playerScores],
+    startedAt: existing.startedAt || new Date().toISOString()
+  }));
+}
+
+function restoreActiveState(){
+  try{
+    let s = JSON.parse(localStorage.getItem('activeGame_banker')||'null');
+    if(!s || !s.playerNames || !s.hole) return false;
+    hole = s.hole; totalHoles = s.totalHoles; courseName = s.courseName||'';
+    playerNames = s.playerNames; playerWagersBase = s.playerWagersBase||[];
+    bankerIdx = s.bankerIdx||0; minValue = s.minValue||1; maxValue = s.maxValue||5;
+    playerNetTotals = s.playerNetTotals||[]; holeHistory = s.holeHistory||[];
+    holePar = s.holePar||4; holeYards = s.holeYards||0;
+    casinoTitlesMode = s.casinoTitlesMode||false;
+    carryovers = s.carryovers||new Array(playerNames.length).fill(0);
+    playerScores = s.playerScores||new Array(playerNames.length).fill(null);
+    document.getElementById('setupScreen').classList.add('hidden');
+    document.getElementById('gameScreen').classList.remove('hidden');
+    renderHoleHeader();
+    renderTable();
+    renderStandings();
+    renderCarryoverStrip();
+    return true;
+  }catch(e){ return false; }
+}
+
 document.addEventListener('DOMContentLoaded', ()=>{
   const today = new Date();
   const yyyy = today.getFullYear();
@@ -1052,6 +1066,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     document.getElementById('name'+i).addEventListener('input', updateBankerDropdown);
   });
   updateBankerDropdown();
+  restoreActiveState();
 });
 
 function updateBankerDropdown(){
@@ -1114,7 +1129,7 @@ function startGame(){
   courseName = '';
   totalHoles = Math.min(36, Math.max(1, Number(document.getElementById('holesSelect').value)||18));
   casinoTitlesMode = false;
-  pointsMode = document.getElementById('modeOptPoints').classList.contains('active');
+  pointsMode = false;
 
   document.getElementById('setupScreen').classList.add('hidden');
   document.getElementById('gameScreen').classList.remove('hidden');
@@ -1334,6 +1349,7 @@ function resolveHole(){
     putts: [...playerPutts],
     blownSave: [...playerBlownSave]
   });
+  saveActiveState();
 
   bankerIdx = nextBankerIdx;
   renderStandings();
@@ -1489,7 +1505,7 @@ function saveGameResult(){
     let record = {
       id: Date.now(),
       game: 'banker',
-      course: '',
+      course: document.getElementById('courseInput')?.value.trim()||'',
       date: new Date(document.getElementById('roundDate').value+'T12:00:00').toISOString(),
       players: [...playerNames],
       minValue, maxValue, pointsMode,
@@ -1503,6 +1519,7 @@ function saveGameResult(){
 }
 
 function endGame(){
+  localStorage.removeItem('activeGame_banker');
   saveGameResult();
   document.getElementById('gameScreen').classList.add('hidden');
   document.getElementById('summaryScreen').classList.remove('hidden');
@@ -2501,5 +2518,28 @@ function renderAllPlayersStats(){
 }
 </script>
 <script src="season.js"></script>
+<nav class="bottom-nav">
+  <div class="nav-pill">
+    <a class="nav-item" href="index.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/><line x1="4" y1="14" x2="20" y2="14" stroke-width="1.5" stroke-dasharray="2 2"/></svg>
+      Rounds
+    </a>
+    <a class="nav-item" href="history.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
+      Stats
+    </a>
+    <button class="nav-center" onclick="goBack()">
+      <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" fill="#1a1a0a"/><circle cx="12" cy="12" r="6.2" fill="white"/><circle cx="10.2" cy="11.2" r="1" fill="#ccc"/><circle cx="12" cy="9.5" r="1" fill="#ccc"/><circle cx="13.8" cy="11.2" r="1" fill="#ccc"/></svg>
+    </button>
+    <a class="nav-item" href="tournaments.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Tourneys
+    </a>
+    <a class="nav-item" href="caddy.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><line x1="9" y1="2" x2="9" y2="6"/><line x1="15" y1="2" x2="15" y2="6"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
+      Caddy
+    </a>
+  </div>
+</nav>
 </body>
 </html>

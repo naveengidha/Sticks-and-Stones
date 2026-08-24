@@ -12,32 +12,31 @@
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;}
-.topnav{display:flex;align-items:center;background:#0e1a12;padding:10px 16px;gap:12px;flex-shrink:0;border-bottom:2px solid #8B6914;box-shadow:0 2px 12px rgba(0,0,0,0.5);}
-.back-btn{background:none;border:none;color:#ffd447;font-size:15px;font-weight:bold;cursor:pointer;padding:4px 8px 4px 0;white-space:nowrap;display:flex;align-items:center;gap:6px;width:auto;}
-.back-btn:hover{color:#ffcc2a;}
-.topnav-title{font-size:15px;font-weight:bold;color:#ffd447;flex:1;text-align:center;letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;}
-.topnav-spacer{width:70px;}
 h2{text-align:center;margin-top:0;color:#ffd447;letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;}
 h3{text-align:center;margin-top:0;color:rgba(255,255,255,0.75);}
-.scroll-area{flex:1;overflow-y:auto;padding:20px 16px 40px;display:flex;justify-content:center;}
-.container{
-  background:
-    repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),
-    repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),
-    #0e1a12;
-  border:3px solid #8B6914;
-  padding:24px 20px;border-radius:12px;width:100%;max-width:480px;
-  box-shadow:0 8px 32px rgba(0,0,0,0.7);position:relative;
-}
-.setup-player-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
-.name-input{flex:1;padding:10px;border-radius:6px;border:1px solid rgba(255,212,71,0.2);border-bottom:2px solid rgba(255,255,255,0.15);color:white;font-size:15px;background:rgba(0,0,0,0.4);}
-.name-input.black{border-left:3px solid #000!important;border-bottom:2px solid #000!important;}
-.name-input.red{border-left:3px solid #e10600!important;border-bottom:2px solid rgba(225,6,0,0.5)!important;}
-.name-input::placeholder{color:rgba(255,255,255,0.35);}
-.row-setting{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
-.row-setting label{font-size:12px;white-space:nowrap;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:.5px;}
-.select-input{padding:8px 10px;border-radius:6px;border:1px solid rgba(255,212,71,0.25);font-size:15px;background:rgba(0,0,0,0.4);color:white;}
-.course-input{width:100%;margin-bottom:12px;padding:10px;border-radius:6px;border:1px solid rgba(255,212,71,0.2);border-bottom:2px solid rgba(255,212,71,0.4);font-size:15px;background:rgba(0,0,0,0.4);color:white;}
+.scroll-area{flex:1;overflow-y:auto;padding:20px 16px 110px;display:flex;justify-content:center;}
+.container{width:100%;max-width:480px;}
+.setup-player-row{display:flex;align-items:center;gap:8px;margin-bottom:0;}
+.name-input{flex:1;padding:7px 10px;box-sizing:border-box;border-radius:4px;border:1px solid rgba(255,212,71,0.2);border-bottom:2px solid rgba(255,212,71,0.4);color:#fff;font-size:14px;background:rgba(0,0,0,0.4);font-family:'Courier New',monospace;letter-spacing:.3px;width:100%;}
+.name-input.black{border-left:3px solid rgba(255,255,255,0.5)!important;}
+.name-input.red{border-left:3px solid #e10600!important;}
+.name-input::placeholder{color:rgba(255,255,255,0.25);}
+.name-input:focus{outline:none;border-color:rgba(255,212,71,0.7);background:rgba(0,0,0,0.55);}
+.course-input{width:100%;max-width:100%;box-sizing:border-box;margin-bottom:0;padding:7px 10px;border-radius:4px;border:1px solid rgba(255,212,71,0.2);border-bottom:2px solid rgba(255,212,71,0.4);font-size:14px;background:rgba(0,0,0,0.4);color:#fff;font-family:'Courier New',monospace;}
+.course-input::placeholder{color:rgba(255,255,255,0.25);}
+.course-input:focus{outline:none;border-color:rgba(255,212,71,0.7);background:rgba(0,0,0,0.55);}
+input[type="date"].course-input{-webkit-appearance:none;appearance:none;}
+.row-setting{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:6px;margin-bottom:6px;}
+.row-setting:last-child{margin-bottom:0;}
+.row-setting label{font-size:11px;white-space:nowrap;color:rgba(255,212,71,0.55);text-transform:uppercase;letter-spacing:.8px;text-align:right;}
+.row-setting .row-control{display:flex;align-items:center;gap:6px;}
+.select-input{box-sizing:border-box;padding:6px 8px;border-radius:4px;border:1px solid rgba(255,212,71,0.25);font-size:13px;background:rgba(0,0,0,0.4);color:#ffd447;font-family:'Courier New',monospace;}
+.setup-section{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:10px;padding:10px 12px;margin-bottom:8px;}
+.setup-section-label{font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.45);margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(255,212,71,0.1);}
+.player-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.date-course-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.start-btn{width:100%;padding:11px;border:none;border-radius:6px;font-size:14px;font-weight:bold;background:linear-gradient(135deg,#8B6914,#ffd447,#8B6914);color:#0a0a00;cursor:pointer;margin-top:8px;box-shadow:0 2px 16px rgba(184,150,46,0.5);letter-spacing:2px;text-transform:uppercase;font-family:'Georgia','Times New Roman',serif;}
+.start-btn:active{opacity:.85;}
 #nameError{color:#ff6b6b;font-size:13px;display:none;}
 button{width:100%;padding:13px;border:none;border-radius:8px;font-size:15px;font-weight:bold;background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);color:#1a1a0a;cursor:pointer;margin-bottom:4px;box-shadow:0 2px 8px rgba(184,150,46,0.4);letter-spacing:.5px;}
 button:hover,button:active{background:linear-gradient(135deg,#b8912e,#ffc93a,#b8912e);}
@@ -50,8 +49,10 @@ button.btn-secondary:hover,button.btn-secondary:active{background:rgba(255,212,7
 .player-box input[type=number]{padding:10px 4px;border-radius:6px;border:1px solid rgba(255,212,71,0.2);text-align:center;font-size:22px;font-weight:bold;width:100%;background:rgba(0,0,0,0.4);color:white;font-family:'Courier New',monospace;}
 .player-box input.black{border-color:rgba(255,255,255,0.2);border-bottom:2px solid #000;}
 .player-box input.red{border-bottom:2px solid rgba(225,6,0,0.5);}
-.results{margin-top:16px;background:rgba(0,0,0,0.3);padding:14px;border-radius:8px;border:1px solid rgba(255,212,71,0.15);border-top:2px solid rgba(255,212,71,0.3);}
-.results h3{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.6);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(255,212,71,0.15);font-family:'Georgia',serif;}
+.game-card{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:10px;padding:14px 16px;margin-bottom:8px;}
+.game-card-label{font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.45);margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(255,212,71,0.1);}
+.results{background:none;padding:0;border-radius:0;border:none;}
+.results h3{font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.45);margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(255,212,71,0.1);font-family:inherit;}
 .result-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.07);font-size:15px;}
 .result-row:last-child{border-bottom:none;}
 .pos-badge{display:inline-block;width:26px;height:26px;line-height:26px;border-radius:3px;text-align:center;font-size:11px;font-weight:bold;margin-right:6px;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);letter-spacing:0;}
@@ -103,16 +104,16 @@ td{font-family:'Courier New',monospace;}
 .par-btn.active{background:rgba(225,6,0,0.2);border-color:#e10600;color:#ff4422;}
 .dist-input{width:72px;padding:7px 8px;border-radius:6px;border:1px solid rgba(225,6,0,0.3);background:rgba(0,0,0,0.25);color:#fff;font-size:14px;text-align:center;}
 .rules-note{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.7;text-align:center;margin-top:4px;}
+.bottom-nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:1000;pointer-events:none;}
+.nav-pill{display:flex;align-items:center;gap:2px;background:#0e1a12;border:1px solid rgba(255,212,71,0.28);border-radius:50px;padding:6px 10px;box-shadow:0 4px 24px rgba(0,0,0,0.6);pointer-events:all;}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 14px;border-radius:40px;cursor:pointer;text-decoration:none;color:rgba(255,212,71,0.35);font-size:9px;font-weight:bold;letter-spacing:.5px;text-transform:uppercase;transition:color .15s;}
+.nav-item.active{color:#ffd447;}
+.nav-item svg{width:20px;height:20px;flex-shrink:0;}
+.nav-center{background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227)!important;border-radius:50%!important;width:48px!important;height:48px!important;display:flex!important;align-items:center;justify-content:center;margin:0 4px;padding:0!important;cursor:pointer;box-shadow:0 2px 10px rgba(184,150,46,0.5);flex-shrink:0;border:none;}.nav-center svg{width:36px;height:36px;}
 </style>
 </head>
 <body>
 
-<!-- Top Nav -->
-<div class="topnav">
-  <button class="back-btn" onclick="goBack()">‹ Menu</button>
-  <div class="topnav-title" id="topnavTitle">Grand Prix</div>
-  <div class="topnav-spacer"></div>
-</div>
 
 <div class="scroll-area">
 <div class="container">
@@ -123,37 +124,49 @@ td{font-family:'Courier New',monospace;}
       <div class="flip-inner" id="setupFlip">
 
         <div class="flip-front">
-          <h2>New Game</h2>
-          <input class="course-input" id="courseInput" placeholder="Course name (optional)">
-          <input type="date" class="course-input" id="roundDate">
-          <div id="playerRows">
-            <div class="setup-player-row">
-          <div class="row-setting" style="margin-bottom:12px;">
-            <label style="font-size:12px;white-space:nowrap;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:.5px;">Season:</label>
-            <select id="seasonSelect" class="select-input" onchange="onSeasonPick()" style="flex:1;">
-              <option value="">None (casual round)</option>
-            </select>
-          </div>
-              <input class="name-input black" id="name0" placeholder="Player 1 (Black Team)">
-            </div>
-            <div class="setup-player-row">
-              <input class="name-input black" id="name1" placeholder="Player 2 (Black Team)">
-            </div>
-            <div class="setup-player-row">
-              <input class="name-input red" id="name2" placeholder="Player 3 (Red Team)">
-            </div>
-            <div class="setup-player-row">
-              <input class="name-input red" id="name3" placeholder="Player 4 (Red Team)">
+          <h2 style="text-align:center;color:#ffd447;font-size:22px;letter-spacing:.5px;margin:0 0 2px;font-family:'Georgia','Times New Roman',serif;">Grand Prix</h2>
+          <div style="text-align:center;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.4);margin-bottom:10px;">New Round</div>
+
+          <div class="setup-section">
+            <div class="setup-section-label">Date &amp; Course</div>
+            <div class="date-course-row">
+              <input type="date" class="course-input" id="roundDate">
+              <input class="course-input" id="courseInput" placeholder="Course (optional)">
             </div>
           </div>
-          <div class="row-setting" style="margin-top:12px;">
-            <label>Holes:</label>
-            <select id="holesSelect" class="select-input">
-              <option value="9">9</option>
-              <option value="18" selected>18</option>
-            </select>
+
+          <div class="setup-section">
+            <div class="setup-section-label">Players</div>
+            <div class="player-grid" id="playerRows">
+              <div class="setup-player-row"><input class="name-input black" id="name0" placeholder="Player 1 (Black)"></div>
+              <div class="setup-player-row"><input class="name-input black" id="name1" placeholder="Player 2 (Black)"></div>
+              <div class="setup-player-row"><input class="name-input red" id="name2" placeholder="Player 3 (Red)"></div>
+              <div class="setup-player-row"><input class="name-input red" id="name3" placeholder="Player 4 (Red)"></div>
+            </div>
           </div>
-          <button onclick="startGame()">Start Game</button>
+
+          <div class="setup-section">
+            <div class="setup-section-label">Settings</div>
+            <div class="row-setting">
+              <label>Season:</label>
+              <div class="row-control">
+                <select id="seasonSelect" class="select-input" onchange="onSeasonPick()" style="flex:1;">
+                  <option value="">None (casual round)</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-setting">
+              <label>Holes:</label>
+              <div class="row-control">
+                <select id="holesSelect" class="select-input">
+                  <option value="9">9</option>
+                  <option value="18" selected>18</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <button class="start-btn" onclick="startGame()">Start Game</button>
           <div id="nameError">Please enter all 4 player names.</div>
         </div>
 
@@ -185,45 +198,53 @@ td{font-family:'Courier New',monospace;}
       <span id="courseNameLabel" style="font-size:11px;color:rgba(255,212,71,0.5);letter-spacing:.5px;text-transform:uppercase;display:none;"></span>
       <h2 style="margin-top:2px;">Hole <span id="holeLabel">1</span></h2>
     </div>
-    <div class="hole-info-row">
-      <div class="par-btns">
-        <span class="par-btns-label">Par</span>
-        <button type="button" class="par-btn" onclick="setPar(3)">3</button>
-        <button type="button" class="par-btn" onclick="setPar(4)">4</button>
-        <button type="button" class="par-btn" onclick="setPar(5)">5</button>
-      </div>
-      <input type="number" class="dist-input" id="distInput" inputmode="numeric" placeholder="Yds" min="1">
-    </div>
 
-    <div class="score-row">
-      <div class="player-box">
-        <label id="p1Label"></label>
-        <input class="black" type="number" inputmode="numeric" id="p1" placeholder="–">
-      </div>
-      <div class="player-box">
-        <label id="p2Label"></label>
-        <input class="black" type="number" inputmode="numeric" id="p2" placeholder="–">
-      </div>
-      <div class="player-box">
-        <label id="p3Label"></label>
-        <input class="red" type="number" inputmode="numeric" id="p3" placeholder="–">
-      </div>
-      <div class="player-box">
-        <label id="p4Label"></label>
-        <input class="red" type="number" inputmode="numeric" id="p4" placeholder="–">
+    <div class="game-card">
+      <div class="game-card-label">Hole Info</div>
+      <div class="hole-info-row">
+        <div class="par-btns">
+          <span class="par-btns-label">Par</span>
+          <button type="button" class="par-btn" onclick="setPar(3)">3</button>
+          <button type="button" class="par-btn" onclick="setPar(4)">4</button>
+          <button type="button" class="par-btn" onclick="setPar(5)">5</button>
+        </div>
+        <input type="number" class="dist-input" id="distInput" inputmode="numeric" placeholder="Yds" min="1">
       </div>
     </div>
 
-    <button onclick="calculateHole()">✓ Next Hole</button>
-    <div id="holeError" style="color:#ff6b6b;font-size:13px;margin:6px 0 0;display:none;"></div>
-    <br>
-    <div class="results">
-      <h3 style="margin-top:0;">Standings</h3>
-      <div id="standingsList"></div>
-      <div class="team" id="teamTotals"></div>
+    <div class="game-card">
+      <div class="game-card-label">Scores</div>
+      <div class="score-row">
+        <div class="player-box">
+          <label id="p1Label"></label>
+          <input class="black" type="number" inputmode="numeric" id="p1" placeholder="–">
+        </div>
+        <div class="player-box">
+          <label id="p2Label"></label>
+          <input class="black" type="number" inputmode="numeric" id="p2" placeholder="–">
+        </div>
+        <div class="player-box">
+          <label id="p3Label"></label>
+          <input class="red" type="number" inputmode="numeric" id="p3" placeholder="–">
+        </div>
+        <div class="player-box">
+          <label id="p4Label"></label>
+          <input class="red" type="number" inputmode="numeric" id="p4" placeholder="–">
+        </div>
+      </div>
     </div>
-    <br>
+
+    <div class="game-card">
+      <div class="results">
+        <h3 style="margin-top:0;">Standings</h3>
+        <div id="standingsList"></div>
+        <div class="team" id="teamTotals"></div>
+      </div>
+    </div>
+
     <button class="btn-secondary" onclick="openScorecard()">📋 View Scorecard</button>
+    <div id="holeError" style="color:#ff6b6b;font-size:13px;margin:6px 0 0;display:none;"></div>
+    <button onclick="calculateHole()" style="margin-top:8px;">✓ Next Hole</button>
 
     <!-- Scorecard modal -->
     <div id="scorecardModal" class="hidden modal">
@@ -353,7 +374,6 @@ function setPar(p){
 
 function updateHoleInfo(){
   document.getElementById('holeLabel').textContent = hole;
-  document.getElementById('topnavTitle').textContent = `Grand Prix`;
   let cnl = document.getElementById('courseNameLabel');
   cnl.textContent = courseName; cnl.style.display = courseName ? '' : 'none';
   document.querySelectorAll('.par-btn').forEach(b=>b.classList.toggle('active', Number(b.textContent)===currentPar));
@@ -403,6 +423,7 @@ function calculateHole(){
 
   if(hole === totalHoles){ endGame(); return; }
 
+  saveActiveState();
   hole++;
   updateHoleInfo();
   [1,2,3,4].forEach(n => { document.getElementById('p'+n).value = ''; });
@@ -447,6 +468,8 @@ function renderPreviewTable(){
 }
 
 let lastSavedRecord = null;
+
+document.addEventListener('DOMContentLoaded', () => { restoreActiveState(); });
 
 (function populateSeasonPicker(){
   try{
@@ -512,10 +535,10 @@ function saveGameResult(){
 }
 
 function endGame(){
+  localStorage.removeItem('activeGame_f1');
   saveGameResult();
   document.getElementById('gameScreen').classList.add('hidden');
   document.getElementById('finalScreen').classList.remove('hidden');
-  document.getElementById('topnavTitle').textContent = 'Grand Prix';
   let tbody = document.querySelector('#resultsTable tbody');
   for(let i=0;i<totalHoles;i++){
     let par = holeParDist[i]?.par ?? '-';
@@ -550,6 +573,42 @@ function newGame(){
   window.location.reload();
 }
 
+function saveActiveState(){
+  let existing = {};
+  try{ existing = JSON.parse(localStorage.getItem('activeGame_f1')||'{}'); }catch(e){}
+  localStorage.setItem('activeGame_f1', JSON.stringify({
+    hole, totalHoles, courseName, playerNames, playerTotals: [...playerTotals],
+    teamTotalsRunning: [...teamTotalsRunning],
+    scoreHistory: scoreHistory.map(r=>[...r]),
+    pointHistory: pointHistory.map(r=>[...r]),
+    holeParDist: [...holeParDist], currentPar,
+    startedAt: existing.startedAt || new Date().toISOString()
+  }));
+}
+
+function restoreActiveState(){
+  try{
+    let s = JSON.parse(localStorage.getItem('activeGame_f1')||'null');
+    if(!s || !s.playerNames || !s.hole) return false;
+    hole = s.hole; totalHoles = s.totalHoles; courseName = s.courseName||'';
+    playerNames = s.playerNames; playerTotals = s.playerTotals||[0,0,0,0];
+    teamTotalsRunning = s.teamTotalsRunning||[0,0];
+    scoreHistory = s.scoreHistory||[]; pointHistory = s.pointHistory||[];
+    holeParDist = s.holeParDist||[]; currentPar = s.currentPar||4;
+    ['p1Label','p2Label','p3Label','p4Label'].forEach((id,i) => {
+      let el = document.getElementById(id);
+      if(el) el.textContent = playerNames[i]||'';
+    });
+    document.getElementById('setupScreen').classList.add('hidden');
+    document.getElementById('gameScreen').classList.remove('hidden');
+    updateHoleInfo();
+    renderStandings();
+    document.getElementById('teamTotals').textContent =
+      'Black: '+teamTotalsRunning[0].toFixed(1)+'  ·  Red: '+teamTotalsRunning[1].toFixed(1);
+    return true;
+  }catch(e){ return false; }
+}
+
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function flipCard(id){
@@ -560,5 +619,28 @@ function flipCard(id){
 }
 </script>
 <script src="season.js"></script>
+<nav class="bottom-nav">
+  <div class="nav-pill">
+    <a class="nav-item" href="index.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/><line x1="4" y1="14" x2="20" y2="14" stroke-width="1.5" stroke-dasharray="2 2"/></svg>
+      Rounds
+    </a>
+    <a class="nav-item" href="history.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
+      Stats
+    </a>
+    <button class="nav-center" onclick="goBack()">
+      <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" fill="#1a1a0a"/><circle cx="12" cy="12" r="6.2" fill="white"/><circle cx="10.2" cy="11.2" r="1" fill="#ccc"/><circle cx="12" cy="9.5" r="1" fill="#ccc"/><circle cx="13.8" cy="11.2" r="1" fill="#ccc"/></svg>
+    </button>
+    <a class="nav-item" href="tournaments.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Tourneys
+    </a>
+    <a class="nav-item" href="caddy.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><line x1="9" y1="2" x2="9" y2="6"/><line x1="15" y1="2" x2="15" y2="6"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
+      Caddy
+    </a>
+  </div>
+</nav>
 </body>
 </html>

@@ -1,4 +1,4 @@
-const CACHE = 'golf-pwa-v109';
+const CACHE = 'golf-pwa-v158';
 const BASE = self.location.pathname.replace(/\/sw\.js$/, '');
 const ASSETS = [
   BASE + '/index.html',
@@ -7,14 +7,12 @@ const ASSETS = [
   BASE + '/f1.html',
   BASE + '/banker.html',
   BASE + '/practice.html',
+  BASE + '/caddy.html',
   BASE + '/history.html',
   BASE + '/wolf.html',
   BASE + '/scramble.html',
-  BASE + '/foursomes.html',
-  BASE + '/vegas.html',
   BASE + '/season.html',
   BASE + '/season.js',
-  BASE + '/matchplay.html',
   BASE + '/courses.json',
   BASE + '/manifest.json',
   BASE + '/icons/icon-192.png',

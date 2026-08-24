@@ -84,6 +84,12 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 .ins-muted{font-size:11px;color:rgba(255,255,255,0.38);}
 .tag-good{color:#2ecc71;font-weight:bold;}
 .tag-bad{color:#ff4d4d;font-weight:bold;}
+.sboard{width:100%;border-collapse:collapse;font-size:13px;padding:4px 0;}
+.sboard th{font-size:9px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);padding:8px 12px 6px;border-bottom:1px solid rgba(255,212,71,0.1);}
+.sboard td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;vertical-align:top;}
+.sboard tr:last-child td{border-bottom:none;}
+.rank-num{display:inline-block;width:18px;font-size:11px;color:rgba(255,255,255,0.35);font-family:'Courier New',monospace;}
+.mono{font-family:'Courier New',monospace;}
 /* ── Pill nav ── */
 .bottom-nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:1000;pointer-events:none;}
 .nav-pill{display:flex;align-items:center;gap:2px;background:#0e1a12;border:1px solid rgba(255,212,71,0.28);border-radius:50px;padding:6px 10px;box-shadow:0 4px 24px rgba(0,0,0,0.6);pointer-events:all;}
@@ -92,7 +98,7 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 .nav-item.active{color:#ffd447;}
 .nav-item svg{width:20px;height:20px;flex-shrink:0;}
 .nav-center{background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;margin:0 4px;cursor:pointer;box-shadow:0 2px 10px rgba(184,150,46,0.5);flex-shrink:0;text-decoration:none;}
-.nav-center svg{width:26px;height:26px;}
+.nav-center svg{width:36px;height:36px;}
 .page-header{padding:16px 16px 4px;font-size:22px;font-weight:bold;color:#ffd447;letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;text-align:center;}
 </style>
 </head>
@@ -108,11 +114,7 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
       <span class="pill active" data-game="all">All</span>
       <span class="pill" data-game="f1">Grand Prix</span>
       <span class="pill" data-game="stableford">Stableford</span>
-      <span class="pill" data-game="wolf">Wolf</span>
       <span class="pill" data-game="scramble">Scramble</span>
-      <span class="pill" data-game="matchplay">Match Play</span>
-      <span class="pill" data-game="foursomes">Foursomes</span>
-      <span class="pill" data-game="vegas">Vegas</span>
       <span class="pill" data-game="banker">Banker</span>
       <span class="pill" data-game="stroke">Stroke Play</span>
     </div>
@@ -126,8 +128,8 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 
 const GAME_LABELS = {
-  f1:'Grand Prix', stableford:'Stableford', wolf:'Wolf', banker:'Banker',
-  matchplay:'Match Play', scramble:'Scramble', foursomes:'Foursomes', vegas:'Vegas', stroke:'Stroke Play'
+  f1:'Grand Prix', stableford:'Stableford', banker:'Banker',
+  matchplay:'Match Play', scramble:'Scramble', stroke:'Stroke Play'
 };
 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -148,6 +150,16 @@ document.getElementById('insightsFilterBar').addEventListener('click', e=>{
 /* ══════════════════════════════════════
    INSIGHTS TAB
 ══════════════════════════════════════ */
+function sboardTable(headers, rows){
+  let cols = '<colgroup><col style="width:5%"><col style="width:38%"><col style="width:14%"><col style="width:14%"><col style="width:14%"><col style="width:15%"></colgroup>';
+  let th = headers.map((h,i)=>`<th style="text-align:${i===0||i===1?'left':'right'}">${h}</th>`).join('');
+  let tr = rows.map(cells=>{
+    let tds = cells.map((c,i)=>`<td style="text-align:${i===0||i===1?'left':'right'}">${c}</td>`).join('');
+    return `<tr>${tds}</tr>`;
+  }).join('');
+  return `<table class="sboard">${cols}<thead><tr>${th}</tr></thead><tbody>${tr}</tbody></table>`;
+}
+
 function renderInsights(){
   let el = document.getElementById('insightsContent');
   let all = loadHistory();
@@ -158,164 +170,388 @@ function renderInsights(){
 
   let sections = '';
   let gamesToShow = insightsFilter === 'all'
-    ? ['f1','stableford','wolf','scramble','banker','stroke']
+    ? ['f1','stableford','scramble','banker','stroke']
     : [insightsFilter];
 
-  // Formats where higher total = better (f1, stableford, wolf)
-  ['f1','stableford','wolf'].filter(g=>gamesToShow.includes(g)).forEach(game=>{
-    let rounds = all.filter(r=>r.game===game && r.players && r.playerTotals);
-    if(!rounds.length) return;
-    let players = {};
-    rounds.forEach(r=>{
-      let max = Math.max(...r.playerTotals);
-      r.players.forEach((name,i)=>{
-        if(!players[name]) players[name]={rounds:0,total:0,wins:0};
-        players[name].rounds++;
-        players[name].total += r.playerTotals[i]||0;
-        if(r.playerTotals[i]===max) players[name].wins++;
-      });
-    });
-    let rows = Object.entries(players).sort((a,b)=>(b[1].total/b[1].rounds)-(a[1].total/a[1].rounds))
-      .map(([name,p])=>{
-        let avg = (p.total/p.rounds).toFixed(1);
-        let winPct = Math.round(p.wins/p.rounds*100)+'%';
-        return `<div class="ins-row">
-          <span class="ins-name">${esc(name)} <span class="ins-muted">${p.rounds}r</span></span>
-          <span style="text-align:right;">
-            <span class="ins-val">${avg}</span>
-            <span class="ins-muted"> avg &nbsp;</span>
-            <span class="${p.wins>0?'tag-good':''}">${winPct}</span>
-            <span class="ins-muted"> W</span>
-          </span>
-        </div>`;
-      }).join('');
-    sections += `<div class="section-title">${GAME_LABELS[game]}</div>
-      <div class="ins-panel"><div class="ins-panel-title">Avg pts · Win %</div>${rows}</div>`;
-  });
-
-  // Scramble
-  if(gamesToShow.includes('scramble')){
-    let scrambleRounds = all.filter(r=>r.game==='scramble' && r.teamNames && r.teamScores);
-    if(scrambleRounds.length){
-      let teams = {};
-      scrambleRounds.forEach(r=>{
-        r.teamNames.forEach((name,ti)=>{
-          if(!teams[name]) teams[name]={rounds:0,wins:0,totalScore:0,players:[]};
-          teams[name].rounds++;
-          teams[name].totalScore += r.teamScores[ti]||0;
-          let won = r.teamScores[ti] < r.teamScores[1-ti];
-          if(won) teams[name].wins++;
-          // collect player names for this team
-          let ps = Array.isArray(r.playerNames?.[ti]) ? r.playerNames[ti] : [];
-          ps.filter(Boolean).forEach(p=>{ if(!teams[name].players.includes(p)) teams[name].players.push(p); });
+  // Grand Prix — team + individual
+  if(gamesToShow.includes('f1')){
+    let rounds = all.filter(r=>r.game==='f1' && r.players && r.playerTotals);
+    if(rounds.length){
+      // Individual standings
+      let players = {};
+      rounds.forEach(r=>{
+        let sorted = r.players.map((n,i)=>({n,pts:r.playerTotals[i]||0})).sort((a,b)=>b.pts-a.pts);
+        r.players.forEach((name,i)=>{
+          if(!players[name]) players[name]={rounds:0,total:0,wins:0,podiums:0};
+          players[name].rounds++;
+          players[name].total += r.playerTotals[i]||0;
+          let rank = sorted.findIndex(p=>p.n===name);
+          if(rank===0) players[name].wins++;
+          if(rank<=2) players[name].podiums++;
         });
       });
-      let rows = Object.entries(teams).sort((a,b)=>b[1].wins-a[1].wins)
-        .map(([name,t])=>{
-          let avg = (t.totalScore/t.rounds).toFixed(1);
-          let winPct = Math.round(t.wins/t.rounds*100)+'%';
-          let playerStr = t.players.length ? `<span class="ins-muted"> (${t.players.map(esc).join(', ')})</span>` : '';
-          return `<div class="ins-row">
-            <span class="ins-name">${esc(name)}${playerStr} <span class="ins-muted">${t.rounds}r</span></span>
-            <span style="text-align:right;">
-              <span class="ins-val">${avg}</span>
-              <span class="ins-muted"> avg &nbsp;</span>
-              <span class="${t.wins>0?'tag-good':''}">${winPct}</span>
-              <span class="ins-muted"> W</span>
-            </span>
-          </div>`;
-        }).join('');
-      sections += `<div class="section-title">Scramble</div>
-        <div class="ins-panel"><div class="ins-panel-title">Avg score · Win %</div>${rows}</div>`;
+      let iRows = Object.entries(players)
+        .sort((a,b)=>b[1].total-a[1].total)
+        .map(([name,p],rank)=>[
+          `<span class="rank-num">${rank+1}</span>`,
+          esc(name),
+          `<span class="ins-val mono">${Number.isInteger(p.total)?p.total:p.total.toFixed(1)}</span>`,
+          p.wins,
+          p.podiums,
+          p.rounds
+        ]);
+      sections += `<div class="section-title">Grand Prix — Individual</div>
+        <div class="ins-panel">${sboardTable(['#','Player','Pts','Wins','Podiums','Rounds'], iRows)}</div>`;
+
+      // Team standings (black vs red)
+      let teams = {Black:{total:0,wins:0,podiums:0,rounds:0,players:[]}, Red:{total:0,wins:0,podiums:0,rounds:0,players:[]}};
+      rounds.forEach(r=>{
+        let bt = (r.playerTotals[0]||0)+(r.playerTotals[1]||0);
+        let rt = (r.playerTotals[2]||0)+(r.playerTotals[3]||0);
+        teams.Black.total += bt; teams.Black.rounds++;
+        teams.Red.total += rt; teams.Red.rounds++;
+        if(bt>rt) teams.Black.wins++; else if(rt>bt) teams.Red.wins++;
+        let allSorted = r.players.map((n,i)=>({team:i<2?'Black':'Red',pts:r.playerTotals[i]||0})).sort((a,b)=>b.pts-a.pts);
+        allSorted.slice(0,3).forEach(p=>{ teams[p.team].podiums++; });
+        // collect unique player names per team
+        (r.players||[]).forEach((n,i)=>{
+          let t = i<2?'Black':'Red';
+          if(n && !teams[t].players.includes(n)) teams[t].players.push(n);
+        });
+      });
+      let tRows = Object.entries(teams)
+        .sort((a,b)=>b[1].total-a[1].total)
+        .map(([name,t],rank)=>{
+          let playerStr = t.players.length ? `<br><span class="ins-muted" style="font-size:11px">${t.players.map(esc).join(', ')}</span>` : '';
+          return [
+            `<span class="rank-num">${rank+1}</span>`,
+            `<span style="color:${name==='Black'?'rgba(255,255,255,0.7)':'#e74c3c'};font-weight:bold">${name}</span>`+playerStr,
+            `<span class="ins-val mono">${Number.isInteger(t.total)?t.total:t.total.toFixed(1)}</span>`,
+            t.wins,
+            t.podiums,
+            t.rounds
+          ];
+        });
+      sections += `<div class="section-title">Grand Prix — Teams</div>
+        <div class="ins-panel">${sboardTable(['#','Team','Pts','Wins','Podiums','Rounds'], tRows)}</div>`;
     }
   }
 
-  // Stroke Play (lowest total wins)
-  if(gamesToShow.includes('stroke')){
-    let strokeRounds = all.filter(r=>r.game==='stroke' && r.players && r.playerTotals);
-    if(strokeRounds.length){
+  // Stableford — individual
+  if(gamesToShow.includes('stableford')){
+    let rounds = all.filter(r=>r.game==='stableford' && r.players && r.playerTotals);
+    if(rounds.length){
       let players = {};
-      strokeRounds.forEach(r=>{
-        let min = Math.min(...r.playerTotals);
+      rounds.forEach(r=>{
+        let max = Math.max(...r.playerTotals);
         r.players.forEach((name,i)=>{
           if(!players[name]) players[name]={rounds:0,total:0,wins:0};
           players[name].rounds++;
           players[name].total += r.playerTotals[i]||0;
+          if(r.playerTotals[i]===max) players[name].wins++;
+        });
+      });
+      let rows = Object.entries(players)
+        .sort((a,b)=>(b[1].total/b[1].rounds)-(a[1].total/a[1].rounds))
+        .map(([name,p],rank)=>{
+          let avg = (p.total/p.rounds).toFixed(1);
+          return [
+            `<span class="rank-num">${rank+1}</span>`,
+            esc(name),
+            `<span class="ins-val mono">${p.total}</span>`,
+            `<span class="ins-muted">${avg}</span>`,
+            p.wins,
+            p.rounds
+          ];
+        });
+      // Score distribution sub-table
+      let dist = {};
+      rounds.forEach(r=>{
+        if(!r.scoreHistory || !r.holeParDist) return;
+        r.players.forEach((name,pi)=>{
+          if(!dist[name]) dist[name]={eagle:0,birdie:0,par:0,bogey:0,double:0,holes:0};
+          r.scoreHistory.forEach((hole,hi)=>{
+            let s=hole[pi], par=r.holeParDist[hi]?.par;
+            if(s==null||par==null) return;
+            let d=s-par;
+            dist[name].holes++;
+            if(d<=-2) dist[name].eagle++;
+            else if(d===-1) dist[name].birdie++;
+            else if(d===0) dist[name].par++;
+            else if(d===1) dist[name].bogey++;
+            else dist[name].double++;
+          });
+        });
+      });
+      let pct=(n,t)=>t?Math.round(n/t*100)+'%':'–';
+      let dRows = Object.entries(dist)
+        .sort((a,b)=>(players[b[0]]?.total/players[b[0]]?.rounds||0)-(players[a[0]]?.total/players[a[0]]?.rounds||0))
+        .map(([name,d],rank)=>[
+          `<span class="rank-num">${rank+1}</span>`,
+          esc(name),
+          `<span class="ins-muted">${pct(d.birdie+d.eagle,d.holes)}</span>`,
+          `<span class="ins-muted">${pct(d.par,d.holes)}</span>`,
+          `<span class="ins-muted">${pct(d.bogey,d.holes)}</span>`,
+          `<span class="ins-muted">${pct(d.double,d.holes)}</span>`
+        ]);
+      sections += `<div class="section-title">Stableford</div>
+        <div class="ins-panel">${sboardTable(['#','Player','Pts','Avg','Wins','Rounds'], rows)}</div>
+        <div class="section-title" style="margin-top:4px;">Score Distribution</div>
+        <div class="ins-panel">${sboardTable(['#','Player','Birdie+%','Par%','Bogey%','Dbl+%'], dRows)}</div>`;
+    }
+  }
+
+  // Scramble — team standings
+  if(gamesToShow.includes('scramble')){
+    let rounds = all.filter(r=>r.game==='scramble' && r.teamNames && r.teamScores);
+    if(rounds.length){
+      let teams = {};
+      rounds.forEach(r=>{
+        r.teamNames.forEach((name,ti)=>{
+          if(!teams[name]) teams[name]={rounds:0,wins:0,totalScore:0,totalVsPar:0,players:[]};
+          teams[name].rounds++;
+          teams[name].totalScore += r.teamScores[ti]||0;
+          // Use saved teamVsPar directly — avoids 9-hole vs 18-hole par mismatch
+          teams[name].totalVsPar += (r.teamVsPar&&r.teamVsPar[ti]!=null) ? r.teamVsPar[ti] : 0;
+          let won = r.teamScores[ti] < r.teamScores[1-ti];
+          if(won) teams[name].wins++;
+          let ps = Array.isArray(r.playerNames?.[ti]) ? r.playerNames[ti] : [];
+          ps.filter(Boolean).forEach(p=>{ if(!teams[name].players.includes(p)) teams[name].players.push(p); });
+        });
+      });
+      let rows = Object.entries(teams)
+        .sort((a,b)=>b[1].wins-a[1].wins)
+        .map(([name,t],rank)=>{
+          let avgScore = (t.totalScore/t.rounds).toFixed(1);
+          let avgVp = t.totalVsPar / t.rounds;
+          let avgVpR = Math.round(avgVp);
+          let vpStr = avgVpR===0?'E':avgVpR>0?'+'+avgVpR:String(avgVpR);
+          let vpCls = avgVp<0?'tag-good':avgVp>0?'tag-bad':'ins-muted';
+          let playerStr = t.players.length ? `<br><span class="ins-muted" style="font-size:11px">${t.players.map(esc).join(', ')}</span>` : '';
+          return [
+            `<span class="rank-num">${rank+1}</span>`,
+            esc(name)+playerStr,
+            `<span class="ins-val mono">${avgScore}</span>`,
+            `<span class="${vpCls}">${vpStr}</span>`,
+            t.rounds,
+            t.wins
+          ];
+        });
+      sections += `<div class="section-title">Team Scramble</div>
+        <div class="ins-panel">${sboardTable(['#','Team','Score','To Par','Rounds','Wins'], rows)}</div>`;
+
+      // Avg score by par sub-table
+      let scrambleWithHoles = all.filter(r=>r.game==='scramble' && r.teamNames && r.holeHistory && r.holeHistory.length);
+      if(scrambleWithHoles.length){
+        let parStats = {}; // teamName -> {3:{total,count}, 4:{total,count}, 5:{total,count}, birdies, holesPlayed}
+        scrambleWithHoles.forEach(r=>{
+          r.teamNames.forEach((name,ti)=>{
+            if(!parStats[name]) parStats[name]={3:{t:0,n:0},4:{t:0,n:0},5:{t:0,n:0},birdies:0,holesPlayed:0};
+            (r.holeHistory||[]).forEach(h=>{
+              let p = h.par;
+              if(p>=3 && p<=5 && h.scores && h.scores[ti]!=null){
+                parStats[name][p].t += h.scores[ti];
+                parStats[name][p].n++;
+                parStats[name].holesPlayed++;
+                if(h.vsPar && h.vsPar[ti]!=null ? h.vsPar[ti]<0 : h.scores[ti]<p) parStats[name].birdies++;
+              }
+            });
+          });
+        });
+        let pRows = Object.entries(parStats)
+          .sort((a,b)=>{
+            let avgA = Object.values(a[1]).reduce((s,v)=>s+(v.n?v.t/v.n:0),0);
+            let avgB = Object.values(b[1]).reduce((s,v)=>s+(v.n?v.t/v.n:0),0);
+            return avgA - avgB;
+          })
+          .map(([name,ps],rank)=>{
+            let fmt = (pv,par) => pv.n ? `<span class="${pv.t/pv.n<par?'tag-good':pv.t/pv.n>par?'tag-bad':''}">${(pv.t/pv.n).toFixed(1)}</span>` : '<span class="ins-muted">—</span>';
+            let birdiePct = ps.holesPlayed>0 ? Math.round(ps.birdies/ps.holesPlayed*100)+'%' : '—';
+            let birdieCls = ps.holesPlayed>0 && ps.birdies/ps.holesPlayed>=0.3 ? 'tag-good' : '';
+            return [
+              `<span class="rank-num">${rank+1}</span>`,
+              teams[name]?.players?.length ? `${esc(name)}<br><span class="ins-muted" style="font-size:10px">${teams[name].players.map(esc).join(', ')}</span>` : esc(name),
+              fmt(ps[3],3),
+              fmt(ps[4],4),
+              fmt(ps[5],5),
+              `<span class="${birdieCls}">${birdiePct}</span>`
+            ];
+          });
+        if(pRows.length){
+          sections += `<div class="section-title" style="margin-top:4px;">Team Scramble — Avg by Par</div>
+            <div class="ins-panel">${sboardTable(['#','Team','Par 3','Par 4','Par 5','Birdie%'], pRows)}</div>`;
+        }
+      }
+    }
+  }
+
+  // Banker — individual (money only)
+  if(gamesToShow.includes('banker')){
+    let rounds = all.filter(r=>r.game==='banker' && r.players && r.playerNetTotals);
+    if(rounds.length){
+      let players = {};
+      rounds.forEach(r=>{
+        let nets = r.playerNetTotals;
+        let max = Math.max(...nets);
+        let min = Math.min(...nets);
+        r.players.forEach((name,i)=>{
+          if(!players[name]) players[name]={rounds:0,net:0,wins:0,losses:0};
+          players[name].rounds++;
+          players[name].net += nets[i]||0;
+          if(nets[i]===max && max>0) players[name].wins++;
+          if(nets[i]===min && min<0) players[name].losses++;
+        });
+      });
+      let rows = Object.entries(players)
+        .sort((a,b)=>b[1].net-a[1].net)
+        .map(([name,p],rank)=>{
+          let sign = p.net>0?'+':p.net<0?'-':'';
+          let netStr = sign+'$'+Math.abs(p.net);
+          let netCls = p.net>0?'tag-good':p.net<0?'tag-bad':'ins-muted';
+          let winPct = p.wins+p.losses>0 ? Math.round(p.wins/(p.wins+p.losses)*100)+'%' : '—';
+          return [
+            `<span class="rank-num">${rank+1}</span>`,
+            esc(name),
+            `<span class="${netCls} mono" style="font-weight:bold">${netStr}</span>`,
+            p.wins,
+            p.losses,
+            winPct
+          ];
+        });
+      sections += `<div class="section-title">Banker</div>
+        <div class="ins-panel">${sboardTable(['#','Player','Net $','Wins','Losses','Win %'], rows)}</div>`;
+
+      // Banker performance sub-table (requires holeHistory)
+      let bankerRoundsWithHistory = all.filter(r=>r.game==='banker' && r.players && r.holeHistory);
+      if(bankerRoundsWithHistory.length){
+        let bperf = {};
+        bankerRoundsWithHistory.forEach(r=>{
+          r.players.forEach(name=>{ if(!bperf[name]) bperf[name]={holesAsBank:0,doubles:0,bankWins:0,bankLosses:0,netAsBank:0}; });
+          (r.holeHistory||[]).forEach(h=>{
+            let bankerName = r.players[h.bankerIdx];
+            if(!bankerName) return;
+            bperf[bankerName].holesAsBank++;
+            let anyDouble = (h.matchups||[]).some(m=>m.doubled||m.bankerDoubled);
+            if(anyDouble) bperf[bankerName].doubles++;
+            let wins = (h.matchups||[]).filter(m=>m.result==='banker').length;
+            let losses = (h.matchups||[]).filter(m=>m.result==='player').length;
+            if(wins > losses) bperf[bankerName].bankWins++;
+            else if(losses > wins) bperf[bankerName].bankLosses++;
+            // net $ earned as banker this hole
+            (h.matchups||[]).forEach(m=>{
+              if(m.result==='banker') bperf[bankerName].netAsBank += m.amount||0;
+              else if(m.result==='player') bperf[bankerName].netAsBank -= m.amount||0;
+            });
+          });
+        });
+        let bRows = Object.entries(bperf)
+          .filter(([,p])=>p.holesAsBank>0)
+          .sort((a,b)=>b[1].holesAsBank-a[1].holesAsBank)
+          .map(([name,p],rank)=>{
+            let doubleRate = Math.round(p.doubles/p.holesAsBank*100)+'%';
+            let bankWinPct = p.bankWins+p.bankLosses>0 ? Math.round(p.bankWins/(p.bankWins+p.bankLosses)*100)+'%' : '—';
+            let winCls = p.bankWins/(p.bankWins+p.bankLosses||1) >= 0.5 ? 'tag-good' : 'tag-bad';
+            let avgNet = (p.netAsBank/p.holesAsBank).toFixed(1);
+            let avgNetSign = p.netAsBank>=0?'+':'';
+            let avgNetCls = p.netAsBank>0?'tag-good':p.netAsBank<0?'tag-bad':'ins-muted';
+            return [
+              `<span class="rank-num">${rank+1}</span>`,
+              esc(name),
+              p.holesAsBank,
+              doubleRate,
+              `<span class="${winCls}">${bankWinPct}</span>`,
+              `<span class="${avgNetCls}">${avgNetSign}$${avgNet}</span>`
+            ];
+          });
+        if(bRows.length){
+          sections += `<div class="section-title" style="margin-top:4px;">Banker — As Dealer</div>
+            <div class="ins-panel">${sboardTable(['#','Player','Holes','Double%','Win%','Avg$/hole'], bRows)}</div>`;
+        }
+      }
+    }
+  }
+
+  // Stroke Play
+  if(gamesToShow.includes('stroke')){
+    let rounds = all.filter(r=>r.game==='stroke' && r.players && r.playerTotals);
+    if(rounds.length){
+      let players = {};
+      rounds.forEach(r=>{
+        let pd = r.holeParDist||[];
+        let totalPar = pd.length ? pd.reduce((s,h)=>s+(h.par||4),0) : null;
+        if(totalPar === null) return; // skip rounds with no par data
+        let min = Math.min(...r.playerTotals);
+        r.players.forEach((name,i)=>{
+          if(!players[name]) players[name]={rounds:0,totalScore:0,totalPar:0,wins:0};
+          players[name].rounds++;
+          players[name].totalScore += r.playerTotals[i]||0;
+          players[name].totalPar += totalPar;
           if(r.playerTotals[i]===min) players[name].wins++;
         });
       });
-      let rows = Object.entries(players).sort((a,b)=>(a[1].total/a[1].rounds)-(b[1].total/b[1].rounds))
-        .map(([name,p])=>{
-          let avg = (p.total/p.rounds).toFixed(1);
-          let winPct = Math.round(p.wins/p.rounds*100)+'%';
-          return `<div class="ins-row">
-            <span class="ins-name">${esc(name)} <span class="ins-muted">${p.rounds}r</span></span>
-            <span style="text-align:right;">
-              <span class="ins-val">${avg}</span>
-              <span class="ins-muted"> avg &nbsp;</span>
-              <span class="${p.wins>0?'tag-good':''}">${winPct}</span>
-              <span class="ins-muted"> W</span>
-            </span>
-          </div>`;
-        }).join('');
+      let rows = Object.entries(players)
+        .sort((a,b)=>(a[1].totalScore/a[1].rounds)-(b[1].totalScore/b[1].rounds))
+        .map(([name,p],rank)=>{
+          let avgScore = (p.totalScore/p.rounds).toFixed(1);
+          let avgVp = (p.totalScore - p.totalPar) / p.rounds;
+          let avgVpR = Math.round(avgVp);
+          let vpStr = avgVpR===0?'E':avgVpR>0?'+'+avgVpR:String(avgVpR);
+          let vpCls = avgVp<0?'tag-good':avgVp>0?'tag-bad':'ins-muted';
+          return [
+            `<span class="rank-num">${rank+1}</span>`,
+            esc(name),
+            `<span class="${vpCls}">${vpStr}</span>`,
+            `<span class="ins-val mono">${avgScore}</span>`,
+            p.wins,
+            p.rounds
+          ];
+        });
       sections += `<div class="section-title">Stroke Play</div>
-        <div class="ins-panel"><div class="ins-panel-title">Avg strokes · Win %</div>${rows}</div>`;
+        <div class="ins-panel">${sboardTable(['#','Player','To Par','Score','Wins','Rounds'], rows)}</div>`;
     }
-  }
 
-  // Banker
-  if(gamesToShow.includes('banker')){
-    let bankerRounds = all.filter(r=>r.game==='banker' && r.players && r.playerNetTotals);
-    if(bankerRounds.length){
-      let players = {};
-      bankerRounds.forEach(r=>{
-        let max=Math.max(...r.playerNetTotals);
-        r.players.forEach((name,i)=>{
-          if(!players[name]) players[name]={rounds:0,net:0,wins:0};
-          players[name].rounds++;
-          players[name].net += r.playerNetTotals[i]||0;
-          if(r.playerNetTotals[i]===max) players[name].wins++;
+    // Ball striking sub-table — practice.html saves game:'stroke' with holes as 2D array
+    let fieldRounds = all.filter(r=>r.game==='stroke' && r.players && Array.isArray(r.holes) && r.holes.length);
+    let strokeRoundsWithHoles = fieldRounds;
+    if(strokeRoundsWithHoles.length){
+      let bstrike = {};
+      strokeRoundsWithHoles.forEach(r=>{
+        r.players.forEach((name, pi)=>{
+          if(!bstrike[name]) bstrike[name]={holes:0,fir:0,firElig:0,gir:0,putts:0,pen:0};
+          let pholes = Array.isArray(r.holes[pi]) ? r.holes[pi] : [];
+          pholes.forEach(h=>{
+            if(h.score==null) return;
+            bstrike[name].holes++;
+            if(h.par>=4 && h.fir!=null){ bstrike[name].firElig++; if(h.fir) bstrike[name].fir++; }
+            if(h.gir) bstrike[name].gir++;
+            if(h.putts!=null) bstrike[name].putts += h.putts;
+            if(h.pen!=null) bstrike[name].pen += h.pen;
+          });
         });
       });
-      let rows = Object.entries(players).sort((a,b)=>b[1].net-a[1].net)
-        .map(([name,p])=>{
-          let sign=p.net>0?'+':p.net<0?'-':'';
-          let balStr=sign+'$'+Math.abs(p.net).toFixed(2).replace(/\.00$/,'');
-          let cls=p.net>0?'tag-good':p.net<0?'tag-bad':'';
-          let winPct=Math.round(p.wins/p.rounds*100)+'%';
-          return `<div class="ins-row">
-            <span class="ins-name">${esc(name)} <span class="ins-muted">${p.rounds}r</span></span>
-            <span style="text-align:right;">
-              <span class="${cls}" style="font-family:'Courier New';font-weight:bold;">${balStr}</span>
-              <span class="ins-muted"> &nbsp;</span>
-              <span class="${p.wins>0?'tag-good':''}">${winPct}</span>
-              <span class="ins-muted"> W</span>
-            </span>
-          </div>`;
-        }).join('');
-      sections += `<div class="section-title">Banker</div>
-        <div class="ins-panel"><div class="ins-panel-title">Net balance · Win %</div>${rows}</div>`;
-    }
-  }
-
-  // Most Played Together — only show on "all" filter
-  if(insightsFilter === 'all'){
-    let pairs = {};
-    all.forEach(r=>{
-      let ps = r.game==='scramble' ? (r.playerNames||[]).flat().filter(Boolean) : (r.players||[]);
-      for(let a=0;a<ps.length;a++) for(let b=a+1;b<ps.length;b++){
-        let k=[ps[a],ps[b]].sort().join('|||');
-        pairs[k]=(pairs[k]||0)+1;
+      let bRows = Object.entries(bstrike)
+        .filter(([,p])=>p.holes>0)
+        .sort((a,b)=>(b[1].gir/b[1].holes)-(a[1].gir/a[1].holes))
+        .map(([name,p],rank)=>{
+          let firPct = p.firElig>0 ? Math.round(p.fir/p.firElig*100)+'%' : '—';
+          let girPct = Math.round(p.gir/p.holes*100)+'%';
+          let avgPutts = (p.putts/p.holes).toFixed(1);
+          let avgPen = (p.pen/p.holes).toFixed(1);
+          let girCls = p.gir/p.holes>=0.5?'tag-good':p.gir/p.holes<0.3?'tag-bad':'';
+          let puttCls = p.putts/p.holes<=1.7?'tag-good':p.putts/p.holes>=2?'tag-bad':'';
+          return [
+            `<span class="rank-num">${rank+1}</span>`,
+            esc(name),
+            firPct,
+            `<span class="${girCls}">${girPct}</span>`,
+            `<span class="${puttCls}">${avgPutts}</span>`,
+            avgPen
+          ];
+        });
+      if(bRows.length){
+        sections += `<div class="section-title" style="margin-top:4px;">Stroke Play — Ball Striking</div>
+          <div class="ins-panel">${sboardTable(['#','Player','FIR%','GIR%','Putts','Pen'], bRows)}</div>`;
       }
-    });
-    let topPairs = Object.entries(pairs).sort((a,b)=>b[1]-a[1]).slice(0,5);
-    if(topPairs.length){
-      let rows = topPairs.map(([k,n])=>`<div class="ins-row">
-        <span class="ins-name">${esc(k.replace('|||',' & '))}</span>
-        <span class="ins-val">${n}r</span>
-      </div>`).join('');
-      sections += `<div class="section-title">Most Played Together</div>
-        <div class="ins-panel">${rows}</div>`;
     }
   }
 
@@ -347,7 +583,7 @@ renderInsights();
       Stats
     </a>
     <a class="nav-center" href="games.html" title="Play a Game">
-      <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#1a1a0a"/><circle cx="12" cy="12" r="4" fill="white"/><circle cx="9.5" cy="10.5" r="1" fill="#ccc"/><circle cx="12" cy="9" r="1" fill="#ccc"/><circle cx="14.5" cy="11" r="1" fill="#ccc"/></svg>
+      <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" fill="#1a1a0a"/><circle cx="12" cy="12" r="6.2" fill="white"/><circle cx="10.2" cy="11.2" r="1" fill="#ccc"/><circle cx="12" cy="9.5" r="1" fill="#ccc"/><circle cx="13.8" cy="11.2" r="1" fill="#ccc"/></svg>
     </a>
     <a class="nav-item" href="tournaments.html">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

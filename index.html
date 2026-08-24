@@ -37,12 +37,8 @@ h3{text-align:center;margin-top:0;color:rgba(255,255,255,0.75);}
 .icon-intel{background:linear-gradient(160deg,#061222,#0d1a2e);border:1px solid rgba(76,175,118,0.3);}
 .icon-coming{background:#222;opacity:.5;}
 .icon-caddy{background:linear-gradient(160deg,#0d2218,#1a3320);}
-.icon-matchplay{background:linear-gradient(160deg,#280606,#3a0a0a);}
 .icon-stableford{background:linear-gradient(160deg,#0d1a2a,#1a2a3a);}
-.icon-wolf{background:linear-gradient(160deg,#1a0d2a,#2a1a3a);}
 .icon-scramble{background:linear-gradient(160deg,#061a0d,#0d2a1a);}
-.icon-foursomes{background:linear-gradient(160deg,#0d1a06,#1a2a0d);}
-.icon-vegas{background:linear-gradient(160deg,#1a0d00,#2a1a00);}
 .icon-season{background:linear-gradient(160deg,#1a1a00,#2a2a00);}
 .divider{border:none;border-top:1px solid rgba(255,212,71,0.35);margin:16px 0 0;}
 .utility-link{display:flex;align-items:center;gap:12px;padding:9px 12px;margin-bottom:12px;border-radius:8px;cursor:pointer;text-decoration:none;color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);transition:background .15s,color .15s;-webkit-user-select:none;}
@@ -64,6 +60,16 @@ h3{text-align:center;margin-top:0;color:rgba(255,255,255,0.75);}
 .asc-leader{font-size:11px;color:rgba(255,212,71,0.6);margin-top:2px;}
 .asc-arrow{color:rgba(255,212,71,0.35);font-size:18px;flex-shrink:0;}
 .active-seasons-label{font-size:10px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.4);margin:16px 0 8px;}
+.arc{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:8px;border-radius:10px;cursor:pointer;text-decoration:none;color:#fff;border:1px solid rgba(76,200,120,0.35);background:repeating-linear-gradient(45deg,rgba(76,200,120,0.03) 0,rgba(76,200,120,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(76,200,120,0.03) 0,rgba(76,200,120,0.03) 1px,transparent 1px,transparent 10px),#0a1a0f;transition:border-color .15s;}
+.arc:hover,.arc:active{border-color:rgba(76,200,120,0.7);}
+.arc-icon{font-size:20px;flex-shrink:0;}
+.arc-body{flex:1;min-width:0;}
+.arc-game{font-size:11px;font-weight:bold;color:rgba(76,200,120,0.8);letter-spacing:.5px;text-transform:uppercase;}
+.arc-course{font-size:14px;font-weight:bold;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.arc-meta{font-size:11px;color:rgba(255,255,255,0.4);margin-top:1px;}
+.arc-arrow{color:rgba(76,200,120,0.4);font-size:18px;flex-shrink:0;}
+.arc-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#4cc878;margin-right:5px;animation:arc-pulse 1.5s ease-in-out infinite;}
+@keyframes arc-pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
 button{width:100%;padding:13px;border:none;border-radius:8px;font-size:15px;font-weight:bold;background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);color:#1a1a0a;cursor:pointer;margin-bottom:4px;box-shadow:0 2px 8px rgba(184,150,46,0.4);letter-spacing:.5px;}
 button:hover,button:active{background:linear-gradient(135deg,#b8912e,#ffc93a,#b8912e);}
 button.btn-secondary{background:transparent;border:1px solid rgba(184,150,46,0.4);color:rgba(255,212,71,0.75);font-size:14px;padding:10px;box-shadow:none;letter-spacing:.5px;}
@@ -77,7 +83,7 @@ button.btn-secondary:hover,button.btn-secondary:active{background:rgba(184,150,4
 .nav-item.active{color:#ffd447;}
 .nav-item svg{width:20px;height:20px;flex-shrink:0;}
 .nav-center{background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;margin:0 4px;cursor:pointer;box-shadow:0 2px 10px rgba(184,150,46,0.5);flex-shrink:0;text-decoration:none;}
-.nav-center svg{width:26px;height:26px;}
+.nav-center svg{width:36px;height:36px;}
 
 /* ── Round cards ── */
 .rounds-section{width:100%;padding:0 16px 110px;}
@@ -105,11 +111,11 @@ button.btn-secondary:hover,button.btn-secondary:active{background:rgba(184,150,4
 .hb-score{font-size:11px;font-weight:bold;color:#fff;font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1;text-align:right;}
 .hb-vspar{font-size:11px;color:rgba(255,255,255,0.45);font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1;}
 .hb-seg{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,0.08);}
-.hb-eagle{background:#60a5fa;}
-.hb-birdie{background:#fbbf24;}
+.hb-eagle{background:#a855f7;}
+.hb-birdie{background:#3b82f6;}
 .hb-par{background:#4ade80;}
-.hb-bogey{background:#fb923c;}
-.hb-double{background:#f87171;}
+.hb-bogey{background:#ffd447;}
+.hb-double{background:#f97316;}
 
 /* ── Expanded scorecard ── */
 .rcard-delete{background:none;border:1px solid rgba(220,50,50,0.35);border-radius:8px;color:rgba(220,100,100,0.8);font-size:11px;font-weight:bold;padding:5px 12px;cursor:pointer;letter-spacing:.5px;align-self:flex-start;}
@@ -131,6 +137,7 @@ button.btn-secondary:hover,button.btn-secondary:active{background:rgba(184,150,4
 .rcard-empty{text-align:center;color:rgba(255,255,255,0.3);padding:30px 20px;font-size:13px;line-height:2;}
 .expand-chevron{font-size:9px;color:rgba(255,212,71,0.3);display:inline-block;transition:transform .2s;margin-left:6px;}
 .rcard.expanded .expand-chevron{transform:rotate(180deg);}
+
 
 /* ── Golf Bag overlay ── */
 .field-bag-edit-btn{background:none;border:1px solid rgba(255,212,71,0.35);color:rgba(255,212,71,0.8);font-size:13px;font-weight:bold;padding:4px 12px;border-radius:4px;cursor:pointer;letter-spacing:.5px;white-space:nowrap;}
@@ -315,6 +322,12 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 
   </div><!-- end .container -->
 
+  <!-- ── Active rounds ── -->
+  <div class="rounds-section" id="activeRoundsSection" style="display:none;padding-bottom:0;">
+    <div class="rounds-section-label" style="padding-top:14px;">Active Rounds</div>
+    <div id="activeRoundCards"></div>
+  </div>
+
   <!-- ── Round cards ── -->
   <div class="rounds-section">
     <div class="rounds-section-label" style="padding-top:14px;">Recent Rounds</div>
@@ -478,7 +491,7 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
       Stats
     </a>
     <a class="nav-center" href="games.html" title="Play a Game">
-      <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#1a1a0a"/><circle cx="12" cy="12" r="4" fill="white"/><circle cx="9.5" cy="10.5" r="1" fill="#ccc"/><circle cx="12" cy="9" r="1" fill="#ccc"/><circle cx="14.5" cy="11" r="1" fill="#ccc"/></svg>
+      <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" fill="#1a1a0a"/><circle cx="12" cy="12" r="6.2" fill="white"/><circle cx="10.2" cy="11.2" r="1" fill="#ccc"/><circle cx="12" cy="9.5" r="1" fill="#ccc"/><circle cx="13.8" cy="11.2" r="1" fill="#ccc"/></svg>
     </a>
     <a class="nav-item" href="tournaments.html">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -498,14 +511,14 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 <script>
 (function renderRoundCards(){
   const GAME_LABELS = {
-    f1:'Grand Prix', stableford:'Stableford', wolf:'Wolf', banker:'Banker',
-    matchplay:'Match Play', scramble:'Scramble', foursomes:'Foursomes',
-    vegas:'Vegas', stroke:'Stroke Play'
+    f1:'Grand Prix', stableford:'Stableford', banker:'Banker',
+    matchplay:'Match Play', scramble:'Scramble',
+    stroke:'Stroke Play'
   };
   const GAME_ICONS = {
-    f1:'🏎️', stableford:'🎯', wolf:'🐺', banker:'🏦',
-    matchplay:'⚔️', scramble:'🤝', foursomes:'🔄',
-    vegas:'🎰', stroke:'🏌️'
+    f1:'🏎️', stableford:'🎯', banker:'🏦',
+    matchplay:'⚔️', scramble:'🤝',
+    stroke:'🏌️'
   };
 
   function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -526,8 +539,12 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
             return { name:p, num:gross, par: diff!=null?fmtVsPar(diff):'' };
           });
         }
-        case 'stableford': case 'f1': case 'wolf':
-          return players.map((p,i)=>({ name:p, num:r.playerTotals?.[i], par:'pts' }));
+        case 'stableford': case 'f1':
+          return players.map((p,i)=>{
+            let v = r.playerTotals?.[i];
+            let disp = v!=null ? (Number.isInteger(v)?v:Number(v).toFixed(1)) : null;
+            return { name:p, num:disp, par:'pts' };
+          });
         case 'banker':
           return players.map((p,i)=>({ name:p, num:r.playerNetTotals?.[i], par:'net' }));
         case 'scramble':{
@@ -571,6 +588,26 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
         return bars.join('');
       }
 
+      // Banker: score-vs-par coloring (same as all other games)
+      if(r.game==='banker' && r.holeHistory && r.holeHistory.length && r.players){
+        let pm=r.pointsMode;
+        let cur=v=>pm?Math.abs(v)+'pts':'$'+Math.abs(v);
+        r.players.forEach((name,pi)=>{
+          let net=r.playerNetTotals?.[pi]??0;
+          let sign=net>0?'+':net<0?'-':'';
+          let scoreHtml=`<span class="hb-score" style="${net>0?'color:#4ade80':net<0?'color:#f87171':'color:rgba(255,255,255,0.35)'}">${sign}${cur(net)}</span>`;
+          let segs=r.holeHistory.map(h=>{
+            let s=h.scores?.[pi];
+            let segCls='hb-seg';
+            // banker stores scores relative to par (0=par, -1=birdie, +1=bogey)
+            if(s!=null){if(s<=-2)segCls+=' hb-eagle';else if(s===-1)segCls+=' hb-birdie';else if(s===0)segCls+=' hb-par';else if(s===1)segCls+=' hb-bogey';else segCls+=' hb-double';}
+            return `<div class="${segCls}"></div>`;
+          }).join('');
+          bars.push(`<div class="hb-row"><span class="hb-label">${esc(name)}</span>${scoreHtml}<div class="hb-segs">${segs}</div></div>`);
+        });
+        return bars.join('');
+      }
+
       let sh = r.scoreHistory||[];
       if(!sh.length && !players.length) return '';
 
@@ -605,9 +642,14 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
         }).join('');
         let scoreHtml='';
         if(playerTotal!=null){
-          let diff=playerTotal-totalPar;
-          let parStr=diff>0?'+'+diff:diff===0?'E':String(diff);
-          scoreHtml=`<span class="hb-score">${playerTotal} <span class="hb-vspar">(${parStr})</span></span>`;
+          if(r.game==='f1'||r.game==='stableford'){
+            let disp=Number.isInteger(playerTotal)?playerTotal:Number(playerTotal).toFixed(1);
+            scoreHtml=`<span class="hb-score">${disp} <span class="hb-vspar">(pts)</span></span>`;
+          } else {
+            let diff=playerTotal-totalPar;
+            let parStr=diff>0?'+'+diff:diff===0?'E':String(diff);
+            scoreHtml=`<span class="hb-score">${playerTotal} <span class="hb-vspar">(${parStr})</span></span>`;
+          }
         }
         bars.push(`<div class="hb-row"><span class="hb-label">${players[pi]?esc(players[pi]):''}</span>${scoreHtml}<div class="hb-segs">${segs}</div></div>`);
       }
@@ -623,7 +665,50 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
         let thead=`<thead><tr><th>Hole</th><th>Par</th>${teams.map(t=>`<th>${esc(t)}</th>`).join('')}</tr></thead>`;
         let rows=r.holeHistory.map((h,i)=>`<tr><td>${i+1}</td><td>${h.par||4}</td>${(h.scores||[]).map(s=>`<td>${s??'–'}</td>`).join('')}</tr>`).join('');
         let totals=(r.teamScores||[]).map(t=>`<td>${t}</td>`).join('');
-        return `<table>${thead}<tbody>${rows}</tbody><tfoot><tr><td colspan="2">Total</td>${totals}</tr></tfoot></table>`;
+        let totalPar=r.holeHistory.reduce((s,h)=>s+(h.par||4),0);
+        return `<table>${thead}<tbody>${rows}</tbody><tfoot><tr><td>Total</td><td>${totalPar}</td>${totals}</tr></tfoot></table>`;
+      }
+      // Banker: full hole-by-hole scorecard + settlement
+      if(r.game==='banker' && r.players && r.playerNetTotals && r.holeHistory){
+        let p=r.players, nets=r.playerNetTotals, pm=r.pointsMode;
+        let cur=v=>pm?Math.abs(v)+'pts':'$'+Math.abs(v);
+        let sign=v=>v>0?'+':v<0?'-':'';
+        // Scorecard table: Hole | Par | Score per player | Net per hole
+        let thead=`<thead><tr><th>Hole</th><th>Par</th>${p.map(n=>`<th>${esc(n)}</th>`).join('')}<th>Net</th></tr></thead>`;
+        let rows=r.holeHistory.map((h,hi)=>{
+          let bi=h.bankerIdx;
+          let scoreCells=p.map((n,pi)=>{
+            let s=h.scores?.[pi], par=h.par||4;
+            let display=s!=null?s+par:'–';
+            let isBanker=pi===bi;
+            return `<td style="${isBanker?'color:#ffd447;font-weight:bold':''}">${display}${isBanker?'*':''}</td>`;
+          }).join('');
+          // net for the banker this hole
+          let holeNet=h.matchups.reduce((s,m)=>s+(m.result==='banker'?m.amount:m.result==='player'?-m.amount:0),0);
+          let netCls=holeNet>0?'style="color:#4ade80"':holeNet<0?'style="color:#f87171"':'style="color:rgba(255,255,255,0.3)"';
+          let netStr=holeNet===0?'tie':`${sign(holeNet)}${cur(holeNet)}`;
+          return `<tr><td>${hi+1}</td><td>${h.par||4}</td>${scoreCells}<td ${netCls}>${netStr}</td></tr>`;
+        }).join('');
+        let totalCells=p.map((_,pi)=>{
+          let v=nets[pi], cls=v>0?'style="color:#4ade80;font-weight:bold"':v<0?'style="color:#f87171;font-weight:bold"':'';
+          return `<td ${cls}>${sign(v)}${cur(v)}</td>`;
+        }).join('');
+        let sc=`<table>${thead}<tbody>${rows}</tbody><tfoot><tr><td colspan="2">Net</td>${totalCells}<td></td></tr></tfoot></table>`;
+        // Settlement slip
+        let creditors=[], debtors=[];
+        nets.forEach((v,i)=>{ if(v>0.001) creditors.push({name:p[i],amt:v}); else if(v<-0.001) debtors.push({name:p[i],amt:-v}); });
+        creditors.sort((a,b)=>b.amt-a.amt); debtors.sort((a,b)=>b.amt-a.amt);
+        let lines=[], ci=0, di=0;
+        while(ci<creditors.length && di<debtors.length){
+          let c=creditors[ci], d=debtors[di], settle=Math.min(c.amt,d.amt);
+          if(settle>0.001) lines.push(`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:12px;"><span><span style="color:#f87171;font-weight:bold">${esc(d.name)}</span> owes <span style="color:#4ade80;font-weight:bold">${esc(c.name)}</span></span><span style="color:#f87171;font-weight:bold;font-family:'Courier New'">${cur(settle)}</span></div>`);
+          c.amt-=settle; d.amt-=settle;
+          if(c.amt<0.001) ci++; if(d.amt<0.001) di++;
+        }
+        let settlement=lines.length
+          ? `<div style="margin-top:12px;font-size:10px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.5);padding-bottom:4px;border-bottom:1px solid rgba(255,212,71,0.1);">Settlement</div>${lines.join('')}`
+          : `<div style="margin-top:12px;font-size:11px;color:rgba(255,255,255,0.35);text-align:center;padding:6px 0;">All square — no transfers needed</div>`;
+        return sc+settlement;
       }
       // Foursomes: scoreHistory has {par, scoreA, scoreB}
       if(r.game==='foursomes' && r.scoreHistory && r.scoreHistory.length){
@@ -632,7 +717,8 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
         let rows=r.scoreHistory.map((h,i)=>`<tr><td>${i+1}</td><td>${h.par||4}</td><td>${h.scoreA??'–'}</td><td>${h.scoreB??'–'}</td></tr>`).join('');
         let tA=r.scoreHistory.reduce((s,h)=>s+(h.scoreA||0),0);
         let tB=r.scoreHistory.reduce((s,h)=>s+(h.scoreB||0),0);
-        return `<table>${thead}<tbody>${rows}</tbody><tfoot><tr><td colspan="2">Total</td><td>${tA}</td><td>${tB}</td></tr></tfoot></table>`;
+        let tPar=r.scoreHistory.reduce((s,h)=>s+(h.par||4),0);
+        return `<table>${thead}<tbody>${rows}</tbody><tfoot><tr><td>Total</td><td>${tPar}</td><td>${tA}</td><td>${tB}</td></tr></tfoot></table>`;
       }
       // Vegas: holeHistory has {par, scores:[s1,s2,...]}
       if(r.game==='vegas' && r.holeHistory && r.holeHistory.length){
@@ -640,9 +726,10 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
         let thead=`<thead><tr><th>Hole</th><th>Par</th>${p.map(pl=>`<th>${esc(pl)}</th>`).join('')}</tr></thead>`;
         let rows=r.holeHistory.map((h,i)=>`<tr><td>${i+1}</td><td>${h.par||4}</td>${(h.scores||[]).map(s=>`<td>${s??'–'}</td>`).join('')}</tr>`).join('');
         let totals=p.map((_,pi)=>`<td>${r.holeHistory.reduce((s,h)=>s+(h.scores?.[pi]||0),0)}</td>`).join('');
-        return `<table>${thead}<tbody>${rows}</tbody><tfoot><tr><td colspan="2">Total</td>${totals}</tr></tfoot></table>`;
+        let tPar=r.holeHistory.reduce((s,h)=>s+(h.par||4),0);
+        return `<table>${thead}<tbody>${rows}</tbody><tfoot><tr><td>Total</td><td>${tPar}</td>${totals}</tr></tfoot></table>`;
       }
-      if((r.game==='stroke'||r.game==='stableford'||r.game==='f1'||r.game==='wolf')){
+      if((r.game==='stroke'||r.game==='stableford'||r.game==='f1')){
         let sh=r.scoreHistory||[]; if(!sh.length) return '';
         let players=r.players||[];
         let pd=r.holeParDist||[];
@@ -652,7 +739,8 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
           return `<tr><td>${i+1}</td><td>${par}</td>${hole.map(s=>`<td>${s??'–'}</td>`).join('')}</tr>`;
         }).join('');
         let totals=(r.playerTotals||[]).map(t=>`<td>${t}</td>`).join('');
-        return `<table>${thead}<tbody>${rows}</tbody><tfoot><tr><td colspan="2">Total</td>${totals}</tr></tfoot></table>`;
+        let totalPar=pd.reduce((s,h)=>s+(h.par||4),0);
+        return `<table>${thead}<tbody>${rows}</tbody><tfoot><tr><td>Total</td><td>${totalPar}</td>${totals}</tr></tfoot></table>`;
       }
       if(r.game==='stroke' && r.playerTotals){
         // already handled above
@@ -764,6 +852,56 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 
   render();
   window.addEventListener('storage', render);
+})();
+
+(function renderActiveRounds(){
+  const GAME_LABELS = {f1:'Grand Prix',stableford:'Stableford',banker:'Banker',scramble:'Scramble',practice:'Stroke Play'};
+  const GAME_ICONS  = {f1:'🏎️',stableford:'🎯',banker:'🏦',scramble:'🤝',practice:'🏌️'};
+  const GAME_URLS   = {f1:'f1.html',stableford:'stableford.html',banker:'banker.html',scramble:'scramble.html',practice:'practice.html'};
+  const KEYS = ['activeGame_f1','activeGame_stableford','activeGame_banker','activeGame_scramble','activeGame_practice'];
+
+  function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function renderActive(){
+    let cards = [];
+    KEYS.forEach(key=>{
+      let raw = localStorage.getItem(key);
+      if(!raw) return;
+      try{
+        let s = JSON.parse(raw);
+        let type = key.replace('activeGame_','');
+        let label = GAME_LABELS[type]||type;
+        let icon  = GAME_ICONS[type]||'⛳';
+        let url   = GAME_URLS[type]||'#';
+        let course = esc(s.course||s.courseName||'Unknown Course');
+        let hole = s.hole!=null ? s.hole : (s.holeHistory ? s.holeHistory.length+1 : null);
+        let total = s.totalHoles||s.numHoles||18;
+        let holeTxt = hole!=null ? `Hole ${hole}/${total}` : 'In progress';
+        let rawPlayers = s.players || (Array.isArray(s.playerNames) ? (Array.isArray(s.playerNames[0]) ? s.playerNames.flat() : s.playerNames) : []);
+        let players = rawPlayers.filter(Boolean);
+        let playerTxt = players.length ? players.slice(0,3).map(esc).join(', ')+(players.length>3?'…':'') : '';
+        cards.push(`<a class="arc" href="${url}">
+          <div class="arc-icon">${icon}</div>
+          <div class="arc-body">
+            <div class="arc-game"><span class="arc-dot"></span>${label}</div>
+            <div class="arc-course">${course}</div>
+            <div class="arc-meta">${holeTxt}${playerTxt?' · '+playerTxt:''}</div>
+          </div>
+          <div class="arc-arrow">›</div>
+        </a>`);
+      }catch(e){}
+    });
+    let sec = document.getElementById('activeRoundsSection');
+    let el  = document.getElementById('activeRoundCards');
+    if(!sec||!el) return;
+    if(!cards.length){ sec.style.display='none'; return; }
+    sec.style.display='';
+    el.innerHTML = cards.join('');
+  }
+
+  renderActive();
+  window.addEventListener('storage', renderActive);
+  document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) renderActive(); });
 })();
 </script>
 
