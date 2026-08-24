@@ -90,18 +90,12 @@ td{font-family:'Courier New',monospace;}
 .td-a{color:#ffd447;}
 .td-b{color:#64a0dc;}
 .section-label{font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.45);margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(255,212,71,0.1);}
-.flip-card{width:100%;}
-.flip-inner{position:relative;transform-style:preserve-3d;transition:transform 0.45s ease;}
-.flip-inner.flipped{transform:rotateY(180deg);}
-.flip-front{position:relative;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
-.flip-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);
-  background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;
-  border:2px solid #8B6914;padding:24px 20px;border-radius:14px;}
-.flip-inner.flipped .flip-front{position:absolute;inset:0;}
-.flip-inner.flipped .flip-back{position:relative;inset:auto;}
-.flip-btn{position:absolute;bottom:14px;right:14px;width:28px;height:28px;border-radius:50%;background:rgba(255,212,71,0.12);border:1px solid rgba(255,212,71,0.35);color:#ffd447;font-size:13px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;text-transform:none;z-index:10;box-shadow:none;letter-spacing:0;}
-.flip-btn:hover,.flip-btn:active{background:rgba(255,212,71,0.25);}
-.flip-back-btn{background:none;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.65);font-size:13px;font-weight:bold;padding:6px 14px;border-radius:4px;cursor:pointer;width:auto;margin-bottom:20px;letter-spacing:.5px;text-transform:none;box-shadow:none;}
+.rules-scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:2000;align-items:flex-end;justify-content:center;}
+.rules-sheet{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.22);border-radius:18px 18px 0 0;padding:24px 20px 44px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;}
+.rules-handle{width:36px;height:4px;background:rgba(255,212,71,0.25);border-radius:2px;margin:0 auto 20px;}
+.info-btn{background:none;border:1px solid rgba(255,212,71,0.35);color:rgba(255,212,71,0.7);border-radius:50%;width:22px;height:22px;font-size:12px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;box-shadow:none;text-transform:none;letter-spacing:0;flex-shrink:0;}
+.info-btn:hover,.info-btn:active{background:rgba(255,212,71,0.12);color:#ffd447;}
+.game-title-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:2px;}
 .rules-title{font-size:18px;font-weight:bold;color:#ffd447;text-align:center;margin:0 0 6px;letter-spacing:1px;text-transform:uppercase;}
 .rules-sub{text-align:center;color:rgba(255,255,255,0.5);font-size:12px;margin:0 0 20px;letter-spacing:1px;text-transform:uppercase;}
 .rules-note{font-size:12px;color:rgba(255,255,255,0.35);line-height:1.8;text-align:center;}
@@ -114,11 +108,11 @@ td{font-family:'Courier New',monospace;}
 <!-- SETUP -->
 <div id="setupScreen">
   <div class="setup-card">
-    <div class="flip-card">
-      <div class="flip-inner" id="setupFlip">
-        <div class="flip-front">
-          <h2 style="text-align:center;color:#ffd447;font-size:22px;letter-spacing:.5px;margin:0 0 2px;font-family:'Georgia','Times New Roman',serif;">Scramble</h2>
-          <div style="text-align:center;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.4);margin-bottom:10px;">New Round</div>
+    <div class="game-title-row">
+      <h2 style="color:#ffd447;font-size:22px;letter-spacing:.5px;margin:0;font-family:'Georgia','Times New Roman',serif;">Scramble</h2>
+      <button class="info-btn" onclick="openRules()">?</button>
+    </div>
+    <div style="text-align:center;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.4);margin-bottom:10px;">New Round</div>
 
           <div class="setup-section">
             <div class="setup-section-label">Date &amp; Course</div>
@@ -169,23 +163,22 @@ td{font-family:'Courier New',monospace;}
 
           <button onclick="startGame()">Start Game</button>
           <div id="nameError">Please fill in all team and player names.</div>
-        </div>
-        <div class="flip-back">
-          <button class="flip-back-btn" onclick="flipCard('setupFlip')">‹ Back</button>
-          <div class="rules-title">🤝 Scramble</div>
-          <div class="rules-sub">2 teams · 2 players each</div>
-          <div class="rules-note">
-            All 4 players tee off each hole.<br>
-            The team picks the best shot — everyone plays from there.<br>
-            Repeat until the ball is holed.<br><br>
-            Enter each team's final hole score.<br><br>
-            Lowest total score at the end wins.<br><br>
-            Running score vs par is tracked throughout.
-          </div>
+
+    <div id="rules-scrim" class="rules-scrim" onclick="if(event.target===this)closeRules()">
+      <div class="rules-sheet">
+        <div class="rules-handle"></div>
+        <div class="rules-title">🤝 Scramble</div>
+        <div class="rules-sub">2 teams · 2 players each</div>
+        <div class="rules-note">
+          All 4 players tee off each hole.<br>
+          The team picks the best shot — everyone plays from there.<br>
+          Repeat until the ball is holed.<br><br>
+          Enter each team's final hole score.<br><br>
+          Lowest total score at the end wins.<br><br>
+          Running score vs par is tracked throughout.
         </div>
       </div>
     </div>
-    <button class="flip-btn" onclick="flipCard('setupFlip')" title="How to play">i</button>
   </div>
 </div>
 
@@ -386,6 +379,7 @@ function restoreActiveState(){
 document.addEventListener('DOMContentLoaded', function(){
   restoreActiveState();
 });
+function renderStandings(){
   [0,1].forEach(t => {
     let el = document.getElementById(t===0?'vspA':'vspB');
     if(!holeHistory.length){ el.textContent=''; return; }
@@ -398,7 +392,6 @@ document.addEventListener('DOMContentLoaded', function(){
   let aLeads = teamScores[0] < teamScores[1];
   let tie = teamScores[0] === teamScores[1];
 
-  // Sort: leading team on top (lower strokes = leading)
   let order = tie ? [0,1] : (aLeads ? [0,1] : [1,0]);
 
   document.getElementById('standingsList').innerHTML = order.map(t => {
@@ -567,12 +560,8 @@ document.getElementById('scorecardModal').addEventListener('click', function(e){
   if(e.target === this) closeScorecard();
 });
 
-function flipCard(id){
-  const inner = document.getElementById(id);
-  inner.classList.toggle('flipped');
-  const btn = document.querySelector('.flip-btn');
-  if(btn) btn.style.display = inner.classList.contains('flipped') ? 'none' : 'flex';
-}
+function openRules(){ const s=document.getElementById('rules-scrim'); s.style.display='flex'; }
+function closeRules(){ document.getElementById('rules-scrim').style.display='none'; }
 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 </script>

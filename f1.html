@@ -70,27 +70,12 @@ td{font-family:'Courier New',monospace;}
 .modal-header{background:rgba(0,0,0,0.5);border-bottom:1px solid rgba(255,212,71,0.2);color:#ffd447;display:flex;justify-content:space-between;align-items:center;padding:10px 14px;font-weight:bold;font-size:15px;letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;}
 .modal-body{overflow-y:auto;padding:10px;}
 .close-btn{background:none;border:none;color:white;font-size:22px;cursor:pointer;width:auto;padding:0 4px;}
-.flip-card{width:100%;}
-.flip-inner{position:relative;transform-style:preserve-3d;transition:transform 0.45s ease;}
-.flip-inner.flipped{transform:rotateY(180deg);}
-.flip-front{position:relative;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
-.flip-back{
-  position:absolute;inset:0;
-  backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  transform:rotateY(180deg);
-  background:
-    repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),
-    repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),
-    #0e1a12;
-  border:1px solid rgba(255,212,71,0.15);
-  padding:24px 20px;border-radius:12px;
-}
-.flip-inner.flipped .flip-front{position:absolute;inset:0;}
-.flip-inner.flipped .flip-back{position:relative;inset:auto;}
-.flip-btn{position:absolute;bottom:14px;right:14px;width:28px;height:28px;border-radius:50%;background:rgba(255,212,71,0.12);border:1px solid rgba(255,212,71,0.35);color:#ffd447;font-size:13px;font-weight:bold;letter-spacing:0;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;text-transform:none;z-index:10;box-shadow:none;}
-.flip-btn:hover,.flip-btn:active{background:rgba(255,212,71,0.25);}
-.flip-back-btn{background:none;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);font-size:13px;font-weight:bold;padding:6px 14px;border-radius:4px;cursor:pointer;width:auto;margin-bottom:20px;letter-spacing:.5px;text-transform:none;box-shadow:none;}
-.flip-back-btn:hover,.flip-back-btn:active{background:rgba(255,255,255,0.07);color:#fff;}
+.rules-scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:2000;align-items:flex-end;justify-content:center;}
+.rules-sheet{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.22);border-radius:18px 18px 0 0;padding:24px 20px 44px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;}
+.rules-handle{width:36px;height:4px;background:rgba(255,212,71,0.25);border-radius:2px;margin:0 auto 20px;}
+.info-btn{background:none;border:1px solid rgba(255,212,71,0.35);color:rgba(255,212,71,0.7);border-radius:50%;width:22px;height:22px;font-size:12px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;box-shadow:none;text-transform:none;letter-spacing:0;flex-shrink:0;}
+.info-btn:hover,.info-btn:active{background:rgba(255,212,71,0.12);color:#ffd447;}
+.game-title-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:2px;}
 .rules-title{font-size:18px;font-weight:bold;color:#ffd447;text-align:center;margin:0 0 6px;letter-spacing:1px;}
 .rules-sub{text-align:center;color:rgba(255,255,255,0.5);font-size:12px;margin:0 0 20px;letter-spacing:1px;text-transform:uppercase;}
 .rules-table{width:100%;border-collapse:collapse;margin-bottom:16px;}
@@ -120,12 +105,11 @@ td{font-family:'Courier New',monospace;}
 
   <!-- SETUP -->
   <div id="setupScreen">
-    <div class="flip-card">
-      <div class="flip-inner" id="setupFlip">
-
-        <div class="flip-front">
-          <h2 style="text-align:center;color:#ffd447;font-size:22px;letter-spacing:.5px;margin:0 0 2px;font-family:'Georgia','Times New Roman',serif;">Grand Prix</h2>
-          <div style="text-align:center;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.4);margin-bottom:10px;">New Round</div>
+    <div class="game-title-row">
+      <h2 style="color:#ffd447;font-size:22px;letter-spacing:.5px;margin:0;font-family:'Georgia','Times New Roman',serif;">Grand Prix</h2>
+      <button class="info-btn" onclick="openRules()">?</button>
+    </div>
+    <div style="text-align:center;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.4);margin-bottom:10px;">New Round</div>
 
           <div class="setup-section">
             <div class="setup-section-label">Date &amp; Course</div>
@@ -168,28 +152,26 @@ td{font-family:'Courier New',monospace;}
 
           <button class="start-btn" onclick="startGame()">Start Game</button>
           <div id="nameError">Please enter all 4 player names.</div>
-        </div>
 
-        <div class="flip-back">
-          <button class="flip-back-btn" onclick="flipCard('setupFlip')">‹ Back</button>
-          <div class="rules-title">🏎️ Grand Prix</div>
-          <div class="rules-sub">4 players · 2 teams · Black vs Red</div>
-          <table class="rules-table">
-            <tr><td>1st place</td><td>5 pts</td></tr>
-            <tr><td>2nd place</td><td>3 pts</td></tr>
-            <tr><td>3rd place</td><td>2 pts</td></tr>
-            <tr><td>4th place</td><td>0 pts</td></tr>
-          </table>
-          <div class="rules-note">
-            Ties split the combined points equally.<br>
-            Team score = both players' hole points added together.<br><br>
-            Highest team total at the end wins the round.
-          </div>
+    <!-- Rules sheet -->
+    <div id="rules-scrim" class="rules-scrim" onclick="if(event.target===this)closeRules()">
+      <div class="rules-sheet">
+        <div class="rules-handle"></div>
+        <div class="rules-title">🏎️ Grand Prix</div>
+        <div class="rules-sub">4 players · 2 teams · Black vs Red</div>
+        <table class="rules-table">
+          <tr><td>1st place</td><td>5 pts</td></tr>
+          <tr><td>2nd place</td><td>3 pts</td></tr>
+          <tr><td>3rd place</td><td>2 pts</td></tr>
+          <tr><td>4th place</td><td>0 pts</td></tr>
+        </table>
+        <div class="rules-note">
+          Ties split the combined points equally.<br>
+          Team score = both players' hole points added together.<br><br>
+          Highest team total at the end wins the round.
         </div>
-
       </div>
     </div>
-    <button class="flip-btn" onclick="flipCard('setupFlip')" title="How to play">i</button>
   </div>
 
   <!-- GAME -->
@@ -611,12 +593,8 @@ function restoreActiveState(){
 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-function flipCard(id){
-  const inner = document.getElementById(id);
-  inner.classList.toggle('flipped');
-  const btn = document.querySelector('.flip-btn');
-  if(btn) btn.style.display = inner.classList.contains('flipped') ? 'none' : 'flex';
-}
+function openRules(){ const s=document.getElementById('rules-scrim'); s.style.display='flex'; }
+function closeRules(){ document.getElementById('rules-scrim').style.display='none'; }
 </script>
 <script src="season.js"></script>
 <nav class="bottom-nav">
