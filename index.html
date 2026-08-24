@@ -472,7 +472,7 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/>
       </svg>
-      History
+      Stats
     </a>
     <a class="nav-center" href="games.html" title="Play a Game">
       <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#1a1a0a"/><circle cx="12" cy="12" r="4" fill="white"/><circle cx="9.5" cy="10.5" r="1" fill="#ccc"/><circle cx="12" cy="9" r="1" fill="#ccc"/><circle cx="14.5" cy="11" r="1" fill="#ccc"/></svg>
@@ -614,6 +614,14 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 
   function buildScorecard(r){
     try{
+      // Scramble: uses holeHistory + teamNames
+      if(r.game==='scramble' && r.holeHistory && r.holeHistory.length){
+        let teams=r.teamNames||['Team A','Team B'];
+        let thead=`<thead><tr><th>Hole</th><th>Par</th>${teams.map(t=>`<th>${esc(t)}</th>`).join('')}</tr></thead>`;
+        let rows=r.holeHistory.map((h,i)=>`<tr><td>${i+1}</td><td>${h.par||4}</td>${(h.scores||[]).map(s=>`<td>${s??'–'}</td>`).join('')}</tr>`).join('');
+        let totals=(r.teamScores||[]).map(t=>`<td>${t}</td>`).join('');
+        return `<table>${thead}<tbody>${rows}</tbody><tfoot><tr><td colspan="2">Total</td>${totals}</tr></tfoot></table>`;
+      }
       if((r.game==='stroke'||r.game==='stableford'||r.game==='f1'||r.game==='wolf')){
         let sh=r.scoreHistory||[]; if(!sh.length) return '';
         let players=r.players||[];

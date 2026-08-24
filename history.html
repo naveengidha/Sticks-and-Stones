@@ -98,7 +98,7 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 </head>
 <body>
 
-<div class="page-header">Insights</div>
+<div class="page-header">Round Statistics</div>
 
 <div class="scroll-area">
 
@@ -200,19 +200,23 @@ function renderInsights(){
       let teams = {};
       scrambleRounds.forEach(r=>{
         r.teamNames.forEach((name,ti)=>{
-          if(!teams[name]) teams[name]={rounds:0,wins:0,totalScore:0};
+          if(!teams[name]) teams[name]={rounds:0,wins:0,totalScore:0,players:[]};
           teams[name].rounds++;
           teams[name].totalScore += r.teamScores[ti]||0;
           let won = r.teamScores[ti] < r.teamScores[1-ti];
           if(won) teams[name].wins++;
+          // collect player names for this team
+          let ps = Array.isArray(r.playerNames?.[ti]) ? r.playerNames[ti] : [];
+          ps.filter(Boolean).forEach(p=>{ if(!teams[name].players.includes(p)) teams[name].players.push(p); });
         });
       });
       let rows = Object.entries(teams).sort((a,b)=>b[1].wins-a[1].wins)
         .map(([name,t])=>{
           let avg = (t.totalScore/t.rounds).toFixed(1);
           let winPct = Math.round(t.wins/t.rounds*100)+'%';
+          let playerStr = t.players.length ? `<span class="ins-muted"> (${t.players.map(esc).join(', ')})</span>` : '';
           return `<div class="ins-row">
-            <span class="ins-name">${esc(name)} <span class="ins-muted">${t.rounds}r</span></span>
+            <span class="ins-name">${esc(name)}${playerStr} <span class="ins-muted">${t.rounds}r</span></span>
             <span style="text-align:right;">
               <span class="ins-val">${avg}</span>
               <span class="ins-muted"> avg &nbsp;</span>
@@ -340,7 +344,7 @@ renderInsights();
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/>
       </svg>
-      History
+      Stats
     </a>
     <a class="nav-center" href="games.html" title="Play a Game">
       <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#1a1a0a"/><circle cx="12" cy="12" r="4" fill="white"/><circle cx="9.5" cy="10.5" r="1" fill="#ccc"/><circle cx="12" cy="9" r="1" fill="#ccc"/><circle cx="14.5" cy="11" r="1" fill="#ccc"/></svg>
