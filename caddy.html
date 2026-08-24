@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="theme-color" content="#080f0a"/>
+<title>Caddy</title>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="icons/icon-192.png"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#080f0a;--bg-card:#0e1a12;--gold:#ffd447;--border:#8B6914;
+  --gold-dim:rgba(255,212,71,0.35);--gold-faint:rgba(255,212,71,0.08);
+  --accent:#ffd447;--text:#fff;--muted:rgba(255,255,255,0.45);
+  --green-ok:#2ecc71;--red:#ff4d4d;
+  --safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);
+}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:'Georgia','Times New Roman',serif;-webkit-font-smoothing:antialiased;overscroll-behavior:none;}
+input,button{font:inherit;}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;}
+input[type=number]{-moz-appearance:textfield;}
+
+/* ── Card texture ── */
+:root{--texture:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px);}
+
+/* ── Layout shell ── */
+#shell{display:flex;flex-direction:column;height:100%;max-width:480px;margin:0 auto;}
+#content{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+
+/* ── Page header ── */
+.page-header{padding:14px 16px 10px;font-size:22px;font-weight:bold;color:var(--gold);letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;flex-shrink:0;text-align:center;}
+
+/* ── Anchor bar (inline at top) ── */
+.anchor-bar{display:flex;align-items:flex-start;gap:12px;padding:12px 16px 12px;background:var(--bg);}
+.anchor-card{display:flex;align-items:flex-start;gap:12px;flex:1;background:var(--texture),var(--bg-card);border:1px solid rgba(255,212,71,0.2);border-radius:12px;padding:12px 16px;}
+.anchor-bar .anchor-group{display:flex;flex-direction:column;align-items:center;flex:1;}
+.anchor-bar .anchor-label{font-size:9px;font-weight:bold;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:4px;}
+.anchor-bar .anchor-row{display:flex;align-items:center;gap:4px;}
+.anchor-bar .anchor-input{background:rgba(0,0,0,0.4);border:2px solid rgba(255,212,71,0.25);border-radius:8px;color:var(--text);font-size:18px;font-weight:700;padding:6px 8px;text-align:center;font-variant-numeric:tabular-nums;outline:none;width:70px;}
+.anchor-bar .anchor-input:focus{border-color:rgba(255,212,71,0.6);}
+.anchor-bar .anchor-input.error{border-color:var(--red);}
+.anchor-bar .anchor-unit{font-size:11px;color:var(--muted);}
+.anchor-bar .anchor-error{color:var(--red);font-size:9px;min-height:1em;text-align:center;margin:2px 0 0;}
+.anchor-divider{width:1px;background:rgba(255,212,71,0.12);align-self:stretch;margin:4px 0;}
+
+/* ── Inner tab bar (Carry / Wedge / Target) ── */
+#inner-tabs{display:flex;margin:0 16px 4px;background:var(--bg-card);border:1px solid rgba(255,212,71,0.2);border-radius:12px;overflow:hidden;flex-shrink:0;}
+.itab{flex:1;padding:11px 4px;text-align:center;font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;color:var(--gold-dim);cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;-webkit-user-select:none;border:none;background:none;}
+.itab.active{color:var(--gold);border-bottom:2px solid var(--gold);}
+
+
+/* ── Screens ── */
+.screen{display:none;flex-direction:column;flex:1;min-height:0;}
+.screen.active{display:flex;}
+.screen-header{display:flex;align-items:center;justify-content:space-between;padding:0 14px;height:42px;flex-shrink:0;border-bottom:1px solid rgba(255,212,71,0.1);}
+.screen-title{font-size:13px;font-weight:bold;color:var(--gold);letter-spacing:.4px;text-transform:uppercase;}
+.btn-ghost{background:none;color:var(--gold-dim);border:none;border-radius:6px;padding:8px;font-size:18px;cursor:pointer;min-width:36px;min-height:36px;display:flex;align-items:center;justify-content:center;}
+.btn-ghost:hover{color:var(--gold);}
+
+/* ── Carry table ── */
+.carry-table-wrap{flex:1;overflow-y:auto;padding:12px 16px 110px;}
+.carry-card{background:var(--texture),var(--bg-card);border:1px solid rgba(255,212,71,0.2);border-radius:12px;overflow:hidden;}
+table.carry-table{width:100%;border-collapse:collapse;font-size:14px;}
+table.carry-table thead th{padding:8px 14px;text-align:left;font-size:9px;font-weight:bold;text-transform:uppercase;letter-spacing:.08em;color:var(--gold-dim);border-bottom:1px solid rgba(255,212,71,0.15);background:rgba(0,0,0,0.2);}
+table.carry-table thead th.col-r{text-align:right;}
+table.carry-table tbody tr{border-bottom:1px solid rgba(255,212,71,0.06);cursor:pointer;transition:background .1s;}
+table.carry-table tbody tr:last-child{border-bottom:none;}
+table.carry-table tbody tr:hover,table.carry-table tbody tr:active{background:rgba(255,212,71,0.05);}
+table.carry-table tbody tr.locked .col-club{color:var(--gold);}
+table.carry-table td{padding:11px 14px;}
+.col-club{font-weight:bold;font-size:14px;}
+.col-base{color:var(--muted);font-size:13px;text-align:right;font-variant-numeric:tabular-nums;}
+.col-adj{font-weight:bold;font-size:15px;color:var(--gold);text-align:right;font-variant-numeric:tabular-nums;}
+.lock-badge{font-size:9px;color:var(--gold);margin-left:4px;opacity:.7;}
+
+/* ── Wedge table ── */
+.wedge-wrap{flex:1;overflow-y:auto;padding:12px 16px 110px;}
+.wedge-card{background:var(--texture),var(--bg-card);border:1px solid rgba(255,212,71,0.2);border-radius:12px;overflow:hidden;}
+table.wedge-table{width:100%;border-collapse:collapse;font-size:14px;}
+table.wedge-table thead th{padding:8px 14px;text-align:right;font-size:9px;font-weight:bold;text-transform:uppercase;letter-spacing:.08em;color:var(--gold-dim);border-bottom:1px solid rgba(255,212,71,0.15);background:rgba(0,0,0,0.2);}
+table.wedge-table thead th:first-child{text-align:left;}
+table.wedge-table tbody tr.wt-carry-row{border-bottom:none;}
+table.wedge-table tbody tr.wt-roll-row{border-bottom:1px solid rgba(255,212,71,0.06);}
+table.wedge-table tbody tr.wt-roll-row:last-child{border-bottom:none;}
+table.wedge-table td{padding:12px 14px;}
+table.wedge-table tr.wt-roll-row td{padding-top:0;padding-bottom:10px;}
+.wt-name{font-weight:bold;font-size:15px;}
+.wt-carry{text-align:right;font-weight:bold;font-size:18px;color:var(--gold);font-variant-numeric:tabular-nums;width:54px;min-width:54px;}
+.wt-roll{text-align:right;font-size:11px;font-weight:bold;color:var(--muted);font-variant-numeric:tabular-nums;}
+.wt-roll-label{font-size:10px;color:var(--muted);opacity:.6;}
+
+/* ── Target screen ── */
+.target-input-row{display:flex;align-items:center;justify-content:center;gap:14px;padding:12px 16px;flex-shrink:0;margin:12px 16px 0;background:var(--texture),var(--bg-card);border:1px solid rgba(255,212,71,0.2);border-radius:12px;}
+.stepper-btn{width:40px;height:40px;border-radius:50%;background:rgba(255,212,71,0.08);border:1px solid rgba(255,212,71,0.25);color:var(--gold);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.stepper-btn:active{background:rgba(255,212,71,0.18);}
+.target-yardage{font-size:28px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums;width:80px;text-align:center;background:rgba(0,0,0,0.4);border:2px solid rgba(255,212,71,0.3);border-radius:8px;padding:4px 8px;outline:none;color:var(--gold);}
+.target-yardage:focus{border-color:var(--gold);}
+.target-unit{font-size:13px;font-weight:bold;color:var(--muted);align-self:flex-end;padding-bottom:6px;}
+.target-wrap{flex:1;padding:12px 16px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;padding-bottom:110px;margin-top:12px;}
+.target-card{background:var(--texture),var(--bg-card);border:1px solid rgba(255,212,71,0.2);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;}
+.target-card.full{border-color:rgba(255,212,71,0.5);background:var(--texture),rgba(255,212,71,0.06);}
+.target-card.flight{border-color:rgba(46,180,80,0.4);background:var(--texture),rgba(46,180,80,0.05);}
+.target-card.bomb{border-color:rgba(255,77,77,0.4);background:var(--texture),rgba(255,77,77,0.04);}
+.tc-left{display:flex;flex-direction:column;gap:5px;}
+.tc-club{font-weight:bold;font-size:16px;}
+.tt-badge{display:inline-block;margin-top:2px;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;}
+.tt-badge.full{background:rgba(255,212,71,0.15);color:var(--gold);border:1px solid rgba(255,212,71,0.35);}
+.tt-badge.flight{background:rgba(46,180,80,0.15);color:#2eb450;border:1px solid rgba(46,180,80,0.35);}
+.tt-badge.bomb{background:rgba(255,77,77,0.12);color:#ff6464;border:1px solid rgba(255,77,77,0.35);}
+.tc-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;}
+.tc-adj{font-size:22px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums;}
+.tc-roll{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;}
+.tc-diff{font-size:13px;font-variant-numeric:tabular-nums;}
+.tc-diff.over{color:#ff6464;}
+.tc-diff.under{color:var(--muted);}
+
+/* ── Modal ── */
+#modal-scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);align-items:flex-end;justify-content:center;z-index:500;}
+#modal-scrim.open{display:flex;}
+.modal-sheet{width:100%;max-width:480px;background:var(--texture),var(--bg-card);border:1px solid rgba(255,212,71,0.25);border-radius:20px 20px 0 0;padding:0 0 110px;}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 12px;border-bottom:1px solid rgba(255,212,71,0.12);}
+.modal-title{font-size:15px;font-weight:bold;color:var(--gold);}
+.modal-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:4px 8px;}
+.modal-body{padding:16px;display:flex;flex-direction:column;gap:16px;}
+.modal-hint{font-size:13px;color:var(--muted);}
+.stepper-row{display:flex;align-items:center;justify-content:center;gap:12px;}
+.modal-num-input{width:110px;text-align:right;font-size:28px;font-weight:700;background:rgba(0,0,0,0.4);border:2px solid rgba(255,212,71,0.25);border-radius:8px;color:var(--text);padding:8px 10px;font-variant-numeric:tabular-nums;outline:none;}
+.modal-num-input:focus{border-color:var(--gold);}
+.modal-unit{font-size:13px;color:var(--muted);font-weight:600;}
+.modal-actions{display:flex;gap:10px;}
+.modal-actions>*{flex:1;}
+.mbtn-primary{background:linear-gradient(135deg,#8B6914,#ffd447,#8B6914);color:#0a0a00;border:none;border-radius:8px;padding:12px 16px;font-weight:700;font-size:14px;cursor:pointer;min-height:44px;}
+.mbtn-secondary{background:transparent;color:rgba(255,212,71,0.7);border:1px solid rgba(255,212,71,0.3);border-radius:8px;padding:12px 16px;font-weight:600;font-size:13px;cursor:pointer;min-height:44px;}
+.mbtn-danger{background:transparent;color:#ff6464;border:1px solid rgba(255,77,77,0.35);border-radius:8px;padding:12px 16px;font-weight:700;font-size:13px;cursor:pointer;min-height:44px;}
+
+/* ── Pill nav ── */
+.bottom-nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:1000;pointer-events:none;}
+.nav-pill{display:flex;align-items:center;gap:2px;background:#0e1a12;border:1px solid rgba(255,212,71,0.28);border-radius:50px;padding:6px 10px;box-shadow:0 4px 24px rgba(0,0,0,0.6);pointer-events:all;}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 14px;border-radius:40px;cursor:pointer;text-decoration:none;color:rgba(255,212,71,0.35);font-size:9px;font-weight:bold;letter-spacing:.5px;text-transform:uppercase;transition:color .15s,background .15s;-webkit-user-select:none;}
+.nav-item:hover,.nav-item:active{color:rgba(255,212,71,0.7);}
+.nav-item.active{color:#ffd447;}
+.nav-item svg{width:20px;height:20px;flex-shrink:0;}
+.nav-center{background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;margin:0 4px;cursor:pointer;box-shadow:0 2px 10px rgba(184,150,46,0.5);flex-shrink:0;text-decoration:none;}
+.nav-center svg{width:26px;height:26px;}
+</style>
+</head>
+<body>
+
+<!-- ══ MAIN APP ══ -->
+<div id="shell">
+  <div id="content">
+
+    <div class="page-header">Club Caddy</div>
+
+    <!-- Anchor inputs -->
+    <div class="anchor-bar">
+      <div class="anchor-card">
+        <div class="anchor-group">
+          <label class="anchor-label">Driver</label>
+          <div class="anchor-row">
+            <input class="anchor-input" id="input-driver" type="number" inputmode="numeric" value="210" min="1" max="999"/>
+            <span class="anchor-unit">yds</span>
+          </div>
+          <p class="anchor-error" id="err-driver"></p>
+        </div>
+        <div class="anchor-divider"></div>
+        <div class="anchor-group">
+          <label class="anchor-label">5 Iron</label>
+          <div class="anchor-row">
+            <input class="anchor-input" id="input-5i" type="number" inputmode="numeric" value="160" min="1" max="999"/>
+            <span class="anchor-unit">yds</span>
+          </div>
+          <p class="anchor-error" id="err-5i"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inner tabs -->
+    <div id="inner-tabs">
+      <button class="itab active" data-tab="calculator">Carry</button>
+      <button class="itab" data-tab="wedge">Wedge</button>
+      <button class="itab" data-tab="target">Target</button>
+    </div>
+
+    <!-- Screen: Carry Calculator -->
+    <div class="screen active" id="screen-calculator">
+      <div class="carry-table-wrap">
+        <div class="carry-card">
+          <table class="carry-table">
+            <thead><tr>
+              <th>Club</th>
+              <th class="col-r">Base</th>
+              <th class="col-r">Carry</th>
+            </tr></thead>
+            <tbody id="carry-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Wedge Matrix -->
+    <div class="screen" id="screen-wedge">
+      <div class="wedge-wrap">
+        <div class="wedge-card">
+          <table class="wedge-table">
+            <thead><tr>
+              <th>Club</th><th>Full</th><th>¾</th><th>½</th>
+            </tr></thead>
+            <tbody id="wedge-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Target Distance -->
+    <div class="screen" id="screen-target">
+      <div class="target-input-row">
+        <button class="stepper-btn" id="target-minus">−</button>
+        <input class="target-yardage" id="target-display" type="number" inputmode="numeric" min="1" max="999" value="150"/>
+        <span class="target-unit">yds</span>
+        <button class="stepper-btn" id="target-plus">+</button>
+      </div>
+      <div class="target-wrap" id="target-body"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ MODAL ══ -->
+<div id="modal-scrim">
+  <div class="modal-sheet">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title"></span>
+      <button class="modal-close" id="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-hint" id="modal-hint"></p>
+      <div class="stepper-row" id="modal-stepper-row">
+        <button class="stepper-btn" id="btn-minus">−</button>
+        <input class="modal-num-input" id="modal-input" type="number" inputmode="numeric" min="1" max="999"/>
+        <span class="modal-unit">yds</span>
+        <button class="stepper-btn" id="btn-plus">+</button>
+      </div>
+      <div class="modal-actions" id="modal-actions"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PILL NAV ══ -->
+<nav class="bottom-nav">
+  <div class="nav-pill">
+    <a class="nav-item" href="index.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/><line x1="4" y1="14" x2="20" y2="14" stroke-width="1.5" stroke-dasharray="2 2"/></svg>
+      Rounds
+    </a>
+    <a class="nav-item" href="history.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
+      History
+    </a>
+    <a class="nav-center" href="games.html">
+      <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#1a1a0a"/><circle cx="12" cy="12" r="4" fill="white"/><circle cx="9.5" cy="10.5" r="1" fill="#ccc"/><circle cx="12" cy="9" r="1" fill="#ccc"/><circle cx="14.5" cy="11" r="1" fill="#ccc"/></svg>
+    </a>
+    <a class="nav-item" href="tournaments.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Tourneys
+    </a>
+    <a class="nav-item active" href="caddy.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><line x1="9" y1="2" x2="9" y2="6"/><line x1="15" y1="2" x2="15" y2="6"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
+      Caddy
+    </a>
+  </div>
+</nav>
+
+<script>
+// ── Constants ────────────────────────────────────────────────────
+const CLUBS = [
+  { id:'driver', label:'Driver' },
+  { id:'5w',     label:'5 Wood' },
+  { id:'4h',     label:'4 Hybrid' },
+  { id:'5i',     label:'5 Iron' },
+  { id:'6i',     label:'6 Iron' },
+  { id:'7i',     label:'7 Iron' },
+  { id:'8i',     label:'8 Iron' },
+  { id:'9i',     label:'9 Iron' },
+  { id:'pw',     label:'PW' },
+  { id:'aw',     label:'AW' },
+  { id:'sw',     label:'SW' },
+];
+const SPEC = { driver:215,'5w':198,'4h':183,'5i':160,'6i':145,'7i':135,'8i':125,'9i':110,pw:100,aw:88,sw:72 };
+const WEDGE_CLUBS = ['pw','aw','sw'];
+const SWING_MULT  = [1.00, 0.83, 0.65];
+// ── State ────────────────────────────────────────────────────────
+const state = { isSetupComplete:false, anchors:null, carries:{}, locked:{}, targetYds:150 };
+
+function loadState() {
+  try { const s = JSON.parse(localStorage.getItem('club-caddy-v3')||'null'); if(s) Object.assign(state,s); } catch(e){}
+}
+function saveState() {
+  const { isSetupComplete,anchors,carries,locked,targetYds } = state;
+  localStorage.setItem('club-caddy-v3', JSON.stringify({ isSetupComplete,anchors,carries,locked,targetYds }));
+}
+
+// ── Math ─────────────────────────────────────────────────────────
+function adjustedCarry(base) { return base; }
+function extrapolate(driverCarry, fiveIronCarry) {
+  const specGap=SPEC.driver-SPEC['5i'], userGap=driverCarry-fiveIronCarry;
+  const aboveScale=userGap/specGap, belowScale=fiveIronCarry/SPEC['5i'];
+  const result={};
+  CLUBS.forEach(({id},i)=>{
+    if(state.locked[id]){result[id]=state.carries[id];return;}
+    if(i===0){result[id]=driverCarry;return;}
+    if(i===3){result[id]=fiveIronCarry;return;}
+    if(i<3) result[id]=driverCarry-Math.round((SPEC.driver-SPEC[id])*aboveScale);
+    else    result[id]=fiveIronCarry-Math.round((SPEC['5i']-SPEC[id])*belowScale);
+  });
+  return result;
+}
+
+// ── Setup ─────────────────────────────────────────────────────────
+const inputDriver=document.getElementById('input-driver'), input5i=document.getElementById('input-5i');
+const errDriver=document.getElementById('err-driver'), err5i=document.getElementById('err-5i');
+
+function updateFromAnchors() {
+  const d=parseInt(inputDriver.value,10), f=parseInt(input5i.value,10);
+  const dOk=!isNaN(d)&&d>0, fOk=!isNaN(f)&&f>0, crossOk=dOk&&fOk&&d>f;
+  inputDriver.classList.toggle('error', inputDriver.value&&!dOk);
+  input5i.classList.toggle('error', input5i.value&&(!fOk||(dOk&&fOk&&d<=f)));
+  errDriver.textContent = inputDriver.value&&!dOk?'Invalid':'';
+  err5i.textContent = input5i.value&&!fOk?'Invalid':(fOk&&dOk&&d<=f)?'< Driver':'';
+  if(crossOk){
+    state.anchors={driver:d,fiveIron:f};
+    state.carries=extrapolate(d,f);
+    saveState(); renderAll();
+  }
+}
+function initSetupListeners() {
+  [inputDriver,input5i].forEach(el=>el.addEventListener('input',updateFromAnchors));
+  updateFromAnchors();
+}
+
+// ── Render ────────────────────────────────────────────────────────
+function renderCarryTable() {
+  document.getElementById('carry-body').innerHTML=CLUBS.map(({id,label})=>{
+    const base=state.carries[id]??SPEC[id];
+    const lockMark=state.locked[id]?'<span class="lock-badge">●</span>':'';
+    return `<tr class="${state.locked[id]?'locked':''}" data-id="${id}">
+      <td class="col-club">${label}${lockMark}</td>
+      <td class="col-base">${base}</td>
+      <td class="col-adj">${adjustedCarry(base)}</td>
+    </tr>`;
+  }).join('');
+  document.querySelectorAll('#carry-body tr').forEach(row=>
+    row.addEventListener('click',()=>openClubModal(row.dataset.id))
+  );
+}
+const SWING_LABELS=['Full','¾','½'];
+function renderWedge() {
+  document.getElementById('wedge-body').innerHTML=WEDGE_CLUBS.map(id=>{
+    const base=state.carries[id]??SPEC[id], label=CLUBS.find(c=>c.id===id).label;
+    const carries=SWING_MULT.map(s=>Math.round(base*s));
+    return `<tr class="wt-carry-row"><td class="wt-name">${label}</td>${carries.map(c=>`<td class="wt-carry">${c}</td>`).join('')}</tr>`+
+           `<tr class="wt-roll-row"><td class="wt-roll-label">roll</td>${carries.map(c=>`<td class="wt-roll">+${Math.round(c*0.08)}</td>`).join('')}</tr>`;
+  }).join('');
+}
+function wedgeCarry(id,si){
+  const base=state.carries[id]??SPEC[id];
+  return Math.round(base*SWING_MULT[si]);
+}
+function renderTarget(){
+  const t=state.targetYds, input=document.getElementById('target-display');
+  if(input&&document.activeElement!==input) input.value=t;
+  const pwFull=wedgeCarry('pw',0), isWedge=t<=pwFull;
+  let picks;
+  if(isWedge){
+    const candidates=[];
+    WEDGE_CLUBS.forEach(id=>{
+      const label=CLUBS.find(c=>c.id===id).label;
+      SWING_MULT.forEach((_,si)=>{
+        const adj=wedgeCarry(id,si), roll=Math.round(adj*0.08), total=adj+roll, diff=total-t;
+        candidates.push({label,swingLabel:SWING_LABELS[si],adj,roll,total,diff,absDiff:Math.abs(diff),id,si});
+      });
+    });
+    const over=candidates.filter(c=>c.diff>=0);
+    const full=over.length?over.reduce((a,b)=>a.diff<=b.diff?a:b):candidates.reduce((a,b)=>a.absDiff<=b.absDiff?a:b);
+    const above=candidates.filter(c=>c.diff>full.diff);
+    const flight=above.length?above.reduce((a,b)=>a.diff<=b.diff?a:b):null;
+    const under=candidates.filter(c=>c.diff<0);
+    const bomb=under.length?under.reduce((a,b)=>a.diff>=b.diff?a:b):null;
+    picks=[
+      flight&&{r:flight,type:'flight',badgeLabel:'Flight',swingLabel:flight.swingLabel},
+      {r:full,type:'full',badgeLabel:'Full',swingLabel:full.swingLabel},
+      bomb&&bomb!==full&&{r:bomb,type:'bomb',badgeLabel:'Bomb',swingLabel:bomb.swingLabel},
+    ].filter(Boolean);
+  } else {
+    const rows=CLUBS.map(({id,label})=>{
+      const base=state.carries[id]??SPEC[id], adj=adjustedCarry(base), roll=Math.round(adj*0.08);
+      const total=adj+roll, diff=total-t;
+      return {label,adj,roll,total,diff,sign:diff>0?'+':'',cls:diff>0?'over':'under',absDiff:Math.abs(diff)};
+    });
+    const overRows=rows.filter(r=>r.diff>=0);
+    const fullRow=overRows.length?overRows.reduce((a,b)=>a.diff<=b.diff?a:b):rows.reduce((a,b)=>a.absDiff<=b.absDiff?a:b);
+    const fullIdx=rows.indexOf(fullRow);
+    const flightRow=rows.slice(0,fullIdx).reverse().find(r=>r.diff>fullRow.diff)??null;
+    const underRows=rows.filter(r=>r.diff<0);
+    const bombRow=underRows.length?underRows.reduce((a,b)=>a.diff>=b.diff?a:b):null;
+    picks=[
+      flightRow&&{r:flightRow,type:'flight',badgeLabel:'Flight',swingLabel:null},
+      {r:fullRow,type:'full',badgeLabel:'Full',swingLabel:null},
+      bombRow&&bombRow!==fullRow&&{r:bombRow,type:'bomb',badgeLabel:'Bomb',swingLabel:null},
+    ].filter(Boolean);
+  }
+  const sign=r=>r.diff>0?'+':'', cls=r=>r.diff>0?'over':'under';
+  document.getElementById('target-body').innerHTML=picks.map(({r,type,badgeLabel,swingLabel})=>`
+    <div class="target-card ${type}">
+      <div class="tc-left">
+        <span class="tc-club">${swingLabel?`${swingLabel} ${r.label}`:r.label}</span>
+        <span class="tt-badge ${type}">${badgeLabel}</span>
+      </div>
+      <div class="tc-right">
+        <span class="tc-adj">${r.adj} yds</span>
+        <span class="tc-roll">+${r.roll} roll</span>
+        <span class="tc-diff ${cls(r)}">${sign(r)}${r.diff} vs target</span>
+      </div>
+    </div>`).join('');
+}
+function renderAll(){ renderCarryTable(); renderWedge(); renderTarget(); }
+
+// ── Target stepper ────────────────────────────────────────────────
+function initTargetCtrl(){
+  const input=document.getElementById('target-display');
+  input.value=state.targetYds;
+  function bump(d){ state.targetYds=Math.min(999,Math.max(1,state.targetYds+d)); input.value=state.targetYds; renderTarget(); saveState(); }
+  document.getElementById('target-minus').addEventListener('click',()=>bump(-1));
+  document.getElementById('target-plus').addEventListener('click',()=>bump(+1));
+  input.addEventListener('focus',()=>input.select());
+  input.addEventListener('input',()=>{ const v=parseInt(input.value,10); if(!isNaN(v)&&v>=1&&v<=999){state.targetYds=v;renderTarget();saveState();} });
+  input.addEventListener('blur',()=>{input.value=state.targetYds;});
+}
+initTargetCtrl();
+
+// ── Inner tabs ────────────────────────────────────────────────────
+document.getElementById('inner-tabs').addEventListener('click',e=>{
+  const btn=e.target.closest('.itab'); if(!btn) return;
+  document.querySelectorAll('.itab').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(`screen-${btn.dataset.tab}`).classList.add('active');
+});
+
+// ── Club modal ────────────────────────────────────────────────────
+const modalScrim=document.getElementById('modal-scrim'), modalTitle=document.getElementById('modal-title');
+const modalHint=document.getElementById('modal-hint'), modalInput=document.getElementById('modal-input');
+const modalActions=document.getElementById('modal-actions');
+let modalClubId=null;
+function openClubModal(id){
+  modalClubId=id; const club=CLUBS.find(c=>c.id===id);
+  modalTitle.textContent=club.label; modalHint.textContent=`Set base carry for ${club.label}`;
+  modalInput.value=state.carries[id]??SPEC[id];
+  document.getElementById('modal-stepper-row').style.display='';
+  modalActions.innerHTML=`<button class="mbtn-secondary" id="modal-reset">Reset to bag</button><button class="mbtn-primary" id="modal-save">Save</button>`;
+  document.getElementById('modal-reset').addEventListener('click',()=>{
+    delete state.locked[modalClubId];
+    state.carries=extrapolate(state.anchors.driver,state.anchors.fiveIron);
+    saveState();renderAll();closeModal();
+  });
+  document.getElementById('modal-save').addEventListener('click',()=>{
+    const v=parseInt(modalInput.value,10);
+    if(!isNaN(v)&&v>0){state.carries[modalClubId]=v;state.locked[modalClubId]=true;saveState();renderAll();closeModal();}
+  });
+  modalScrim.classList.add('open');
+}
+function closeModal(){ modalScrim.classList.remove('open'); modalClubId=null; }
+document.getElementById('modal-close').addEventListener('click',closeModal);
+modalScrim.addEventListener('click',e=>{if(e.target===modalScrim)closeModal();});
+document.getElementById('btn-minus').addEventListener('click',()=>{const v=parseInt(modalInput.value,10);if(!isNaN(v)&&v>1)modalInput.value=v-1;});
+document.getElementById('btn-plus').addEventListener('click',()=>{const v=parseInt(modalInput.value,10);if(!isNaN(v))modalInput.value=v+1;});
+
+// ── Boot ──────────────────────────────────────────────────────────
+loadState();
+if(state.anchors){
+  inputDriver.value=state.anchors.driver;
+  input5i.value=state.anchors.fiveIron;
+}
+initSetupListeners();
+renderAll();
+
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+</script>
+</body>
+</html>

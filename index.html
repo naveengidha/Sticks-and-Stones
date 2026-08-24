@@ -12,8 +12,8 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{font-family:Arial,Helvetica,sans-serif;background:#080f0a;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;justify-content:flex-start;align-items:center;padding:20px 20px;}
-.container{background:#0e1a12;border:3px solid #8B6914;padding:16px 24px 30px;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,0.4);width:100%;max-width:480px;position:relative;}
+body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;}
+.container{padding:16px 16px 0;width:100%;}
 .logo{text-align:center;margin-bottom:8px;display:block;width:100%;}
 .logo svg{margin:auto;display:block;}
 h1{text-align:center;color:#ffd447;margin:0 0 4px;font-size:26px;letter-spacing:1px;font-family:'Georgia','Times New Roman',serif;}
@@ -69,6 +69,66 @@ button:hover,button:active{background:linear-gradient(135deg,#b8912e,#ffc93a,#b8
 button.btn-secondary{background:transparent;border:1px solid rgba(184,150,46,0.4);color:rgba(255,212,71,0.75);font-size:14px;padding:10px;box-shadow:none;letter-spacing:.5px;}
 button.btn-secondary:hover,button.btn-secondary:active{background:rgba(184,150,46,0.08);border-color:rgba(255,212,71,0.6);color:#ffd447;}
 .hidden{display:none!important;}
+/* ── Bottom pill nav ── */
+.bottom-nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:1000;pointer-events:none;}
+.nav-pill{display:flex;align-items:center;gap:2px;background:#0e1a12;border:1px solid rgba(255,212,71,0.28);border-radius:50px;padding:6px 10px;box-shadow:0 4px 24px rgba(0,0,0,0.6);pointer-events:all;}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 14px;border-radius:40px;cursor:pointer;text-decoration:none;color:rgba(255,212,71,0.35);font-size:9px;font-weight:bold;letter-spacing:.5px;text-transform:uppercase;transition:color .15s,background .15s;-webkit-user-select:none;}
+.nav-item:hover,.nav-item:active{color:rgba(255,212,71,0.7);}
+.nav-item.active{color:#ffd447;}
+.nav-item svg{width:20px;height:20px;flex-shrink:0;}
+.nav-center{background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;margin:0 4px;cursor:pointer;box-shadow:0 2px 10px rgba(184,150,46,0.5);flex-shrink:0;text-decoration:none;}
+.nav-center svg{width:26px;height:26px;}
+
+/* ── Round cards ── */
+.rounds-section{width:100%;padding:0 16px 110px;}
+.rounds-section-label{font-size:13px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.55);margin:0 0 10px;text-align:center;font-family:'Georgia','Times New Roman',serif;}
+.rcard{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:12px;margin-bottom:10px;overflow:hidden;cursor:pointer;transition:border-color .15s;}
+.rcard:hover,.rcard:active{border-color:rgba(255,212,71,0.55);}
+.rcard-body{padding:13px 14px 10px;}
+.rcard-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.rcard-game{font-size:11px;font-weight:bold;color:rgba(255,212,71,0.55);letter-spacing:.5px;text-transform:uppercase;font-family:'Georgia','Times New Roman',serif;}
+.rcard-date{font-size:11px;color:rgba(255,255,255,0.35);}
+.rcard-mid{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.rcard-info{flex:1;min-width:0;}
+.rcard-course{font-size:15px;font-weight:bold;color:#fff;line-height:1.2;margin-bottom:2px;font-family:'Georgia','Times New Roman',serif;}
+.rcard-format{font-size:11px;color:rgba(255,255,255,0.4);}
+.rcard-scores{display:flex;flex-direction:column;gap:3px;flex-shrink:0;margin-left:12px;align-items:flex-end;}
+.rcard-score-row{display:flex;align-items:baseline;gap:6px;}
+.rcard-score-name{font-size:10px;color:rgba(255,255,255,0.4);white-space:nowrap;max-width:70px;overflow:hidden;text-overflow:ellipsis;}
+.rcard-score-num{font-size:15px;font-weight:bold;color:#fff;font-variant-numeric:tabular-nums;}
+.rcard-score-par{font-size:11px;color:rgba(255,212,71,0.6);font-variant-numeric:tabular-nums;min-width:28px;text-align:right;}
+.hole-bar{display:grid;grid-template-columns:minmax(0,auto) 90px 1fr;gap:3px 6px;padding:4px 0 10px;align-items:center;}
+.hb-row{display:contents;}
+.hb-label{font-size:11px;font-weight:bold;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1;min-width:0;}
+.hb-label-team{max-width:160px;}
+.hb-segs{display:flex;gap:1px;align-self:center;min-width:0;}
+.hb-score{font-size:11px;font-weight:bold;color:#fff;font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1;text-align:right;}
+.hb-vspar{font-size:11px;color:rgba(255,255,255,0.45);font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1;}
+.hb-seg{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,0.08);}
+.hb-eagle{background:#60a5fa;}
+.hb-birdie{background:#fbbf24;}
+.hb-par{background:#4ade80;}
+.hb-bogey{background:#fb923c;}
+.hb-double{background:#f87171;}
+
+/* ── Expanded scorecard ── */
+.rcard-expand{display:none;border-top:1px solid rgba(255,212,71,0.1);padding:12px 14px 14px;}
+.rcard.expanded .rcard-expand{display:block;}
+.rcard-expand-sc{overflow-x:auto;margin-bottom:12px;}
+.rcard-expand-sc table{width:100%;border-collapse:collapse;font-size:11px;}
+.rcard-expand-sc th{background:rgba(0,0,0,0.4);color:#ffd447;border:1px solid rgba(184,150,46,0.15);padding:5px 3px;text-align:center;font-size:9px;letter-spacing:.8px;text-transform:uppercase;}
+.rcard-expand-sc th:first-child{text-align:left;}
+.rcard-expand-sc td{border:1px solid rgba(184,150,46,0.08);padding:4px 3px;text-align:center;color:rgba(255,255,255,0.7);font-family:'Courier New',monospace;font-size:11px;}
+.rcard-expand-sc td:first-child{color:rgba(255,212,71,0.55);font-family:inherit;text-align:left;}
+.rcard-expand-sc tfoot td{background:rgba(0,0,0,0.3);color:#ffd447;font-weight:bold;font-family:inherit;}
+.rcard-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.rs-tile{background:rgba(0,0,0,0.25);border:1px solid rgba(255,212,71,0.12);border-radius:7px;padding:9px 8px;text-align:center;}
+.rs-val{font-size:18px;font-weight:bold;color:#ffd447;font-family:'Courier New',monospace;display:block;}
+.rs-lbl{font-size:9px;color:rgba(255,212,71,0.45);letter-spacing:1.2px;text-transform:uppercase;display:block;margin-top:2px;}
+.rcard-empty{text-align:center;color:rgba(255,255,255,0.3);padding:30px 20px;font-size:13px;line-height:2;}
+.expand-chevron{font-size:9px;color:rgba(255,212,71,0.3);display:inline-block;transition:transform .2s;margin-left:6px;}
+.rcard.expanded .expand-chevron{transform:rotate(180deg);}
+
 /* ── Golf Bag overlay ── */
 .field-bag-edit-btn{background:none;border:1px solid rgba(255,212,71,0.35);color:rgba(255,212,71,0.8);font-size:13px;font-weight:bold;padding:4px 12px;border-radius:4px;cursor:pointer;letter-spacing:.5px;white-space:nowrap;}
 .field-bag-edit-btn:active{background:rgba(255,212,71,0.1);}
@@ -249,24 +309,13 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 
   <hr class="divider" style="margin-top:8px;">
   <div id="activeSeasonsSection"></div>
-  <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px;margin-bottom:4px;">
-    <a class="stats-link" href="games.html">
-      <span class="stats-link-icon">⛳</span>
-      <span class="stats-link-label">Play a Game</span>
-      <span class="stats-link-arrow">›</span>
-    </a>
-    <a class="stats-link" href="season.html">
-      <span class="stats-link-icon">🏆</span>
-      <span class="stats-link-label">Start a Season</span>
-      <span class="stats-link-arrow">›</span>
-    </a>
-    <a class="stats-link" href="history.html">
-      <span class="stats-link-icon">📊</span>
-      <span class="stats-link-label">Scorecards &amp; Stats</span>
-      <span class="stats-link-arrow">›</span>
-    </a>
-  </div>
 
+  </div><!-- end .container -->
+
+  <!-- ── Round cards ── -->
+  <div class="rounds-section">
+    <div class="rounds-section-label" style="padding-top:14px;">Recent Rounds</div>
+    <div id="roundCards"></div>
   </div>
 
 <!-- ══════════════════════════════════
@@ -409,6 +458,276 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 
   </div>
 </div>
+
+<!-- ── Pill nav bar ── -->
+<nav class="bottom-nav">
+  <div class="nav-pill">
+    <a class="nav-item active" href="index.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8" r="3"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/><line x1="4" y1="14" x2="20" y2="14" stroke-width="1.5" stroke-dasharray="2 2"/>
+      </svg>
+      Rounds
+    </a>
+    <a class="nav-item" href="history.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/>
+      </svg>
+      History
+    </a>
+    <a class="nav-center" href="games.html" title="Play a Game">
+      <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#1a1a0a"/><circle cx="12" cy="12" r="4" fill="white"/><circle cx="9.5" cy="10.5" r="1" fill="#ccc"/><circle cx="12" cy="9" r="1" fill="#ccc"/><circle cx="14.5" cy="11" r="1" fill="#ccc"/></svg>
+    </a>
+    <a class="nav-item" href="tournaments.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+      </svg>
+      Tourneys
+    </a>
+    <a class="nav-item" href="caddy.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2h12a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><line x1="9" y1="2" x2="9" y2="6"/><line x1="15" y1="2" x2="15" y2="6"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/>
+      </svg>
+      Caddy
+    </a>
+  </div>
+</nav>
+
+<script>
+(function renderRoundCards(){
+  const GAME_LABELS = {
+    f1:'Grand Prix', stableford:'Stableford', wolf:'Wolf', banker:'Banker',
+    matchplay:'Match Play', scramble:'Scramble', foursomes:'Foursomes',
+    vegas:'Vegas', stroke:'Stroke Play'
+  };
+  const GAME_ICONS = {
+    f1:'🏎️', stableford:'🎯', wolf:'🐺', banker:'🏦',
+    matchplay:'⚔️', scramble:'🤝', foursomes:'🔄',
+    vegas:'🎰', stroke:'🏌️'
+  };
+
+  function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function fmtDate(d){ if(!d) return ''; let dt=new Date(d); if(isNaN(dt)) return d; return dt.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}); }
+  function fmtVsPar(v){ return v>0?'+'+v:v===0?'E':String(v); }
+
+  function loadHistory(){ try{ return JSON.parse(localStorage.getItem('gameHistory')||'[]'); }catch(e){ return []; } }
+
+  function getScoreDisplay(r){
+    try{
+      let players = r.players||[];
+      switch(r.game){
+        case 'stroke':{
+          let totalPar = (r.holeParDist||[]).reduce((s,h)=>s+(h.par||4),0);
+          return players.map((p,i)=>{
+            let gross = r.playerTotals?.[i];
+            let diff = gross != null ? gross - totalPar : null;
+            return { name:p, num:gross, par: diff!=null?fmtVsPar(diff):'' };
+          });
+        }
+        case 'stableford': case 'f1': case 'wolf':
+          return players.map((p,i)=>({ name:p, num:r.playerTotals?.[i], par:'pts' }));
+        case 'banker':
+          return players.map((p,i)=>({ name:p, num:r.playerNetTotals?.[i], par:'net' }));
+        case 'scramble':{
+          let teamNames = r.teamNames||['Team A','Team B'];
+          return teamNames.map((name,i)=>({ name, num:r.teamScores?.[i], par:fmtVsPar(r.teamVsPar?.[i]??0) }));
+        }
+        case 'matchplay':
+          return players.map((p,i)=>({ name:p, num:null, par:'' }));
+        default:
+          return players.map((p,i)=>({ name:p, num:r.playerTotals?.[i], par:'' }));
+      }
+    }catch(e){ return []; }
+  }
+
+  function getHoleBar(r){
+    try{
+      let pd = r.holeParDist||[];
+      let players = r.players||[];
+      let bars = [];
+
+      // Scramble: uses holeHistory with {scores:[sA,sB], par}
+      if(r.game==='scramble' && r.holeHistory && r.holeHistory.length){
+        let teamNames = r.teamNames||['Team A','Team B'];
+        let playerNames = r.playerNames||[];
+        let teamScores = r.teamScores||[];
+        let teamVsPar = r.teamVsPar||[];
+        for(let ti=0; ti<teamNames.length; ti++){
+          let p1=playerNames[ti]?.[0], p2=playerNames[ti]?.[1];
+          let members=[p1,p2].filter(Boolean).map(esc).join(', ');
+          let labelText=`${esc(teamNames[ti])}${members?` (${members})`:''}`;
+          let score=teamScores[ti], vp=teamVsPar[ti];
+          let parStr=vp!=null?(vp>0?'+'+vp:vp===0?'E':String(vp)):'';
+          let scoreHtml=score!=null?`<span class="hb-score">${score} <span class="hb-vspar">(${parStr})</span></span>`:'';
+          let segs=r.holeHistory.map(hole=>{
+            let s=hole.scores?.[ti], par=hole.par||4, cls='hb-seg';
+            if(s!=null){let d=s-par;if(d<=-2)cls+=' hb-eagle';else if(d===-1)cls+=' hb-birdie';else if(d===0)cls+=' hb-par';else if(d===1)cls+=' hb-bogey';else cls+=' hb-double';}
+            return `<div class="${cls}"></div>`;
+          }).join('');
+          bars.push(`<div class="hb-row"><span class="hb-label hb-label-team">${labelText}</span>${scoreHtml}<div class="hb-segs">${segs}</div></div>`);
+        }
+        return bars.join('');
+      }
+
+      let sh = r.scoreHistory||[];
+      if(!sh.length && !players.length) return '';
+
+      let totalPar = pd.reduce((s,h)=>s+(h.par||4),0);
+
+      // Foursomes/Vegas: teams of 2
+      if((r.game==='foursomes'||r.game==='vegas') && players.length>=2){
+        let numTeams=Math.floor(players.length/2);
+        for(let ti=0; ti<numTeams; ti++){
+          let p1=players[ti*2], p2=players[ti*2+1];
+          let members=[p1,p2].filter(Boolean).map(esc).join(', ');
+          let score=(r.playerTotals||[])[ti]??(r.unitTotals||[])[ti];
+          let scoreHtml=score!=null?`<span class="hb-score">${score}</span>`:'';
+          let segs=sh.map((hole,i)=>{
+            let s=hole[ti], par=pd[i]?.par||4, cls='hb-seg';
+            if(s!=null){let d=s-par;if(d<=-2)cls+=' hb-eagle';else if(d===-1)cls+=' hb-birdie';else if(d===0)cls+=' hb-par';else if(d===1)cls+=' hb-bogey';else cls+=' hb-double';}
+            return `<div class="${cls}"></div>`;
+          }).join('');
+          bars.push(`<div class="hb-row"><span class="hb-label hb-label-team">(${members})</span>${scoreHtml}<div class="hb-segs">${segs}</div></div>`);
+        }
+        return bars.join('');
+      }
+
+      // Individual games
+      let numPlayers=Math.max(1,players.length);
+      for(let pi=0; pi<numPlayers; pi++){
+        let playerTotal=(r.playerTotals||[])[pi];
+        let segs=sh.map((hole,i)=>{
+          let score=hole[pi], par=pd[i]?.par||4, cls='hb-seg';
+          if(score!=null){let diff=score-par;if(diff<=-2)cls+=' hb-eagle';else if(diff===-1)cls+=' hb-birdie';else if(diff===0)cls+=' hb-par';else if(diff===1)cls+=' hb-bogey';else cls+=' hb-double';}
+          return `<div class="${cls}"></div>`;
+        }).join('');
+        let scoreHtml='';
+        if(playerTotal!=null){
+          let diff=playerTotal-totalPar;
+          let parStr=diff>0?'+'+diff:diff===0?'E':String(diff);
+          scoreHtml=`<span class="hb-score">${playerTotal} <span class="hb-vspar">(${parStr})</span></span>`;
+        }
+        bars.push(`<div class="hb-row"><span class="hb-label">${players[pi]?esc(players[pi]):''}</span>${scoreHtml}<div class="hb-segs">${segs}</div></div>`);
+      }
+      return bars.join('');
+    }catch(e){ return ''; }
+  }
+
+  function buildScorecard(r){
+    try{
+      if((r.game==='stroke'||r.game==='stableford'||r.game==='f1'||r.game==='wolf')){
+        let sh=r.scoreHistory||[]; if(!sh.length) return '';
+        let players=r.players||[];
+        let pd=r.holeParDist||[];
+        let thead=`<thead><tr><th>Hole</th><th>Par</th>${players.map(p=>`<th>${esc(p)}</th>`).join('')}</tr></thead>`;
+        let rows=sh.map((hole,i)=>{
+          let par=pd[i]?.par||4;
+          return `<tr><td>${i+1}</td><td>${par}</td>${hole.map(s=>`<td>${s??'–'}</td>`).join('')}</tr>`;
+        }).join('');
+        let totals=(r.playerTotals||[]).map(t=>`<td>${t}</td>`).join('');
+        return `<table>${thead}<tbody>${rows}</tbody><tfoot><tr><td colspan="2">Total</td>${totals}</tr></tfoot></table>`;
+      }
+      if(r.game==='stroke' && r.playerTotals){
+        // already handled above
+      }
+      return '';
+    }catch(e){ return ''; }
+  }
+
+  function buildStats(r){
+    try{
+      if(r.game==='stroke' && r.holes && r.holes.length){
+        let holesData = r.holes[0]||[];
+        let scored = holesData.filter(h=>h.score!=null);
+        if(!scored.length) return '';
+        let totalPar = scored.reduce((s,h)=>s+(h.par||4),0);
+        let totalGross = scored.reduce((s,h)=>s+h.score,0);
+        let diff = totalGross - totalPar;
+        let firOpp=0,firHit=0,girHit=0,totalPutts=0,totalPen=0;
+        let birdies=0,pars=0,bogeys=0,doubles=0;
+        scored.forEach(h=>{
+          if(h.par!==3){ firOpp++; if(h.pts) firHit++; }
+          if(h.air) girHit++;
+          totalPutts+=h.putts||0;
+          totalPen+=h.pen||0;
+          let d=h.score-h.par;
+          if(d<=-1) birdies++;
+          else if(d===0) pars++;
+          else if(d===1) bogeys++;
+          else doubles++;
+        });
+        let firPct = firOpp>0 ? Math.round(firHit/firOpp*100)+'%' : '–';
+        let girPct = Math.round(girHit/scored.length*100)+'%';
+        let avgPutts = (totalPutts/scored.length).toFixed(1);
+        return `
+          <div class="rcard-stats">
+            <div class="rs-tile"><span class="rs-val">${birdies}</span><span class="rs-lbl">Birdies</span></div>
+            <div class="rs-tile"><span class="rs-val">${pars}</span><span class="rs-lbl">Pars</span></div>
+            <div class="rs-tile"><span class="rs-val">${bogeys}</span><span class="rs-lbl">Bogeys</span></div>
+            <div class="rs-tile"><span class="rs-val">${doubles}</span><span class="rs-lbl">Doubles+</span></div>
+            <div class="rs-tile"><span class="rs-val">${firPct}</span><span class="rs-lbl">FIR %</span></div>
+            <div class="rs-tile"><span class="rs-val">${girPct}</span><span class="rs-lbl">GIR %</span></div>
+            <div class="rs-tile"><span class="rs-val">${avgPutts}</span><span class="rs-lbl">Avg Putts</span></div>
+            <div class="rs-tile"><span class="rs-val">${totalPen}</span><span class="rs-lbl">Penalties</span></div>
+          </div>`;
+      }
+      // Generic: just show total for other formats
+      let sd = getScoreDisplay(r);
+      if(!sd.length || sd.every(p=>p.num==null)) return '';
+      return `<div class="rcard-stats">${sd.filter(p=>p.num!=null).map(p=>{
+        return `<div class="rs-tile"><span class="rs-val">${p.num??'–'}</span><span class="rs-lbl">${esc(p.name)}</span></div>`;
+      }).join('')}</div>`;
+    }catch(e){ return ''; }
+  }
+
+  let expanded = new Set();
+
+  function render(){
+    let history = loadHistory().sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
+    let el = document.getElementById('roundCards');
+    if(!el) return;
+    if(!history.length){
+      el.innerHTML = '<div class="rcard-empty">No rounds played yet.</div>';
+      return;
+    }
+    el.innerHTML = '';
+    history.forEach(r=>{
+      let sd = getScoreDisplay(r);
+      let bar = getHoleBar(r);
+      let sc = buildScorecard(r);
+      let isExp = expanded.has(r.id);
+
+      let card = document.createElement('div');
+      card.className = 'rcard' + (isExp?' expanded':'');
+      card.innerHTML = `
+        <div class="rcard-body">
+          <div class="rcard-top">
+            <span class="rcard-game">${esc(GAME_ICONS[r.game]||'⛳')} ${esc(GAME_LABELS[r.game]||r.game)}<span class="expand-chevron">▼</span></span>
+            <span class="rcard-date">${esc(fmtDate(r.date))}</span>
+          </div>
+          <div class="rcard-mid">
+            <div class="rcard-info">
+              <div class="rcard-course">${esc(r.course||'Unknown Course')}</div>
+              <div class="rcard-format">${esc(GAME_LABELS[r.game]||r.game)}</div>
+            </div>
+          </div>
+          ${bar?`<div class="hole-bar">${bar}</div>`:''}
+        </div>
+        ${sc?`<div class="rcard-expand"><div class="rcard-expand-sc">${sc}</div></div>`:''}`;
+
+      card.addEventListener('click', ()=>{
+        if(expanded.has(r.id)) expanded.delete(r.id);
+        else expanded.add(r.id);
+        card.classList.toggle('expanded', expanded.has(r.id));
+      });
+
+      el.appendChild(card);
+    });
+  }
+
+  render();
+  window.addEventListener('storage', render);
+})();
+</script>
 
 <script>
 if('serviceWorker' in navigator){
@@ -1195,10 +1514,10 @@ function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').rep
     let el = document.getElementById('activeSeasonsSection');
     if(!seasons.length){ el.innerHTML=''; return; }
 
-    let html = '<div class="active-seasons-label">Active Seasons</div>';
+    let html = '<div class="active-seasons-label">Active Tournaments</div>';
     seasons.forEach(s=>{
       let metaRounds = s.seasonLength ? `${s.rounds.length}/${s.seasonLength} rounds` : `${s.rounds.length} round${s.rounds.length!==1?'s':''}`;
-      html += `<a class="active-season-card" href="season.html?id=${s.id}">
+      html += `<a class="active-season-card" href="tournaments.html?id=${s.id}">
         <span class="asc-icon">🏆</span>
         <div class="asc-body">
           <div class="asc-name">${esc(s.name)}</div>
