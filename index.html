@@ -112,6 +112,9 @@ button.btn-secondary:hover,button.btn-secondary:active{background:rgba(184,150,4
 .hb-double{background:#f87171;}
 
 /* ── Expanded scorecard ── */
+.rcard-delete{background:none;border:1px solid rgba(220,50,50,0.35);border-radius:8px;color:rgba(220,100,100,0.8);font-size:11px;font-weight:bold;padding:5px 12px;cursor:pointer;letter-spacing:.5px;align-self:flex-start;}
+.rcard-delete:active{background:rgba(220,50,50,0.2);}
+.rcard-expand-footer{display:flex;justify-content:flex-end;padding-top:10px;}
 .rcard-expand{display:none;border-top:1px solid rgba(255,212,71,0.1);padding:12px 14px 14px;}
 .rcard.expanded .rcard-expand{display:block;}
 .rcard-expand-sc{overflow-x:auto;margin-bottom:12px;}
@@ -622,6 +625,23 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
         let totals=(r.teamScores||[]).map(t=>`<td>${t}</td>`).join('');
         return `<table>${thead}<tbody>${rows}</tbody><tfoot><tr><td colspan="2">Total</td>${totals}</tr></tfoot></table>`;
       }
+      // Foursomes: scoreHistory has {par, scoreA, scoreB}
+      if(r.game==='foursomes' && r.scoreHistory && r.scoreHistory.length){
+        let p=r.players||['Team A','Team B'];
+        let thead=`<thead><tr><th>Hole</th><th>Par</th><th>${esc(p[0]||'A')}</th><th>${esc(p[1]||'B')}</th></tr></thead>`;
+        let rows=r.scoreHistory.map((h,i)=>`<tr><td>${i+1}</td><td>${h.par||4}</td><td>${h.scoreA??'–'}</td><td>${h.scoreB??'–'}</td></tr>`).join('');
+        let tA=r.scoreHistory.reduce((s,h)=>s+(h.scoreA||0),0);
+        let tB=r.scoreHistory.reduce((s,h)=>s+(h.scoreB||0),0);
+        return `<table>${thead}<tbody>${rows}</tbody><tfoot><tr><td colspan="2">Total</td><td>${tA}</td><td>${tB}</td></tr></tfoot></table>`;
+      }
+      // Vegas: holeHistory has {par, scores:[s1,s2,...]}
+      if(r.game==='vegas' && r.holeHistory && r.holeHistory.length){
+        let p=r.players||[];
+        let thead=`<thead><tr><th>Hole</th><th>Par</th>${p.map(pl=>`<th>${esc(pl)}</th>`).join('')}</tr></thead>`;
+        let rows=r.holeHistory.map((h,i)=>`<tr><td>${i+1}</td><td>${h.par||4}</td>${(h.scores||[]).map(s=>`<td>${s??'–'}</td>`).join('')}</tr>`).join('');
+        let totals=p.map((_,pi)=>`<td>${r.holeHistory.reduce((s,h)=>s+(h.scores?.[pi]||0),0)}</td>`).join('');
+        return `<table>${thead}<tbody>${rows}</tbody><tfoot><tr><td colspan="2">Total</td>${totals}</tr></tfoot></table>`;
+      }
       if((r.game==='stroke'||r.game==='stableford'||r.game==='f1'||r.game==='wolf')){
         let sh=r.scoreHistory||[]; if(!sh.length) return '';
         let players=r.players||[];
@@ -720,12 +740,22 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
           </div>
           ${bar?`<div class="hole-bar">${bar}</div>`:''}
         </div>
-        ${sc?`<div class="rcard-expand"><div class="rcard-expand-sc">${sc}</div></div>`:''}`;
+        <div class="rcard-expand">${sc?`<div class="rcard-expand-sc">${sc}</div>`:''}<div class="rcard-expand-footer"><button class="rcard-delete" data-id="${r.id}">Delete Round</button></div></div>`;
 
-      card.addEventListener('click', ()=>{
+      card.addEventListener('click', e=>{
+        if(e.target.closest('.rcard-delete')) return;
         if(expanded.has(r.id)) expanded.delete(r.id);
         else expanded.add(r.id);
         card.classList.toggle('expanded', expanded.has(r.id));
+      });
+
+      card.querySelector('.rcard-delete').addEventListener('click', e=>{
+        e.stopPropagation();
+        if(!confirm('Delete this round? This cannot be undone.')) return;
+        let h=loadHistory().filter(x=>x.id!==r.id);
+        localStorage.setItem('gameHistory',JSON.stringify(h));
+        expanded.delete(r.id);
+        render();
       });
 
       el.appendChild(card);
