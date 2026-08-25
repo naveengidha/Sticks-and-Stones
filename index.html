@@ -10,6 +10,13 @@
 <title>Sticks &amp; Stones</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
+<script>
+// Show splash once per session
+if(!sessionStorage.getItem('splashSeen')){
+  sessionStorage.setItem('splashSeen','1');
+  window.location.replace('splash.html');
+}
+</script>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;}
@@ -111,11 +118,11 @@ button.btn-secondary:hover,button.btn-secondary:active{background:rgba(184,150,4
 .hb-score{font-size:11px;font-weight:bold;color:#fff;font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1;text-align:right;}
 .hb-vspar{font-size:11px;color:rgba(255,255,255,0.45);font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1;}
 .hb-seg{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,0.08);}
-.hb-eagle{background:#a855f7;}
-.hb-birdie{background:#3b82f6;}
-.hb-par{background:#4ade80;}
-.hb-bogey{background:#ffd447;}
-.hb-double{background:#f97316;}
+.hb-eagle{background:#9333ea;}
+.hb-birdie{background:#0ea5e9;}
+.hb-par{background:#10b981;}
+.hb-bogey{background:#f59e0b;}
+.hb-double{background:#ef4444;}
 
 /* ── Expanded scorecard ── */
 .rcard-delete{background:none;border:1px solid rgba(220,50,50,0.35);border-radius:8px;color:rgba(220,100,100,0.8);font-size:11px;font-weight:bold;padding:5px 12px;cursor:pointer;letter-spacing:.5px;align-self:flex-start;}

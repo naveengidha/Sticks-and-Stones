@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#080f0a">
+<title>Sticks &amp; Stones</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;height:100%;overflow:hidden;background:#080f0a;font-family:'Georgia','Times New Roman',serif;}
+#splash{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#080f0a;}
+#canvas{position:absolute;inset:0;touch-action:none;}
+#logo-wrap{position:absolute;top:22%;left:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none;user-select:none;}
+#skip{position:fixed;bottom:36px;left:50%;transform:translateX(-50%);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.3);font-family:'Georgia','Times New Roman',serif;}
+#hint{position:fixed;bottom:64px;left:50%;transform:translateX(-50%);font-size:12px;letter-spacing:1px;color:rgba(255,212,71,0.5);font-family:'Georgia','Times New Roman',serif;white-space:nowrap;transition:opacity .4s;}
+</style>
+</head>
+<body>
+<div id="splash">
+  <canvas id="canvas"></canvas>
+
+  <!-- Logo (hole target) — big, upper area -->
+  <div id="logo-wrap">
+    <svg id="logo-svg" width="220" height="190" viewBox="0 0 180 155" style="filter:drop-shadow(0 0 24px rgba(255,212,71,0.22));">
+      <defs>
+        <path id="titleArc" d="M 22,97 A 68,68 0 0,1 158,97" fill="none"/>
+      </defs>
+      <text font-family="Georgia,'Times New Roman',serif" font-size="16" font-weight="bold" fill="#ffd447" letter-spacing="2">
+        <textPath href="#titleArc" startOffset="50%" text-anchor="middle">STICKS &amp; STONES</textPath>
+      </text>
+      <circle cx="90" cy="97" r="52" fill="#1c4729"/>
+      <circle cx="90" cy="97" r="26" fill="white"/>
+      <circle cx="82" cy="91" r="3" fill="#ddd"/>
+      <circle cx="91" cy="87" r="3" fill="#ddd"/>
+      <circle cx="100" cy="93" r="3" fill="#ddd"/>
+      <circle cx="84" cy="101" r="3" fill="#ddd"/>
+      <circle cx="95" cy="103" r="3" fill="#ddd"/>
+      <circle cx="90" cy="97" r="38" fill="none" stroke="#ffd447" stroke-width="1.5" stroke-opacity="0.85"/>
+      <line x1="90" y1="53"  x2="90" y2="62"  stroke="#ffd447" stroke-width="1.5" stroke-opacity="0.85" stroke-linecap="round"/>
+      <line x1="134" y1="97" x2="125" y2="97" stroke="#ffd447" stroke-width="1.5" stroke-opacity="0.85" stroke-linecap="round"/>
+      <line x1="90" y1="141" x2="90" y2="132" stroke="#ffd447" stroke-width="1.5" stroke-opacity="0.85" stroke-linecap="round"/>
+      <line x1="46" y1="97"  x2="55" y2="97"  stroke="#ffd447" stroke-width="1.5" stroke-opacity="0.85" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <div id="skip">Tap anywhere to skip</div>
+</div>
+
+<script>
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const logoWrap = document.getElementById('logo-wrap');
+
+let W, H, holeX, holeY, holeR;
+let ball = { x:0, y:0, vx:0, vy:0, r:20, active:false, sinking:false, sinkProgress:0 };
+let dragging = false, dragStartX=0, dragStartY=0, dragCurX=0, dragCurY=0;
+let autoTimer = null, gone = false, playerEngaged = false;
+let hintAlpha = 1; // fades out when player engages
+
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  const rect = logoWrap.getBoundingClientRect();
+  holeX = rect.left + rect.width/2;
+  holeY = rect.top + rect.height * 0.72;
+  holeR = rect.width * 0.145;
+  if(!ball.active && !ball.sinking){
+    ball.x = W/2;
+    ball.y = H * 0.82;
+  }
+}
+
+function drawBall(x, y, r, alpha){
+  ctx.save();
+  ctx.globalAlpha = alpha ?? 1;
+  ctx.shadowColor = 'rgba(255,255,255,0.35)';
+  ctx.shadowBlur = 14;
+  ctx.beginPath(); ctx.arc(x, y, r+3, 0, Math.PI*2);
+  ctx.fillStyle = '#1a1a0a'; ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2);
+  ctx.fillStyle = '#ffffff'; ctx.fill();
+  const dimples = [[-0.3,-0.25],[0.05,-0.4],[0.35,-0.15],[-0.2,0.15],[0.22,0.22]];
+  ctx.fillStyle = '#cccccc';
+  dimples.forEach(([dx,dy])=>{
+    ctx.beginPath(); ctx.arc(x+dx*r, y+dy*r, r*0.13, 0, Math.PI*2); ctx.fill();
+  });
+  ctx.restore();
+}
+
+function drawHintArrows(ts){
+  if(hintAlpha <= 0) return;
+  // Direction from ball to hole
+  const dx = holeX - ball.x, dy = holeY - ball.y;
+  const dist = Math.sqrt(dx*dx+dy*dy);
+  if(dist < 1) return;
+  const ux = dx/dist, uy = dy/dist;
+  // Draw 3 staggered chevrons along the path, pulsing with offset phases
+  const gap = 28, arrowSize = 9;
+  for(let i = 0; i < 3; i++){
+    const phase = ((ts/600 + i * 0.33) % 1); // 0..1 cycling
+    const pulse = Math.sin(phase * Math.PI); // 0→1→0
+    const alpha = hintAlpha * pulse * 0.3;
+    if(alpha < 0.02) continue;
+    const startDist = ball.r + 28 + i * gap;
+    const cx = ball.x + ux * startDist;
+    const cy = ball.y + uy * startDist;
+    // Perpendicular
+    const px = -uy, py = ux;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = '#ffd447';
+    ctx.lineWidth = 3.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(cx - px*arrowSize - ux*arrowSize, cy - py*arrowSize - uy*arrowSize);
+    ctx.lineTo(cx + ux*arrowSize, cy + uy*arrowSize);
+    ctx.lineTo(cx + px*arrowSize - ux*arrowSize, cy + py*arrowSize - uy*arrowSize);
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+
+function drawAimLine(){  if(!dragging) return;
+  const dx = dragCurX - dragStartX, dy = dragCurY - dragStartY;
+  const len = Math.sqrt(dx*dx+dy*dy);
+  if(len < 6) return;
+  // Draw projected path line from ball toward aim direction
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,212,71,0.35)';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([5,5]);
+  ctx.beginPath();
+  ctx.moveTo(ball.x, ball.y);
+  ctx.lineTo(ball.x + (dx/len)*100, ball.y + (dy/len)*100);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function navigate(){
+  if(gone) return;
+  gone = true;
+  document.getElementById('splash').style.transition = 'opacity .5s';
+  document.getElementById('splash').style.opacity = '0';
+  setTimeout(()=>{ window.location.replace('index.html'); }, 500);
+}
+
+function sinkBall(){
+  ball.sinking = true;
+  ball.vx = 0; ball.vy = 0;
+  clearTimeout(autoTimer);
+  hintAlpha = 0;
+  setTimeout(navigate, 900);
+}
+
+let lastTime = 0;
+function loop(ts){
+  const dt = Math.min((ts - lastTime) / 1000, 0.05);
+  lastTime = ts;
+  ctx.clearRect(0,0,W,H);
+
+  if(ball.sinking){
+    ball.sinkProgress = Math.min(ball.sinkProgress + dt * 2.5, 1);
+    const ease = ball.sinkProgress;
+    const scale = 1 - ease * 0.85;
+    const alpha = 1 - ease * 0.9;
+    ball.x += (holeX - ball.x) * Math.min(dt * 8, 1);
+    ball.y += (holeY - ball.y) * Math.min(dt * 8, 1);
+    drawBall(ball.x, ball.y, ball.r * scale, alpha);
+    if(ease > 0.1 && ease < 0.8){
+      ctx.save();
+      ctx.globalAlpha = (1 - ease) * 0.6;
+      ctx.strokeStyle = '#ffd447';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(holeX, holeY, holeR * (1 + ease * 1.5), 0, Math.PI*2);
+      ctx.stroke();
+      ctx.restore();
+    }
+  } else if(ball.active){
+    ball.vx *= 0.987;
+    ball.vy *= 0.987;
+    ball.x += ball.vx * dt * 60;
+    ball.y += ball.vy * dt * 60;
+
+    const dx = ball.x - holeX, dy = ball.y - holeY;
+    if(Math.sqrt(dx*dx+dy*dy) < holeR + ball.r * 0.5){ sinkBall(); }
+
+    if(ball.x - ball.r < 0){ ball.x = ball.r; ball.vx = Math.abs(ball.vx)*0.6; }
+    if(ball.x + ball.r > W){ ball.x = W-ball.r; ball.vx = -Math.abs(ball.vx)*0.6; }
+    if(ball.y - ball.r < 0){ ball.y = ball.r; ball.vy = Math.abs(ball.vy)*0.6; }
+    if(ball.y + ball.r > H){ ball.y = H-ball.r; ball.vy = -Math.abs(ball.vy)*0.6; }
+
+    const speed = Math.sqrt(ball.vx*ball.vx+ball.vy*ball.vy);
+    if(speed < 0.3){ ball.active = false; ball.vx=0; ball.vy=0; }
+
+    drawBall(ball.x, ball.y, ball.r);
+  } else {
+    const t = ts / 1800;
+    const floatY = ball.y + Math.sin(t) * 0.4;
+    if(playerEngaged) hintAlpha = Math.max(0, hintAlpha - 0.05);
+    drawHintArrows(ts);
+    drawBall(ball.x, floatY, ball.r);
+    drawAimLine();
+  }
+
+  requestAnimationFrame(loop);
+}
+
+function ptOnBall(px, py){
+  const dx = px - ball.x, dy = py - ball.y;
+  return Math.sqrt(dx*dx+dy*dy) < ball.r * 2.8;
+}
+
+function onDown(px, py){
+  if(ball.sinking || gone) return;
+  if(ptOnBall(px, py)){
+    playerEngaged = true;
+    dragging = true;
+    dragStartX = px; dragStartY = py;
+    dragCurX = px; dragCurY = py;
+    ball.active = false; ball.vx=0; ball.vy=0;
+    hintAlpha = 0;
+    clearTimeout(autoTimer); // cancel auto-sink — player is playing
+  }
+}
+function onMove(px, py){
+  if(!dragging) return;
+  dragCurX = px; dragCurY = py;
+}
+function onUp(px, py){
+  if(!dragging) return;
+  dragging = false;
+  const dx = px - dragStartX;
+  const dy = py - dragStartY;
+  const len = Math.sqrt(dx*dx+dy*dy);
+  if(len > 8){
+    const speed = Math.min(len * 0.22, 20);
+    ball.vx = (dx/len) * speed;
+    ball.vy = (dy/len) * speed;
+    ball.active = true;
+    // No auto-sink after player engages — they putt until they make it
+  }
+}
+
+canvas.addEventListener('touchstart', e=>{ e.preventDefault(); const t=e.touches[0]; onDown(t.clientX,t.clientY); }, {passive:false});
+canvas.addEventListener('touchmove',  e=>{ e.preventDefault(); const t=e.touches[0]; onMove(t.clientX,t.clientY); }, {passive:false});
+canvas.addEventListener('touchend',   e=>{ e.preventDefault(); const t=e.changedTouches[0]; onUp(t.clientX,t.clientY); }, {passive:false});
+canvas.addEventListener('mousedown',  e=>onDown(e.clientX,e.clientY));
+canvas.addEventListener('mousemove',  e=>onMove(e.clientX,e.clientY));
+canvas.addEventListener('mouseup',    e=>onUp(e.clientX,e.clientY));
+
+// Tap anywhere outside ball = skip (only if not dragging)
+canvas.addEventListener('click', e=>{
+  if(!ptOnBall(e.clientX, e.clientY) && !dragging && !playerEngaged) navigate();
+});
+
+// Auto-sink only if player never touched the ball
+function autoSink(){
+  if(ball.sinking || gone || playerEngaged) return;
+  // Drive directly to hole — skip physics, just lerp in
+  ball.active = false;
+  ball.vx = 0; ball.vy = 0;
+  hintAlpha = 0;
+  function glide(){
+    if(ball.sinking || gone) return;
+    const dx = holeX - ball.x, dy = holeY - ball.y;
+    const dist = Math.sqrt(dx*dx+dy*dy);
+    if(dist < holeR + ball.r * 0.5){ sinkBall(); return; }
+    ball.x += dx * 0.04;
+    ball.y += dy * 0.04;
+    requestAnimationFrame(glide);
+  }
+  requestAnimationFrame(glide);
+}
+
+autoTimer = setTimeout(autoSink, 5000);
+
+window.addEventListener('resize', resize);
+resize();
+requestAnimationFrame(ts=>{ lastTime=ts; requestAnimationFrame(loop); });
+</script>
+</body>
+</html>

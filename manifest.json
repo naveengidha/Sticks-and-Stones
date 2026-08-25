@@ -2,7 +2,7 @@
   "name": "Sticks & Stones",
   "short_name": "Sticks & Stones",
   "description": "Golf games, scoring, and on-course stats",
-  "start_url": "/Sticks-and-Stones/index.html",
+  "start_url": "/Sticks-and-Stones/splash.html",
   "scope": "/Sticks-and-Stones/",
   "display": "standalone",
   "background_color": "#1f4d2b",
