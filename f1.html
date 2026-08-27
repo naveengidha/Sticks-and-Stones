@@ -11,9 +11,10 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;}
+body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100dvh;}
 h2{text-align:center;margin-top:0;color:#ffd447;letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;}
 h3{text-align:center;margin-top:0;color:rgba(255,255,255,0.75);}
+.hole-counter{font-size:20px;font-weight:bold;color:#ffd447;letter-spacing:.5px;text-align:center;margin-bottom:8px;font-family:'Georgia','Times New Roman',serif;}
 .scroll-area{flex:1;overflow-y:auto;padding:20px 16px 110px;display:flex;justify-content:center;}
 .container{width:100%;max-width:480px;}
 .setup-player-row{display:flex;align-items:center;gap:8px;margin-bottom:0;}
@@ -39,18 +40,18 @@ input[type="date"].course-input{-webkit-appearance:none;appearance:none;}
 .start-btn:active{opacity:.85;}
 #nameError{color:#ff6b6b;font-size:13px;display:none;}
 button{width:100%;padding:13px;border:none;border-radius:8px;font-size:15px;font-weight:bold;background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);color:#1a1a0a;cursor:pointer;margin-bottom:4px;box-shadow:0 2px 8px rgba(184,150,46,0.4);letter-spacing:.5px;}
-button:hover,button:active{background:linear-gradient(135deg,#b8912e,#ffc93a,#b8912e);}
+button:active{background:linear-gradient(135deg,#b8912e,#ffc93a,#b8912e);}
 button.btn-secondary{background:transparent;border:1px solid rgba(255,212,71,0.3);color:rgba(255,212,71,0.7);font-size:14px;padding:10px;box-shadow:none;letter-spacing:.5px;}
-button.btn-secondary:hover,button.btn-secondary:active{background:rgba(255,212,71,0.08);border-color:rgba(255,212,71,0.6);color:#ffd447;}
+button.btn-secondary:active{background:rgba(255,212,71,0.08);border-color:rgba(255,212,71,0.6);color:#ffd447;}
 .hidden{display:none!important;}
 .score-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:20px;}
 .player-box{display:flex;flex-direction:column;align-items:center;}
 .player-box>label{font-size:12px;font-weight:bold;margin-bottom:6px;text-align:center;color:rgba(255,255,255,0.8);letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px;}
-.player-box input[type=number]{padding:10px 4px;border-radius:6px;border:1px solid rgba(255,212,71,0.2);text-align:center;font-size:22px;font-weight:bold;width:100%;background:rgba(0,0,0,0.4);color:white;font-family:'Courier New',monospace;}
-.player-box input.black{border-color:rgba(255,255,255,0.2);border-bottom:2px solid #000;}
-.player-box input.red{border-bottom:2px solid rgba(225,6,0,0.5);}
+.stepper{display:flex;align-items:center;gap:8px;}
+.stepper button{width:32px;height:32px;padding:0;border-radius:6px;font-size:18px;font-weight:bold;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#fff;box-shadow:none;margin-bottom:0;flex-shrink:0;}
+.stepper span{font-size:18px;font-weight:bold;font-family:'Courier New',monospace;min-width:24px;text-align:center;}
 .game-card{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:10px;padding:14px 16px;margin-bottom:8px;}
-.game-card-label{font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.45);margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(255,212,71,0.1);}
+.game-card-label{font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:#ffd447;margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(255,212,71,0.1);text-align:center;}
 .results{background:none;padding:0;border-radius:0;border:none;}
 .results h3{font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.45);margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(255,212,71,0.1);font-family:inherit;}
 .result-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.07);font-size:15px;}
@@ -74,7 +75,7 @@ td{font-family:'Courier New',monospace;}
 .rules-sheet{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.22);border-radius:18px 18px 0 0;padding:24px 20px 44px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;}
 .rules-handle{width:36px;height:4px;background:rgba(255,212,71,0.25);border-radius:2px;margin:0 auto 20px;}
 .info-btn{background:none;border:1px solid rgba(255,212,71,0.35);color:rgba(255,212,71,0.7);border-radius:50%;width:22px;height:22px;font-size:12px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;box-shadow:none;text-transform:none;letter-spacing:0;flex-shrink:0;}
-.info-btn:hover,.info-btn:active{background:rgba(255,212,71,0.12);color:#ffd447;}
+.info-btn:active{background:rgba(255,212,71,0.12);color:#ffd447;}
 .game-title-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:2px;}
 .rules-title{font-size:18px;font-weight:bold;color:#ffd447;text-align:center;margin:0 0 6px;letter-spacing:1px;}
 .rules-sub{text-align:center;color:rgba(255,255,255,0.5);font-size:12px;margin:0 0 20px;letter-spacing:1px;text-transform:uppercase;}
@@ -82,12 +83,15 @@ td{font-family:'Courier New',monospace;}
 .rules-table td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.07);font-size:14px;}
 .rules-table td:first-child{color:rgba(255,255,255,0.5);width:40%;}
 .rules-table td:last-child{font-weight:bold;font-family:'Courier New',monospace;color:#ffd447;}
-.hole-info-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;}
+.hole-card-header{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:12px;}
+.hole-progress-track{height:2px;background:rgba(255,212,71,0.1);border-radius:2px;overflow:hidden;width:100%;}
+.hole-progress-fill{height:100%;background:linear-gradient(90deg,#8B6914,#ffd447);border-radius:2px;transition:width .4s ease;}
 .par-btns{display:flex;align-items:center;gap:4px;}
 .par-btns-label{font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:.5px;text-transform:uppercase;margin-right:2px;}
-.par-btn{width:34px;height:34px;padding:0;border-radius:6px;font-size:14px;font-weight:bold;background:rgba(0,0,0,0.25);border:1px solid rgba(225,6,0,0.3);color:rgba(255,255,255,0.5);box-shadow:none;margin:0;letter-spacing:0;}
-.par-btn.active{background:rgba(225,6,0,0.2);border-color:#e10600;color:#ff4422;}
+.par-btn{width:34px;height:34px;padding:0;border-radius:6px;font-size:14px;font-weight:bold;background:rgba(0,0,0,0.25);border:1px solid rgba(184,150,46,0.3);color:rgba(255,255,255,0.5);box-shadow:none;margin:0;letter-spacing:0;}
+.par-btn.active{background:rgba(184,150,46,0.25);border-color:#ffd447;color:#ffd447;}
 .dist-input{width:72px;padding:7px 8px;border-radius:6px;border:1px solid rgba(225,6,0,0.3);background:rgba(0,0,0,0.25);color:#fff;font-size:14px;text-align:center;}
+.hole-info-row{display:flex;align-items:center;justify-content:center;gap:8px;}
 .rules-note{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.7;text-align:center;margin-top:4px;}
 .bottom-nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:1000;pointer-events:none;}
 .nav-pill{display:flex;align-items:center;gap:2px;background:#0e1a12;border:1px solid rgba(255,212,71,0.28);border-radius:50px;padding:6px 10px;box-shadow:0 4px 24px rgba(0,0,0,0.6);pointer-events:all;}
@@ -178,11 +182,10 @@ td{font-family:'Courier New',monospace;}
   <div id="gameScreen" class="hidden">
     <div style="text-align:center;">
       <span id="courseNameLabel" style="font-size:11px;color:rgba(255,212,71,0.5);letter-spacing:.5px;text-transform:uppercase;display:none;"></span>
-      <h2 style="margin-top:2px;">Hole <span id="holeLabel">1</span></h2>
+      <div class="hole-counter" id="holeCounter">1 / 18</div>
     </div>
 
-    <div class="game-card">
-      <div class="game-card-label">Hole Info</div>
+    <div class="hole-card-header">
       <div class="hole-info-row">
         <div class="par-btns">
           <span class="par-btns-label">Par</span>
@@ -192,6 +195,9 @@ td{font-family:'Courier New',monospace;}
         </div>
         <input type="number" class="dist-input" id="distInput" inputmode="numeric" placeholder="Yds" min="1">
       </div>
+      <div class="hole-progress-track">
+        <div class="hole-progress-fill" id="holeProgressFill" style="width:0%"></div>
+      </div>
     </div>
 
     <div class="game-card">
@@ -199,34 +205,53 @@ td{font-family:'Courier New',monospace;}
       <div class="score-row">
         <div class="player-box">
           <label id="p1Label"></label>
-          <input class="black" type="number" inputmode="numeric" id="p1" placeholder="–">
+          <div class="stepper" style="justify-content:center;">
+            <button type="button" onclick="stepScore(1,-1)">−</button>
+            <span id="p1Display">—</span>
+            <button type="button" onclick="stepScore(1,1)">+</button>
+          </div>
         </div>
         <div class="player-box">
           <label id="p2Label"></label>
-          <input class="black" type="number" inputmode="numeric" id="p2" placeholder="–">
+          <div class="stepper" style="justify-content:center;">
+            <button type="button" onclick="stepScore(2,-1)">−</button>
+            <span id="p2Display">—</span>
+            <button type="button" onclick="stepScore(2,1)">+</button>
+          </div>
         </div>
         <div class="player-box">
           <label id="p3Label"></label>
-          <input class="red" type="number" inputmode="numeric" id="p3" placeholder="–">
+          <div class="stepper" style="justify-content:center;">
+            <button type="button" onclick="stepScore(3,-1)">−</button>
+            <span id="p3Display">—</span>
+            <button type="button" onclick="stepScore(3,1)">+</button>
+          </div>
         </div>
         <div class="player-box">
           <label id="p4Label"></label>
-          <input class="red" type="number" inputmode="numeric" id="p4" placeholder="–">
+          <div class="stepper" style="justify-content:center;">
+            <button type="button" onclick="stepScore(4,-1)">−</button>
+            <span id="p4Display">—</span>
+            <button type="button" onclick="stepScore(4,1)">+</button>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="game-card">
       <div class="results">
-        <h3 style="margin-top:0;">Standings</h3>
+        <div class="game-card-label">Standings</div>
         <div id="standingsList"></div>
         <div class="team" id="teamTotals"></div>
       </div>
     </div>
 
-    <button class="btn-secondary" onclick="openScorecard()">📋 View Scorecard</button>
     <div id="holeError" style="color:#ff6b6b;font-size:13px;margin:6px 0 0;display:none;"></div>
-    <button onclick="calculateHole()" style="margin-top:8px;">✓ Next Hole</button>
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <button class="btn-secondary" onclick="prevHole()" id="backBtn" style="flex:1;margin:0;opacity:0.35;pointer-events:none;">Back</button>
+      <button onclick="calculateHole()" style="flex:1;margin:0;">Next Hole</button>
+    </div>
+    <button class="btn-secondary" onclick="openScorecard()" style="margin-top:8px;">View Scorecard</button>
 
     <!-- Scorecard modal -->
     <div id="scorecardModal" class="hidden modal">
@@ -257,19 +282,24 @@ td{font-family:'Courier New',monospace;}
   <div id="finalScreen" class="hidden">
     <h2>Final Results</h2>
     <h3 id="finalTeamTotals" style="margin-bottom:16px;"></h3>
-    <div id="finalStandings" style="margin-bottom:16px;background:rgba(0,0,0,0.3);padding:14px;border-radius:8px;border:1px solid rgba(225,6,0,0.2);"></div>
-    <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,100,80,0.6);margin-bottom:8px;">Scorecard</div>
-    <div style="overflow-x:auto;">
-      <table id="resultsTable">
-        <thead>
-          <tr>
-            <th>Hole</th><th>Par</th><th>Yds</th>
-            <th id="hP1"></th><th id="hP2"></th>
-            <th id="hP3"></th><th id="hP4"></th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+    <div class="game-card">
+      <div class="game-card-label">Standings</div>
+      <div id="finalStandings"></div>
+    </div>
+    <div class="game-card">
+      <div class="game-card-label">Scorecard</div>
+      <div style="overflow-x:auto;">
+        <table id="resultsTable">
+          <thead>
+            <tr>
+              <th>Hole</th><th>Par</th><th>Yds</th>
+              <th id="hP1"></th><th id="hP2"></th>
+              <th id="hP3"></th><th id="hP4"></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
     <br>
     <button onclick="window.location.href='games.html'">‹ Menu</button>
@@ -293,6 +323,7 @@ let scoreHistory = [];
 let pointHistory = [];
 let holeParDist = [];
 let currentPar = 4;
+let holeScores = [null,null,null,null];
 
 document.getElementById('roundDate').value = new Date().toLocaleDateString('en-CA');
 document.getElementById('scorecardModal').addEventListener('click', function(e){
@@ -355,11 +386,35 @@ function setPar(p){
 }
 
 function updateHoleInfo(){
-  document.getElementById('holeLabel').textContent = hole;
+  holeScores = [null,null,null,null];
+  [1,2,3,4].forEach(n => { document.getElementById('p'+n+'Display').textContent = currentPar; });
+  document.getElementById('holeCounter').textContent = 'Hole ' + hole + ' / ' + totalHoles;
+  document.getElementById('holeProgressFill').style.width = (hole / totalHoles * 100).toFixed(1) + '%';
   let cnl = document.getElementById('courseNameLabel');
   cnl.textContent = courseName; cnl.style.display = courseName ? '' : 'none';
   document.querySelectorAll('.par-btn').forEach(b=>b.classList.toggle('active', Number(b.textContent)===currentPar));
   document.getElementById('distInput').value = '';
+  let bb = document.getElementById('backBtn');
+  if(bb){ bb.style.opacity = scoreHistory.length === 0 ? '0.35' : '1'; bb.style.pointerEvents = scoreHistory.length === 0 ? 'none' : ''; }
+}
+
+function prevHole(){
+  if(scoreHistory.length === 0) return;
+  let lastScores = scoreHistory.pop();
+  let lastPoints = pointHistory.pop();
+  let lastPD = holeParDist.pop();
+  for(let i=0;i<4;i++) playerTotals[i] -= lastPoints[i];
+  let lastTeamTotals = calculateTeamPoints(lastScores, [0,0,1,1]).teamTotals;
+  teamTotalsRunning[0] -= lastTeamTotals[0];
+  teamTotalsRunning[1] -= lastTeamTotals[1];
+  hole--;
+  currentPar = lastPD.par;
+  updateHoleInfo();
+  document.getElementById('distInput').value = lastPD.dist || '';
+  document.getElementById('teamTotals').textContent =
+    'Black: '+teamTotalsRunning[0].toFixed(1)+'  ·  Red: '+teamTotalsRunning[1].toFixed(1);
+  renderStandings();
+  saveActiveState();
 }
 
 function calculateTeamPoints(scores, teams){
@@ -382,13 +437,13 @@ function calculateTeamPoints(scores, teams){
   return { playerPoints: points, teamTotals };
 }
 
+function stepScore(n, d){
+  holeScores[n-1] = Math.max(1, (holeScores[n-1] ?? currentPar) + d);
+  document.getElementById('p'+n+'Display').textContent = holeScores[n-1];
+}
+
 function calculateHole(){
-  let scores = [1,2,3,4].map(n => Number(document.getElementById('p'+n).value));
-  if(scores.some(s => !s)){
-    document.getElementById('holeError').textContent='Please enter all 4 scores before continuing.';
-    document.getElementById('holeError').style.display='block';
-    return;
-  }
+  let scores = holeScores.map(s => s !== null ? s : currentPar);
   document.getElementById('holeError').style.display='none';
   const teams = [0,0,1,1];
   const result = calculateTeamPoints(scores, teams);
@@ -408,8 +463,6 @@ function calculateHole(){
   saveActiveState();
   hole++;
   updateHoleInfo();
-  [1,2,3,4].forEach(n => { document.getElementById('p'+n).value = ''; });
-  document.getElementById('p1').focus();
 }
 
 function renderStandings(){

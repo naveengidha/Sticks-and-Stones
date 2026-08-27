@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;}
+body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100dvh;}
 h2{text-align:center;margin-top:0;color:#ffd447;letter-spacing:.5px;font-family:'Georgia',serif;}
 h3{text-align:center;margin-top:0;color:rgba(255,255,255,0.75);}
 .scroll-area{flex:1;overflow-y:auto;padding:12px 14px 110px;display:flex;justify-content:center;align-items:stretch;}
@@ -37,26 +37,22 @@ input[type="date"].course-input{-webkit-appearance:none;appearance:none;}
 .start-btn:active{opacity:.85;}
 #nameError{color:#ff6b6b;font-size:13px;display:none;}
 button{width:100%;padding:13px;border:none;border-radius:8px;font-size:15px;font-weight:bold;background:linear-gradient(135deg,#8B6914,#ffd447,#8B6914);color:#0a0a00;cursor:pointer;margin-bottom:4px;box-shadow:0 2px 8px rgba(184,150,46,0.4);letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;}
-button:hover,button:active{background:linear-gradient(135deg,#7a5c10,#ffc93a,#7a5c10);}
+button:active{background:linear-gradient(135deg,#7a5c10,#ffc93a,#7a5c10);}
 button.btn-secondary{background:transparent;border:1px solid rgba(184,150,46,0.4);color:rgba(255,212,71,0.75);font-size:14px;padding:10px;box-shadow:none;letter-spacing:.5px;}
 .sc-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;overflow-y:auto;padding:20px 12px;}
 .sc-modal-overlay.open{display:block;}
 .sc-modal{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border-radius:16px;border:2px solid #8B6914;padding:20px 16px;max-width:480px;margin:0 auto;}
 .sc-modal h3{margin:0 0 14px;font-size:16px;letter-spacing:.5px;color:#ffd447;text-align:center;font-family:'Georgia','Times New Roman',serif;background:rgba(0,0,0,0.5);border-bottom:1px solid rgba(255,212,71,0.2);padding-bottom:10px;}
-button.btn-secondary:hover,button.btn-secondary:active{background:rgba(184,150,46,0.08);border-color:rgba(255,212,71,0.6);color:#ffd447;}
+button.btn-secondary:active{background:rgba(184,150,46,0.08);border-color:rgba(255,212,71,0.6);color:#ffd447;}
 .hidden{display:none!important;}
 .add-player-btn{background:rgba(255,212,71,0.12);border:1px solid rgba(255,212,71,0.35);color:#ffd447;font-size:18px;font-weight:bold;width:36px;height:36px;border-radius:6px;cursor:pointer;flex-shrink:0;padding:0;margin-bottom:0;box-shadow:none;letter-spacing:0;}
 .add-player-btn:active{background:rgba(255,212,71,0.25);}
 .remove-player-btn{background:none;border:none;color:rgba(255,77,77,0.5);font-size:18px;cursor:pointer;flex-shrink:0;padding:0;width:auto;margin-bottom:0;box-shadow:none;}
-.remove-player-btn:hover{color:#ff4d4d;}
-.hole-progress{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-bottom:14px;}
-.hole-progress{display:flex;flex-direction:column;gap:6px;}
-.hp-row{display:flex;gap:6px;justify-content:center;}
-.hp-dot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold;cursor:pointer;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.3);border:1px solid rgba(255,255,255,0.1);}
-.hp-dot.current{background:#ffd447;color:#1a1a0a;border-color:#ffd447;}
-.hp-dot.done{background:rgba(184,150,46,0.25);color:#ffd447;border-color:rgba(184,150,46,0.4);}
-.hp-dot.partial{background:rgba(255,193,7,0.15);color:#ffc107;border-color:rgba(255,193,7,0.3);}
+.remove-player-btn:active{color:#ff4d4d;}
+.hole-counter{font-size:20px;font-weight:bold;color:#ffd447;letter-spacing:.5px;text-align:center;margin-bottom:8px;font-family:'Georgia','Times New Roman',serif;}
 .hole-card-header{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:12px;}
+.hole-progress-track{height:2px;background:rgba(255,212,71,0.1);border-radius:2px;overflow:hidden;width:100%;}
+.hole-progress-fill{height:100%;background:linear-gradient(90deg,#8B6914,#ffd447);border-radius:2px;transition:width .4s ease;}
 .hole-info-row{display:flex;align-items:center;justify-content:center;gap:8px;}
 .par-btns{display:flex;align-items:center;gap:3px;}
 .par-btns-label{font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:.5px;text-transform:uppercase;margin-right:1px;}
@@ -70,7 +66,7 @@ button.btn-secondary:hover,button.btn-secondary:active{background:rgba(184,150,4
 .player-tab.active{background:rgba(184,150,46,0.2);border-color:#ffd447;color:#ffd447;}
 .player-tab .tab-score{display:block;font-size:15px;font-family:'Courier New',monospace;margin-top:2px;}
 .game-card{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:10px;padding:14px 16px;margin-bottom:8px;}
-.game-card-label{font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.45);margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(255,212,71,0.1);}
+.game-card-label{font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:#ffd447;margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(255,212,71,0.1);text-align:center;}
 .hole-card-label{font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;}
 .hole-card-score-input{width:80px;padding:8px 4px;border-radius:6px;border:1px solid rgba(184,150,46,0.3);text-align:center;font-size:22px;font-weight:bold;background:rgba(0,0,0,0.35);color:#fff;font-family:'Courier New',monospace;}
 .yn-group{display:flex;gap:8px;margin-bottom:4px;}
@@ -84,16 +80,16 @@ button.btn-secondary:hover,button.btn-secondary:active{background:rgba(184,150,4
 .yn-btn.active-yes{background:rgba(46,204,113,0.15);border-color:#2ecc71;color:#2ecc71;}
 .yn-btn.active{background:rgba(255,152,0,0.15);border-color:#ff9800;color:#ff9800;}
 .yn-btn.active-no{background:rgba(224,112,112,0.15);border-color:#e07070;color:#e07070;}
-.dpad{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:auto auto auto;gap:5px;width:fit-content;margin:0 auto;}
+.dpad{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:auto auto auto;gap:3px;width:fit-content;margin:0 auto;}
 .dpad-center{grid-column:2;grid-row:2;}
 .dpad-top{grid-column:2;grid-row:1;}
 .dpad-bottom{grid-column:2;grid-row:3;}
 .dpad-left{grid-column:1;grid-row:2;}
 .dpad-right{grid-column:3;grid-row:2;}
-.dpad button{width:52px;height:36px;padding:0;border-radius:6px;font-size:12px;font-weight:bold;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);box-shadow:none;margin:0;cursor:pointer;letter-spacing:0;}
+.dpad button{width:42px;height:30px;padding:0;border-radius:5px;font-size:11px;font-weight:bold;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);box-shadow:none;margin:0;cursor:pointer;letter-spacing:0;}
 .dpad button.active-yes{background:rgba(46,204,113,0.15);border-color:#2ecc71;color:#2ecc71;}
 .dpad button.active{background:rgba(255,152,0,0.15);border-color:#ff9800;color:#ff9800;}
-.bunker-btn{width:100%;margin-top:6px;padding:5px 0;border-radius:6px;font-size:12px;font-weight:bold;background:rgba(255,212,71,0.06);border:1px solid rgba(255,212,71,0.2);color:rgba(255,212,71,0.4);box-shadow:none;cursor:pointer;letter-spacing:0;}
+.bunker-btn{width:100%;margin-top:4px;padding:4px 0;border-radius:5px;font-size:11px;font-weight:bold;background:rgba(255,212,71,0.06);border:1px solid rgba(255,212,71,0.2);color:rgba(255,212,71,0.4);box-shadow:none;cursor:pointer;letter-spacing:0;}
 .bunker-btn.active{background:rgba(255,212,71,0.18);border-color:#ffd447;color:#ffd447;}
 .miss-dir-btn{width:auto;flex:1;padding:6px;border-radius:6px;font-size:12px;font-weight:bold;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.35);box-shadow:none;margin-bottom:0;letter-spacing:0;}
 .miss-dir-btn.active{background:rgba(255,152,0,0.15);border-color:#ff9800;color:#ff9800;}
@@ -141,7 +137,7 @@ td.sc-eagle{color:#ffd447;font-weight:bold;}
 .rules-sheet{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.22);border-radius:18px 18px 0 0;padding:24px 20px 44px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;}
 .rules-handle{width:36px;height:4px;background:rgba(255,212,71,0.25);border-radius:2px;margin:0 auto 20px;}
 .info-btn{background:none;border:1px solid rgba(255,212,71,0.35);color:rgba(255,212,71,0.7);border-radius:50%;width:22px;height:22px;font-size:12px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;box-shadow:none;text-transform:none;letter-spacing:0;flex-shrink:0;}
-.info-btn:hover,.info-btn:active{background:rgba(255,212,71,0.12);color:#ffd447;}
+.info-btn:active{background:rgba(255,212,71,0.12);color:#ffd447;}
 .game-title-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:2px;}
 .rules-title{font-size:18px;font-weight:bold;color:#ffd447;text-align:center;margin:0 0 6px;letter-spacing:1px;}
 .rules-sub{text-align:center;color:rgba(255,255,255,0.5);font-size:12px;margin:0 0 20px;letter-spacing:1px;text-transform:uppercase;}
@@ -238,10 +234,9 @@ td.sc-eagle{color:#ffd447;font-weight:bold;}
 
   <!-- GAME -->
   <div id="gameScreen" class="hidden">
-    <div class="hole-progress" id="holeProgress"></div>
+    <div class="hole-counter" id="holeCounter"></div>
     <div class="hole-card-header">
       <span id="courseNameLabel" style="font-size:11px;color:rgba(255,212,71,0.5);letter-spacing:.5px;text-transform:uppercase;display:none;"></span>
-      <span class="hole-card-num" id="holeNumLabel">HOLE 1</span>
       <div class="hole-info-row">
         <div class="par-btns">
           <span class="par-btns-label">Par</span>
@@ -251,21 +246,29 @@ td.sc-eagle{color:#ffd447;font-weight:bold;}
         </div>
         <input type="number" class="dist-input" id="distInput" inputmode="numeric" placeholder="Yds" min="1" onchange="setDist(this.value)">
       </div>
+      <div class="hole-progress-track">
+        <div class="hole-progress-fill" id="holeProgressFill" style="width:0%"></div>
+      </div>
     </div>
     <div id="accordions"></div>
     <div style="margin-top:32px;">
       <div class="hole-nav" id="holeNav"></div>
-      <button id="scorecardBtn" class="btn-secondary" style="margin-top:12px;width:100%;display:none;" onclick="openScorecard()">View Scorecard</button>
+      <button id="scorecardBtn" class="btn-secondary" style="margin-top:8px;width:100%;display:none;" onclick="openScorecard()">View Scorecard</button>
     </div>
   </div>
 
   <!-- FINAL -->
   <div id="finalScreen" class="hidden">
     <h2>Round Complete</h2>
-    <div class="final-standings" id="finalStandings"></div>
-    <br>
-    <div style="overflow-x:auto;">
-      <table id="finalTable"></table>
+    <div class="game-card">
+      <div class="game-card-label">Standings</div>
+      <div class="final-standings" id="finalStandings"></div>
+    </div>
+    <div class="game-card">
+      <div class="game-card-label">Scorecard</div>
+      <div style="overflow-x:auto;">
+        <table id="finalTable"></table>
+      </div>
     </div>
     <br>
     <button onclick="window.location.reload()">New Round</button>
@@ -426,22 +429,12 @@ function renderHole(){
   let i = holeIdx;
   let holeData0 = players[0].data[i];
 
-  document.getElementById('holeNumLabel').textContent = `HOLE ${i+1}`;
+  document.getElementById('holeCounter').textContent = `Hole ${i+1} / ${totalHoles}`;
+  document.getElementById('holeProgressFill').style.width = ((i+1) / totalHoles * 100).toFixed(1) + '%';
   let cnl = document.getElementById('courseNameLabel');
   cnl.textContent = courseName; cnl.style.display = courseName ? '' : 'none';
   document.querySelectorAll('.par-btn').forEach(b=>b.classList.toggle('active', Number(b.textContent)===holeData0.par));
   document.getElementById('distInput').value = holeData0.distance || '';
-
-  // Progress dots — two rows: 1-9 and 10-18
-  let makeDot = n => {
-    let scored = players.filter(p=>p.data[n].score !== null).length;
-    let cls = n===i ? 'current' : scored===players.length ? 'done' : scored>0 ? 'partial' : '';
-    return `<div class="hp-dot ${cls}" onclick="goToHole(${n})">${n+1}</div>`;
-  };
-  let row1 = Array.from({length:Math.min(9,totalHoles)}, (_,n)=>makeDot(n)).join('');
-  let row2 = totalHoles>9 ? Array.from({length:totalHoles-9}, (_,n)=>makeDot(n+9)).join('') : '';
-  document.getElementById('holeProgress').innerHTML =
-    `<div class="hp-row">${row1}</div>${row2?`<div class="hp-row">${row2}</div>`:''}`;
 
   // Player tabs
   let tabs = players.map((p, pi)=>{
@@ -501,7 +494,7 @@ function renderHole(){
     </div>
     <div class="game-card">
       <div class="game-card-label">Shots</div>
-      <div style="display:flex;gap:24px;justify-content:center;align-items:flex-start;">
+      <div style="display:flex;gap:12px;justify-content:center;align-items:flex-start;">
         <div style="text-align:center;${h.par===3?'opacity:0.3;pointer-events:none;':''}">
           <div class="hole-card-label" style="margin-bottom:6px;">Tee Shot</div>
           ${teeDpad}
@@ -539,11 +532,11 @@ function renderHole(){
   // Nav
   let isFirst = i === 0, isLast = i === totalHoles - 1;
   let navBack = isFirst
-    ? `<button class="btn-secondary" style="opacity:.35;pointer-events:none;">← Back</button>`
-    : `<button class="btn-secondary" onclick="goToHole(${i-1})">← Back</button>`;
+    ? `<button class="btn-secondary" style="opacity:.35;pointer-events:none;">Back</button>`
+    : `<button class="btn-secondary" onclick="goToHole(${i-1})">Back</button>`;
   let navNext = isLast
-    ? `<button onclick="promptFinish()">Finish Round →</button>`
-    : `<button onclick="goToHole(${i+1})">Next Hole →</button>`;
+    ? `<button onclick="promptFinish()">Finish Round</button>`
+    : `<button onclick="goToHole(${i+1})">Next Hole</button>`;
   document.getElementById('holeNav').innerHTML = navBack + navNext;
   document.getElementById('scorecardBtn').style.display = '';
 }

@@ -745,7 +745,7 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
           let par=pd[i]?.par||4;
           return `<tr><td>${i+1}</td><td>${par}</td>${hole.map(s=>`<td>${s??'–'}</td>`).join('')}</tr>`;
         }).join('');
-        let totals=(r.playerTotals||[]).map(t=>`<td>${t}</td>`).join('');
+        let totals=(r.playerTotals||[]).map(t=>`<td>${t!=null?(Number.isInteger(t)?t:Number(t).toFixed(1)):'-'}</td>`).join('');
         let totalPar=pd.reduce((s,h)=>s+(h.par||4),0);
         return `<table>${thead}<tbody>${rows}</tbody><tfoot><tr><td>Total</td><td>${totalPar}</td>${totals}</tr></tfoot></table>`;
       }

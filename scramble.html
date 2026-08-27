@@ -11,8 +11,9 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;}
+body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100dvh;}
 h2{text-align:center;margin-top:0;color:#ffd447;letter-spacing:.5px;text-transform:uppercase;font-size:17px;}
+.hole-counter{font-size:20px;font-weight:bold;color:#ffd447;letter-spacing:.5px;text-align:center;margin-bottom:8px;font-family:'Georgia','Times New Roman',serif;}
 .scroll-area{flex:1;overflow-y:auto;padding:20px 16px 110px;display:flex;justify-content:center;}
 .bottom-nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:1000;pointer-events:none;}
 .nav-pill{display:flex;align-items:center;gap:2px;background:#0e1a12;border:1px solid rgba(255,212,71,0.28);border-radius:50px;padding:6px 10px;box-shadow:0 4px 24px rgba(0,0,0,0.6);pointer-events:all;}
@@ -44,16 +45,19 @@ input[type="date"].course-input{-webkit-appearance:none;appearance:none;}
 .setup-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
 #nameError{color:#ff6b6b;font-size:13px;display:none;margin-bottom:8px;}
 button{width:100%;padding:11px;border:none;border-radius:6px;font-size:14px;font-weight:bold;background:linear-gradient(135deg,#8B6914,#ffd447,#8B6914);color:#0a0a00;cursor:pointer;margin-bottom:4px;box-shadow:0 2px 16px rgba(184,150,46,0.5);letter-spacing:2px;text-transform:uppercase;font-family:'Georgia','Times New Roman',serif;}
-button:hover,button:active{opacity:.9;}
+button:active{opacity:.9;}
 button.btn-secondary{background:transparent;border:1px solid rgba(255,212,71,0.3);color:rgba(255,212,71,0.7);font-size:14px;padding:10px;box-shadow:none;letter-spacing:.5px;text-transform:none;}
-button.btn-secondary:hover,button.btn-secondary:active{background:rgba(255,212,71,0.06);border-color:rgba(255,212,71,0.6);color:#ffd447;}
+button.btn-secondary:active{background:rgba(255,212,71,0.06);border-color:rgba(255,212,71,0.6);color:#ffd447;}
 .hidden{display:none!important;}
-.hole-info-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;}
+.hole-card-header{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:12px;}
+.hole-progress-track{height:2px;background:rgba(255,212,71,0.1);border-radius:2px;overflow:hidden;width:100%;}
+.hole-progress-fill{height:100%;background:linear-gradient(90deg,#8B6914,#ffd447);border-radius:2px;transition:width .4s ease;}
 .par-btns{display:flex;align-items:center;gap:4px;}
 .par-btns-label{font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:.5px;text-transform:uppercase;margin-right:2px;}
 .par-btn{width:34px;height:34px;padding:0;border-radius:6px;font-size:14px;font-weight:bold;background:rgba(0,0,0,0.25);border:1px solid rgba(184,150,46,0.3);color:rgba(255,255,255,0.5);box-shadow:none;margin:0;letter-spacing:0;text-transform:none;}
 .par-btn.active{background:rgba(184,150,46,0.25);border-color:#ffd447;color:#ffd447;}
 .dist-input{width:72px;padding:7px 8px;border-radius:6px;border:1px solid rgba(184,150,46,0.3);background:rgba(0,0,0,0.25);color:#fff;font-size:14px;text-align:center;}
+.hole-info-row{display:flex;align-items:center;justify-content:center;gap:8px;}
 .score-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
 .score-col-wrap{display:flex;flex-direction:column;align-items:center;}
 .team-col-label{font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;text-align:center;}
@@ -67,7 +71,7 @@ button.btn-secondary:hover,button.btn-secondary:active{background:rgba(255,212,7
 .vspar-over{color:#ff6b6b;}
 .vspar-even{color:rgba(255,255,255,0.4);}
 .game-card{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:10px;padding:14px 16px;margin-bottom:8px;}
-.game-card-label{font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.45);margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(255,212,71,0.1);}
+.game-card-label{font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:#ffd447;margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(255,212,71,0.1);text-align:center;}
 .standings-panel{background:none;padding:0;border-radius:0;border:none;}
 .standings-panel h3{font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.45);margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(255,212,71,0.1);}
 .standing-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.07);font-size:14px;}
@@ -90,11 +94,14 @@ td{font-family:'Courier New',monospace;}
 .td-a{color:#ffd447;}
 .td-b{color:#64a0dc;}
 .section-label{font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.45);margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(255,212,71,0.1);}
+.stepper{display:flex;align-items:center;gap:8px;}
+.stepper button{width:32px;height:32px;padding:0;border-radius:6px;font-size:18px;font-weight:bold;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#fff;box-shadow:none;margin-bottom:0;flex-shrink:0;}
+.stepper span{font-size:18px;font-weight:bold;font-family:'Courier New',monospace;min-width:24px;text-align:center;}
 .rules-scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:2000;align-items:flex-end;justify-content:center;}
 .rules-sheet{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.22);border-radius:18px 18px 0 0;padding:24px 20px 44px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;}
 .rules-handle{width:36px;height:4px;background:rgba(255,212,71,0.25);border-radius:2px;margin:0 auto 20px;}
 .info-btn{background:none;border:1px solid rgba(255,212,71,0.35);color:rgba(255,212,71,0.7);border-radius:50%;width:22px;height:22px;font-size:12px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;box-shadow:none;text-transform:none;letter-spacing:0;flex-shrink:0;}
-.info-btn:hover,.info-btn:active{background:rgba(255,212,71,0.12);color:#ffd447;}
+.info-btn:active{background:rgba(255,212,71,0.12);color:#ffd447;}
 .game-title-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:2px;}
 .rules-title{font-size:18px;font-weight:bold;color:#ffd447;text-align:center;margin:0 0 6px;letter-spacing:1px;text-transform:uppercase;}
 .rules-sub{text-align:center;color:rgba(255,255,255,0.5);font-size:12px;margin:0 0 20px;letter-spacing:1px;text-transform:uppercase;}
@@ -186,11 +193,10 @@ td{font-family:'Courier New',monospace;}
 <div id="gameScreen" class="hidden">
   <div style="text-align:center;">
     <span id="courseNameLabel" style="font-size:11px;color:rgba(255,212,71,0.55);letter-spacing:.5px;text-transform:uppercase;display:none;"></span>
-    <h2 style="margin-top:2px;">Hole <span id="holeLabel">1</span></h2>
+    <div class="hole-counter" id="holeCounter">1 / 18</div>
   </div>
 
-  <div class="game-card">
-    <div class="game-card-label">Hole Info</div>
+  <div class="hole-card-header">
     <div class="hole-info-row">
       <div class="par-btns">
         <span class="par-btns-label">Par</span>
@@ -200,6 +206,9 @@ td{font-family:'Courier New',monospace;}
       </div>
       <input type="number" class="dist-input" id="distInput" inputmode="numeric" placeholder="Yds" min="1">
     </div>
+    <div class="hole-progress-track">
+      <div class="hole-progress-fill" id="holeProgressFill" style="width:0%"></div>
+    </div>
   </div>
 
   <div class="game-card">
@@ -207,13 +216,21 @@ td{font-family:'Courier New',monospace;}
     <div class="score-cols">
       <div class="score-col-wrap">
         <div class="team-col-label a" id="teamALabel">Team A</div>
-        <input class="score-big team-a" type="number" inputmode="numeric" id="scoreA" placeholder="–" min="1">
-        <div class="vspar-label" id="vspA"></div>
+        <div class="stepper" style="justify-content:center;">
+          <button type="button" onclick="stepScore('A',-1)">−</button>
+          <span id="scoreADisplay">4</span>
+          <button type="button" onclick="stepScore('A',1)">+</button>
+        </div>
+        <div class="vspar-label" id="vspA" style="display:none;"></div>
       </div>
       <div class="score-col-wrap">
         <div class="team-col-label b" id="teamBLabel">Team B</div>
-        <input class="score-big team-b" type="number" inputmode="numeric" id="scoreB" placeholder="–" min="1">
-        <div class="vspar-label" id="vspB"></div>
+        <div class="stepper" style="justify-content:center;">
+          <button type="button" onclick="stepScore('B',-1)">−</button>
+          <span id="scoreBDisplay">4</span>
+          <button type="button" onclick="stepScore('B',1)">+</button>
+        </div>
+        <div class="vspar-label" id="vspB" style="display:none;"></div>
       </div>
     </div>
   </div>
@@ -225,9 +242,12 @@ td{font-family:'Courier New',monospace;}
     </div>
   </div>
 
-  <button class="btn-secondary" onclick="openScorecard()">📋 View Scorecard</button>
   <div id="holeError" style="color:#ff6b6b;font-size:13px;margin:6px 0 0;display:none;"></div>
-  <button onclick="nextHole()" style="margin-top:8px;">✓ Next Hole</button>
+  <div style="display:flex;gap:8px;margin-top:8px;">
+    <button class="btn-secondary" onclick="prevHole()" id="backBtn" style="flex:1;margin:0;opacity:0.35;pointer-events:none;">Back</button>
+    <button onclick="nextHole()" style="flex:1;margin:0;">Next Hole</button>
+  </div>
+  <button class="btn-secondary" onclick="openScorecard()" style="margin-top:8px;">View Scorecard</button>
 
   <!-- Scorecard modal -->
   <div id="scorecardModal" class="hidden modal">
@@ -250,15 +270,17 @@ td{font-family:'Courier New',monospace;}
   <h2>Final Results</h2>
   <h3 id="finalWinner" style="margin-bottom:16px;text-align:center;"></h3>
   <div class="final-team-cards" id="finalTeamCards"></div>
-  <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.7);margin-bottom:8px;">Scorecard</div>
-  <div style="overflow-x:auto;">
-    <table>
-      <thead>
-        <tr><th>Hole</th><th>Par</th><th>Yds</th><th id="fhA" class="td-a"></th><th>+/-</th><th id="fhB" class="td-b"></th><th>+/-</th></tr>
-      </thead>
-      <tbody id="finalBody"></tbody>
-      <tfoot id="finalFoot"></tfoot>
-    </table>
+  <div class="game-card">
+    <div class="game-card-label">Scorecard</div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr><th>Hole</th><th>Par</th><th>Yds</th><th id="fhA" class="td-a"></th><th>+/-</th><th id="fhB" class="td-b"></th><th>+/-</th></tr>
+        </thead>
+        <tbody id="finalBody"></tbody>
+        <tfoot id="finalFoot"></tfoot>
+      </table>
+    </div>
   </div>
   <br>
   <button onclick="window.location.href='games.html'">‹ Menu</button>
@@ -277,6 +299,7 @@ let teamVsPar = [0,0];
 let holeHistory = [];
 let currentPar = 4;
 let courseName = '';
+let scoreA = null, scoreB = null;
 
 document.getElementById('roundDate').value = new Date().toLocaleDateString('en-CA');
 
@@ -313,29 +336,75 @@ function setPar(p){
 }
 
 function updateHoleInfo(){
-  document.getElementById('holeLabel').textContent = hole;
+  document.getElementById('holeCounter').textContent = 'Hole ' + hole + ' / ' + totalHoles;
+  document.getElementById('holeProgressFill').style.width = (hole / totalHoles * 100).toFixed(1) + '%';
   let cnl = document.getElementById('courseNameLabel');
   cnl.textContent = courseName; cnl.style.display = courseName ? '' : 'none';
   document.querySelectorAll('.par-btn').forEach(b => b.classList.toggle('active', Number(b.textContent) === currentPar));
   document.getElementById('distInput').value = '';
-  document.getElementById('scoreA').value = '';
-  document.getElementById('scoreB').value = '';
+  scoreA = null; scoreB = null;
+  document.getElementById('scoreADisplay').textContent = currentPar;
+  document.getElementById('scoreBDisplay').textContent = currentPar;
   document.getElementById('vspA').textContent = '';
   document.getElementById('vspB').textContent = '';
   document.getElementById('holeError').style.display = 'none';
-  document.getElementById('scoreA').focus();
+  let bb = document.getElementById('backBtn');
+  if(bb){ bb.style.opacity = holeHistory.length === 0 ? '0.35' : '1'; bb.style.pointerEvents = holeHistory.length === 0 ? 'none' : ''; }
+}
+
+function stepScore(team, d){
+  if(team === 'A'){
+    scoreA = Math.max(1, (scoreA ?? currentPar) + d);
+    document.getElementById('scoreADisplay').textContent = scoreA;
+  } else {
+    scoreB = Math.max(1, (scoreB ?? currentPar) + d);
+    document.getElementById('scoreBDisplay').textContent = scoreB;
+  }
+  updateVsPar();
+}
+
+function updateVsPar(){
+  const fmtVp = (score, par) => {
+    if(score === null) return '';
+    const v = score - par;
+    const cls = v < 0 ? 'vspar-under' : v > 0 ? 'vspar-over' : 'vspar-even';
+    const elA = document.getElementById('vspA');
+    const elB = document.getElementById('vspB');
+    return {cls, str: fmtVsPar(v) + ' vs par'};
+  };
+  if(scoreA !== null){
+    const vA = scoreA - currentPar;
+    const elA = document.getElementById('vspA');
+    elA.className = 'vspar-label ' + (vA < 0 ? 'vspar-under' : vA > 0 ? 'vspar-over' : 'vspar-even');
+    elA.textContent = fmtVsPar(vA) + ' vs par';
+  }
+  if(scoreB !== null){
+    const vB = scoreB - currentPar;
+    const elB = document.getElementById('vspB');
+    elB.className = 'vspar-label ' + (vB < 0 ? 'vspar-under' : vB > 0 ? 'vspar-over' : 'vspar-even');
+    elB.textContent = fmtVsPar(vB) + ' vs par';
+  }
 }
 
 function fmtVsPar(v){ return v > 0 ? '+'+v : v === 0 ? 'E' : String(v); }
 
+function prevHole(){
+  if(holeHistory.length === 0) return;
+  let last = holeHistory.pop();
+  teamScores[0] -= last.scores[0]; teamScores[1] -= last.scores[1];
+  teamVsPar[0] -= last.vsPar[0]; teamVsPar[1] -= last.vsPar[1];
+  hole--;
+  currentPar = last.par;
+  scoreA = null; scoreB = null;
+  updateHoleInfo();
+  document.getElementById('distInput').value = last.dist || '';
+  renderStandings();
+  saveActiveState();
+}
+
 function nextHole(){
-  let sA = Number(document.getElementById('scoreA').value);
-  let sB = Number(document.getElementById('scoreB').value);
-  if(!sA || !sB){
-    document.getElementById('holeError').textContent = 'Please enter both team scores.';
-    document.getElementById('holeError').style.display = 'block';
-    return;
-  }
+  let sA = scoreA !== null ? scoreA : currentPar;
+  let sB = scoreB !== null ? scoreB : currentPar;
   document.getElementById('holeError').style.display = 'none';
   let vpA = sA - currentPar, vpB = sB - currentPar;
   teamScores[0] += sA; teamScores[1] += sB;

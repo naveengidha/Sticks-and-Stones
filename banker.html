@@ -26,6 +26,12 @@ button{font-family:inherit;cursor:pointer;}
 /* ── Global button reset (scoped overrides below) ── */
 button{width:auto;padding:0;border:none;border-radius:0;font-size:inherit;font-weight:inherit;background:none;box-shadow:none;margin:0;letter-spacing:normal;}
 
+/* ── Action buttons ── */
+.action-primary{width:100%;padding:11px;border:none;border-radius:6px;font-size:14px;font-weight:bold;background:linear-gradient(135deg,#8B6914,#ffd447,#8B6914);color:#0a0a00;cursor:pointer;box-shadow:0 2px 16px rgba(184,150,46,0.5);letter-spacing:2px;text-transform:uppercase;font-family:'Georgia','Times New Roman',serif;}
+.action-primary:active{opacity:.85;}
+.action-secondary{background:transparent;border:1px solid rgba(255,212,71,0.3);color:rgba(255,212,71,0.7);font-size:14px;padding:10px;box-shadow:none;letter-spacing:.5px;text-transform:none;border-radius:6px;width:100%;cursor:pointer;}
+.action-secondary:active{background:rgba(255,212,71,0.06);border-color:rgba(255,212,71,0.6);color:#ffd447;}
+
 /* ── Setup card ── */
 .setup-card{background:none;border:none;box-shadow:none;padding:0;}
 .setup-card h2{
@@ -124,7 +130,7 @@ input[type="date"].course-input{-webkit-appearance:none;appearance:none;}
 .rules-sheet{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.22);border-radius:18px 18px 0 0;padding:24px 20px 44px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;}
 .rules-handle{width:36px;height:4px;background:rgba(255,212,71,0.25);border-radius:2px;margin:0 auto 20px;}
 .info-btn{background:none;border:1px solid rgba(255,212,71,0.35);color:rgba(255,212,71,0.7);border-radius:50%;width:22px;height:22px;font-size:12px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;box-shadow:none;text-transform:none;letter-spacing:0;flex-shrink:0;}
-.info-btn:hover,.info-btn:active{background:rgba(255,212,71,0.12);color:#ffd447;}
+.info-btn:active{background:rgba(255,212,71,0.12);color:#ffd447;}
 .game-title-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:2px;}
 .rules-title{
   font-size:18px;font-weight:bold;
@@ -180,7 +186,7 @@ input[type="date"].course-input{-webkit-appearance:none;appearance:none;}
   border-radius:20px;
   border:3px solid #8B6914;
   box-shadow:0 8px 32px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,212,71,0.08);
-  padding:0 0 20px;
+  padding:0 0 12px;
   overflow:hidden;
   position:relative;
 }
@@ -215,7 +221,7 @@ input[type="date"].course-input{-webkit-appearance:none;appearance:none;}
 }
 .hole-info-main{
   display:flex;align-items:center;justify-content:space-between;
-  padding:10px 16px 8px;
+  padding:8px 16px 6px;
 }
 .hole-label{
   font-size:18px;font-weight:bold;
@@ -243,7 +249,7 @@ input[type="date"].course-input{-webkit-appearance:none;appearance:none;}
 
 /* ── Dealer zone ── */
 .dealer-zone{
-  padding:18px 14px 20px;
+  padding:6px 14px 8px;
   display:flex;flex-direction:column;align-items:center;
   position:relative;z-index:1;
 }
@@ -339,8 +345,8 @@ input[type="date"].course-input{-webkit-appearance:none;appearance:none;}
   background:rgba(0,0,0,0.55);
   border:2px solid rgba(255,212,71,0.45);
   border-radius:12px;
-  padding:14px 16px 16px;
-  display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:8px 14px 10px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
   min-width:130px;
   box-shadow:0 0 24px rgba(255,212,71,0.08), inset 0 1px 0 rgba(255,255,255,0.04);
   position:relative;
@@ -356,11 +362,15 @@ input[type="date"].course-input{-webkit-appearance:none;appearance:none;}
 .dealer-role{display:none;}
 .input-lbl{font-size:8px;color:rgba(255,255,255,0.3);letter-spacing:.5px;text-transform:uppercase;margin-top:4px;}
 
+/* ── Game cards ── */
+.hole-counter{font-size:20px;font-weight:bold;color:#ffd447;letter-spacing:.5px;text-align:center;margin-bottom:8px;font-family:'Georgia','Times New Roman',serif;}
+.game-card{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:10px;padding:14px 16px;margin-bottom:8px;}
+.game-card-label{font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:#ffd447;margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(255,212,71,0.1);text-align:center;}
+
 /* ── Shared stepper ── */
-.stepper{display:flex;align-items:center;gap:4px;}
-.step-btn{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:16px;font-weight:bold;padding:0;display:flex;align-items:center;justify-content:center;box-shadow:none;}
-.step-btn:active{background:rgba(255,255,255,0.18);}
-.step-val{font-size:20px;font-weight:bold;font-family:'Courier New',monospace;min-width:24px;text-align:center;}
+.stepper{display:flex;align-items:center;gap:8px;}
+.stepper button{width:32px;height:32px;padding:0;border-radius:6px;font-size:18px;font-weight:bold;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#fff;box-shadow:none;margin-bottom:0;flex-shrink:0;}
+.stepper span{font-size:18px;font-weight:bold;font-family:'Courier New',monospace;min-width:24px;text-align:center;}
 
 /* ── Double ── */
 .double-label{
@@ -387,10 +397,10 @@ input[type="date"].course-input{-webkit-appearance:none;appearance:none;}
 /* ── Table arc divider ── */
 .table-arc{
   position:relative;z-index:1;
-  margin:4px 0 0;
+  margin:2px 0 0;
   display:flex;align-items:center;
   padding:0 14px;
-  height:28px;
+  height:22px;
 }
 .table-arc::before{
   content:'';
@@ -410,8 +420,8 @@ input[type="date"].course-input{-webkit-appearance:none;appearance:none;}
 
 /* ── Players zone ── */
 .players-zone{
-  padding:0 24px 4px;
-  display:flex;flex-wrap:wrap;gap:32px;justify-content:center;
+  padding:0 16px 2px;
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
   position:relative;z-index:1;
 }
 .player-col{
@@ -440,9 +450,9 @@ input[type="date"].course-input{-webkit-appearance:none;appearance:none;}
   width:100%;
   display:flex;flex-direction:column;align-items:center;gap:2px;
   border-radius:8px;
-  padding:5px 8px;
-  margin-top:6px;
-  margin-bottom:14px;
+  padding:4px 8px;
+  margin-top:4px;
+  margin-bottom:8px;
 }
 .bal-card > *{ position:relative;z-index:1; }
 .bal-card.bal-pos{
@@ -476,9 +486,9 @@ input[type="date"].course-input{-webkit-appearance:none;appearance:none;}
   background:rgba(0,0,0,0.4);
   border-radius:6px;
   border:1px solid rgba(255,212,71,0.12);
-  padding:6px 10px;
+  padding:4px 8px;
   width:100%;
-  margin-bottom:8px;
+  margin-bottom:4px;
 }
 
 /* ── Wager input ── */
@@ -538,7 +548,7 @@ input[type="date"].course-input{-webkit-appearance:none;appearance:none;}
 }
 
 /* ── Resolve / action row ── */
-.resolve-row{padding:16px 14px 0;display:flex;flex-direction:column;align-items:stretch;gap:8px;}
+.resolve-row{padding:6px 14px 0;display:flex;flex-direction:column;align-items:stretch;gap:6px;}
 .resolve-btn{background:linear-gradient(135deg,#8B6914,#ffd447,#8B6914);color:#0a0a00;font-size:14px;font-weight:bold;border:none;border-radius:6px;padding:14px;letter-spacing:2px;text-transform:uppercase;width:100%;font-family:'Georgia','Times New Roman',serif;}
 .resolve-btn:active{opacity:.85;}
 .resolve-secondary-row{display:flex;gap:8px;}
@@ -701,15 +711,14 @@ td{font-family:'Courier New',monospace;color:rgba(255,255,255,0.75);}
 .stn-pos{color:#4caf50;}
 .stn-neg{color:#f44336;}
 .stn-zero{color:rgba(255,255,255,0.3);}
-.hole-meta-bar{display:flex;align-items:center;justify-content:space-between;padding:6px 16px 10px;gap:12px;}
-.hole-meta-group{display:flex;align-items:center;gap:6px;}
-.hole-meta-lbl{font-size:9px;color:rgba(255,212,71,0.5);letter-spacing:.8px;text-transform:uppercase;font-family:'Courier New',monospace;}
-.par-toggle{display:flex;border:1px solid rgba(255,212,71,0.3);border-radius:4px;overflow:hidden;}
-.par-btn{background:transparent;border:none;color:rgba(255,255,255,0.45);font-size:12px;font-family:'Courier New',monospace;font-weight:bold;padding:4px 9px;cursor:pointer;transition:background .15s,color .15s;}
-.par-btn.active{background:rgba(255,212,71,0.18);color:#ffd447;}
-.yards-input{width:52px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,212,71,0.3);border-radius:4px;color:#ffd447;font-size:12px;font-family:'Courier New',monospace;text-align:center;padding:4px 6px;-moz-appearance:textfield;}
-.yards-input::-webkit-outer-spin-button,.yards-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
-.yards-input:focus{outline:none;border-color:rgba(255,212,71,0.6);}
+.hole-card-header{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:12px;}
+.hole-info-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:0;}
+.hole-meta-bar{display:flex;align-items:center;justify-content:center;padding:6px 0 10px;gap:12px;}
+.par-btns{display:flex;align-items:center;gap:3px;}
+.par-btns-label{font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:.5px;text-transform:uppercase;margin-right:1px;}
+.par-btn{width:34px;height:34px;padding:0;border-radius:6px;font-size:14px;font-weight:bold;background:rgba(0,0,0,0.25);border:1px solid rgba(184,150,46,0.3);color:rgba(255,255,255,0.5);box-shadow:none;margin:0;letter-spacing:0;cursor:pointer;}
+.par-btn.active{background:rgba(184,150,46,0.25);border-color:#ffd447;color:#ffd447;}
+.dist-input{width:60px;padding:5px 6px;border-radius:5px;border:1px solid rgba(184,150,46,0.3);background:rgba(0,0,0,0.25);color:#fff;font-size:13px;text-align:center;}
 .insights-select{
   display:block;
   width:auto;min-width:180px;max-width:80%;
@@ -724,11 +733,9 @@ td{font-family:'Courier New',monospace;color:rgba(255,255,255,0.75);}
 .insights-empty{text-align:center;color:rgba(255,255,255,0.3);font-size:13px;padding:32px 0;line-height:2;}
 
 @media (max-width: 390px){
-  .dealer-card{ min-width:110px; padding:12px 12px 14px; }
-  .dealer-name{ font-size:13px; }
-  .step-btn{ width:24px; height:24px; font-size:14px; }
-  .step-val{ font-size:16px; min-width:20px; }
   .player-score-area{ padding:5px 6px; }
+  .stepper button{ width:28px; height:28px; font-size:15px; }
+  .stepper span{ font-size:16px; min-width:20px; }
   .wager-step-btn{ width:24px; height:30px; font-size:15px; }
   .wager-val-display{ min-width:34px; font-size:13px; line-height:30px; }
   .double-pill{ font-size:9px; padding:3px 10px; }
@@ -804,12 +811,7 @@ td{font-family:'Courier New',monospace;color:rgba(255,255,255,0.75);}
               <div class="row-setting">
                 <label>Holes:</label>
                 <div class="row-control">
-                  <select id="holesSelect" class="select-input">
-                    <option value="3">3</option>
-                    <option value="6">6</option>
-                    <option value="9">9</option>
-                    <option value="18" selected>18</option>
-                  </select>
+                  <input type="number" id="holesSelect" class="select-input" inputmode="numeric" min="1" max="18" value="9" style="width:60px;text-align:center;">
                 </div>
               </div>
             </div>
@@ -842,67 +844,56 @@ td{font-family:'Courier New',monospace;color:rgba(255,255,255,0.75);}
 
   <!-- ══ GAME ══ -->
   <div id="gameScreen" class="hidden">
-    <div class="table-felt">
 
-      <div class="hole-info-bar">
-        <div class="hole-info-main">
-          <div class="hole-label">Hole <span id="holeLabel">1</span></div>
-          <div class="hole-count"><span id="holeCountLabel">1</span> / <span id="holeTotalLabel">18</span></div>
+    <div style="text-align:center;">
+      <span id="courseNameLabel" style="font-size:11px;color:rgba(255,212,71,0.55);letter-spacing:.5px;text-transform:uppercase;display:none;"></span>
+      <div class="hole-counter" id="holeCounter">1 / 18</div>
+    </div>
+
+    <div class="hole-card-header">
+      <div class="hole-info-row">
+        <div class="par-btns">
+          <span class="par-btns-label">Par</span>
+          <button class="par-btn" id="parBtn3" onclick="adjustPar(3)">3</button>
+          <button class="par-btn active" id="parBtn4" onclick="adjustPar(4)">4</button>
+          <button class="par-btn" id="parBtn5" onclick="adjustPar(5)">5</button>
         </div>
-        <div class="hole-progress-track">
-          <div class="hole-progress-fill" id="holeProgressFill" style="width:0%"></div>
-        </div>
-        <div class="hole-meta-bar">
-          <div class="hole-meta-group">
-            <span class="hole-meta-lbl">Par</span>
-            <div class="par-toggle">
-              <button class="par-btn" id="parBtn3" onclick="adjustPar(3)">3</button>
-              <button class="par-btn active" id="parBtn4" onclick="adjustPar(4)">4</button>
-              <button class="par-btn" id="parBtn5" onclick="adjustPar(5)">5</button>
-            </div>
-          </div>
-          <div class="hole-meta-group">
-            <span class="hole-meta-lbl">Yards</span>
-            <input type="number" id="yardsVal" class="yards-input" min="0" max="700" placeholder="—" oninput="holeYards=parseInt(this.value)||0">
-          </div>
-        </div>
+        <input type="number" id="yardsVal" class="dist-input" min="0" max="700" placeholder="Yds" oninput="holeYards=parseInt(this.value)||0">
       </div>
+      <div class="hole-progress-track" style="margin:4px 0 0;width:100%;">
+        <div class="hole-progress-fill" id="holeProgressFill" style="width:0%"></div>
+      </div>
+    </div>
 
-      <div class="dealer-zone-row">
-        <div class="dealer-zone">
-          <div class="dealer-card" id="dealerCard">
-            <div class="dealer-name" id="dealerName"></div>
-            <div class="input-lbl">Score</div>
-            <div class="stepper">
-              <button class="step-btn" id="dealerMinus" onclick="adjustScore(-1,-1)">−</button>
-              <span class="step-val" id="dealerScoreVal">E</span>
-              <button class="step-btn" id="dealerPlus" onclick="adjustScore(-1,1)">+</button>
-            </div>
-            <label class="double-label" style="margin-top:8px;">
-              <input type="checkbox" id="dealerDouble" onchange="applyDouble(-1)">
-              <span class="double-pill">Double</span>
-            </label>
-          </div>
-          <div class="bal-card" id="dealerBal"></div>
+    <div class="game-card">
+      <div class="game-card-label">Banker</div>
+      <div style="display:flex;flex-direction:column;align-items:center;max-width:120px;margin:0 auto;">
+        <div class="bal-card" id="dealerBal" style="width:100%;"></div>
+        <div class="player-name" id="dealerName" style="text-align:center;margin-bottom:4px;"></div>
+        <div class="stepper" style="justify-content:center;margin-top:4px;">
+          <button id="dealerMinus" onclick="adjustScore(-1,-1)">−</button>
+          <span id="dealerScoreVal">E</span>
+          <button id="dealerPlus" onclick="adjustScore(-1,1)">+</button>
         </div>
+        <label class="double-label" style="margin-top:8px;">
+          <input type="checkbox" id="dealerDouble" onchange="applyDouble(-1)">
+          <span class="double-pill">Double</span>
+        </label>
       </div>
-      <br>
+    </div>
 
-      <div class="table-arc">
-        <div class="table-arc-label">Players</div>
-      </div>
-
+    <div class="game-card">
+      <div class="game-card-label">Players</div>
       <div class="players-zone" id="playersZone"></div>
+    </div>
 
-      <div class="resolve-row">
-        <button class="resolve-btn" onclick="resolveHole()">✓ Resolve Hole</button>
-        <div id="holeError"></div>
-        <div class="resolve-secondary-row">
-          <button class="undo-btn hidden" id="undoBtn" onclick="undoHole()">↩ Undo Last Hole</button>
-          <button class="secondary-btn" onclick="toggleScorecard()">View Scorecard</button>
-        </div>
+    <div style="margin-top:4px;">
+      <div id="holeError" style="display:none;color:#ff6b6b;font-size:13px;text-align:center;margin:0 0 6px;"></div>
+      <div style="display:flex;gap:8px;">
+        <button class="action-secondary" id="undoBtn" onclick="undoHole()" style="flex:1;margin:0;opacity:0.35;pointer-events:none;">Back</button>
+        <button class="action-primary" onclick="resolveHole()" style="flex:1;margin:0;">Next Hole</button>
       </div>
-
+      <button class="action-secondary" onclick="toggleScorecard()" style="margin-top:8px;width:100%;">View Scorecard</button>
     </div>
 
     <div id="scorecardModal" class="hidden modal">
@@ -936,22 +927,26 @@ td{font-family:'Courier New',monospace;color:rgba(255,255,255,0.75);}
     <div class="final-wrap">
       <h2>Final Results</h2>
       <div class="final-sub">Round Complete</div>
-      <div style="overflow-x:auto;">
-        <table id="resultsTable">
-          <thead><tr id="resultsHeader"></tr></thead>
-          <tbody id="resultsBody"></tbody>
+      <div class="game-card">
+        <div class="game-card-label">Scorecard</div>
+        <div style="overflow-x:auto;">
+          <table id="resultsTable">
+            <thead><tr id="resultsHeader"></tr></thead>
+            <tbody id="resultsBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="game-card">
+        <div class="game-card-label">Net Positions</div>
+        <table class="net-table">
+          <thead><tr id="netHeader"></tr></thead>
+          <tbody><tr id="netBody"></tr></tbody>
         </table>
       </div>
-      <br>
-      <h3 style="text-align:center;color:rgba(255,212,71,0.4);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;position:relative;">Net Positions</h3>
-      <table class="net-table">
-        <thead><tr id="netHeader"></tr></thead>
-        <tbody><tr id="netBody"></tr></tbody>
-      </table>
       <div id="settlementSection"></div>
       <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px;">
         <button class="start-btn" onclick="window.location.href='games.html'">‹ Menu</button>
-        <button class="start-btn" style="background:linear-gradient(135deg,#1a3a1f,#2e6b3f,#1a3a1f);color:#ffd447;" onclick="window.location.href='history.html?tab=banker'">🏆 Trophy Room</button>
+        <button class="start-btn" style="background:linear-gradient(135deg,#1a3a1f,#2e6b3f,#1a3a1f);color:#ffd447;" onclick="window.location.href='history.html?tab=banker'">Trophy Room</button>
       </div>
     </div>
   </div>
@@ -1087,7 +1082,7 @@ function startGame(){
   carryovers = new Array(playerNames.length).fill(0);
   minValue = Math.max(1, Number(document.getElementById('minValue').value)||1);
   maxValue = Math.max(minValue, Number(document.getElementById('maxValue').value)||5);
-  courseName = '';
+  courseName = document.getElementById('courseInput').value.trim();
   totalHoles = Math.min(36, Math.max(1, Number(document.getElementById('holesSelect').value)||18));
   casinoTitlesMode = false;
   pointsMode = false;
@@ -1107,9 +1102,9 @@ function randBase(){
 }
 
 function renderHoleHeader(){
-  document.getElementById('holeLabel').textContent = hole;
-  document.getElementById('holeCountLabel').textContent = hole;
-  document.getElementById('holeTotalLabel').textContent = totalHoles;
+  document.getElementById('holeCounter').textContent = 'Hole ' + hole + ' / ' + totalHoles;
+  const cnl = document.getElementById('courseNameLabel');
+  cnl.textContent = courseName; cnl.style.display = courseName ? '' : 'none';
   const pct = (hole / totalHoles * 100).toFixed(1);
   document.getElementById('holeProgressFill').style.width = pct + '%';
 }
@@ -1138,10 +1133,10 @@ function renderTable(){
         <div class="player-name">${esc(playerNames[i])}</div>
         <div class="player-score-area">
           <div class="input-lbl">Score</div>
-          <div class="stepper">
-            <button class="step-btn" onclick="adjustScore(${i},-1)">−</button>
-            <span class="step-val" id="pscore-${i}">${fmtScore(playerScores[i])}</span>
-            <button class="step-btn" onclick="adjustScore(${i},1)">+</button>
+          <div class="stepper" style="justify-content:center;">
+            <button onclick="adjustScore(${i},-1)">−</button>
+            <span id="pscore-${i}">${fmtScore(playerScores[i])}</span>
+            <button onclick="adjustScore(${i},1)">+</button>
           </div>
         </div>
         <div class="wager-chip-wrap">
@@ -1207,9 +1202,8 @@ function matchupValue(playerIdx){
 
 function adjustPar(val){
   holePar = val;
-  [3,4,5].forEach(p => {
-    const btn = document.getElementById('parBtn'+p);
-    if(btn) btn.classList.toggle('active', p === val);
+  document.querySelectorAll('.par-btn').forEach(b => {
+    b.classList.toggle('active', Number(b.textContent) === val);
   });
 }
 
@@ -1248,10 +1242,9 @@ function resolveHole(){
     playerPutts: [...playerPutts],
     playerBlownSave: [...playerBlownSave]
   };
-  document.getElementById('undoBtn').classList.add('hidden');
   let scores = [...playerScores];
-  let bankerDoubled = document.getElementById('dealerDouble')?.checked || false;
   let bankerScore = scores[bankerIdx];
+  let bankerDoubled = document.getElementById('dealerDouble')?.checked || false;
   let matchups = [];
 
   let nonBankers = playerNames.map((_,i)=>i).filter(i=>i!==bankerIdx);
@@ -1310,21 +1303,21 @@ function resolveHole(){
     putts: [...playerPutts],
     blownSave: [...playerBlownSave]
   });
-  saveActiveState();
 
   bankerIdx = nextBankerIdx;
   renderStandings();
   if(!document.getElementById('scorecardModal').classList.contains('hidden')) renderScorecard();
 
   hole++;
+  const ub2 = document.getElementById('undoBtn'); ub2.style.opacity='1'; ub2.style.pointerEvents='';
   if(hole > totalHoles){ endGame(); return; }
+  saveActiveState();
 
   renderHoleHeader();
   renderTable();
   renderStandings();
   renderCarryoverStrip();
   updateDisplays();
-  document.getElementById('undoBtn').classList.remove('hidden');
 }
 
 function undoHole(){
@@ -1336,7 +1329,7 @@ function undoHole(){
   holeHistory.splice(lastSnapshot.holeHistoryLength);
   const snap = lastSnapshot;
   lastSnapshot     = null;
-  document.getElementById('undoBtn').classList.add('hidden');
+  const ub3 = document.getElementById('undoBtn'); ub3.style.opacity='0.35'; ub3.style.pointerEvents='none';
   renderHoleHeader();
   renderTable();
   // restore per-hole state that renderTable() reset to defaults
@@ -1648,7 +1641,7 @@ function renderSettlement(){
   }
 
   if(!transactions.length){
-    el.innerHTML = `<div class="settlement-box"><h3>💰 Settlement</h3><div class="settle-all-square">Accounts settled. No transfers required.</div></div>`;
+    el.innerHTML = `<div class="game-card"><div class="game-card-label">Settlement</div><div class="settle-all-square">Accounts settled. No transfers required.</div></div>`;
     return;
   }
   let rows = transactions.map(t=>`
@@ -1658,7 +1651,7 @@ function renderSettlement(){
       <span class="settle-to">${esc(t.to)}</span>
       <span class="settle-amount">${cur(t.amount.toFixed(2))}</span>
     </div>`).join('');
-  el.innerHTML = `<div class="settlement-box"><h3>💰 Settlement</h3>${rows}</div>`;
+  el.innerHTML = `<div class="game-card"><div class="game-card-label">Settlement</div>${rows}</div>`;
 }
 
 function showBankerToast(name){
