@@ -19,7 +19,7 @@ if(!sessionStorage.getItem('splashSeen')){
 </script>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;}
+body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;overscroll-behavior:none;}
 .container{padding:16px 16px 0;width:100%;}
 .logo{text-align:center;margin-bottom:8px;display:block;width:100%;}
 .logo svg{margin:auto;display:block;}
@@ -77,10 +77,10 @@ h3{text-align:center;margin-top:0;color:rgba(255,255,255,0.75);}
 .arc-arrow{color:rgba(76,200,120,0.4);font-size:18px;flex-shrink:0;}
 .arc-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#4cc878;margin-right:5px;animation:arc-pulse 1.5s ease-in-out infinite;}
 @keyframes arc-pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
-button{width:100%;padding:13px;border:none;border-radius:8px;font-size:15px;font-weight:bold;background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);color:#1a1a0a;cursor:pointer;margin-bottom:4px;box-shadow:0 2px 8px rgba(184,150,46,0.4);letter-spacing:.5px;}
+button{width:100%;padding:13px;border:none;border-radius:8px;font-size:15px;font-weight:bold;background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);color:#1a1a0a;cursor:pointer;margin-bottom:4px;box-shadow:0 2px 8px rgba(139,94,60,0.4);letter-spacing:.5px;}
 button:hover,button:active{background:linear-gradient(135deg,#b8912e,#ffc93a,#b8912e);}
-button.btn-secondary{background:transparent;border:1px solid rgba(184,150,46,0.4);color:rgba(255,212,71,0.75);font-size:14px;padding:10px;box-shadow:none;letter-spacing:.5px;}
-button.btn-secondary:hover,button.btn-secondary:active{background:rgba(184,150,46,0.08);border-color:rgba(255,212,71,0.6);color:#ffd447;}
+button.btn-secondary{background:transparent;border:1px solid rgba(139,94,60,0.4);color:rgba(255,212,71,0.75);font-size:14px;padding:10px;box-shadow:none;letter-spacing:.5px;}
+button.btn-secondary:hover,button.btn-secondary:active{background:rgba(139,94,60,0.08);border-color:rgba(255,212,71,0.6);color:#ffd447;}
 .hidden{display:none!important;}
 /* ── Bottom pill nav ── */
 .bottom-nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:1000;pointer-events:none;}
@@ -89,7 +89,7 @@ button.btn-secondary:hover,button.btn-secondary:active{background:rgba(184,150,4
 .nav-item:hover,.nav-item:active{color:rgba(255,212,71,0.7);}
 .nav-item.active{color:#ffd447;}
 .nav-item svg{width:20px;height:20px;flex-shrink:0;}
-.nav-center{background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;margin:0 4px;cursor:pointer;box-shadow:0 2px 10px rgba(184,150,46,0.5);flex-shrink:0;text-decoration:none;}
+.nav-center{background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;margin:0 4px;cursor:pointer;box-shadow:0 2px 10px rgba(139,94,60,0.5);flex-shrink:0;text-decoration:none;}
 .nav-center svg{width:36px;height:36px;}
 
 /* ── Round cards ── */
@@ -110,7 +110,7 @@ button.btn-secondary:hover,button.btn-secondary:active{background:rgba(184,150,4
 .rcard-score-name{font-size:10px;color:rgba(255,255,255,0.4);white-space:nowrap;max-width:70px;overflow:hidden;text-overflow:ellipsis;}
 .rcard-score-num{font-size:15px;font-weight:bold;color:#fff;font-variant-numeric:tabular-nums;}
 .rcard-score-par{font-size:11px;color:rgba(255,212,71,0.6);font-variant-numeric:tabular-nums;min-width:28px;text-align:right;}
-.hole-bar{display:grid;grid-template-columns:minmax(0,auto) 90px 1fr;gap:3px 6px;padding:4px 0 10px;align-items:center;}
+.hole-bar{display:grid;grid-template-columns:minmax(0,auto) 1fr 90px;gap:3px 6px;padding:4px 0 10px;align-items:center;}
 .hb-row{display:contents;}
 .hb-label{font-size:11px;font-weight:bold;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1;min-width:0;}
 .hb-label-team{max-width:160px;}
@@ -132,9 +132,9 @@ button.btn-secondary:hover,button.btn-secondary:active{background:rgba(184,150,4
 .rcard.expanded .rcard-expand{display:block;}
 .rcard-expand-sc{overflow-x:auto;margin-bottom:12px;}
 .rcard-expand-sc table{width:100%;border-collapse:collapse;font-size:11px;}
-.rcard-expand-sc th{background:rgba(0,0,0,0.4);color:#ffd447;border:1px solid rgba(184,150,46,0.15);padding:5px 3px;text-align:center;font-size:9px;letter-spacing:.8px;text-transform:uppercase;}
+.rcard-expand-sc th{background:rgba(0,0,0,0.4);color:#ffd447;border:1px solid rgba(139,94,60,0.15);padding:5px 3px;text-align:center;font-size:9px;letter-spacing:.8px;text-transform:uppercase;}
 .rcard-expand-sc th:first-child{text-align:left;}
-.rcard-expand-sc td{border:1px solid rgba(184,150,46,0.08);padding:4px 3px;text-align:center;color:rgba(255,255,255,0.7);font-family:'Courier New',monospace;font-size:11px;}
+.rcard-expand-sc td{border:1px solid rgba(139,94,60,0.08);padding:4px 3px;text-align:center;color:rgba(255,255,255,0.7);font-family:'Courier New',monospace;font-size:11px;}
 .rcard-expand-sc td:first-child{color:rgba(255,212,71,0.55);font-family:inherit;text-align:left;}
 .rcard-expand-sc tfoot td{background:rgba(0,0,0,0.3);color:#ffd447;font-weight:bold;font-family:inherit;}
 .rcard-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
@@ -149,25 +149,25 @@ button.btn-secondary:hover,button.btn-secondary:active{background:rgba(184,150,4
 /* ── Golf Bag overlay ── */
 .field-bag-edit-btn{background:none;border:1px solid rgba(255,212,71,0.35);color:rgba(255,212,71,0.8);font-size:13px;font-weight:bold;padding:4px 12px;border-radius:4px;cursor:pointer;letter-spacing:.5px;white-space:nowrap;}
 .field-bag-edit-btn:active{background:rgba(255,212,71,0.1);}
-.bag-section-label{font-size:10px;font-weight:bold;letter-spacing:3px;text-transform:uppercase;color:rgba(255,212,71,0.35);margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(184,150,46,0.15);}
+.bag-section-label{font-size:10px;font-weight:bold;letter-spacing:3px;text-transform:uppercase;color:rgba(255,212,71,0.35);margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(139,94,60,0.15);}
 .bag-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:6px;}
-.bag-table th{background:#0a1409;color:#ffd447;border:1px solid rgba(184,150,46,0.12);padding:6px 8px;text-align:center;font-size:9px;letter-spacing:1px;text-transform:uppercase;}
+.bag-table th{background:#0a1409;color:#ffd447;border:1px solid rgba(139,94,60,0.12);padding:6px 8px;text-align:center;font-size:9px;letter-spacing:1px;text-transform:uppercase;}
 .bag-table th:first-child{text-align:left;}
-.bag-table td{border:1px solid rgba(184,150,46,0.08);padding:8px;text-align:center;color:rgba(255,255,255,0.75);}
+.bag-table td{border:1px solid rgba(139,94,60,0.08);padding:8px;text-align:center;color:rgba(255,255,255,0.75);}
 .bag-table td:first-child{text-align:left;color:#ffd447;font-weight:bold;letter-spacing:.5px;}
 .bag-table td.bag-dist{font-family:'Courier New',monospace;font-size:14px;font-weight:bold;}
 .bag-table td.bag-empty{color:rgba(255,255,255,0.2);}
 .bag-edit-row td{background:rgba(255,212,71,0.03);}
-.bag-name-input{width:64px;padding:5px 6px;border-radius:3px;background:#0a1409;border:1px solid rgba(184,150,46,0.25);color:#fff;font-size:13px;}
-.bag-dist-input{width:54px;padding:5px 6px;border-radius:3px;background:#0a1409;border:1px solid rgba(184,150,46,0.25);color:#fff;font-size:13px;text-align:center;font-family:'Courier New',monospace;}
+.bag-name-input{width:64px;padding:5px 6px;border-radius:3px;background:#0a1409;border:1px solid rgba(139,94,60,0.25);color:#fff;font-size:13px;}
+.bag-dist-input{width:54px;padding:5px 6px;border-radius:3px;background:#0a1409;border:1px solid rgba(139,94,60,0.25);color:#fff;font-size:13px;text-align:center;font-family:'Courier New',monospace;}
 .bag-del-btn{background:none;border:none;color:rgba(255,77,77,0.4);cursor:pointer;font-size:15px;padding:0 2px;}
 .bag-del-btn:hover{color:#ff4d4d;}
-.bag-add-btn{width:100%;padding:10px;margin-top:8px;border:1px dashed rgba(184,150,46,0.25);border-radius:4px;background:none;color:rgba(255,212,71,0.5);font-size:12px;letter-spacing:1px;cursor:pointer;}
-.bag-add-btn:active{background:rgba(184,150,46,0.06);}
+.bag-add-btn{width:100%;padding:10px;margin-top:8px;border:1px dashed rgba(139,94,60,0.25);border-radius:4px;background:none;color:rgba(255,212,71,0.5);font-size:12px;letter-spacing:1px;cursor:pointer;}
+.bag-add-btn:active{background:rgba(139,94,60,0.06);}
 /* ── Field Mode overlay ── */
 .field-overlay{display:none;position:fixed;inset:0;background:#0a1409;z-index:2000;flex-direction:column;overflow:hidden;}
 .field-overlay.open{display:flex;}
-.field-topnav{display:flex;align-items:center;background:#0e1a12;padding:10px 14px;gap:10px;flex-shrink:0;border-bottom:1px solid rgba(184,150,46,0.3);box-shadow:0 2px 12px rgba(0,0,0,0.6);}
+.field-topnav{display:flex;align-items:center;background:#0e1a12;padding:10px 14px;gap:10px;flex-shrink:0;border-bottom:1px solid rgba(139,94,60,0.3);box-shadow:0 2px 12px rgba(0,0,0,0.6);}
 .field-back{background:none;border:none;color:rgba(255,212,71,0.8);font-size:15px;font-weight:bold;cursor:pointer;padding:4px 8px 4px 0;white-space:nowrap;letter-spacing:.5px;}
 .field-back:active{color:#ffd700;}
 .field-topnav-title{flex:1;text-align:center;color:#ffd447;font-size:13px;font-weight:bold;letter-spacing:3px;text-transform:uppercase;}
@@ -178,77 +178,77 @@ button.btn-secondary:hover,button.btn-secondary:active{background:rgba(184,150,4
 #fieldMenu .field-menu-logo svg{display:inline-block;}
 #fieldMenu h2{text-align:center;color:#ffd447;margin:0 0 4px;font-size:18px;letter-spacing:4px;text-transform:uppercase;}
 #fieldMenu .field-subtitle{text-align:center;color:rgba(255,255,255,0.3);font-size:11px;margin:0 0 32px;letter-spacing:2px;text-transform:uppercase;}
-.field-card{display:flex;align-items:center;gap:16px;background:#0e1a12;border:1px solid rgba(184,150,46,0.2);border-left:3px solid rgba(184,150,46,0.5);border-radius:4px;padding:16px;margin-bottom:10px;cursor:pointer;color:#fff;transition:border-color .15s,background .15s;-webkit-user-select:none;}
+.field-card{display:flex;align-items:center;gap:16px;background:#0e1a12;border:1px solid rgba(139,94,60,0.2);border-left:3px solid rgba(139,94,60,0.5);border-radius:4px;padding:16px;margin-bottom:10px;cursor:pointer;color:#fff;transition:border-color .15s,background .15s;-webkit-user-select:none;}
 .field-card:hover,.field-card:active{border-color:rgba(255,212,71,0.7);border-left-color:#ffd447;background:#0a1409;}
-.field-card-icon{width:44px;height:44px;border-radius:4px;background:rgba(184,150,46,0.08);border:1px solid rgba(184,150,46,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.field-card-icon{width:44px;height:44px;border-radius:4px;background:rgba(139,94,60,0.08);border:1px solid rgba(139,94,60,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
 .field-card-info{flex:1;}
 .field-card-title{font-size:14px;font-weight:bold;margin-bottom:3px;color:#ffd447;letter-spacing:1px;text-transform:uppercase;}
 .field-card-desc{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.4;}
-.field-card-arrow{color:rgba(184,150,46,0.3);font-size:18px;}
-.field-rounds-label{font-size:10px;font-weight:bold;letter-spacing:3px;text-transform:uppercase;color:rgba(255,212,71,0.35);margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(184,150,46,0.15);}
-.field-round-item{display:flex;justify-content:space-between;align-items:center;background:#0e1a12;border:1px solid rgba(184,150,46,0.12);border-radius:4px;padding:10px 12px;margin-bottom:6px;font-size:13px;}
+.field-card-arrow{color:rgba(139,94,60,0.3);font-size:18px;}
+.field-rounds-label{font-size:10px;font-weight:bold;letter-spacing:3px;text-transform:uppercase;color:rgba(255,212,71,0.35);margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(139,94,60,0.15);}
+.field-round-item{display:flex;justify-content:space-between;align-items:center;background:#0e1a12;border:1px solid rgba(139,94,60,0.12);border-radius:4px;padding:10px 12px;margin-bottom:6px;font-size:13px;}
 .field-round-item .sri-name{font-weight:bold;color:#ffd447;letter-spacing:.5px;}
 .field-round-item .sri-meta{color:rgba(255,255,255,0.35);font-size:11px;margin-top:2px;}
 .field-round-item .sri-del{background:none;border:none;color:rgba(255,77,77,0.4);cursor:pointer;font-size:16px;padding:0 4px;}
 .field-round-item .sri-del:hover{color:#ff4d4d;}
 .field-no-rounds{text-align:center;color:rgba(255,255,255,0.2);font-size:12px;margin-top:16px;letter-spacing:1px;}
 .field-form-row{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
-.field-input,.field-select{width:100%;padding:10px;border-radius:4px;border:1px solid rgba(184,150,46,0.2);border-bottom:2px solid rgba(184,150,46,0.35);background:#0e1a12;color:#fff;font-size:15px;color-scheme:dark;}
+.field-input,.field-select{width:100%;padding:10px;border-radius:4px;border:1px solid rgba(139,94,60,0.2);border-bottom:2px solid rgba(139,94,60,0.35);background:#0e1a12;color:#fff;font-size:15px;color-scheme:dark;}
 .field-input::placeholder{color:rgba(255,255,255,0.25);}
 .field-input:focus,.field-select:focus{outline:none;border-color:rgba(255,212,71,0.6);}
 .field-btn-primary{width:100%;padding:13px;border:none;border-radius:4px;font-size:14px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;background:linear-gradient(135deg,#b8962e,#ffd700,#b8962e);color:#0a0a0f;cursor:pointer;box-shadow:0 2px 12px rgba(180,150,46,0.3);}
 .field-btn-primary:active{opacity:.85;}
-.field-btn-secondary{width:100%;padding:11px;border:1px solid rgba(184,150,46,0.35);border-radius:4px;font-size:13px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;background:none;color:rgba(255,212,71,0.7);cursor:pointer;margin-top:8px;}
-.field-btn-secondary:active{background:rgba(184,150,46,0.08);}
+.field-btn-secondary{width:100%;padding:11px;border:1px solid rgba(139,94,60,0.35);border-radius:4px;font-size:13px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;background:none;color:rgba(255,212,71,0.7);cursor:pointer;margin-top:8px;}
+.field-btn-secondary:active{background:rgba(139,94,60,0.08);}
 .field-filters{display:flex;justify-content:center;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
-.field-filters button{padding:5px 12px;background:#0e1a12;color:rgba(255,255,255,0.5);border:1px solid rgba(184,150,46,0.2);border-radius:20px;font-size:12px;cursor:pointer;letter-spacing:.5px;}
-.field-filters button.active{background:rgba(184,150,46,0.15);color:#ffd447;border-color:rgba(255,212,71,0.5);font-weight:bold;}
-.hole-card{background:#0e1a12;border:1px solid rgba(184,150,46,0.2);border-left:3px solid rgba(184,150,46,0.5);border-radius:4px;margin-bottom:16px;overflow:hidden;}
-.hole-card-header{padding:10px 16px;border-bottom:1px solid rgba(184,150,46,0.15);border-top:1px solid rgba(184,150,46,0.1);display:flex;justify-content:space-between;align-items:baseline;}
+.field-filters button{padding:5px 12px;background:#0e1a12;color:rgba(255,255,255,0.5);border:1px solid rgba(139,94,60,0.2);border-radius:20px;font-size:12px;cursor:pointer;letter-spacing:.5px;}
+.field-filters button.active{background:rgba(139,94,60,0.15);color:#ffd447;border-color:rgba(255,212,71,0.5);font-weight:bold;}
+.hole-card{background:#0e1a12;border:1px solid rgba(139,94,60,0.2);border-left:3px solid rgba(139,94,60,0.5);border-radius:4px;margin-bottom:16px;overflow:hidden;}
+.hole-card-header{padding:10px 16px;border-bottom:1px solid rgba(139,94,60,0.15);border-top:1px solid rgba(139,94,60,0.1);display:flex;justify-content:space-between;align-items:baseline;}
 .hole-card-num{font-size:20px;font-weight:bold;color:#ffd447;letter-spacing:2px;}
 .hole-card-meta{font-size:11px;color:rgba(255,212,71,0.45);letter-spacing:1.5px;text-transform:uppercase;}
-.hole-card-field{padding:12px 16px;border-bottom:1px solid rgba(184,150,46,0.08);}
+.hole-card-field{padding:12px 16px;border-bottom:1px solid rgba(139,94,60,0.08);}
 .hole-card-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.4);margin-bottom:8px;}
-.hole-card-score-input{width:100%;padding:12px;border-radius:4px;background:#0a1409;border:1px solid rgba(184,150,46,0.2);border-bottom:2px solid rgba(184,150,46,0.4);color:#fff;font-size:36px;font-weight:bold;font-family:'Courier New',monospace;text-align:center;}
+.hole-card-score-input{width:100%;padding:12px;border-radius:4px;background:#0a1409;border:1px solid rgba(139,94,60,0.2);border-bottom:2px solid rgba(139,94,60,0.4);color:#fff;font-size:36px;font-weight:bold;font-family:'Courier New',monospace;text-align:center;}
 .yn-group{display:flex;gap:8px;}
-.yn-btn{flex:1;padding:9px;border-radius:4px;font-size:13px;font-weight:bold;cursor:pointer;border:1px solid rgba(184,150,46,0.2);background:#0e1a12;color:rgba(255,255,255,0.4);letter-spacing:1px;}
+.yn-btn{flex:1;padding:9px;border-radius:4px;font-size:13px;font-weight:bold;cursor:pointer;border:1px solid rgba(139,94,60,0.2);background:#0e1a12;color:rgba(255,255,255,0.4);letter-spacing:1px;}
 .yn-btn.active-yes{background:rgba(46,180,100,0.15);color:#2ecc71;border-color:rgba(46,204,113,0.4);}
 .yn-btn.active-no{background:rgba(180,46,46,0.15);color:#e07070;border-color:rgba(204,46,46,0.4);}
 .miss-dir-row{display:flex;gap:6px;margin-top:8px;}
-.miss-dir-btn{padding:5px 12px;border-radius:3px;font-size:12px;cursor:pointer;background:#0e1a12;color:rgba(255,255,255,0.4);border:1px solid rgba(184,150,46,0.2);}
+.miss-dir-btn{padding:5px 12px;border-radius:3px;font-size:12px;cursor:pointer;background:#0e1a12;color:rgba(255,255,255,0.4);border:1px solid rgba(139,94,60,0.2);}
 .miss-dir-btn.active{background:rgba(180,100,46,0.25);color:#e8a070;border-color:rgba(200,130,70,0.5);font-weight:bold;}
 .putts-pen-row{display:flex;gap:12px;}
 .putts-pen-row>div{flex:1;}
 .stepper{display:flex;justify-content:center;align-items:center;gap:6px;}
-.stepper button{width:32px;height:32px;background:#0e1a12;color:rgba(255,212,71,0.7);border:1px solid rgba(184,150,46,0.2);border-radius:3px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;padding:0;}
+.stepper button{width:32px;height:32px;background:#0e1a12;color:rgba(255,212,71,0.7);border:1px solid rgba(139,94,60,0.2);border-radius:3px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;padding:0;}
 .stepper span{min-width:28px;text-align:center;font-size:18px;font-weight:bold;color:#fff;font-family:'Courier New',monospace;}
 .hole-nav{display:flex;gap:10px;padding:14px 16px 0;}
 .hole-nav button{flex:1;}
 .scorecard-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:3500;}
 .scorecard-backdrop.open{display:block;}
-.scorecard-panel{position:fixed;bottom:0;left:0;right:0;background:#0e1a12;border-radius:12px 12px 0 0;padding:12px 16px 36px;z-index:3501;max-height:70vh;overflow-y:auto;transform:translateY(100%);transition:transform .25s ease;border-top:1px solid rgba(184,150,46,0.3);}
+.scorecard-panel{position:fixed;bottom:0;left:0;right:0;background:#0e1a12;border-radius:12px 12px 0 0;padding:12px 16px 36px;z-index:3501;max-height:70vh;overflow-y:auto;transform:translateY(100%);transition:transform .25s ease;border-top:1px solid rgba(139,94,60,0.3);}
 .scorecard-panel.open{transform:translateY(0);}
 .scorecard-handle{width:36px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 12px;}
 .scorecard-panel-title{font-size:10px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.4);text-align:center;margin-bottom:12px;font-family:Arial,sans-serif;}
 table.sc-mini-table{width:100%;border-collapse:collapse;font-size:12px;}
-table.sc-mini-table th{background:#0a1409;color:#ffd447;border:1px solid rgba(184,150,46,0.12);padding:5px 4px;text-align:center;font-size:9px;letter-spacing:1px;text-transform:uppercase;}
-table.sc-mini-table td{border:1px solid rgba(184,150,46,0.08);padding:4px 3px;text-align:center;}
+table.sc-mini-table th{background:#0a1409;color:#ffd447;border:1px solid rgba(139,94,60,0.12);padding:5px 4px;text-align:center;font-size:9px;letter-spacing:1px;text-transform:uppercase;}
+table.sc-mini-table td{border:1px solid rgba(139,94,60,0.08);padding:4px 3px;text-align:center;}
 table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 .hole-actions{display:flex;flex-direction:column;gap:8px;margin-bottom:8px;}
-.field-summary-bar{position:fixed;bottom:0;left:0;right:0;background:#0a1409;border-top:1px solid rgba(184,150,46,0.3);display:none;justify-content:space-around;padding:10px 8px;font-size:13px;z-index:3000;}
+.field-summary-bar{position:fixed;bottom:0;left:0;right:0;background:#0a1409;border-top:1px solid rgba(139,94,60,0.3);display:none;justify-content:space-around;padding:10px 8px;font-size:13px;z-index:3000;}
 .field-summary-bar.active{display:flex;}
 .field-sum-item{text-align:center;line-height:1.4;}
 .field-sum-item small{display:block;color:rgba(255,212,71,0.4);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;}
 .field-good{color:#2ecc71;font-weight:bold;}
 .field-bad{color:#ff4d4d;font-weight:bold;}
-.field-insights-box{margin:14px 0 6px;background:#0e1a12;border:1px solid rgba(184,150,46,0.18);border-left:3px solid rgba(184,150,46,0.5);border-radius:4px;padding:12px 14px;font-size:13px;line-height:1.8;}
+.field-insights-box{margin:14px 0 6px;background:#0e1a12;border:1px solid rgba(139,94,60,0.18);border-left:3px solid rgba(139,94,60,0.5);border-radius:4px;padding:12px 14px;font-size:13px;line-height:1.8;}
 .field-insights-box b{color:#ffd447;}
 .momentum-line{text-align:center;font-size:13px;margin:10px 0;color:rgba(255,255,255,0.6);letter-spacing:.5px;}
 .intel-player-row{display:flex;align-items:center;gap:6px;}
 .intel-player-row .field-input{flex:1;}
-.intel-add-btn{background:#0e1a12;border:1px solid rgba(184,150,46,0.3);color:#ffd447;font-size:20px;width:36px;height:36px;border-radius:4px;cursor:pointer;flex-shrink:0;}
+.intel-add-btn{background:#0e1a12;border:1px solid rgba(139,94,60,0.3);color:#ffd447;font-size:20px;width:36px;height:36px;border-radius:4px;cursor:pointer;flex-shrink:0;}
 .intel-remove-btn{background:none;border:none;color:rgba(255,77,77,0.5);font-size:18px;cursor:pointer;flex-shrink:0;padding:0 4px;}
-.player-accordion{border-top:1px solid rgba(184,150,46,0.1);}
+.player-accordion{border-top:1px solid rgba(139,94,60,0.1);}
 .player-acc-header{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;background:#0e1a12;-webkit-user-select:none;}
 .player-acc-header.expanded{background:rgba(255,212,71,0.06);border-left:3px solid rgba(255,212,71,0.5);}
 .player-acc-chevron{font-size:10px;color:rgba(255,212,71,0.4);width:14px;flex-shrink:0;}
@@ -258,27 +258,27 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 .player-acc-body{display:none;background:rgba(255,212,71,0.02);}
 .player-acc-body.open{display:block;}
 .analysis-filters{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
-.analysis-filters select{width:100%;padding:10px;border-radius:4px;border:1px solid rgba(184,150,46,0.2);background:#0e1a12;color:#fff;font-size:14px;}
+.analysis-filters select{width:100%;padding:10px;border-radius:4px;border:1px solid rgba(139,94,60,0.2);background:#0e1a12;color:#fff;font-size:14px;}
 .analysis-par-row{display:flex;gap:6px;}
-.analysis-par-row button{flex:1;padding:7px 4px;background:#0e1a12;color:rgba(255,255,255,0.45);border:1px solid rgba(184,150,46,0.2);border-radius:20px;font-size:12px;cursor:pointer;letter-spacing:.5px;}
-.analysis-par-row button.active{background:rgba(184,150,46,0.15);color:#ffd447;border-color:rgba(255,212,71,0.5);font-weight:bold;}
+.analysis-par-row button{flex:1;padding:7px 4px;background:#0e1a12;color:rgba(255,255,255,0.45);border:1px solid rgba(139,94,60,0.2);border-radius:20px;font-size:12px;cursor:pointer;letter-spacing:.5px;}
+.analysis-par-row button.active{background:rgba(139,94,60,0.15);color:#ffd447;border-color:rgba(255,212,71,0.5);font-weight:bold;}
 .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
-.stat-tile{background:#0e1a12;border:1px solid rgba(184,150,46,0.15);border-top:2px solid rgba(184,150,46,0.35);border-radius:4px;padding:14px 10px;text-align:center;}
+.stat-tile{background:#0e1a12;border:1px solid rgba(139,94,60,0.15);border-top:2px solid rgba(139,94,60,0.35);border-radius:4px;padding:14px 10px;text-align:center;}
 .stat-tile .sv{font-size:24px;font-weight:bold;margin-bottom:4px;font-family:'Courier New',monospace;}
 .stat-tile .sl{font-size:9px;color:rgba(255,212,71,0.45);letter-spacing:1.5px;text-transform:uppercase;}
 .sv.good{color:#2ecc71;}
 .sv.bad{color:#ff4d4d;}
 .sv.neutral{color:#ffd447;}
 .analysis-section{margin-bottom:20px;}
-.analysis-section h4{color:rgba(255,212,71,0.7);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin:0 0 8px;border-bottom:1px solid rgba(184,150,46,0.15);padding-bottom:6px;}
+.analysis-section h4{color:rgba(255,212,71,0.7);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin:0 0 8px;border-bottom:1px solid rgba(139,94,60,0.15);padding-bottom:6px;}
 .hole-breakdown-table{width:100%;border-collapse:collapse;font-size:12px;}
-.hole-breakdown-table th{background:#0e1a12;color:#ffd447;border:1px solid rgba(184,150,46,0.12);padding:5px 3px;text-align:center;font-size:9px;letter-spacing:1px;text-transform:uppercase;}
-.hole-breakdown-table td{border:1px solid rgba(184,150,46,0.08);padding:4px 3px;text-align:center;}
+.hole-breakdown-table th{background:#0e1a12;color:#ffd447;border:1px solid rgba(139,94,60,0.12);padding:5px 3px;text-align:center;font-size:9px;letter-spacing:1px;text-transform:uppercase;}
+.hole-breakdown-table td{border:1px solid rgba(139,94,60,0.08);padding:4px 3px;text-align:center;}
 .hole-breakdown-table tr.hb-good{background:rgba(46,204,113,.06);}
 .hole-breakdown-table tr.hb-bad{background:rgba(255,77,77,.06);}
 .rounds-list-table{width:100%;border-collapse:collapse;font-size:12px;}
-.rounds-list-table th{background:#0e1a12;color:#ffd447;border:1px solid rgba(184,150,46,0.12);padding:5px 4px;text-align:center;font-size:9px;letter-spacing:1px;text-transform:uppercase;}
-.rounds-list-table td{border:1px solid rgba(184,150,46,0.08);padding:4px 3px;text-align:center;}
+.rounds-list-table th{background:#0e1a12;color:#ffd447;border:1px solid rgba(139,94,60,0.12);padding:5px 4px;text-align:center;font-size:9px;letter-spacing:1px;text-transform:uppercase;}
+.rounds-list-table td{border:1px solid rgba(139,94,60,0.08);padding:4px 3px;text-align:center;}
 .analysis-empty{text-align:center;color:rgba(255,255,255,0.2);font-size:12px;padding:40px 20px;line-height:2;letter-spacing:.5px;}
 .tag-good{color:#2ecc71;font-weight:bold;}
 .tag-bad{color:#ff4d4d;font-weight:bold;}
@@ -287,7 +287,7 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 .hp-dot.current{background:rgba(255,212,71,0.2);color:#ffd447;border-color:rgba(255,212,71,0.5);font-weight:bold;}
 .hp-dot.done{background:rgba(46,204,113,0.15);color:#2ecc71;border-color:rgba(46,204,113,0.3);}
 .hp-dot.partial{background:rgba(255,180,0,0.12);color:#ffb400;border-color:rgba(255,180,0,0.3);}
-.hole-progress{display:flex;flex-wrap:wrap;gap:4px;padding:10px 16px;border-bottom:1px solid rgba(184,150,46,0.1);}
+.hole-progress{display:flex;flex-wrap:wrap;gap:4px;padding:10px 16px;border-bottom:1px solid rgba(139,94,60,0.1);}
 .field-table-wrap{overflow-x:auto;}
 </style>
 </head>
@@ -295,32 +295,39 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 <div class="container">
 
   <div class="logo" id="logoEl">
-    <!-- viewBox: 140 wide x 120 tall — extra height at top for arc text -->
-    <svg width="130" height="112" viewBox="0 0 180 155">
-      <defs>
-        <!-- arc path: centre 90,97 radius 72, sweeping from ~200° to ~340° (upper semicircle) -->
-        <path id="titleArc" d="M 22,97 A 68,68 0 0,1 158,97" fill="none"/>
-      </defs>
-      <!-- curved title text -->
-      <text font-family="Georgia,'Times New Roman',serif" font-size="16" font-weight="bold" fill="#ffd447" letter-spacing="2">
-        <textPath href="#titleArc" startOffset="50%" text-anchor="middle">STICKS &amp; STONES</textPath>
+    <svg width="100" height="100" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="57" stroke="rgba(184,150,46,0.4)" stroke-width="1.5"/>
+      <circle cx="60" cy="60" r="50" stroke="rgba(184,150,46,0.2)" stroke-width="1"/>
+      <!-- Laurel leaves along ring border (r=53.5, 15 leaves at 24° intervals) -->
+      <g fill="rgba(212,180,80,0.35)" stroke="rgba(212,180,80,0.15)" stroke-width="0.3">
+        <ellipse cx="60" cy="6.5" rx="2.2" ry="1.1" transform="rotate(0,60,60)"/>
+        <ellipse cx="60" cy="6.5" rx="2.2" ry="1.1" transform="rotate(24,60,60)"/>
+        <ellipse cx="60" cy="6.5" rx="2.2" ry="1.1" transform="rotate(48,60,60)"/>
+        <ellipse cx="60" cy="6.5" rx="2.2" ry="1.1" transform="rotate(72,60,60)"/>
+        <ellipse cx="60" cy="6.5" rx="2.2" ry="1.1" transform="rotate(96,60,60)"/>
+        <ellipse cx="60" cy="6.5" rx="2.2" ry="1.1" transform="rotate(120,60,60)"/>
+        <ellipse cx="60" cy="6.5" rx="2.2" ry="1.1" transform="rotate(144,60,60)"/>
+        <ellipse cx="60" cy="6.5" rx="2.2" ry="1.1" transform="rotate(168,60,60)"/>
+        <ellipse cx="60" cy="6.5" rx="2.2" ry="1.1" transform="rotate(192,60,60)"/>
+        <ellipse cx="60" cy="6.5" rx="2.2" ry="1.1" transform="rotate(216,60,60)"/>
+        <ellipse cx="60" cy="6.5" rx="2.2" ry="1.1" transform="rotate(240,60,60)"/>
+        <ellipse cx="60" cy="6.5" rx="2.2" ry="1.1" transform="rotate(264,60,60)"/>
+        <ellipse cx="60" cy="6.5" rx="2.2" ry="1.1" transform="rotate(288,60,60)"/>
+        <ellipse cx="60" cy="6.5" rx="2.2" ry="1.1" transform="rotate(312,60,60)"/>
+        <ellipse cx="60" cy="6.5" rx="2.2" ry="1.1" transform="rotate(336,60,60)"/>
+      </g>
+      <path d="M60 23 L83 35 L83 63 Q83 81 60 93 Q37 81 37 63 L37 35 Z" fill="rgba(255,212,71,0.05)" stroke="#8B6914" stroke-width="1.5"/>
+      <line x1="60" y1="73" x2="60" y2="47" stroke="rgba(255,212,71,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M60 47 L73 52 L60 57 Z" fill="rgba(255,212,71,0.75)"/>
+      <ellipse cx="60" cy="74" rx="10" ry="3.5" fill="rgba(46,180,80,0.25)" stroke="rgba(46,180,80,0.4)" stroke-width="1"/>
+      <circle cx="53" cy="72" r="4" fill="#fff" opacity="0.9"/>
+      <circle cx="52" cy="71" r="0.7" fill="#ccc"/>
+      <circle cx="54.5" cy="70.5" r="0.7" fill="#ccc"/>
+      <circle cx="53.5" cy="73" r="0.7" fill="#ccc"/>
+      <path id="homeBottomArc" d="M 19,73 A 42,42 0 0,0 101,73" fill="none"/>
+      <text font-family="Georgia,'Times New Roman',serif" font-size="9" font-weight="bold" fill="rgba(255,212,71,0.85)" letter-spacing="2">
+        <textPath href="#homeBottomArc" startOffset="50%" text-anchor="middle">STICKS &amp; STONES</textPath>
       </text>
-      <!-- ball group, centred at 90,97, radius 52 outer -->
-      <circle cx="90" cy="97" r="52" fill="#1c4729"/>
-      <circle cx="90" cy="97" r="26" fill="white"/>
-      <!-- dimples -->
-      <circle cx="82" cy="91" r="3" fill="#ddd"/>
-      <circle cx="91" cy="87" r="3" fill="#ddd"/>
-      <circle cx="100" cy="93" r="3" fill="#ddd"/>
-      <circle cx="84" cy="101" r="3" fill="#ddd"/>
-      <circle cx="95" cy="103" r="3" fill="#ddd"/>
-      <!-- crosshair ring -->
-      <circle cx="90" cy="97" r="38" fill="none" stroke="#ffd447" stroke-width="1.5" stroke-opacity="0.85"/>
-      <!-- crosshair ticks -->
-      <line x1="90" y1="53"  x2="90" y2="62"  stroke="#ffd447" stroke-width="1.5" stroke-opacity="0.85" stroke-linecap="round"/>
-      <line x1="134" y1="97" x2="125" y2="97" stroke="#ffd447" stroke-width="1.5" stroke-opacity="0.85" stroke-linecap="round"/>
-      <line x1="90" y1="141" x2="90" y2="132" stroke="#ffd447" stroke-width="1.5" stroke-opacity="0.85" stroke-linecap="round"/>
-      <line x1="46" y1="97"  x2="55" y2="97"  stroke="#ffd447" stroke-width="1.5" stroke-opacity="0.85" stroke-linecap="round"/>
     </svg>
   </div>
 
@@ -550,13 +557,44 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
           return players.map((p,i)=>{
             let v = r.playerTotals?.[i];
             let disp = v!=null ? (Number.isInteger(v)?v:Number(v).toFixed(1)) : null;
-            return { name:p, num:disp, par:'pts' };
+            let segs = '';
+            if(r.scoreHistory && r.scoreHistory.length && r.holeParDist){
+              segs = r.scoreHistory.map((hole,hi)=>{
+                let s=hole[i], par=(r.holeParDist[hi]?.par||4), cls='hb-seg';
+                if(s!=null){let d=s-par;if(d<=-2)cls+=' hb-eagle';else if(d===-1)cls+=' hb-birdie';else if(d===0)cls+=' hb-par';else if(d===1)cls+=' hb-bogey';else cls+=' hb-double';}
+                return `<div class="${cls}"></div>`;
+              }).join('');
+            }
+            return { name:p, num:disp, par:'pts', segs };
           });
         case 'banker':
-          return players.map((p,i)=>({ name:p, num:r.playerNetTotals?.[i], par:'net' }));
+          return players.map((p,i)=>{
+            let net = r.playerNetTotals?.[i];
+            let numStr = net!=null ? (net>=0?'+$':'−$')+Math.abs(net) : null;
+            let segs = '';
+            if(r.holeHistory && r.holeHistory.length){
+              segs = r.holeHistory.map(h=>{
+                let s=h.scores?.[i], cls='hb-seg';
+                if(s!=null){if(s<=-2)cls+=' hb-eagle';else if(s===-1)cls+=' hb-birdie';else if(s===0)cls+=' hb-par';else if(s===1)cls+=' hb-bogey';else cls+=' hb-double';}
+                return `<div class="${cls}"></div>`;
+              }).join('');
+            }
+            return { name:p, num:numStr, par:'', netColor: net>0?'#4ade80':net<0?'#f87171':'rgba(255,255,255,0.4)', segs };
+          });
         case 'scramble':{
-          let teamNames = r.teamNames||['Team A','Team B'];
-          return teamNames.map((name,i)=>({ name, num:r.teamScores?.[i], par:fmtVsPar(r.teamVsPar?.[i]??0) }));
+          let scores = r.teamScores||[];
+          let getTeamLabel = (ti) => {
+            // New format: players flat array
+            if(r.players && r.players[ti*2]) {
+              return [r.players[ti*2], r.players[ti*2+1]].filter(Boolean).join(' & ');
+            }
+            // Old format: playerNames is nested [[p1,p2],[p3,p4]]
+            if(Array.isArray(r.playerNames) && Array.isArray(r.playerNames[ti])) {
+              return r.playerNames[ti].filter(Boolean).join(' & ');
+            }
+            return `Team ${String.fromCharCode(65+ti)}`;
+          };
+          return [0,1].map(ti=>({ name:getTeamLabel(ti), num:scores[ti], par:r.teamVsPar?.[ti]!=null?fmtVsPar(r.teamVsPar[ti]):'' }));
         }
         case 'matchplay':
           return players.map((p,i)=>({ name:p, num:null, par:'' }));
@@ -572,28 +610,8 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
       let players = r.players||[];
       let bars = [];
 
-      // Scramble: uses holeHistory with {scores:[sA,sB], par}
-      if(r.game==='scramble' && r.holeHistory && r.holeHistory.length){
-        let teamNames = r.teamNames||['Team A','Team B'];
-        let playerNames = r.playerNames||[];
-        let teamScores = r.teamScores||[];
-        let teamVsPar = r.teamVsPar||[];
-        for(let ti=0; ti<teamNames.length; ti++){
-          let p1=playerNames[ti]?.[0], p2=playerNames[ti]?.[1];
-          let members=[p1,p2].filter(Boolean).map(esc).join(', ');
-          let labelText=`${esc(teamNames[ti])}${members?` (${members})`:''}`;
-          let score=teamScores[ti], vp=teamVsPar[ti];
-          let parStr=vp!=null?(vp>0?'+'+vp:vp===0?'E':String(vp)):'';
-          let scoreHtml=score!=null?`<span class="hb-score">${score} <span class="hb-vspar">(${parStr})</span></span>`:'';
-          let segs=r.holeHistory.map(hole=>{
-            let s=hole.scores?.[ti], par=hole.par||4, cls='hb-seg';
-            if(s!=null){let d=s-par;if(d<=-2)cls+=' hb-eagle';else if(d===-1)cls+=' hb-birdie';else if(d===0)cls+=' hb-par';else if(d===1)cls+=' hb-bogey';else cls+=' hb-double';}
-            return `<div class="${cls}"></div>`;
-          }).join('');
-          bars.push(`<div class="hb-row"><span class="hb-label hb-label-team">${labelText}</span>${scoreHtml}<div class="hb-segs">${segs}</div></div>`);
-        }
-        return bars.join('');
-      }
+      // Scramble/Banker/Stableford: results shown in sd rows, no separate hole bar needed
+      if(r.game==='scramble' || r.game==='banker' || r.game==='stableford' || r.game==='f1') return '';
 
       // Banker: score-vs-par coloring (same as all other games)
       if(r.game==='banker' && r.holeHistory && r.holeHistory.length && r.players){
@@ -610,7 +628,7 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
             if(s!=null){if(s<=-2)segCls+=' hb-eagle';else if(s===-1)segCls+=' hb-birdie';else if(s===0)segCls+=' hb-par';else if(s===1)segCls+=' hb-bogey';else segCls+=' hb-double';}
             return `<div class="${segCls}"></div>`;
           }).join('');
-          bars.push(`<div class="hb-row"><span class="hb-label">${esc(name)}</span>${scoreHtml}<div class="hb-segs">${segs}</div></div>`);
+          bars.push(`<div class="hb-row"><span class="hb-label">${esc(name)}</span><div class="hb-segs">${segs}</div>${scoreHtml}</div>`);
         });
         return bars.join('');
       }
@@ -633,7 +651,7 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
             if(s!=null){let d=s-par;if(d<=-2)cls+=' hb-eagle';else if(d===-1)cls+=' hb-birdie';else if(d===0)cls+=' hb-par';else if(d===1)cls+=' hb-bogey';else cls+=' hb-double';}
             return `<div class="${cls}"></div>`;
           }).join('');
-          bars.push(`<div class="hb-row"><span class="hb-label hb-label-team">(${members})</span>${scoreHtml}<div class="hb-segs">${segs}</div></div>`);
+          bars.push(`<div class="hb-row"><span class="hb-label hb-label-team">(${members})</span><div class="hb-segs">${segs}</div>${scoreHtml}</div>`);
         }
         return bars.join('');
       }
@@ -658,7 +676,7 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
             scoreHtml=`<span class="hb-score">${playerTotal} <span class="hb-vspar">(${parStr})</span></span>`;
           }
         }
-        bars.push(`<div class="hb-row"><span class="hb-label">${players[pi]?esc(players[pi]):''}</span>${scoreHtml}<div class="hb-segs">${segs}</div></div>`);
+        bars.push(`<div class="hb-row"><span class="hb-label">${players[pi]?esc(players[pi]):''}</span><div class="hb-segs">${segs}</div>${scoreHtml}</div>`);
       }
       return bars.join('');
     }catch(e){ return ''; }
@@ -830,7 +848,7 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
           <div class="rcard-mid">
             <div class="rcard-info">
               <div class="rcard-course">${esc(r.course||'Unknown Course')}</div>
-              <div class="rcard-format">${esc(GAME_LABELS[r.game]||r.game)}</div>
+              ${sd.length ? `<div style="display:grid;grid-template-columns:max-content 1fr max-content;gap:4px 8px;align-items:center;margin-top:6px;">${sd.map(p=>`<span style="font-size:13px;color:#ffd447;font-weight:bold;letter-spacing:.2px;white-space:nowrap;">${esc(p.name)}</span>${p.segs?`<div style="display:flex;gap:1px;min-width:0;">${p.segs}</div>`:'<div></div>'}<span style="font-family:'Courier New',monospace;font-size:19px;font-weight:bold;color:${p.netColor||'#fff'};white-space:nowrap;text-align:right;">${p.num??'–'}${p.par?`<span style="font-size:12px;color:rgba(255,212,71,0.55);margin-left:5px;">(${p.par})</span>`:''}</span>`).join('')}</div>` : ''}
             </div>
           </div>
           ${bar?`<div class="hole-bar">${bar}</div>`:''}

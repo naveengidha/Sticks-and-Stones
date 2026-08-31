@@ -11,8 +11,8 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-:root{--bg:#080f0a;--bg-card:#0e1a12;--gold:#ffd447;--border:#8B6914;--font:'Georgia','Times New Roman',serif;}
-body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;}
+:root{--bg:#080f0a;--bg-card:#0e1a12;--gold:#ffd447;--border:#5c3317;--font:'Georgia','Times New Roman',serif;}
+body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;overscroll-behavior:none;}
 
 .tab-bar{display:flex;background:var(--bg-card);border-bottom:1px solid rgba(255,212,71,0.15);flex-shrink:0;}
 .tab{flex:1;padding:11px 4px;text-align:center;font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;color:rgba(255,212,71,0.4);cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;-webkit-user-select:none;}
@@ -60,9 +60,9 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 .round-expand{display:none;margin-top:10px;border-top:1px solid rgba(255,212,71,0.1);padding-top:10px;overflow-x:auto;}
 .round-card.expanded .round-expand{display:block;}
 .round-expand table{width:100%;border-collapse:collapse;font-size:11px;}
-.round-expand th{background:rgba(0,0,0,0.4);color:var(--gold);border:1px solid rgba(184,150,46,0.15);padding:5px 4px;text-align:center;font-size:9px;letter-spacing:.8px;text-transform:uppercase;}
+.round-expand th{background:rgba(0,0,0,0.4);color:var(--gold);border:1px solid rgba(139,94,60,0.15);padding:5px 4px;text-align:center;font-size:9px;letter-spacing:.8px;text-transform:uppercase;}
 .round-expand th:first-child{text-align:left;}
-.round-expand td{border:1px solid rgba(184,150,46,0.08);padding:4px 3px;text-align:center;color:rgba(255,255,255,0.7);font-family:'Courier New',monospace;font-size:11px;}
+.round-expand td{border:1px solid rgba(139,94,60,0.08);padding:4px 3px;text-align:center;color:rgba(255,255,255,0.7);font-family:'Courier New',monospace;font-size:11px;}
 .round-expand td:first-child{color:rgba(255,212,71,0.55);font-family:inherit;}
 .round-expand tfoot td{background:rgba(0,0,0,0.3);color:var(--gold);font-weight:bold;}
 .round-footer{display:flex;justify-content:flex-end;margin-top:7px;}
@@ -97,7 +97,7 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 .nav-item:hover,.nav-item:active{color:rgba(255,212,71,0.7);}
 .nav-item.active{color:#ffd447;}
 .nav-item svg{width:20px;height:20px;flex-shrink:0;}
-.nav-center{background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;margin:0 4px;cursor:pointer;box-shadow:0 2px 10px rgba(184,150,46,0.5);flex-shrink:0;text-decoration:none;}
+.nav-center{background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;margin:0 4px;cursor:pointer;box-shadow:0 2px 10px rgba(139,94,60,0.5);flex-shrink:0;text-decoration:none;}
 .nav-center svg{width:36px;height:36px;}
 .page-header{padding:16px 16px 4px;font-size:22px;font-weight:bold;color:#ffd447;letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;text-align:center;}
 </style>
@@ -112,11 +112,10 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
   <div class="tab-panel active" id="tab-insights">
     <div class="filter-bar" id="insightsFilterBar">
       <span class="pill active" data-game="all">All</span>
-      <span class="pill" data-game="f1">Grand Prix</span>
-      <span class="pill" data-game="stableford">Stableford</span>
-      <span class="pill" data-game="scramble">Scramble</span>
-      <span class="pill" data-game="banker">Banker</span>
       <span class="pill" data-game="stroke">Stroke Play</span>
+      <span class="pill" data-game="scramble">Scramble</span>
+      <span class="pill" data-game="stableford">Stableford</span>
+      <span class="pill" data-game="banker">Banker</span>
     </div>
     <div id="insightsContent"></div>
   </div>
@@ -128,7 +127,7 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 
 const GAME_LABELS = {
-  f1:'Grand Prix', stableford:'Stableford', banker:'Banker',
+  stableford:'Stableford', banker:'Banker',
   matchplay:'Match Play', scramble:'Scramble', stroke:'Stroke Play'
 };
 
@@ -172,74 +171,8 @@ function renderInsights(){
 
   let sections = '';
   let gamesToShow = insightsFilter === 'all'
-    ? ['f1','stableford','scramble','banker','stroke']
+    ? ['stroke','scramble','stableford','banker']
     : [insightsFilter];
-
-  // Grand Prix — team + individual
-  if(gamesToShow.includes('f1')){
-    let rounds = all.filter(r=>r.game==='f1' && r.players && r.playerTotals);
-    if(rounds.length){
-      // Individual standings
-      let players = {};
-      rounds.forEach(r=>{
-        let sorted = r.players.map((n,i)=>({n,pts:r.playerTotals[i]||0})).sort((a,b)=>b.pts-a.pts);
-        r.players.forEach((name,i)=>{
-          if(!players[name]) players[name]={rounds:0,total:0,wins:0,podiums:0};
-          players[name].rounds++;
-          players[name].total += r.playerTotals[i]||0;
-          let rank = sorted.findIndex(p=>p.n===name);
-          if(rank===0) players[name].wins++;
-          if(rank<=2) players[name].podiums++;
-        });
-      });
-      let iRows = Object.entries(players)
-        .sort((a,b)=>(b[1].total/b[1].rounds)-(a[1].total/a[1].rounds))
-        .map(([name,p],rank)=>{
-          let avg = p.total/p.rounds;
-          let avgStr = Number.isInteger(avg)?avg:avg.toFixed(1);
-          return [
-            `<span class="rank-num">${rank+1}</span>`,
-            esc(name),
-            `<span class="ins-val mono">${avgStr}</span>`,
-            p.wins,
-            p.rounds
-          ];
-        });
-      sections += `<div class="section-title">Grand Prix — Individual</div>
-        <div class="ins-panel">${sboardTable(['#','Player','Pts/Rnd','Wins','Rounds'], iRows)}</div>`;
-
-      // Team standings — grouped by distinct player pairings
-      let teams = {};
-      rounds.forEach(r=>{
-        let makeKey = (names) => [...names].sort().join(' & ');
-        let teamA = (r.players||[]).slice(0,2).filter(Boolean);
-        let teamB = (r.players||[]).slice(2,4).filter(Boolean);
-        let keyA = makeKey(teamA), keyB = makeKey(teamB);
-        let bt = (r.playerTotals[0]||0)+(r.playerTotals[1]||0);
-        let rt = (r.playerTotals[2]||0)+(r.playerTotals[3]||0);
-        if(!teams[keyA]) teams[keyA]={total:0,wins:0,rounds:0,players:teamA};
-        if(!teams[keyB]) teams[keyB]={total:0,wins:0,rounds:0,players:teamB};
-        teams[keyA].total += bt; teams[keyA].rounds++;
-        teams[keyB].total += rt; teams[keyB].rounds++;
-        if(bt>rt) teams[keyA].wins++; else if(rt>bt) teams[keyB].wins++;
-      });
-      let tRows = Object.entries(teams)
-        .sort((a,b)=>b[1].wins-a[1].wins)
-        .map(([key,t],rank)=>{
-          let avg = t.total/t.rounds;
-          let avgStr = Number.isInteger(avg)?avg:avg.toFixed(1);
-          return [
-            `<span class="rank-num">${rank+1}</span>`,
-            `<span style="font-weight:bold">${esc(key)}</span>`,
-            `<span class="ins-val mono">${avgStr}</span>`,
-            t.wins,
-            t.rounds
-          ];
-        });
-      sections += `<div class="section-title">Grand Prix — Teams</div>
-        <div class="ins-panel">${sboardTable(['#','Team','Pts/Rnd','Wins','Rounds'], tRows)}</div>`;
-    }
-  }
 
   // Stableford — individual
   if(gamesToShow.includes('stableford')){
@@ -303,85 +236,52 @@ function renderInsights(){
     }
   }
 
-  // Scramble — team standings
+  // Scramble — player-pair standings
   if(gamesToShow.includes('scramble')){
-    let rounds = all.filter(r=>r.game==='scramble' && r.teamNames && r.teamScores);
+    let rounds = all.filter(r=>r.game==='scramble' && r.teamScores);
     if(rounds.length){
       let teams = {};
       rounds.forEach(r=>{
-        r.teamNames.forEach((name,ti)=>{
-          if(!teams[name]) teams[name]={rounds:0,wins:0,totalScore:0,totalVsPar:0,players:[]};
-          teams[name].rounds++;
-          teams[name].totalScore += r.teamScores[ti]||0;
-          // Use saved teamVsPar directly — avoids 9-hole vs 18-hole par mismatch
-          teams[name].totalVsPar += (r.teamVsPar&&r.teamVsPar[ti]!=null) ? r.teamVsPar[ti] : 0;
-          let won = r.teamScores[ti] < r.teamScores[1-ti];
-          if(won) teams[name].wins++;
-          let ps = Array.isArray(r.playerNames?.[ti]) ? r.playerNames[ti] : [];
-          ps.filter(Boolean).forEach(p=>{ if(!teams[name].players.includes(p)) teams[name].players.push(p); });
+        let getTeamLabel = (ti) => {
+          if(r.players && r.players[ti*2])
+            return [r.players[ti*2], r.players[ti*2+1]].filter(Boolean).join(' & ');
+          if(Array.isArray(r.playerNames) && Array.isArray(r.playerNames[ti]))
+            return r.playerNames[ti].filter(Boolean).join(' & ');
+          return `Team ${String.fromCharCode(65+ti)}`;
+        };
+        let minScore = Math.min(...r.teamScores);
+        [0,1].forEach(ti=>{
+          let label = getTeamLabel(ti);
+          let key = label.split(' & ').sort().join('|');
+          let vp = r.teamVsPar?.[ti]??null;
+          if(!teams[key]) teams[key]={label,rounds:0,wins:0,totalScore:0,vpRounds:0,totalVsPar:0};
+          teams[key].rounds++;
+          teams[key].totalScore += r.teamScores[ti]||0;
+          if(vp!=null){ teams[key].totalVsPar+=vp; teams[key].vpRounds++; }
+          if(r.teamScores[ti]===minScore && r.teamScores.filter(s=>s===minScore).length===1) teams[key].wins++;
         });
       });
       let rows = Object.entries(teams)
-        .sort((a,b)=>b[1].wins-a[1].wins)
-        .map(([name,t],rank)=>{
+        .sort((a,b)=>b[1].wins-a[1].wins||(a[1].totalScore/a[1].rounds)-(b[1].totalScore/b[1].rounds))
+        .map(([,t],rank)=>{
           let avgScore = (t.totalScore/t.rounds).toFixed(1);
-          let avgVp = t.totalVsPar / t.rounds;
-          let avgVpR = Math.round(avgVp);
-          let vpStr = avgVpR===0?'E':avgVpR>0?'+'+avgVpR:String(avgVpR);
-          let vpCls = avgVp<0?'tag-good':avgVp>0?'tag-bad':'ins-muted';
-          let playerStr = t.players.length ? `<br><span class="ins-muted" style="font-size:11px">${t.players.map(esc).join(', ')}</span>` : '';
+          let vpStr='—', vpCls='ins-muted';
+          if(t.vpRounds>0){
+            let avg=t.totalVsPar/t.vpRounds, r=Math.round(avg);
+            vpStr=r===0?'E':r>0?'+'+r:String(r);
+            vpCls=avg<0?'tag-good':avg>0?'tag-bad':'ins-muted';
+          }
           return [
             `<span class="rank-num">${rank+1}</span>`,
-            esc(name)+playerStr,
+            esc(t.label),
+            `<span class="ins-muted mono">${avgScore}</span>`,
             `<span class="${vpCls}">${vpStr}</span>`,
-            t.rounds,
-            t.wins
+            t.wins,
+            t.rounds
           ];
         });
       sections += `<div class="section-title">Team Scramble</div>
-        <div class="ins-panel">${sboardTable(['#','Team','Avg','Rounds','Wins'], rows)}</div>`;
-
-      // Avg score by par sub-table
-      let scrambleWithHoles = all.filter(r=>r.game==='scramble' && r.teamNames && r.holeHistory && r.holeHistory.length);
-      if(scrambleWithHoles.length){
-        let parStats = {}; // teamName -> {3:{total,count}, 4:{total,count}, 5:{total,count}, birdies, holesPlayed}
-        scrambleWithHoles.forEach(r=>{
-          r.teamNames.forEach((name,ti)=>{
-            if(!parStats[name]) parStats[name]={3:{t:0,n:0},4:{t:0,n:0},5:{t:0,n:0},birdies:0,holesPlayed:0};
-            (r.holeHistory||[]).forEach(h=>{
-              let p = h.par;
-              if(p>=3 && p<=5 && h.scores && h.scores[ti]!=null){
-                parStats[name][p].t += h.scores[ti];
-                parStats[name][p].n++;
-                parStats[name].holesPlayed++;
-                if(h.vsPar && h.vsPar[ti]!=null ? h.vsPar[ti]<0 : h.scores[ti]<p) parStats[name].birdies++;
-              }
-            });
-          });
-        });
-        let pRows = Object.entries(parStats)
-          .sort((a,b)=>{
-            let avgA = Object.values(a[1]).reduce((s,v)=>s+(v.n?v.t/v.n:0),0);
-            let avgB = Object.values(b[1]).reduce((s,v)=>s+(v.n?v.t/v.n:0),0);
-            return avgA - avgB;
-          })
-          .map(([name,ps],rank)=>{
-            let fmt = (pv,par) => pv.n ? `<span class="${pv.t/pv.n<par?'tag-good':pv.t/pv.n>par?'tag-bad':''}">${(pv.t/pv.n).toFixed(1)}</span>` : '<span class="ins-muted">—</span>';
-            let birdiePct = ps.holesPlayed>0 ? Math.round(ps.birdies/ps.holesPlayed*100)+'%' : '—';
-            let birdieCls = ps.holesPlayed>0 && ps.birdies/ps.holesPlayed>=0.3 ? 'tag-good' : '';
-            return [
-              `<span class="rank-num">${rank+1}</span>`,
-              teams[name]?.players?.length ? `${esc(name)}<br><span class="ins-muted" style="font-size:10px">${teams[name].players.map(esc).join(', ')}</span>` : esc(name),
-              fmt(ps[3],3),
-              fmt(ps[4],4),
-              fmt(ps[5],5)
-            ];
-          });
-        if(pRows.length){
-          sections += `<div class="section-title" style="margin-top:4px;">Team Scramble — Avg by Par</div>
-            <div class="ins-panel">${sboardTable(['#','Team','Par 3','Par 4','Par 5'], pRows)}</div>`;
-        }
-      }
+        <div class="ins-panel">${sboardTable(['#','Players','Avg','vPar','Wins','Rnds'], rows)}</div>`;
     }
   }
 
@@ -474,81 +374,43 @@ function renderInsights(){
     if(rounds.length){
       let players = {};
       rounds.forEach(r=>{
+        // par: from holeParDist (hole-by-hole) or top-level coursePar field
         let pd = r.holeParDist||[];
-        let totalPar = pd.length ? pd.reduce((s,h)=>s+(h.par||4),0) : null;
-        if(totalPar === null) return; // skip rounds with no par data
+        let totalPar = pd.length ? pd.reduce((s,h)=>s+(h.par||4),0) : (r.coursePar||null);
         let min = Math.min(...r.playerTotals);
         r.players.forEach((name,i)=>{
-          if(!players[name]) players[name]={rounds:0,totalScore:0,totalPar:0,bestVp:null};
+          if(!players[name]) players[name]={rounds:0,totalScore:0,totalParRounds:0,totalPar:0,wins:0,bestScore:null};
           players[name].rounds++;
           let score = r.playerTotals[i]||0;
-          let vp = score - totalPar;
           players[name].totalScore += score;
-          players[name].totalPar += totalPar;
-          if(players[name].bestVp === null || vp < players[name].bestVp) players[name].bestVp = vp;
+          if(score===min) players[name].wins++;
+          if(players[name].bestScore===null || score < players[name].bestScore) players[name].bestScore=score;
+          if(totalPar){ players[name].totalPar += totalPar; players[name].totalParRounds++; }
         });
       });
       let rows = Object.entries(players)
-        .sort((a,b)=>(a[1].totalScore/a[1].rounds - a[1].totalPar/a[1].rounds)-(b[1].totalScore/b[1].rounds - b[1].totalPar/b[1].rounds))
+        .sort((a,b)=>(a[1].totalScore/a[1].rounds)-(b[1].totalScore/b[1].rounds))
         .map(([name,p],rank)=>{
-          let avgVp = (p.totalScore - p.totalPar) / p.rounds;
-          let avgStr = (avgVp >= 0 ? '+' : '') + avgVp.toFixed(1);
-          let avgCls = avgVp<0?'tag-good':avgVp>0?'tag-bad':'ins-muted';
-          let bestVp = p.bestVp;
-          let bestStr = bestVp != null ? (bestVp >= 0 ? '+' : '') + bestVp.toFixed(1) : '—';
-          let bestCls = bestVp != null ? (bestVp<0?'tag-good':bestVp>0?'tag-bad':'ins-muted') : 'ins-muted';
+          let avgScore = (p.totalScore/p.rounds).toFixed(1);
+          // show vs-par avg only if we have par data
+          let avgDisp = avgScore;
+          let avgCls = 'ins-muted';
+          if(p.totalParRounds>0){
+            let avgVp = (p.totalScore - p.totalPar) / p.totalParRounds;
+            avgDisp = (avgVp>=0?'+':'')+avgVp.toFixed(1);
+            avgCls = avgVp<0?'tag-good':avgVp>0?'tag-bad':'ins-muted';
+          }
           return [
             `<span class="rank-num">${rank+1}</span>`,
             esc(name),
-            `<span class="${avgCls}">${avgStr}</span>`,
-            `<span class="${bestCls}">${bestStr}</span>`,
+            `<span class="${avgCls}">${avgDisp}</span>`,
+            `<span class="ins-muted">${p.bestScore??'—'}</span>`,
+            p.wins,
             `<span class="ins-muted">${p.rounds}</span>`
           ];
         });
       sections += `<div class="section-title">Stroke Play</div>
-        <div class="ins-panel">${sboardTable(['#','Player','Avg','Best','Rounds'], rows)}</div>`;
-    }
-
-    // Ball striking sub-table
-    let fieldRounds = all.filter(r=>r.game==='stroke' && r.players && Array.isArray(r.holes) && r.holes.length);
-    if(fieldRounds.length){
-      let bstrike = {};
-      fieldRounds.forEach(r=>{
-        r.players.forEach((name, pi)=>{
-          if(!bstrike[name]) bstrike[name]={holes:0,fir:0,firElig:0,gir:0,putts:0,rounds:0};
-          let pholes = Array.isArray(r.holes[pi]) ? r.holes[pi] : [];
-          let roundPutts = 0, hasScore = false;
-          pholes.forEach(h=>{
-            if(h.score==null) return;
-            hasScore = true;
-            bstrike[name].holes++;
-            if(h.par>=4 && h.fir!=null){ bstrike[name].firElig++; if(h.fir) bstrike[name].fir++; }
-            if(h.gir) bstrike[name].gir++;
-            if(h.putts!=null) roundPutts += h.putts;
-          });
-          if(hasScore){ bstrike[name].putts += roundPutts; bstrike[name].rounds++; }
-        });
-      });
-      let bRows = Object.entries(bstrike)
-        .filter(([,p])=>p.holes>0)
-        .sort((a,b)=>(b[1].gir/b[1].holes)-(a[1].gir/a[1].holes))
-        .map(([name,p],rank)=>{
-          let firPct = p.firElig>0 ? Math.round(p.fir/p.firElig*100)+'%' : '—';
-          let girPct = Math.round(p.gir/p.holes*100)+'%';
-          let avgPutts = p.rounds>0 ? (p.putts/p.rounds).toFixed(1) : '—';
-          let girCls = p.gir/p.holes>=0.5?'tag-good':p.gir/p.holes<0.3?'tag-bad':'';
-          return [
-            `<span class="rank-num">${rank+1}</span>`,
-            esc(name),
-            firPct,
-            `<span class="${girCls}">${girPct}</span>`,
-            avgPutts
-          ];
-        });
-      if(bRows.length){
-        sections += `<div class="section-title" style="margin-top:4px;">Stroke Play — Ball Striking</div>
-          <div class="ins-panel">${sboardTable(['#','Player','FIR%','GIR%','Putts/Rnd'], bRows)}</div>`;
-      }
+        <div class="ins-panel">${sboardTable(['#','Player','Avg','Best','Wins','Rounds'], rows)}</div>`;
     }
   }
 
