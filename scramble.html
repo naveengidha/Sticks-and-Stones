@@ -72,44 +72,29 @@ input[type="date"].field-input{-webkit-appearance:none;appearance:none;color-sch
 
       <div class="setup-section">
         <div class="setup-section-label">Round Details</div>
-        <div class="date-course-row">
+        <div style="display:grid;grid-template-columns:auto 1fr 56px;gap:6px;">
           <input type="date" class="field-input" id="roundDate" style="color-scheme:dark;">
-          <select class="select-input" id="seasonSelect" onchange="onSeasonPick()">
-            <option value="">— No Season —</option>
-          </select>
-        </div>
-        <div class="date-course-row" style="margin-top:8px;">
           <input class="field-input" id="courseInput" placeholder="Course name">
-          <input type="number" class="field-input" id="parInput" inputmode="numeric" placeholder="Par 72" min="27" max="90" oninput="updateVsPar()">
+          <input type="number" class="field-input" id="parInput" inputmode="numeric" placeholder="72" min="27" max="90" oninput="updateVsPar()" style="text-align:center;">
         </div>
       </div>
 
       <div class="setup-section team-a">
         <div class="setup-section-label">Team A</div>
-        <div class="player-grid">
+        <div style="display:grid;grid-template-columns:1fr 1fr 56px;gap:6px;align-items:center;">
           <input class="field-input" id="a1" placeholder="Player 1">
           <input class="field-input" id="a2" placeholder="Player 2">
-        </div>
-        <div class="score-row">
-          <div>
-            <div class="score-label">Total Score</div>
-            <input type="number" class="score-input" id="scoreA" inputmode="numeric" placeholder="72" min="1" max="200" oninput="updateVsPar()">
-          </div>
+          <input type="number" class="score-input" id="scoreA" inputmode="numeric" placeholder="72" min="1" max="200" oninput="updateVsPar()" style="text-align:center;padding:7px 4px;font-size:14px;">
         </div>
         <div class="vspar-row" id="vspA"></div>
       </div>
 
       <div class="setup-section team-b">
         <div class="setup-section-label b">Team B</div>
-        <div class="player-grid">
+        <div style="display:grid;grid-template-columns:1fr 1fr 56px;gap:6px;align-items:center;">
           <input class="field-input" id="b1" placeholder="Player 3">
           <input class="field-input" id="b2" placeholder="Player 4">
-        </div>
-        <div class="score-row">
-          <div>
-            <div class="score-label">Total Score</div>
-            <input type="number" class="score-input team-b" id="scoreB" inputmode="numeric" placeholder="72" min="1" max="200" oninput="updateVsPar()">
-          </div>
+          <input type="number" class="score-input team-b" id="scoreB" inputmode="numeric" placeholder="72" min="1" max="200" oninput="updateVsPar()" style="text-align:center;padding:7px 4px;font-size:14px;">
         </div>
         <div class="vspar-row" id="vspB"></div>
       </div>

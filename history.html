@@ -323,21 +323,31 @@ function renderInsights(){
     }
   }
 
-  // Banker — individual (money only)
+  // Banker — As Player + As Banker
   if(gamesToShow.includes('banker')){
     let rounds = all.filter(r=>r.game==='banker' && r.players && r.playerNetTotals);
     if(rounds.length){
+      // As Player: net $, holes played as non-banker, win% vs banker
       let players = {};
       rounds.forEach(r=>{
         let nets = r.playerNetTotals;
-        let max = Math.max(...nets);
-        let min = Math.min(...nets);
         r.players.forEach((name,i)=>{
-          if(!players[name]) players[name]={rounds:0,net:0,wins:0,losses:0};
-          players[name].rounds++;
+          if(!players[name]) players[name]={holes:0,net:0,wins:0,total:0};
           players[name].net += nets[i]||0;
-          if(nets[i]===max && max>0) players[name].wins++;
-          if(nets[i]===min && min<0) players[name].losses++;
+        });
+      });
+      // Hole-by-hole for win% (beat the banker on that hole)
+      let bankerRoundsWithHistory = all.filter(r=>r.game==='banker' && r.players && r.holeHistory);
+      bankerRoundsWithHistory.forEach(r=>{
+        (r.holeHistory||[]).forEach(h=>{
+          (h.matchups||[]).forEach(m=>{
+            let name = r.players[m.playerIdx];
+            if(!name) return;
+            if(!players[name]) players[name]={holes:0,net:0,wins:0,total:0};
+            players[name].holes++;
+            players[name].total++;
+            if(m.result==='player') players[name].wins++;
+          });
         });
       });
       let rows = Object.entries(players)
@@ -346,61 +356,58 @@ function renderInsights(){
           let sign = p.net>0?'+':p.net<0?'-':'';
           let netStr = sign+'$'+Math.abs(p.net);
           let netCls = p.net>0?'tag-good':p.net<0?'tag-bad':'ins-muted';
-          let winPct = p.wins+p.losses>0 ? Math.round(p.wins/(p.wins+p.losses)*100)+'%' : '—';
-          let winCls = p.wins+p.losses>0 ? (p.wins/(p.wins+p.losses)>=0.5?'tag-good':'tag-bad') : 'ins-muted';
+          let winPct = p.total>0 ? Math.round(p.wins/p.total*100)+'%' : '—';
+          let winCls = p.total>0 ? (p.wins/p.total>=0.5?'tag-good':'tag-bad') : 'ins-muted';
           return [
             `<span class="rank-num">${rank+1}</span>`,
             esc(name),
             `<span class="${netCls} mono" style="font-weight:bold">${netStr}</span>`,
-            `<span class="${winCls}">${winPct}</span>`,
-            p.wins+p.losses
+            p.holes||'—',
+            `<span class="${winCls}">${winPct}</span>`
           ];
         });
-      sections += `<div class="section-title">Banker</div>
-        <div class="ins-panel">${sboardTable(['#','Player','Net $','Win%','Rounds'], rows)}</div>`;
+      sections += `<div class="section-title">Banker — As Player</div>
+        <div class="ins-panel">${sboardTable(['#','Player','Net $','Holes','Win%'], rows)}</div>`;
 
-      // Banker performance sub-table (requires holeHistory)
-      let bankerRoundsWithHistory = all.filter(r=>r.game==='banker' && r.players && r.holeHistory);
+      // As Banker: net $, holes as banker, sweep% (beat all players)
       if(bankerRoundsWithHistory.length){
         let bperf = {};
         bankerRoundsWithHistory.forEach(r=>{
-          r.players.forEach(name=>{ if(!bperf[name]) bperf[name]={holesAsBank:0,doubles:0,bankWins:0,bankLosses:0,netAsBank:0}; });
+          r.players.forEach(name=>{ if(!bperf[name]) bperf[name]={holes:0,net:0,sweeps:0}; });
           (r.holeHistory||[]).forEach(h=>{
             let bankerName = r.players[h.bankerIdx];
             if(!bankerName) return;
-            bperf[bankerName].holesAsBank++;
-            let anyDouble = (h.matchups||[]).some(m=>m.doubled||m.bankerDoubled);
-            if(anyDouble) bperf[bankerName].doubles++;
-            let wins = (h.matchups||[]).filter(m=>m.result==='banker').length;
-            let losses = (h.matchups||[]).filter(m=>m.result==='player').length;
-            if(wins > losses) bperf[bankerName].bankWins++;
-            else if(losses > wins) bperf[bankerName].bankLosses++;
-            // net $ earned as banker this hole
+            bperf[bankerName].holes++;
+            // net $ as banker this hole
             (h.matchups||[]).forEach(m=>{
-              if(m.result==='banker') bperf[bankerName].netAsBank += m.amount||0;
-              else if(m.result==='player') bperf[bankerName].netAsBank -= m.amount||0;
+              if(m.result==='banker') bperf[bankerName].net += m.amount||0;
+              else if(m.result==='player') bperf[bankerName].net -= m.amount||0;
             });
+            // sweep = banker beat or tied all players (no player wins)
+            let playerWins = (h.matchups||[]).filter(m=>m.result==='player').length;
+            if(playerWins===0) bperf[bankerName].sweeps++;
           });
         });
         let bRows = Object.entries(bperf)
-          .filter(([,p])=>p.holesAsBank>0)
-          .sort((a,b)=>b[1].holesAsBank-a[1].holesAsBank)
+          .filter(([,p])=>p.holes>0)
+          .sort((a,b)=>b[1].net-a[1].net)
           .map(([name,p],rank)=>{
-            let doubleRate = Math.round(p.doubles/p.holesAsBank*100)+'%';
-            let netSign = p.netAsBank>=0?'+':'-';
-            let netStr = netSign+'$'+Math.abs(p.netAsBank);
-            let netCls = p.netAsBank>0?'tag-good':p.netAsBank<0?'tag-bad':'ins-muted';
+            let netSign = p.net>=0?'+':'-';
+            let netStr = netSign+'$'+Math.abs(p.net);
+            let netCls = p.net>0?'tag-good':p.net<0?'tag-bad':'ins-muted';
+            let sweepPct = Math.round(p.sweeps/p.holes*100)+'%';
+            let sweepCls = p.sweeps/p.holes>=0.5?'tag-good':'ins-muted';
             return [
               `<span class="rank-num">${rank+1}</span>`,
               esc(name),
-              p.holesAsBank,
               `<span class="${netCls} mono">${netStr}</span>`,
-              doubleRate
+              p.holes,
+              `<span class="${sweepCls}">${sweepPct}</span>`
             ];
           });
         if(bRows.length){
-          sections += `<div class="section-title" style="margin-top:4px;">Banker — As Dealer</div>
-            <div class="ins-panel">${sboardTable(['#','Player','Holes','Net $','Double%'], bRows)}</div>`;
+          sections += `<div class="section-title" style="margin-top:4px;">Banker — As Banker</div>
+            <div class="ins-panel">${sboardTable(['#','Player','Net $','Holes','Sweep%'], bRows)}</div>`;
         }
       }
     }

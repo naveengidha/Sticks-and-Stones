@@ -72,15 +72,10 @@ input[type="date"].course-input{-webkit-appearance:none;appearance:none;color-sc
       <!-- Round details -->
       <div class="setup-section">
         <div class="setup-section-label">Round Details</div>
-        <div class="date-course-row" style="margin-bottom:8px;">
+        <div style="display:grid;grid-template-columns:auto 1fr 56px;gap:6px;">
           <input type="date" class="course-input" id="roundDate" style="color-scheme:dark;">
-          <select class="select-input" id="seasonSelect" onchange="onSeasonPick()">
-            <option value="">— No Season —</option>
-          </select>
-        </div>
-        <div class="date-course-row">
           <input class="course-input" id="courseInput" placeholder="Course name">
-          <input type="number" class="course-input" id="parInput" placeholder="Par 72" min="18" max="100" inputmode="numeric">
+          <input type="number" class="course-input" id="parInput" placeholder="72" min="18" max="100" inputmode="numeric" style="text-align:center;">
         </div>
       </div>
 

@@ -7,6 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Sticks &amp; Stones">
 <meta name="theme-color" content="#080f0a">
+<style>html,body{background:#080f0a;}</style>
 <title>Sticks &amp; Stones</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -533,12 +534,12 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
   const GAME_LABELS = {
     f1:'Grand Prix', stableford:'Stableford', banker:'Banker',
     matchplay:'Match Play', scramble:'Scramble',
-    stroke:'Stroke Play'
+    stroke:'Stroke Play', mixed:'Mixed Round'
   };
   const GAME_ICONS = {
     f1:'🏎️', stableford:'🎯', banker:'🏦',
     matchplay:'⚔️', scramble:'🤝',
-    stroke:'🏌️'
+    stroke:'🏌️', mixed:'🎲'
   };
 
   function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -605,6 +606,25 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
           };
           let rows = [0,1].map(ti=>({ name:getTeamLabel(ti), num:scores[ti], par:r.teamVsPar?.[ti]!=null?fmtVsPar(r.teamVsPar[ti]):'' }));
           return rows.sort((a,b)=>(a.num??999)-(b.num??999));
+        }
+        case 'mixed':{
+          let rows = players.map((p,i)=>{
+            let parts = [];
+            let b = r.bankerTotals?.[i];
+            let s = r.stablefordTotals?.[i];
+            let st = r.strokeTotals?.[i];
+            let pm = r.pinMoneyTotals?.[i];
+            if(b!=null && b!==0) parts.push((b>=0?'+$':'−$')+Math.abs(b));
+            else if(b!=null) parts.push('$0');
+            if(s!=null && s>0) parts.push(s+'pts');
+            if(st!=null && st>0) parts.push(st+' strokes');
+            if(pm!=null && pm!==0) parts.push('pin:'+(pm>=0?'+$':'−$')+Math.abs(pm));
+            let netColor = 'rgba(255,255,255,0.4)';
+            let net = (b||0)+(pm||0);
+            if(net>0) netColor='#4ade80'; else if(net<0) netColor='#f87171';
+            return { name:p, num:parts.length?parts.join(' · '):null, par:'', netColor };
+          });
+          return rows;
         }
         case 'matchplay':
           return players.map((p,i)=>({ name:p, num:null, par:'' }));
@@ -745,6 +765,47 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
           : `<div style="margin-top:12px;font-size:11px;color:rgba(255,255,255,0.35);text-align:center;padding:6px 0;">All square — no transfers needed</div>`;
         return sc+settlement;
       }
+      // Mixed round: per-format totals + settlement
+      if(r.game==='mixed' && r.players){
+        let p = r.players;
+        let bt = r.bankerTotals||p.map(()=>0);
+        let st = r.stablefordTotals||p.map(()=>0);
+        let stt = r.strokeTotals||p.map(()=>0);
+        let pt = r.pinTotals||p.map(()=>0);
+        let pm = r.pinMoneyTotals||p.map(()=>0);
+        let hasB = bt.some(v=>v!==0);
+        let hasS = st.some(v=>v>0);
+        let hasSt = stt.some(v=>v>0);
+        let hasPin = pt.some(v=>v>0);
+        let hasPM = pm.some(v=>v!==0);
+        // Summary table
+        let cols = [];
+        if(hasB) cols.push({label:'Banker',fn:(i)=>{ let v=bt[i]; return {txt:(v>=0?'+$':'−$')+Math.abs(v),style:v>0?'color:#4ade80':v<0?'color:#f87171':''}; }});
+        if(hasS) cols.push({label:'Stableford',fn:(i)=>({ txt:st[i]+'pts',style:'color:#ffd447' })});
+        if(hasSt) cols.push({label:'Stroke',fn:(i)=>({ txt:stt[i],style:'' })});
+        if(hasPin) cols.push({label:'Pin Wins',fn:(i)=>({ txt:pt[i]+'W',style:'color:#ffd447' })});
+        if(hasPM) cols.push({label:'Pin $',fn:(i)=>{ let v=pm[i]; return {txt:(v>=0?'+$':'−$')+Math.abs(v),style:v>0?'color:#4ade80':v<0?'color:#f87171':''}; }});
+        let thead=`<thead><tr><th>Player</th>${cols.map(c=>`<th>${c.label}</th>`).join('')}</tr></thead>`;
+        let rows=p.map((name,i)=>`<tr><td>${esc(name)}</td>${cols.map(c=>{ let d=c.fn(i); return `<td style="${d.style}">${d.txt}</td>`; }).join('')}</tr>`).join('');
+        let sc=`<table>${thead}<tbody>${rows}</tbody></table>`;
+        // Settlement (banker + pin money)
+        let net = p.map((_,i)=>(bt[i]||0)+(pm[i]||0));
+        let creditors=[], debtors=[];
+        net.forEach((v,i)=>{ if(v>0.001) creditors.push({name:p[i],amt:v}); else if(v<-0.001) debtors.push({name:p[i],amt:-v}); });
+        creditors.sort((a,b)=>b.amt-a.amt); debtors.sort((a,b)=>b.amt-a.amt);
+        let lines=[], ci=0, di=0;
+        while(ci<creditors.length && di<debtors.length){
+          let c=creditors[ci], d=debtors[di], settle=Math.min(c.amt,d.amt);
+          if(settle>0.001) lines.push(`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:12px;"><span><span style="color:#f87171;font-weight:bold">${esc(d.name)}</span> owes <span style="color:#4ade80;font-weight:bold">${esc(c.name)}</span></span><span style="color:#f87171;font-weight:bold;font-family:'Courier New'">${'$'+settle}</span></div>`);
+          c.amt-=settle; d.amt-=settle;
+          if(c.amt<0.001) ci++; if(d.amt<0.001) di++;
+        }
+        let settlement = (hasB||hasPM) ? (lines.length
+          ? `<div style="margin-top:12px;font-size:10px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.5);padding-bottom:4px;border-bottom:1px solid rgba(255,212,71,0.1);">Settlement</div>${lines.join('')}`
+          : `<div style="margin-top:12px;font-size:11px;color:rgba(255,255,255,0.35);text-align:center;padding:6px 0;">All square — no transfers needed</div>`)
+          : '';
+        return sc+settlement;
+      }
       // Foursomes: scoreHistory has {par, scoreA, scoreB}
       if(r.game==='foursomes' && r.scoreHistory && r.scoreHistory.length){
         let p=r.players||['Team A','Team B'];
@@ -858,10 +919,12 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
           <div class="rcard-mid">
             <div class="rcard-info">
               <div class="rcard-course">${esc(r.course||'Unknown Course')}</div>
-              ${sd.length ? `<div style="display:grid;grid-template-columns:max-content 1fr max-content;gap:4px 8px;align-items:center;margin-top:6px;">${sd.map(p=>`<span style="font-size:13px;color:#a07840;font-weight:bold;letter-spacing:.2px;white-space:nowrap;">${esc(p.name)}</span>${p.segs?`<div style="display:flex;gap:1px;min-width:0;">${p.segs}</div>`:'<div></div>'}<span style="font-family:'Courier New',monospace;font-size:19px;font-weight:bold;color:${p.netColor||'#fff'};white-space:nowrap;text-align:right;">${p.num??'–'}${p.par?`<span style="font-size:12px;color:#ffd447;margin-left:5px;">(${p.par})</span>`:''}</span>`).join('')}</div>` : ''}
+              ${r.game==='mixed'
+                ? `<div style="font-size:13px;font-weight:bold;color:#a07840;margin-top:4px;letter-spacing:.2px;">${(r.players||[]).map(esc).join(' · ')}</div>`
+                : sd.length ? `<div style="display:grid;grid-template-columns:max-content 1fr max-content;gap:4px 8px;align-items:center;margin-top:6px;">${sd.map(p=>`<span style="font-size:13px;color:#a07840;font-weight:bold;letter-spacing:.2px;white-space:nowrap;">${esc(p.name)}</span>${p.segs?`<div style="display:flex;gap:1px;min-width:0;">${p.segs}</div>`:'<div></div>'}<span style="font-family:'Courier New',monospace;font-size:19px;font-weight:bold;color:${p.netColor||'#fff'};white-space:nowrap;text-align:right;">${p.num??'–'}${p.par?`<span style="font-size:12px;color:#ffd447;margin-left:5px;">(${p.par})</span>`:''}</span>`).join('')}</div>` : ''}
             </div>
           </div>
-          ${bar?`<div class="hole-bar">${bar}</div>`:''}
+          ${r.game!=='mixed'&&bar?`<div class="hole-bar">${bar}</div>`:''}
         </div>
         <div class="rcard-expand">${sc?`<div class="rcard-expand-sc">${sc}</div>`:''}<div class="rcard-expand-footer"><button class="rcard-delete" data-id="${r.id}">Delete Round</button></div></div>`;
 
@@ -890,10 +953,10 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 })();
 
 (function renderActiveRounds(){
-  const GAME_LABELS = {f1:'Grand Prix',stableford:'Stableford',banker:'Banker',scramble:'Scramble',practice:'Stroke Play'};
-  const GAME_ICONS  = {f1:'🏎️',stableford:'🎯',banker:'🏦',scramble:'🤝',practice:'🏌️'};
-  const GAME_URLS   = {f1:'f1.html',stableford:'stableford.html',banker:'banker.html',scramble:'scramble.html',practice:'practice.html'};
-  const KEYS = ['activeGame_f1','activeGame_stableford','activeGame_banker','activeGame_scramble','activeGame_practice'];
+  const GAME_LABELS = {f1:'Grand Prix',stableford:'Stableford',banker:'Banker',scramble:'Scramble',practice:'Stroke Play',mixed:'Mixed Round'};
+  const GAME_ICONS  = {f1:'🏎️',stableford:'🎯',banker:'🏦',scramble:'🤝',practice:'🏌️',mixed:'🎲'};
+  const GAME_URLS   = {f1:'f1.html',stableford:'stableford.html',banker:'banker.html',scramble:'scramble.html',practice:'practice.html',mixed:'mixed.html'};
+  const KEYS = ['activeGame_f1','activeGame_stableford','activeGame_banker','activeGame_scramble','activeGame_practice','activeGame_mixed'];
 
   function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 

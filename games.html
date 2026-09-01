@@ -33,6 +33,7 @@ body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;margin:0;p
 .icon-scramble{background:linear-gradient(160deg,#2a0040,#5a0080);}
 .icon-stableford{background:linear-gradient(160deg,#001540,#002b7a);}
 .icon-banker{background:linear-gradient(160deg,#3a2800,#7a5500);}
+.icon-mixed{background:linear-gradient(160deg,#002a2a,#005540);}
 .icon-f1{background:linear-gradient(160deg,#4a0010,#8b001e);}
 
 /* ── Pill nav ── */
@@ -46,7 +47,11 @@ body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;margin:0;p
 </head>
 <body>
 
-<div class="page-header">Play a Game</div>
+<div class="page-header" id="pageHeader">Play a Game</div>
+
+<script>
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
 
 <div class="scroll-area">
 
@@ -113,6 +118,26 @@ body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;margin:0;p
     <div class="gc-body">
       <div class="gc-name">The Banker</div>
       <div class="gc-desc">Double up on bets, carry over unresolved holes</div>
+    </div>
+    <div class="gc-arrow">›</div>
+  </a>
+
+  <a class="game-card" href="mixed.html">
+    <div class="gc-icon icon-mixed">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#4dd9ac" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="8" height="8" rx="1.5"/>
+        <rect x="13" y="3" width="8" height="8" rx="1.5"/>
+        <rect x="3" y="13" width="8" height="8" rx="1.5"/>
+        <rect x="13" y="13" width="8" height="8" rx="1.5"/>
+        <line x1="7" y1="6" x2="7" y2="8"/><line x1="6" y1="7" x2="8" y2="7"/>
+        <circle cx="17" cy="7" r="1" fill="#4dd9ac" stroke="none"/>
+        <circle cx="15.5" cy="15.5" r="0.8" fill="#4dd9ac" stroke="none"/><circle cx="18.5" cy="18.5" r="0.8" fill="#4dd9ac" stroke="none"/>
+        <line x1="5" y1="16" x2="9" y2="20"/><line x1="9" y1="16" x2="5" y2="20"/>
+      </svg>
+    </div>
+    <div class="gc-body">
+      <div class="gc-name">Mixed Round</div>
+      <div class="gc-desc">Play different formats hole by hole — Banker, Stableford, Stroke &amp; Pin</div>
     </div>
     <div class="gc-arrow">›</div>
   </a>
