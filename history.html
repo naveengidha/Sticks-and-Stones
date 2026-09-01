@@ -578,7 +578,7 @@ function renderHallOfFame(){
 function renderHandicap(){
   let el = document.getElementById('handicapContent');
   let all = loadHistory();
-  let stRounds = all.filter(r=>r.game==='stroke' && r.players && r.playerTotals && r.holeParDist && r.holeParDist.length);
+  let stRounds = all.filter(r=>r.game==='stroke' && r.players && r.playerTotals && ((r.holeParDist && r.holeParDist.length) || r.coursePar));
   if(!stRounds.length){
     el.innerHTML = '<div class="empty-state">Play some stroke rounds to track handicap index.</div>';
     return;
@@ -595,10 +595,9 @@ function renderHandicap(){
       .map(r=>{
         let idx = r.players.indexOf(playerName);
         let score = r.playerTotals[idx];
-        let par = r.holeParDist.reduce((s,h)=>s+(h.par||4),0);
+        let par = (r.holeParDist && r.holeParDist.length) ? r.holeParDist.reduce((s,h)=>s+(h.par||4),0) : r.coursePar;
         let slope = r.courseSlope || 113;
         let rating = r.courseRating || par;
-        // Handicap differential: (Score - Course Rating) x 113 / Slope
         let diff = ((score - rating) * 113 / slope);
         return {date: r.date, course: r.course||'Unknown', score, par, diff: +diff.toFixed(1)};
       })

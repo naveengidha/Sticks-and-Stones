@@ -450,11 +450,20 @@ function buildBracket(slots, size){
     let semiAT2 = parseInt(document.getElementById('semiATeam2')?.value||'1');
     let semiBT1 = parseInt(document.getElementById('semiBTeam1')?.value||'2');
     let semiBT2 = parseInt(document.getElementById('semiBTeam2')?.value||'3');
+    // QF indices: semiA draws from slots 0-3, semiB draws from slots 4-7
+    // Use matchup selectors to pick which of the first 4 slots face off in semiA
+    // and always pair slots 4-7 into semiB quarter-finals
     return [
-      {id:'semiA',  label:'Semi-Final A',   round:0, slotA:slots[semiAT1]||slots[0], slotB:slots[semiAT2]||slots[1], feedsWinner:'final', feedsLoser:'losersF', result:null},
-      {id:'semiB',  label:'Semi-Final B',   round:0, slotA:slots[semiBT1]||slots[2], slotB:slots[semiBT2]||slots[3], feedsWinner:'final', feedsLoser:'losersF', result:null},
-      {id:'final',  label:'🏆 Winners Final', round:1, slotA:null, slotB:null, feedsWinner:null, feedsLoser:null, result:null},
-      {id:'losersF',label:'Losers Final',    round:1, slotA:null, slotB:null, feedsWinner:null, feedsLoser:null, result:null},
+      {id:'qfA',    label:'Quarter-Final A', round:0, slotA:slots[semiAT1]||slots[0], slotB:slots[semiAT2]||slots[1], feedsWinner:'semiA', feedsLoser:'lqfA', result:null},
+      {id:'qfB',    label:'Quarter-Final B', round:0, slotA:slots[semiBT1]||slots[2], slotB:slots[semiBT2]||slots[3], feedsWinner:'semiA', feedsLoser:'lqfA', result:null},
+      {id:'qfC',    label:'Quarter-Final C', round:0, slotA:slots[4], slotB:slots[5], feedsWinner:'semiB', feedsLoser:'lqfB', result:null},
+      {id:'qfD',    label:'Quarter-Final D', round:0, slotA:slots[6], slotB:slots[7], feedsWinner:'semiB', feedsLoser:'lqfB', result:null},
+      {id:'semiA',  label:'Semi-Final A',   round:1, slotA:null, slotB:null, feedsWinner:'final', feedsLoser:'losersF', result:null},
+      {id:'semiB',  label:'Semi-Final B',   round:1, slotA:null, slotB:null, feedsWinner:'final', feedsLoser:'losersF', result:null},
+      {id:'lqfA',   label:'Losers QF A',    round:1, slotA:null, slotB:null, feedsWinner:'losersF', feedsLoser:null, result:null},
+      {id:'lqfB',   label:'Losers QF B',    round:1, slotA:null, slotB:null, feedsWinner:'losersF', feedsLoser:null, result:null},
+      {id:'final',  label:'🏆 Final',        round:2, slotA:null, slotB:null, feedsWinner:null, feedsLoser:null, result:null},
+      {id:'losersF',label:'3rd Place Final', round:2, slotA:null, slotB:null, feedsWinner:null, feedsLoser:null, result:null},
     ];
   }
   return [];
@@ -633,7 +642,7 @@ function updateBracketInfo(){
   let el = document.getElementById('bracketInfo');
   if(slots === 2) el.textContent = '1 match — Final only';
   else if(slots === 4) el.textContent = '2 matches — Semi-Final A & B → Final + 3rd Place';
-  else if(slots === 8) el.textContent = '4 matches — 2 Semi-Finals → Winners Final + Losers Final';
+  else if(slots === 8) el.textContent = '10 matches — 4 Quarter-Finals → 2 Semi-Finals → Final + 3rd Place';
   else el.textContent = slots < 2 ? 'Add at least 2 '+(isTeam?'teams (4 players)':'players') : 'Bracket requires 2, 4, or 8 '+(isTeam?'teams':'players');
 }
 
