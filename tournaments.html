@@ -78,9 +78,9 @@ button.btn-danger:hover,button.btn-danger:active{background:rgba(255,77,77,0.08)
 .randomise-btn{background:none;border:1px solid rgba(255,212,71,0.25);color:rgba(255,212,71,0.6);font-size:13px;padding:8px;border-radius:6px;cursor:pointer;margin-bottom:12px;box-shadow:none;letter-spacing:.5px;}
 .randomise-btn:hover{border-color:rgba(255,212,71,0.5);color:#ffd447;}
 
-/* ── Games checkbox grid ── */
-.games-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:12px;}
-.game-check-label{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.25);border:1px solid rgba(184,150,46,0.2);border-radius:6px;padding:8px 10px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.7);transition:border-color .1s,color .1s;}
+/* ── Games list ── */
+.games-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.game-check-label{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.25);border:1px solid rgba(184,150,46,0.2);border-radius:6px;padding:10px 12px;cursor:pointer;font-size:14px;color:rgba(255,255,255,0.7);transition:border-color .1s,color .1s;}
 .game-check-label:has(input:checked){border-color:rgba(255,212,71,0.45);color:#ffd447;background:rgba(255,212,71,0.05);}
 .game-check-label input{accent-color:#ffd447;width:14px;height:14px;}
 
@@ -164,7 +164,7 @@ button.btn-danger:hover,button.btn-danger:active{background:rgba(255,77,77,0.08)
 .bracket-team.winner{color:#ffd447;font-weight:bold;}
 .bracket-team.loser{color:rgba(255,255,255,0.35);}
 .bracket-team-name{flex:1;}
-.bracket-result{font-size:11px;font-family:'Courier New',monospace;color:rgba(255,212,71,0.6);margin-left:8px;}
+.bracket-result{font-size:14px;font-family:'Courier New',monospace;font-weight:bold;color:#ffd447;margin-left:8px;}
 .bracket-pending{color:rgba(255,255,255,0.2);font-style:italic;font-size:13px;padding:8px 0;}
 .bracket-log-btn{background:none;border:1px solid rgba(255,212,71,0.3);color:rgba(255,212,71,0.7);font-size:12px;padding:6px 12px;border-radius:6px;cursor:pointer;width:auto;box-shadow:none;margin:8px 0 0;letter-spacing:.3px;}
 .bracket-log-btn:hover{border-color:#ffd447;color:#ffd447;}
@@ -176,7 +176,7 @@ button.btn-danger:hover,button.btn-danger:active{background:rgba(255,77,77,0.08)
 </head>
 <body>
 
-<div class="page-header" id="topnavTitle">Tournaments</div>
+<div class="page-header" id="topnavTitle" style="display:flex;align-items:center;justify-content:center;gap:10px;">Tournaments <button class="flip-btn" id="headerInfoBtn" onclick="flipSetup()" title="How scoring works" style="position:static;display:none;">i</button></div>
 
 <div class="scroll-area">
 <div class="container">
@@ -213,23 +213,34 @@ button.btn-danger:hover,button.btn-danger:active{background:rgba(255,77,77,0.08)
               <label style="font-size:12px;color:rgba(255,255,255,0.5);letter-spacing:.3px;text-transform:uppercase;">Rounds to play:</label>
               <input type="number" class="number-input" id="seasonLength" value="2" min="1" max="99" inputmode="numeric" style="margin-top:6px;">
             </div>
-            <div id="bracketInfo" class="hidden" style="margin-top:10px;font-size:12px;color:rgba(255,255,255,0.4);line-height:1.7;">
-              2 groups of 4 · Semi-finals (9 holes) → Winners Final + Losers Final (back 9)
+            <div id="bracketOptions" class="hidden" style="margin-top:10px;">
+              <label style="font-size:12px;color:rgba(255,255,255,0.5);letter-spacing:.3px;text-transform:uppercase;display:block;margin-bottom:8px;">Play Style:</label>
+              <div style="display:flex;gap:8px;margin-bottom:10px;">
+                <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,0.7);cursor:pointer;text-transform:none;letter-spacing:0;background:rgba(0,0,0,0.25);border:1px solid rgba(184,150,46,0.25);border-radius:6px;padding:8px 12px;">
+                  <input type="radio" name="bracketType" id="bracketSolo" value="solo" checked onchange="onBracketTypeChange()" style="accent-color:#ffd447;">
+                  Individual
+                </label>
+                <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,0.7);cursor:pointer;text-transform:none;letter-spacing:0;background:rgba(0,0,0,0.25);border:1px solid rgba(184,150,46,0.25);border-radius:6px;padding:8px 12px;">
+                  <input type="radio" name="bracketType" id="bracketTeam" value="team" onchange="onBracketTypeChange()" style="accent-color:#ffd447;">
+                  Team
+                </label>
+              </div>
+              <div id="bracketInfo" style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.7;"></div>
             </div>
           </div>
 
           <div class="setup-card">
             <div class="setup-card-title">Games to Include</div>
-            <div class="games-grid" id="gamesGrid"></div>
+            <div class="games-list" id="gamesGrid"></div>
           </div>
 
           <div class="setup-card">
-            <div class="setup-card-title">Players <span style="font-size:10px;color:rgba(255,255,255,0.3);font-weight:normal;text-transform:none;letter-spacing:0;">(up to 8)</span></div>
+            <div class="setup-card-title" id="playersCardTitle">Players <span style="font-size:10px;color:rgba(255,255,255,0.3);font-weight:normal;text-transform:none;letter-spacing:0;">(up to 8)</span></div>
             <div id="playerRows"></div>
             <button class="add-player-btn" onclick="addPlayerRow()">+ Add Player</button>
           </div>
 
-          <div class="setup-card" id="teamsCard">
+          <div class="setup-card" id="teamsCard" style="display:none;">
             <div class="setup-card-title">Teams <span style="font-size:10px;color:rgba(255,255,255,0.3);font-weight:normal;text-transform:none;letter-spacing:0;">(optional names)</span></div>
             <div id="teamRows"></div>
           </div>
@@ -280,7 +291,6 @@ button.btn-danger:hover,button.btn-danger:active{background:rgba(255,77,77,0.08)
 
       </div>
     </div>
-    <button class="flip-btn" onclick="flipSetup()" title="How scoring works">i</button>
   </div>
 
   <!-- ══ SCREEN 3: Season Detail ══ -->
@@ -382,41 +392,105 @@ if('serviceWorker' in navigator){
 }
 
 const GAME_LABELS = {
-  f1:         'Grand Prix',
   stableford: 'Stableford',
   stroke:     'Stroke Play',
   scramble:   'Scramble'
 };
 const GAME_FILES = {
-  f1:'f1.html', stableford:'stableford.html',
+  stableford:'stableford.html',
   stroke:'practice.html', scramble:'scramble.html'
 };
 const GAME_ICONS = {
-  f1:'🏎️', stableford:'🎯', stroke:'🏌️', scramble:'🤝'
+  stableford:'🎯', stroke:'🏌️', scramble:'🤝'
 };
 
 const TEAM_GAMES = new Set(['scramble','foursomes','vegas']);
 
 /* ── Storage ── */
-function loadSeasons(){ try{ return JSON.parse(localStorage.getItem('seasons')||'[]'); }catch(e){ return []; } }
+function loadSeasons(){
+  try{
+    let arr = JSON.parse(localStorage.getItem('seasons')||'[]');
+    return arr.map(migrateSeason);
+  }catch(e){ return []; }
+}
 function saveSeasons(arr){ localStorage.setItem('seasons', JSON.stringify(arr)); }
 
+/* ── Migration: old bracketMatches shape → matches[] ── */
+function migrateSeason(s){
+  if(s.bracketMode && s.bracketMatches && !s.matches){
+    let m = s.bracketMatches;
+    let teams = s.teams || [];
+    function tname(idx){ return teams[idx]?.name || 'Team '+(idx+1); }
+    s.bracketType = 'team';
+    s.bracketSize = 8;
+    s.matches = [
+      {id:'semiA', label:'Semi-Final A', round:0, slotA:tname(m.semiA?.teamA??0), slotB:tname(m.semiA?.teamB??1), feedsWinner:'final', feedsLoser:'losersF', result:m.semiA?.result||null},
+      {id:'semiB', label:'Semi-Final B', round:0, slotA:tname(m.semiB?.teamA??2), slotB:tname(m.semiB?.teamB??3), feedsWinner:'final', feedsLoser:'losersF', result:m.semiB?.result||null},
+      {id:'final',  label:'🏆 Winners Final', round:1, slotA:null, slotB:null, feedsWinner:null, feedsLoser:null, result:m.winnersF?.result||null},
+      {id:'losersF',label:'Losers Final',      round:1, slotA:null, slotB:null, feedsWinner:null, feedsLoser:null, result:m.losersF?.result||null},
+    ];
+    delete s.bracketMatches;
+  }
+  return s;
+}
+
+/* ── Build bracket matches array from slots ── */
+function buildBracket(slots, size){
+  if(size === 2) return [
+    {id:'final', label:'Final 🏆', round:0, slotA:slots[0], slotB:slots[1], feedsWinner:null, feedsLoser:null, result:null}
+  ];
+  if(size === 4) return [
+    {id:'semiA',  label:'Semi-Final A',   round:0, slotA:slots[0], slotB:slots[1], feedsWinner:'final', feedsLoser:'losersF', result:null},
+    {id:'semiB',  label:'Semi-Final B',   round:0, slotA:slots[2], slotB:slots[3], feedsWinner:'final', feedsLoser:'losersF', result:null},
+    {id:'final',  label:'Final 🏆',        round:1, slotA:null, slotB:null, feedsWinner:null, feedsLoser:null, result:null},
+    {id:'losersF',label:'3rd Place Match', round:1, slotA:null, slotB:null, feedsWinner:null, feedsLoser:null, result:null},
+  ];
+  if(size === 8){
+    let semiAT1 = parseInt(document.getElementById('semiATeam1')?.value||'0');
+    let semiAT2 = parseInt(document.getElementById('semiATeam2')?.value||'1');
+    let semiBT1 = parseInt(document.getElementById('semiBTeam1')?.value||'2');
+    let semiBT2 = parseInt(document.getElementById('semiBTeam2')?.value||'3');
+    return [
+      {id:'semiA',  label:'Semi-Final A',   round:0, slotA:slots[semiAT1]||slots[0], slotB:slots[semiAT2]||slots[1], feedsWinner:'final', feedsLoser:'losersF', result:null},
+      {id:'semiB',  label:'Semi-Final B',   round:0, slotA:slots[semiBT1]||slots[2], slotB:slots[semiBT2]||slots[3], feedsWinner:'final', feedsLoser:'losersF', result:null},
+      {id:'final',  label:'🏆 Winners Final', round:1, slotA:null, slotB:null, feedsWinner:null, feedsLoser:null, result:null},
+      {id:'losersF',label:'Losers Final',    round:1, slotA:null, slotB:null, feedsWinner:null, feedsLoser:null, result:null},
+    ];
+  }
+  return [];
+}
+
+/* ── Derive participant names for a match (for unlocked later-round matches) ── */
+function getMatchParticipants(s, match){
+  if(match.slotA !== null) return [match.slotA, match.slotB];
+  // derive from feeder matches
+  let feeders = s.matches.filter(m => m.feedsWinner === match.id || m.feedsLoser === match.id);
+  let nameA = '?', nameB = '?';
+  feeders.forEach(f => {
+    if(!f.result) return;
+    if(f.feedsWinner === match.id){
+      if(nameA==='?') nameA = f.result.winnerName; else nameB = f.result.winnerName;
+    } else if(f.feedsLoser === match.id){
+      if(nameA==='?') nameA = f.result.loserName; else nameB = f.result.loserName;
+    }
+  });
+  return [nameA, nameB];
+}
+
 /* ── State ── */
-let activeSeason = null;   // the currently-open season object (reference)
+let activeSeason = null;
 let expandedRounds = new Set();
+let bracketResultMatch = null;
 
 /* ── Navigation ── */
 function goBack(){
-  if(activeSeason){
-    activeSeason = null;
-    showSeasonList();
-    return;
-  }
+  if(activeSeason){ activeSeason = null; showSeasonList(); return; }
   window.location.href = 'index.html';
 }
 
 function showSeasonList(){
-  document.getElementById('topnavTitle').textContent = 'Tournaments';
+  document.getElementById('topnavTitle').childNodes[0].textContent = 'Tournaments ';
+  document.getElementById('headerInfoBtn').style.display = 'none';
   document.getElementById('seasonListScreen').classList.remove('hidden');
   document.getElementById('setupScreen').classList.add('hidden');
   document.getElementById('seasonScreen').classList.add('hidden');
@@ -427,13 +501,12 @@ function showSetup(){
   document.getElementById('seasonListScreen').classList.add('hidden');
   document.getElementById('seasonScreen').classList.add('hidden');
   document.getElementById('setupScreen').classList.remove('hidden');
-  document.getElementById('topnavTitle').textContent = 'New Tournament';
+  document.getElementById('topnavTitle').childNodes[0].textContent = 'New Tournament ';
+  document.getElementById('headerInfoBtn').style.display = 'flex';
   initSetupForm();
 }
 
-function cancelSetup(){
-  showSeasonList();
-}
+function cancelSetup(){ showSeasonList(); }
 
 function openSeason(id){
   let seasons = loadSeasons();
@@ -443,8 +516,8 @@ function openSeason(id){
   document.getElementById('seasonListScreen').classList.add('hidden');
   document.getElementById('setupScreen').classList.add('hidden');
   document.getElementById('seasonScreen').classList.remove('hidden');
-  document.getElementById('topnavTitle').textContent = s.name;
-  // Show/hide bracket tab
+  document.getElementById('headerInfoBtn').style.display = 'none';
+  document.getElementById('topnavTitle').childNodes[0].textContent = s.name + ' ';
   let isBracket = !!s.bracketMode;
   document.getElementById('tabBracketBtn').style.display = isBracket ? '' : 'none';
   document.getElementById('tabBracketStandingsBtn').style.display = isBracket ? '' : 'none';
@@ -481,9 +554,10 @@ function renderSeasonList(){
   body.innerHTML = seasons.slice().reverse().map(s=>{
     let meta;
     if(s.bracketMode){
-      let m = s.bracketMatches;
-      let done = [m.semiA,m.semiB,m.winnersF,m.losersF].filter(x=>x.result).length;
-      meta = `${s.players.length} players · Bracket · ${done}/4 matches`;
+      let done = (s.matches||[]).filter(x=>x.result).length;
+      let total = (s.matches||[]).length;
+      let typeLabel = s.bracketType==='solo' ? 'Solo' : 'Team';
+      meta = `${s.players.length} players · ${typeLabel} Bracket · ${done}/${total} matches`;
     } else {
       let played = s.rounds.length;
       meta = s.seasonLength ? `${played}/${s.seasonLength} rounds played` : `${played} round${played!==1?'s':''} played`;
@@ -493,18 +567,9 @@ function renderSeasonList(){
         <span class="season-item-name">${esc(s.name)}</span>
         <span class="status-badge ${s.status}">${s.status==='active'?'Active':'Complete'}</span>
       </div>
-      <div class="season-item-meta">
-        ${meta}
-      </div>
+      <div class="season-item-meta">${meta}</div>
     </div>`;
   }).join('') + `<button onclick="showSetup()" style="margin-top:6px;">+ New Tournament</button>`;
-}
-
-function leadStr(s){
-  if(!s.rounds.length) return 'No rounds yet';
-  let ind = calcIndividualStandings(s);
-  if(!ind.length) return 'No rounds yet';
-  return 'Leading: '+ind[0].name+' ('+fmtPts(ind[0].pts)+')';
 }
 
 /* ── Setup Form ── */
@@ -512,25 +577,24 @@ function initSetupForm(){
   document.getElementById('seasonName').value = '';
   document.getElementById('seasonLength').value = '2';
   document.getElementById('modeStandard').checked = true;
+  document.getElementById('bracketSolo').checked = true;
   document.getElementById('setupError').style.display = 'none';
   document.getElementById('standardOptions').style.display = '';
-  document.getElementById('bracketInfo').classList.add('hidden');
+  document.getElementById('bracketOptions').classList.add('hidden');
+  document.getElementById('teamsCard').style.display = 'none';
   document.getElementById('bracketGroupsCard').style.display = 'none';
 
-  // Flip card back to front
   let fi = document.getElementById('setupFlip');
   fi.classList.remove('flipped');
   let btn = document.querySelector('.flip-btn');
   if(btn) btn.style.display = 'flex';
 
-  // Games grid — unchecked by default
   let grid = document.getElementById('gamesGrid');
   grid.innerHTML = Object.entries(GAME_LABELS).map(([key, label])=>`
     <label class="game-check-label">
       <input type="checkbox" value="${key}"> ${label}
     </label>`).join('');
 
-  // Player rows — start with 4 for standard, 8 for bracket
   document.getElementById('playerRows').innerHTML = '';
   for(let i=0;i<4;i++) addPlayerRow();
 }
@@ -538,14 +602,39 @@ function initSetupForm(){
 function onModeChange(){
   let isBracket = document.getElementById('modeBracket').checked;
   document.getElementById('standardOptions').style.display = isBracket ? 'none' : '';
-  document.getElementById('bracketInfo').classList.toggle('hidden', !isBracket);
-  document.getElementById('bracketGroupsCard').style.display = isBracket ? '' : 'none';
-  if(isBracket){
-    let rows = document.getElementById('playerRows');
-    while(rows.querySelectorAll('.player-setup-row').length < 8) addPlayerRow();
-    renderTeamRows();
-    renderMatchupSelects();
+  document.getElementById('bracketOptions').classList.toggle('hidden', !isBracket);
+  if(isBracket) onBracketTypeChange();
+  else {
+    document.getElementById('teamsCard').style.display = 'none';
+    document.getElementById('bracketGroupsCard').style.display = 'none';
   }
+}
+
+function onBracketTypeChange(){
+  let isBracket = document.getElementById('modeBracket').checked;
+  if(!isBracket) return;
+  let isTeam = document.getElementById('bracketTeam').checked;
+  let players = getPlayerNames().filter(Boolean);
+  let slots = isTeam ? Math.ceil(players.length/2) : players.length;
+
+  // Show teams card only for team mode
+  document.getElementById('teamsCard').style.display = isTeam ? '' : 'none';
+  // Show matchup card only for 8-slot bracket
+  document.getElementById('bracketGroupsCard').style.display = (slots === 8) ? '' : 'none';
+
+  if(isTeam) renderTeamRows();
+  updateBracketInfo();
+}
+
+function updateBracketInfo(){
+  let isTeam = document.getElementById('bracketTeam').checked;
+  let players = getPlayerNames().filter(Boolean);
+  let slots = isTeam ? Math.ceil(players.length/2) : players.length;
+  let el = document.getElementById('bracketInfo');
+  if(slots === 2) el.textContent = '1 match — Final only';
+  else if(slots === 4) el.textContent = '2 matches — Semi-Final A & B → Final + 3rd Place';
+  else if(slots === 8) el.textContent = '4 matches — 2 Semi-Finals → Winners Final + Losers Final';
+  else el.textContent = slots < 2 ? 'Add at least 2 '+(isTeam?'teams (4 players)':'players') : 'Bracket requires 2, 4, or 8 '+(isTeam?'teams':'players');
 }
 
 function getPlayerNames(){
@@ -556,7 +645,6 @@ function getPlayerNames(){
 function getTeamName(idx){
   let el = document.getElementById('teamName_'+idx);
   if(el && el.value.trim()) return el.value.trim();
-  // fallback: player1 / player2
   let names = getPlayerNames();
   let p1 = names[idx*2]||''; let p2 = names[idx*2+1]||'';
   return p1&&p2 ? p1+' / '+p2 : p1||p2||('Team '+(idx+1));
@@ -577,6 +665,7 @@ function renderTeamRows(){
     cont.appendChild(div);
   }
   renderMatchupSelects();
+  updateBracketInfo();
 }
 
 function renderMatchupSelects(){
@@ -588,9 +677,8 @@ function renderMatchupSelects(){
     if(!el) return;
     let cur = el.value;
     el.innerHTML = opts;
-    el.value = cur||String(i<2?i:i); // defaults: semiA→0v1, semiB→2v3
+    el.value = cur||String(i);
   });
-  // sensible defaults
   let sa1=document.getElementById('semiATeam1'), sa2=document.getElementById('semiATeam2');
   let sb1=document.getElementById('semiBTeam1'), sb2=document.getElementById('semiBTeam2');
   if(sa1&&!sa1.dataset.set){sa1.value='0';sa1.dataset.set='1';}
@@ -599,7 +687,7 @@ function renderMatchupSelects(){
   if(sb2&&!sb2.dataset.set){sb2.value=numTeams>3?'3':'1';sb2.dataset.set='1';}
 }
 
-function onMatchupChange(){ /* no-op, values read at save time */ }
+function onMatchupChange(){}
 
 function addPlayerRow(){
   let rows = document.getElementById('playerRows');
@@ -610,10 +698,15 @@ function addPlayerRow(){
   div.className = 'player-setup-row';
   div.dataset.idx = idx;
   div.innerHTML = `
-    <input class="name-input" placeholder="Player ${idx+1}" style="margin-bottom:0;" oninput="renderTeamRows()">
+    <input class="name-input" placeholder="Player ${idx+1}" style="margin-bottom:0;" oninput="onPlayerInput()">
     <button class="del-player-btn" onclick="removePlayerRow(this)" title="Remove">✕</button>`;
   rows.appendChild(div);
-  renderTeamRows();
+  onPlayerInput();
+}
+
+function onPlayerInput(){
+  let isBracket = document.getElementById('modeBracket').checked;
+  if(isBracket) onBracketTypeChange();
 }
 
 function removePlayerRow(btn){
@@ -625,13 +718,13 @@ function removePlayerRow(btn){
     r.dataset.idx = i;
     r.querySelector('input').placeholder = 'Player '+(i+1);
   });
-  renderTeamRows();
+  onPlayerInput();
 }
 
 function flipSetup(){
   let fi = document.getElementById('setupFlip');
   fi.classList.toggle('flipped');
-  let btn = document.querySelector('.flip-btn');
+  let btn = document.getElementById('headerInfoBtn');
   if(btn) btn.style.display = fi.classList.contains('flipped') ? 'none' : 'flex';
 }
 
@@ -640,76 +733,65 @@ function startSeason(){
   let name = document.getElementById('seasonName').value.trim();
   let isBracket = document.getElementById('modeBracket').checked;
   let rows = [...document.getElementById('playerRows').querySelectorAll('.player-setup-row')];
-  let players = rows.map(r=>({
-    name: r.querySelector('input').value.trim()
-  })).filter(p=>p.name);
-
+  let players = rows.map(r=>({name: r.querySelector('input').value.trim()})).filter(p=>p.name);
   let allowedGames = [...document.getElementById('gamesGrid').querySelectorAll('input:checked')].map(i=>i.value);
   let errEl = document.getElementById('setupError');
 
   if(!name || players.length < 2){
     errEl.textContent = 'Please enter a tournament name and at least 2 player names.';
-    errEl.style.display = 'block';
-    return;
+    errEl.style.display = 'block'; return;
   }
   if(!allowedGames.length){
     errEl.textContent = 'Select at least one game format.';
-    errEl.style.display = 'block';
-    return;
+    errEl.style.display = 'block'; return;
   }
-  if(isBracket && players.length < 4){
-    errEl.textContent = 'Bracket mode requires at least 4 players.';
-    errEl.style.display = 'block';
-    return;
-  }
-  errEl.style.display = 'none';
-
-  // Build teams array — pairs of players with optional custom name
-  let numTeams = Math.ceil(players.length / 2);
-  let teams = Array.from({length:numTeams},(_,ti)=>{
-    let customName = document.getElementById('teamName_'+ti)?.value.trim()||'';
-    let p1 = players[ti*2]?.name||''; let p2 = players[ti*2+1]?.name||'';
-    let name = customName || (p1&&p2?p1+' / '+p2:p1||p2||('Team '+(ti+1)));
-    return {name, playerIndices:[ti*2,ti*2+1].filter(i=>i<players.length)};
-  });
 
   let season;
   if(isBracket){
-    let semiAT1 = parseInt(document.getElementById('semiATeam1')?.value||'0');
-    let semiAT2 = parseInt(document.getElementById('semiATeam2')?.value||'1');
-    let semiBT1 = parseInt(document.getElementById('semiBTeam1')?.value||'2');
-    let semiBT2 = parseInt(document.getElementById('semiBTeam2')?.value||'3');
+    let isTeam = document.getElementById('bracketTeam').checked;
+    let slots, teams = [];
+
+    if(isTeam){
+      let numTeams = Math.ceil(players.length / 2);
+      teams = Array.from({length:numTeams},(_,ti)=>{
+        let customName = document.getElementById('teamName_'+ti)?.value.trim()||'';
+        let p1 = players[ti*2]?.name||''; let p2 = players[ti*2+1]?.name||'';
+        let tname = customName || (p1&&p2?p1+' / '+p2:p1||p2||('Team '+(ti+1)));
+        return {name:tname, playerIndices:[ti*2,ti*2+1].filter(i=>i<players.length)};
+      });
+      slots = teams.map(t=>t.name);
+    } else {
+      slots = players.map(p=>p.name);
+    }
+
+    let size = slots.length;
+    if(![2,4,8].includes(size)){
+      errEl.textContent = `Bracket mode requires exactly 2, 4, or 8 ${isTeam?'teams (4 or 8 players)':'players'}.`;
+      errEl.style.display = 'block'; return;
+    }
+
+    let matches = buildBracket(slots, size);
     season = {
-      id: Date.now(),
-      name,
+      id: Date.now(), name,
       createdAt: new Date().toISOString(),
       status: 'active',
       bracketMode: true,
-      players,
-      teams,
-      allowedGames,
-      bracketMatches: {
-        semiA: {teamA: semiAT1, teamB: semiAT2, result:null},
-        semiB: {teamA: semiBT1, teamB: semiBT2, result:null},
-        winnersF: {result:null},
-        losersF: {result:null}
-      },
-      rounds: []
+      bracketType: isTeam ? 'team' : 'solo',
+      bracketSize: size,
+      players, teams, allowedGames,
+      matches, rounds: []
     };
   } else {
     season = {
-      id: Date.now(),
-      name,
+      id: Date.now(), name,
       createdAt: new Date().toISOString(),
       status: 'active',
       seasonLength: Math.max(1, parseInt(document.getElementById('seasonLength').value)||2),
-      players,
-      teams: [],
-      allowedGames,
-      rounds: []
+      players, teams: [], allowedGames, rounds: []
     };
   }
 
+  errEl.style.display = 'none';
   let seasons = loadSeasons();
   seasons.push(season);
   saveSeasons(seasons);
@@ -717,7 +799,8 @@ function startSeason(){
 
   document.getElementById('setupScreen').classList.add('hidden');
   document.getElementById('seasonScreen').classList.remove('hidden');
-  document.getElementById('topnavTitle').textContent = season.name;
+  document.getElementById('headerInfoBtn').style.display = 'none';
+  document.getElementById('topnavTitle').childNodes[0].textContent = season.name + ' ';
   let isBracketSeason = !!season.bracketMode;
   document.getElementById('tabBracketBtn').style.display = isBracketSeason ? '' : 'none';
   document.getElementById('tabBracketStandingsBtn').style.display = isBracketSeason ? '' : 'none';
@@ -736,9 +819,10 @@ function renderSeasonDetail(){
   badge.className = 'status-badge '+s.status;
   let meta;
   if(s.bracketMode){
-    let m = s.bracketMatches;
-    let done = [m.semiA,m.semiB,m.winnersF,m.losersF].filter(x=>x.result).length;
-    meta = `Bracket · ${done}/4 matches · ${s.players.length} players`;
+    let done = (s.matches||[]).filter(x=>x.result).length;
+    let total = (s.matches||[]).length;
+    let typeLabel = s.bracketType==='solo' ? 'Solo' : 'Team';
+    meta = `${typeLabel} Bracket · ${done}/${total} matches · ${s.players.length} players`;
   } else {
     meta = (s.seasonLength ? s.rounds.length+'/'+s.seasonLength+' rounds' : s.rounds.length+' round'+(s.rounds.length!==1?'s':'')+' played') + ' · ' + s.players.length + ' players';
   }
@@ -751,14 +835,7 @@ function renderStandings(){
   let body = document.getElementById('standingsBody');
   let ind = calcIndividualStandings(s);
   let rankCls = ['r1','r2','r3'];
-
-  let hasTeamCol = s.teams && s.teams.length > 0;
-
-  let thead = `<thead><tr>
-    <th>Rank</th><th>Player</th>
-    <th>Rds</th><th>Pts</th>
-  </tr></thead>`;
-
+  let thead = `<thead><tr><th>Rank</th><th>Player</th><th>Rds</th><th>Pts</th></tr></thead>`;
   let rows = ind.map((p,rank)=>`
     <tr class="${rank===0&&p.pts>0?'leader':''}">
       <td><span class="rank-badge ${rankCls[rank]||''}">${rank+1}</span></td>
@@ -766,19 +843,12 @@ function renderStandings(){
       <td>${p.rounds}</td>
       <td style="color:#ffd447;font-weight:bold;">${fmtPts(p.pts)}</td>
     </tr>`).join('');
-
   body.innerHTML = `<table class="standings-table">${thead}<tbody>${rows}</tbody></table>`;
-
-  if(!s.rounds.length){
-    body.innerHTML += '<div class="no-rounds-note" style="margin-top:8px;">No rounds logged yet — standings will update as rounds are added.</div>';
-  }
+  if(!s.rounds.length) body.innerHTML += '<div class="no-rounds-note" style="margin-top:8px;">No rounds logged yet.</div>';
 }
 
 function calcIndividualStandings(s){
-  let totals = s.players.map((p,i)=>({
-    idx:i, name:p.name,
-    pts:0, rounds:0
-  }));
+  let totals = s.players.map((p,i)=>({idx:i, name:p.name, pts:0, rounds:0}));
   s.rounds.forEach(r=>{
     r.playerFinishes.forEach(f=>{
       if(f && totals[f.playerIdx]){
@@ -790,166 +860,185 @@ function calcIndividualStandings(s){
   return totals.sort((a,b)=>b.pts-a.pts||b.rounds-a.rounds||a.idx-b.idx);
 }
 
-function calcTeamTotals(s, ind){
-  if(!s.teams || !s.teams.length) return [];
-  let teams = s.teams.map((t,i)=>({name:t.name, idx:i, pts:0}));
-  ind.forEach(p=>{
-    if(p.team!==null && teams[p.team]) teams[p.team].pts += p.pts;
-  });
-  return teams.sort((a,b)=>b.pts-a.pts);
-}
-
 /* ── Bracket Tab ── */
 function renderBracket(){
   let s = activeSeason;
   let body = document.getElementById('bracketBody');
-  let m = s.bracketMatches;
-  let teams = s.teams || [];
-
-  function teamCard(matchKey, label, teamAIdx, teamBIdx, result){
-    let tA = teams[teamAIdx] || {name:'Team '+(teamAIdx+1)};
-    let tB = teams[teamBIdx] || {name:'Team '+(teamBIdx+1)};
-    return `<div class="bracket-match">
-      <div class="bracket-match-title">${label}</div>
-      ${result
-        ? `<div class="bracket-team winner"><div class="bracket-team-name">🏆 ${esc(result.winnerName)}</div>${result.score?`<span class="bracket-result">${esc(result.score)}</span>`:''}</div>
-           <div class="bracket-team loser"><div class="bracket-team-name">${esc(result.loserName)}</div></div>
-           <button class="bracket-log-btn" onclick="openBracketResult('${matchKey}')">Edit</button>`
-        : `<div class="bracket-team"><div class="bracket-team-name">${esc(tA.name)}</div></div>
-           <div class="bracket-team"><div class="bracket-team-name">${esc(tB.name)}</div></div>
-           <button class="bracket-log-btn" onclick="openBracketResult('${matchKey}')">+ Log Result</button>`
-      }
-    </div>`;
+  if(!s.matches || !s.matches.length){
+    body.innerHTML = '<div class="no-rounds-note">No bracket data found.</div>'; return;
   }
 
-  function finalCard(matchKey, label, medal1, medal2, nameA, labelA, nameB, labelB, result, locked){
-    return `<div class="bracket-match">
-      <div class="bracket-match-title">${label}</div>
-      ${locked
-        ? `<div class="bracket-pending">Waiting for semi-finals…</div>`
-        : result
-          ? `<div class="bracket-team winner"><div class="bracket-team-name">${medal1} ${esc(result.winnerName)}</div>${result.score?`<span class="bracket-result">${esc(result.score)}</span>`:''}</div>
-             <div class="bracket-team loser"><div class="bracket-team-name">${medal2} ${esc(result.loserName)}</div></div>
-             <button class="bracket-log-btn" onclick="openBracketResult('${matchKey}')">Edit</button>`
-          : `<div class="bracket-team"><div class="bracket-team-name">${esc(nameA)}</div><div class="bracket-team-players">${esc(labelA)}</div></div>
-             <div class="bracket-team"><div class="bracket-team-name">${esc(nameB)}</div><div class="bracket-team-players">${esc(labelB)}</div></div>
-             <button class="bracket-log-btn" onclick="openBracketResult('${matchKey}')">+ Log Result</button>`
-      }
-    </div>`;
+  // Group matches by round
+  let maxRound = Math.max(...s.matches.map(m=>m.round));
+  let html = '';
+
+  for(let r=0; r<=maxRound; r++){
+    let roundMatches = s.matches.filter(m=>m.round===r);
+    if(r > 0) html += `<div class="bracket-connector">▼</div>`;
+    roundMatches.forEach(match=>{
+      html += renderMatchCard(s, match);
+    });
+  }
+  body.innerHTML = html;
+}
+
+function renderMatchCard(s, match){
+  let [nameA, nameB] = getMatchParticipants(s, match);
+  // Check if this match is locked (feeder matches incomplete)
+  let feederIds = s.matches.filter(m=>m.feedsWinner===match.id||m.feedsLoser===match.id).map(m=>m.id);
+  let locked = feederIds.length > 0 && feederIds.some(fid=>!s.matches.find(m=>m.id===fid)?.result);
+
+  let innerHtml;
+  if(locked){
+    innerHtml = `<div class="bracket-pending">Waiting for previous round…</div>`;
+  } else if(match.result){
+    // Parse score string "TeamA X pts · TeamB Y pts" to show inline per row
+    let scoreA = '', scoreB = '';
+    if(match.result.score){
+      let parts = match.result.score.split(' · ');
+      // Find which part belongs to winner vs loser
+      parts.forEach(part=>{
+        if(part.startsWith(match.result.winnerName+' ')) scoreA = part.slice(match.result.winnerName.length+1);
+        else if(part.startsWith(match.result.loserName+' ')) scoreB = part.slice(match.result.loserName.length+1);
+      });
+    }
+    innerHtml = `
+      <div class="bracket-team winner"><div class="bracket-team-name">${esc(match.result.winnerName)} 🏆</div>${scoreA?`<span class="bracket-result">${esc(scoreA)}</span>`:''}</div>
+      <div class="bracket-team loser"><div class="bracket-team-name">${esc(match.result.loserName)}</div>${scoreB?`<span class="bracket-result">${esc(scoreB)}</span>`:''}</div>
+      <button class="bracket-log-btn" onclick="openBracketResult('${match.id}')">Edit</button>`;
+  } else {
+    innerHtml = `
+      <div class="bracket-team"><div class="bracket-team-name">${esc(nameA)}</div></div>
+      <div class="bracket-team"><div class="bracket-team-name">${esc(nameB)}</div></div>
+      <button class="bracket-log-btn" onclick="openBracketResult('${match.id}')">+ Log Result</button>`;
   }
 
-  let semisLogged = m.semiA.result && m.semiB.result;
-  let wA = m.semiA.result?.winnerName||'?', wB = m.semiB.result?.winnerName||'?';
-  let lA = m.semiA.result?.loserName||'?',  lB = m.semiB.result?.loserName||'?';
-
-  body.innerHTML =
-    teamCard('semiA', 'Semi-Final A · Holes 1–9', m.semiA.teamA??0, m.semiA.teamB??1, m.semiA.result) +
-    teamCard('semiB', 'Semi-Final B · Holes 1–9', m.semiB.teamA??2, m.semiB.teamB??3, m.semiB.result) +
-    `<div class="bracket-connector">▼ Finals</div>` +
-    finalCard('winnersF','🏆 Winners Final · Holes 10–18','🥇','🥈', wA,'Winner Semi A', wB,'Winner Semi B', m.winnersF.result, !semisLogged) +
-    finalCard('losersF','Losers Final · Holes 10–18','🥉','4th', lA,'Loser Semi A', lB,'Loser Semi B', m.losersF.result, !semisLogged);
+  return `<div class="bracket-match">
+    <div class="bracket-match-title">${esc(match.label)}</div>
+    ${innerHtml}
+  </div>`;
 }
 
 function renderBracketStandings(){
   let s = activeSeason;
-  let m = s.bracketMatches;
   let body = document.getElementById('bracketStandingsBody');
+  let finalMatch = (s.matches||[]).find(m=>m.id==='final');
+  let losersMatch = (s.matches||[]).find(m=>m.id==='losersF');
+
+  function parseScore(result){
+    if(!result?.score) return {winScore:'', loseScore:''};
+    let parts = result.score.split(' · ');
+    let winScore = '', loseScore = '';
+    parts.forEach(p=>{
+      if(p.startsWith(result.winnerName+' ')) winScore = p.slice(result.winnerName.length+1);
+      else if(p.startsWith(result.loserName+' ')) loseScore = p.slice(result.loserName.length+1);
+    });
+    return {winScore, loseScore};
+  }
 
   let positions = [];
-  if(m.winnersF.result){
-    positions.push({pos:1, medal:'🥇', label:'1st Place', name: m.winnersF.result.winnerName, score: m.winnersF.result.score, highlight:true});
-    positions.push({pos:2, medal:'🥈', label:'2nd Place', name: m.winnersF.result.loserName, score: null, highlight:false});
+  if(finalMatch?.result){
+    let {winScore, loseScore} = parseScore(finalMatch.result);
+    positions.push({pos:1, medal:'🥇', label:'1st Place', name:finalMatch.result.winnerName, score:winScore, highlight:true});
+    positions.push({pos:2, medal:'🥈', label:'2nd Place', name:finalMatch.result.loserName,  score:loseScore, highlight:false});
   }
-  if(m.losersF.result){
-    positions.push({pos:3, medal:'🥉', label:'3rd Place', name: m.losersF.result.winnerName, score: m.losersF.result.score, highlight:false});
-    positions.push({pos:4, medal:'',   label:'4th Place', name: m.losersF.result.loserName,  score: null, highlight:false});
+  if(losersMatch?.result){
+    let {winScore, loseScore} = parseScore(losersMatch.result);
+    positions.push({pos:3, medal:'🥉', label:'3rd Place', name:losersMatch.result.winnerName, score:winScore, highlight:false});
+    positions.push({pos:4, medal:'',   label:'4th Place', name:losersMatch.result.loserName,  score:loseScore, highlight:false});
   }
 
   if(!positions.length){
-    body.innerHTML = '<div class="no-rounds-note">Finals not yet played — results will appear here once all matches are complete.</div>';
-    return;
+    let singleFinal = (s.matches||[]).length===1 && (s.matches||[])[0];
+    if(singleFinal?.result){
+      let {winScore, loseScore} = parseScore(singleFinal.result);
+      positions.push({pos:1, medal:'🥇', label:'Winner',    name:singleFinal.result.winnerName, score:winScore, highlight:true});
+      positions.push({pos:2, medal:'🥈', label:'Runner-up', name:singleFinal.result.loserName,  score:loseScore, highlight:false});
+    } else {
+      body.innerHTML = '<div class="no-rounds-note">Finals not yet played.</div>'; return;
+    }
   }
 
-  let cards = positions.map(p=>`
+  body.innerHTML = positions.map(p=>`
     <div style="background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid ${p.highlight?'rgba(255,212,71,0.45)':'rgba(255,212,71,0.15)'};border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;">
       <div style="font-size:28px;flex-shrink:0;min-width:36px;text-align:center;">${p.medal||p.pos}</div>
       <div style="flex:1;min-width:0;">
         <div style="font-size:11px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.45);margin-bottom:2px;">${p.label}</div>
         <div style="font-size:16px;font-weight:bold;color:${p.highlight?'#ffd447':'#fff'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(p.name)}</div>
-        ${p.score?`<div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px;font-family:'Courier New',monospace;">${esc(p.score)}</div>`:''}
       </div>
+      ${p.score?`<div style="font-family:'Courier New',monospace;font-size:18px;font-weight:bold;color:${p.highlight?'#ffd447':'rgba(255,255,255,0.5)'};flex-shrink:0;">${esc(p.score)}</div>`:''}
     </div>`).join('');
-
-  body.innerHTML = cards;
-  if(positions.length < 4){
-    body.innerHTML += '<div class="no-rounds-note" style="margin-top:4px;">Losers final not yet played.</div>';
+  if(losersMatch && !losersMatch.result && finalMatch?.result){
+    body.innerHTML += '<div class="no-rounds-note" style="margin-top:4px;">3rd place match not yet played.</div>';
   }
 }
 
-let bracketResultMatch = null;
-
-function openBracketResult(matchKey){
+function openBracketResult(matchId){
   let s = activeSeason;
-  let m = s.bracketMatches;
-  bracketResultMatch = matchKey;
-  let teams = s.teams || [];
+  bracketResultMatch = matchId;
+  let match = s.matches.find(m=>m.id===matchId);
+  if(!match) return;
+  let [nameA, nameB] = getMatchParticipants(s, match);
 
-  let teamOptions = [];
-  if(matchKey==='semiA'){
-    let ti = m.semiA.teamA??0, tj = m.semiA.teamB??1;
-    teamOptions = [teams[ti]?.name||'Team '+(ti+1), teams[tj]?.name||'Team '+(tj+1)];
-  } else if(matchKey==='semiB'){
-    let ti = m.semiB.teamA??2, tj = m.semiB.teamB??3;
-    teamOptions = [teams[ti]?.name||'Team '+(ti+1), teams[tj]?.name||'Team '+(tj+1)];
-  } else if(matchKey==='winnersF'){
-    teamOptions = [m.semiA.result?.winnerName||'?', m.semiB.result?.winnerName||'?'];
-  } else if(matchKey==='losersF'){
-    teamOptions = [m.semiA.result?.loserName||'?', m.semiB.result?.loserName||'?'];
+  // For team Stableford bracket: redirect to stableford.html with player context
+  if(s.bracketType === 'team' && s.allowedGames && s.allowedGames.includes('stableford')){
+    let teamAIdx = s.teams.findIndex(t=>t.name===nameA);
+    let teamBIdx = s.teams.findIndex(t=>t.name===nameB);
+    let teamAPlayers = teamAIdx >= 0
+      ? (s.teams[teamAIdx].playerIndices||[]).map(i=>s.players[i]?.name).filter(Boolean)
+      : [];
+    let teamBPlayers = teamBIdx >= 0
+      ? (s.teams[teamBIdx].playerIndices||[]).map(i=>s.players[i]?.name).filter(Boolean)
+      : [];
+    // Fallback: derive players from slot names if team indices not found
+    if(!teamAPlayers.length) teamAPlayers = [nameA];
+    if(!teamBPlayers.length) teamBPlayers = [nameB];
+    let params = new URLSearchParams({
+      tournamentId: s.id,
+      matchId,
+      teamAPlayers: teamAPlayers.join(','),
+      teamBPlayers: teamBPlayers.join(','),
+      teamAName: nameA,
+      teamBName: nameB
+    });
+    window.location.href = 'stableford.html?' + params.toString();
+    return;
   }
 
-  let existing = m[matchKey]?.result;
-  let titles = {semiA:'Semi-Final A',semiB:'Semi-Final B',winnersF:'Winners Final',losersF:'Losers Final'};
+  let existing = match.result;
+  let titles = {semiA:'Semi-Final A', semiB:'Semi-Final B', final:'Final', losersF:'Losers Final'};
 
-  document.getElementById('bracketModalTitle').textContent = titles[matchKey]||matchKey;
+  document.getElementById('bracketModalTitle').textContent = match.label || titles[matchId] || matchId;
   let body = document.getElementById('bracketModalBody');
   body.innerHTML = `
     <div class="modal-section-label">Winner</div>
     <select class="select-input" id="brWinner">
-      ${teamOptions.map(p=>`<option value="${esc(p)}" ${existing?.winnerName===p?'selected':''}>${esc(p)}</option>`).join('')}
+      <option value="${esc(nameA)}" ${existing?.winnerName===nameA?'selected':''}>${esc(nameA)}</option>
+      <option value="${esc(nameB)}" ${existing?.winnerName===nameB?'selected':''}>${esc(nameB)}</option>
     </select>
     <div class="modal-section-label">Score / Notes <span style="font-size:10px;opacity:.5;">(optional)</span></div>
     <input class="name-input" id="brScore" placeholder="e.g. −3 vs par, won 4&3…" value="${esc(existing?.score||'')}">
     <button onclick="saveBracketResult()">Save Result</button>`;
-
   document.getElementById('bracketResultModal').classList.remove('hidden');
 }
 
 function saveBracketResult(){
   let s = activeSeason;
-  let matchKey = bracketResultMatch;
-  let m = s.bracketMatches;
-  let teams = s.teams || [];
-
+  let matchId = bracketResultMatch;
   let winnerName = document.getElementById('brWinner').value;
   let score = document.getElementById('brScore').value.trim();
 
-  let opts = [];
-  if(matchKey==='semiA'){ let ti=m.semiA.teamA??0,tj=m.semiA.teamB??1; opts=[teams[ti]?.name||'Team '+(ti+1),teams[tj]?.name||'Team '+(tj+1)]; }
-  else if(matchKey==='semiB'){ let ti=m.semiB.teamA??2,tj=m.semiB.teamB??3; opts=[teams[ti]?.name||'Team '+(ti+1),teams[tj]?.name||'Team '+(tj+1)]; }
-  else if(matchKey==='winnersF') opts=[m.semiA.result?.winnerName||'?',m.semiB.result?.winnerName||'?'];
-  else if(matchKey==='losersF') opts=[m.semiA.result?.loserName||'?',m.semiB.result?.loserName||'?'];
-
-  let loserName = opts.find(p=>p!==winnerName) || opts[1] || '?';
+  let match = s.matches.find(m=>m.id===matchId);
+  let [nameA, nameB] = getMatchParticipants(s, match);
+  let loserName = winnerName===nameA ? nameB : nameA;
 
   let seasons = loadSeasons();
   let sv = seasons.find(x=>x.id===s.id);
   if(!sv) return;
-  sv.bracketMatches[matchKey].result = {winnerName, loserName, score};
-  // Auto-complete if all 4 matches done
-  if(sv.bracketMatches.semiA.result && sv.bracketMatches.semiB.result &&
-     sv.bracketMatches.winnersF.result && sv.bracketMatches.losersF.result){
-    sv.status = 'complete';
-  }
+  let sm = sv.matches.find(m=>m.id===matchId);
+  if(!sm) return;
+  sm.result = {winnerName, loserName, score};
+  if(sv.matches.every(m=>m.result)) sv.status = 'complete';
   saveSeasons(seasons);
   activeSeason = sv;
 
@@ -968,15 +1057,11 @@ function renderRounds(){
 
   document.getElementById('progressBarSection').innerHTML = `
     <div class="progress-bar-wrap">
-      <div class="progress-bar-label">
-        <span>Progress</span><span>${progressLabel}</span>
-      </div>
+      <div class="progress-bar-label"><span>Progress</span><span>${progressLabel}</span></div>
       ${total ? `<div class="progress-bar"><div class="progress-bar-fill" style="width:${pct}%"></div></div>` : ''}
     </div>`;
 
   let body = document.getElementById('roundsBody');
-
-  // Play a Round cards
   let playCards = '';
   if(s.allowedGames && s.allowedGames.length){
     let cards = s.allowedGames.map(g=>{
@@ -987,14 +1072,10 @@ function renderRounds(){
         <span class="play-round-card-label">${esc(GAME_LABELS[g]||g)}</span>
       </a>`;
     }).join('');
-    playCards = `<div class="play-section-label">Play a Round</div>
-      <div class="play-round-grid">${cards}</div>`;
+    playCards = `<div class="play-section-label">Play a Round</div><div class="play-round-grid">${cards}</div>`;
   }
 
-  if(!played){
-    body.innerHTML = playCards + '<div class="no-rounds-note">No rounds logged yet.</div>';
-    return;
-  }
+  if(!played){ body.innerHTML = playCards + '<div class="no-rounds-note">No rounds logged yet.</div>'; return; }
 
   body.innerHTML = playCards + `<div class="logged-section-label">Logged Rounds</div>` + [...s.rounds].reverse().map(r=>{
     let date = new Date(r.date).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
@@ -1027,8 +1108,7 @@ function renderRounds(){
 }
 
 function toggleRound(id){
-  if(expandedRounds.has(id)) expandedRounds.delete(id);
-  else expandedRounds.add(id);
+  if(expandedRounds.has(id)) expandedRounds.delete(id); else expandedRounds.add(id);
   renderRounds();
 }
 
@@ -1038,10 +1118,7 @@ function deleteRound(id){
   let s = seasons.find(x=>x.id===activeSeason.id);
   if(!s) return;
   s.rounds = s.rounds.filter(r=>r.id!==id);
-  // Re-evaluate completion status after deletion
-  if(s.status === 'complete' && s.seasonLength !== null && s.rounds.length < s.seasonLength){
-    s.status = 'active';
-  }
+  if(s.status === 'complete' && s.seasonLength !== null && s.rounds.length < s.seasonLength) s.status = 'active';
   saveSeasons(seasons);
   activeSeason = s;
   expandedRounds.delete(id);
@@ -1065,7 +1142,7 @@ function saveName(){
   s.name = newName;
   saveSeasons(seasons);
   activeSeason = s;
-  document.getElementById('topnavTitle').textContent = newName;
+  document.getElementById('topnavTitle').childNodes[0].textContent = newName + ' ';
   document.getElementById('seasonDetailName').textContent = newName;
   renderSeasonDetail();
 }
@@ -1092,10 +1169,8 @@ function confirmDelete(){
 /* ── Log Round Modal ── */
 function openLogRound(){
   let s = activeSeason;
-  // Populate game selector
   let gameSel = document.getElementById('logGame');
   gameSel.innerHTML = s.allowedGames.map(g=>`<option value="${g}">${GAME_LABELS[g]||g}</option>`).join('');
-  // Default date to today
   document.getElementById('logDate').value = new Date().toLocaleDateString('en-CA');
   document.getElementById('logCourse').value = '';
   document.getElementById('logError').style.display = 'none';
@@ -1104,9 +1179,7 @@ function openLogRound(){
   document.getElementById('logRoundModal').classList.remove('hidden');
 }
 
-function closeLogRound(){
-  document.getElementById('logRoundModal').classList.add('hidden');
-}
+function closeLogRound(){ document.getElementById('logRoundModal').classList.add('hidden'); }
 
 function renderFinishRows(){
   let s = activeSeason;
@@ -1138,10 +1211,8 @@ function updatePtsPreview(){
     let v = parseInt(document.getElementById('pos_'+i).value);
     return {playerIdx:i, position:isNaN(v)||v<1 ? null : v};
   });
-
   let game = document.getElementById('logGame').value;
   let calculated = calcPoints(positions, game, s);
-
   s.players.forEach((_,i)=>{
     let f = calculated.find(x=>x.playerIdx===i);
     let el = document.getElementById('pts_'+i);
@@ -1157,35 +1228,25 @@ function saveRound(){
     let v = parseInt(document.getElementById('pos_'+i).value);
     return {playerIdx:i, position:isNaN(v)||v<1 ? null : v};
   });
-
   let validCount = positions.filter(p=>p.position!==null).length;
-  if(validCount < 1){
-    document.getElementById('logError').style.display = 'block';
-    return;
-  }
+  if(validCount < 1){ document.getElementById('logError').style.display = 'block'; return; }
   document.getElementById('logError').style.display = 'none';
 
   let game = document.getElementById('logGame').value;
   let playerFinishes = calcPoints(positions, game, s);
-
   let round = {
-    id: Date.now(),
-    game,
+    id: Date.now(), game,
     date: new Date(document.getElementById('logDate').value+'T12:00:00').toISOString(),
     course: document.getElementById('logCourse').value.trim(),
-    playerFinishes,
-    notes: ''
+    playerFinishes, notes: ''
   };
-
   let seasons = loadSeasons();
   let sv = seasons.find(x=>x.id===s.id);
   if(!sv) return;
   sv.rounds.push(round);
-  // Auto-complete if season length reached
   if(sv.seasonLength !== null && sv.rounds.length >= sv.seasonLength) sv.status = 'complete';
   saveSeasons(seasons);
   activeSeason = sv;
-
   closeLogRound();
   renderSeasonDetail();
   showTab('rounds');
@@ -1194,81 +1255,67 @@ function saveRound(){
 /* ── Points Calculation ── */
 function calcPoints(positions, game, season){
   const BASE_PTS = [3,2,1];
-
-  // For team games: all position-1 players get 3pts, all position-2 players get 0pts
   if(TEAM_GAMES.has(game)){
-    return positions.map(p=>({
-      playerIdx: p.playerIdx,
-      position: p.position,
-      points: p.position===1 ? BASE_PTS[0] : 0
-    }));
+    return positions.map(p=>({playerIdx:p.playerIdx, position:p.position, points:p.position===1?BASE_PTS[0]:0}));
   }
-
-  // Individual / group games: proper position-based points with ties
   let playing = positions.filter(p=>p.position!==null);
-  // Group by position
   let byPos = {};
-  playing.forEach(p=>{
-    if(!byPos[p.position]) byPos[p.position] = [];
-    byPos[p.position].push(p.playerIdx);
-  });
-
+  playing.forEach(p=>{ if(!byPos[p.position]) byPos[p.position]=[]; byPos[p.position].push(p.playerIdx); });
   let result = positions.map(p=>({playerIdx:p.playerIdx, position:p.position, points:0}));
-
-  // Sorted unique positions
-  let sortedPos = Object.keys(byPos).map(Number).sort((a,b)=>a-b);
-  let rank = 0; // 0-indexed rank for BASE_PTS lookup
-  sortedPos.forEach(pos=>{
-    let tied = byPos[pos];
-    let slots = tied.length;
-    // Sum points for these rank slots
+  let rank = 0;
+  Object.keys(byPos).map(Number).sort((a,b)=>a-b).forEach(pos=>{
+    let tied = byPos[pos], slots = tied.length;
     let total = 0;
-    for(let i=0;i<slots;i++){
-      total += BASE_PTS[rank+i] || 0;
-    }
-    let share = total / slots;
-    tied.forEach(idx=>{
-      let r = result.find(x=>x.playerIdx===idx);
-      if(r) r.points = share;
-    });
+    for(let i=0;i<slots;i++) total += BASE_PTS[rank+i]||0;
+    let share = total/slots;
+    tied.forEach(idx=>{ let r=result.find(x=>x.playerIdx===idx); if(r) r.points=share; });
     rank += slots;
   });
-
   return result;
 }
 
 /* ── Helpers ── */
-function fmtPts(v){
-  if(v===0) return '0';
-  // Round to 1 decimal only if not whole
-  return v % 1 === 0 ? String(v) : v.toFixed(1);
-}
-
-function ord(n){
-  if(n===1) return '1st';
-  if(n===2) return '2nd';
-  if(n===3) return '3rd';
-  return n+'th';
-}
-
+function fmtPts(v){ return v%1===0 ? String(v) : v.toFixed(1); }
+function ord(n){ if(n===1)return '1st'; if(n===2)return '2nd'; if(n===3)return '3rd'; return n+'th'; }
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 /* ── Modal backdrop close ── */
-document.getElementById('logRoundModal').addEventListener('click', function(e){
-  if(e.target===this) closeLogRound();
-});
-document.getElementById('bracketResultModal').addEventListener('click', function(e){
-  if(e.target===this) document.getElementById('bracketResultModal').classList.add('hidden');
-});
+document.getElementById('logRoundModal').addEventListener('click', function(e){ if(e.target===this) closeLogRound(); });
+document.getElementById('bracketResultModal').addEventListener('click', function(e){ if(e.target===this) document.getElementById('bracketResultModal').classList.add('hidden'); });
 
 /* ── Init ── */
 (function(){
   let params = new URLSearchParams(location.search);
   let idParam = parseInt(params.get('id'));
-  if(idParam){
-    let s = loadSeasons().find(x=>x.id===idParam);
-    if(s){ openSeason(s.id); return; }
+  let matchResult = params.get('matchResult');
+
+  if(idParam && matchResult){
+    // Returning from stableford.html with a completed bracket match result
+    let teamAScore = parseInt(params.get('teamAScore'))||0;
+    let teamBScore = parseInt(params.get('teamBScore'))||0;
+    let teamAName = params.get('teamAName')||'Team A';
+    let teamBName = params.get('teamBName')||'Team B';
+    let winnerName = teamAScore >= teamBScore ? teamAName : teamBName;
+    let loserName  = teamAScore >= teamBScore ? teamBName : teamAName;
+    let score = teamAName+' '+teamAScore+' pts · '+teamBName+' '+teamBScore+' pts';
+
+    let seasons = loadSeasons();
+    let sv = seasons.find(x=>x.id===idParam);
+    if(sv){
+      let sm = (sv.matches||[]).find(m=>m.id===matchResult);
+      if(sm){
+        sm.result = {winnerName, loserName, score};
+        if(sv.matches.every(m=>m.result)) sv.status = 'complete';
+        saveSeasons(seasons);
+      }
+      // Clean URL then open the tournament
+      history.replaceState(null,'','tournaments.html?id='+idParam);
+      let s = loadSeasons().find(x=>x.id===idParam);
+      if(s){ openSeason(s.id); return; }
+    }
   }
+
+  if(idParam){ let s=loadSeasons().find(x=>x.id===idParam); if(s){ openSeason(s.id); return; } }
   showSeasonList();
 })();
 </script>

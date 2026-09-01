@@ -74,11 +74,14 @@ input[type="date"].course-input{-webkit-appearance:none;appearance:none;color-sc
         <div class="setup-section-label">Round Details</div>
         <div class="date-course-row" style="margin-bottom:8px;">
           <input type="date" class="course-input" id="roundDate" style="color-scheme:dark;">
-          <input class="course-input" id="courseInput" placeholder="Course name">
+          <select class="select-input" id="seasonSelect" onchange="onSeasonPick()">
+            <option value="">— No Season —</option>
+          </select>
         </div>
-        <select class="select-input" id="seasonSelect" onchange="onSeasonPick()">
-          <option value="">— No Season —</option>
-        </select>
+        <div class="date-course-row">
+          <input class="course-input" id="courseInput" placeholder="Course name">
+          <input type="number" class="course-input" id="parInput" placeholder="Par 72" min="18" max="100" inputmode="numeric">
+        </div>
       </div>
 
       <!-- Players -->
@@ -214,11 +217,13 @@ function saveRound(){
 
   const dateVal = document.getElementById('roundDate').value;
   const course = document.getElementById('courseInput').value.trim();
+  const coursePar = parseInt(document.getElementById('parInput').value) || null;
   const record = {
     id: Date.now(),
     game: 'stroke',
     date: new Date(dateVal+'T12:00:00').toISOString(),
     course,
+    coursePar,
     players: players.map(p=>p.name),
     playerTotals: players.map(p=>p.score),
     handicaps: players.map(p=>p.hcp),

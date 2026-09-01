@@ -85,11 +85,21 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 .tag-good{color:#2ecc71;font-weight:bold;}
 .tag-bad{color:#ff4d4d;font-weight:bold;}
 .sboard{width:100%;border-collapse:collapse;font-size:13px;padding:4px 0;}
-.sboard th{font-size:9px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:#ffd447;padding:8px 12px 6px;border-bottom:1px solid rgba(255,212,71,0.1);}
+.sboard th{font-size:9px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:#ffd447;padding:8px 12px 6px;border-bottom:1px solid rgba(255,212,71,0.1);white-space:nowrap;}
 .sboard td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;vertical-align:top;}
 .sboard tr:last-child td{border-bottom:none;}
 .rank-num{display:inline-block;width:18px;font-size:11px;color:rgba(255,255,255,0.85);font-family:'Courier New',monospace;}
 .mono{font-family:'Courier New',monospace;}
+/* ── Section label ── */
+.rounds-section-label{font-size:13px;font-weight:bold;letter-spacing:.5px;color:rgba(255,212,71,0.7);padding:14px 2px 6px;}
+/* ── Hall of Fame cards ── */
+.hof-card{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;}
+.hof-icon{font-size:22px;flex-shrink:0;}
+.hof-body{flex:1;min-width:0;}
+.hof-label{font-size:10px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.5);margin-bottom:2px;}
+.hof-name{font-size:14px;font-weight:bold;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hof-meta{font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px;}
+.hof-value{font-size:18px;font-weight:bold;color:var(--gold);font-family:'Courier New',monospace;flex-shrink:0;}
 /* ── Pill nav ── */
 .bottom-nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:1000;pointer-events:none;}
 .nav-pill{display:flex;align-items:center;gap:2px;background:#0e1a12;border:1px solid rgba(255,212,71,0.28);border-radius:50px;padding:6px 10px;box-shadow:0 4px 24px rgba(0,0,0,0.6);pointer-events:all;}
@@ -106,10 +116,17 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 
 <div class="page-header">Round Statistics</div>
 
+<!-- Tab bar -->
+<div style="display:flex;margin:12px 14px 0;background:#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:12px;overflow:hidden;">
+  <button id="tabStats" onclick="showHistoryTab('stats')" style="flex:1;padding:11px 4px;background:none;border:none;border-bottom:2px solid #ffd447;color:#ffd447;font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;box-shadow:none;margin:0;font-family:'Georgia','Times New Roman',serif;">Stats</button>
+  <button id="tabHof" onclick="showHistoryTab('hof')" style="flex:1;padding:11px 4px;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,212,71,0.4);font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;box-shadow:none;margin:0;font-family:'Georgia','Times New Roman',serif;">Honours</button>
+  <button id="tabHcp" onclick="showHistoryTab('hcp')" style="flex:1;padding:11px 4px;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,212,71,0.4);font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;box-shadow:none;margin:0;font-family:'Georgia','Times New Roman',serif;">Handicap</button>
+</div>
+
 <div class="scroll-area">
 
-  <!-- ── INSIGHTS ── -->
-  <div class="tab-panel active" id="tab-insights">
+  <!-- ── STATISTICS ── -->
+  <div class="tab-panel active" id="tab-stats">
     <div class="filter-bar" id="insightsFilterBar">
       <span class="pill active" data-game="all">All</span>
       <span class="pill" data-game="stroke">Stroke Play</span>
@@ -120,11 +137,32 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
     <div id="insightsContent"></div>
   </div>
 
+  <!-- ── HALL OF FAME ── -->
+  <div class="tab-panel" id="tab-hof">
+    <div id="hofContent"></div>
+  </div>
+
+  <!-- ── HANDICAP ── -->
+  <div class="tab-panel" id="tab-hcp">
+    <div id="handicapContent"></div>
+  </div>
+
 </div>
 
 <script src="season.js"></script>
 <script>
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+
+function showHistoryTab(tab){
+  ['stats','hof','hcp'].forEach(t=>{
+    let panel = document.getElementById('tab-'+t);
+    let btn = document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1));
+    let active = t === tab;
+    panel.classList.toggle('active', active);
+    btn.style.borderBottom = active ? '2px solid #ffd447' : '2px solid transparent';
+    btn.style.color = active ? '#ffd447' : 'rgba(255,212,71,0.4)';
+  });
+}
 
 const GAME_LABELS = {
   stableford:'Stableford', banker:'Banker',
@@ -225,14 +263,14 @@ function renderInsights(){
         .map(([name,d],rank)=>[
           `<span class="rank-num">${rank+1}</span>`,
           esc(name),
+          `<span class="ins-muted">${pct(d.eagle+d.birdie,d.holes)}</span>`,
           `<span class="ins-muted">${pct(d.par,d.holes)}</span>`,
-          `<span class="ins-muted">${pct(d.bogey,d.holes)}</span>`,
-          `<span class="ins-muted">${pct(d.double,d.holes)}</span>`
+          `<span class="ins-muted">${pct(d.bogey+d.double,d.holes)}</span>`
         ]);
       sections += `<div class="section-title">Stableford</div>
         <div class="ins-panel">${sboardTable(['#','Player','Pts/Rnd','Wins','Rounds'], rows)}</div>
-        <div class="section-title" style="margin-top:4px;">Score Distribution</div>
-        <div class="ins-panel">${sboardTable(['#','Player','Par%','Bogey%','Dbl+%'], dRows)}</div>`;
+        <div class="section-title" style="margin-top:4px;">Stableford — Distribution</div>
+        <div class="ins-panel">${sboardTable(['#','Player','Birdie+%','Par%','Bogey+%'], dRows)}</div>`;
     }
   }
 
@@ -424,6 +462,180 @@ function renderInsights(){
 
 // Init
 renderInsights();
+
+/* ══════════════════════════════════════
+   HALL OF FAME
+══════════════════════════════════════ */
+function renderHallOfFame(){
+  let el = document.getElementById('hofContent');
+  let all = loadHistory();
+  if(!all.length){
+    el.innerHTML = '<div class="empty-state">No rounds saved yet.</div>';
+    return;
+  }
+
+  let records = [];
+
+  // Highest Stableford score (single round, single player)
+  let sfRounds = all.filter(r=>r.game==='stableford' && r.players && r.playerTotals);
+  if(sfRounds.length){
+    let best = null;
+    sfRounds.forEach(r=>{
+      r.players.forEach((name,i)=>{
+        let pts = r.playerTotals[i]||0;
+        if(!best || pts > best.pts) best = {pts, name, date: r.date, course: r.course};
+      });
+    });
+    if(best) records.push({icon:'⭐', label:'Highest Stableford', value: best.pts+' pts', name: best.name, date: best.date, course: best.course});
+  }
+
+  // Lowest stroke score (single round, single player)
+  let stRounds = all.filter(r=>r.game==='stroke' && r.players && r.playerTotals);
+  if(stRounds.length){
+    let best = null;
+    stRounds.forEach(r=>{
+      r.players.forEach((name,i)=>{
+        let score = r.playerTotals[i]||0;
+        if(score > 0 && (!best || score < best.score)) best = {score, name, date: r.date, course: r.course};
+      });
+    });
+    if(best){
+      let par = best.course ? null : null;
+      // try to get par from holeParDist
+      let round = stRounds.find(r=>r.players.includes(best.name) && r.date===best.date);
+      if(round && round.holeParDist) par = round.holeParDist.reduce((s,h)=>s+(h.par||4),0);
+      let disp = par ? best.score + ' ('+fmtVsPar(best.score-par)+')' : String(best.score);
+      records.push({icon:'🎯', label:'Lowest Stroke Score', value: disp, name: best.name, date: best.date, course: best.course});
+    }
+  }
+
+  // Biggest Banker single-round net win
+  let bkRounds = all.filter(r=>r.game==='banker' && r.players && r.playerNetTotals);
+  if(bkRounds.length){
+    let best = null;
+    bkRounds.forEach(r=>{
+      r.players.forEach((name,i)=>{
+        let net = r.playerNetTotals[i]||0;
+        if(!best || net > best.net) best = {net, name, date: r.date, course: r.course};
+      });
+    });
+    if(best && best.net > 0) records.push({icon:'💰', label:'Biggest Banker Win', value: '+$'+best.net, name: best.name, date: best.date, course: best.course});
+  }
+
+  // Most Stableford wins
+  if(sfRounds.length){
+    let wins = {};
+    sfRounds.forEach(r=>{
+      let max = Math.max(...r.playerTotals);
+      r.players.forEach((name,i)=>{ if(r.playerTotals[i]===max){ wins[name]=(wins[name]||0)+1; } });
+    });
+    let top = Object.entries(wins).sort((a,b)=>b[1]-a[1])[0];
+    if(top) records.push({icon:'🏆', label:'Most Stableford Wins', value: top[1]+' wins', name: top[0], date: null, course: null});
+  }
+
+  // Best scramble vs par
+  let scRounds = all.filter(r=>r.game==='scramble' && r.teamScores && r.teamVsPar);
+  if(scRounds.length){
+    let best = null;
+    scRounds.forEach(r=>{
+      [0,1].forEach(ti=>{
+        let vp = r.teamVsPar[ti];
+        if(vp!=null && (!best || vp < best.vp)){
+          let getLabel = (ti) => {
+            if(r.players && r.players[ti*2]) return [r.players[ti*2], r.players[ti*2+1]].filter(Boolean).join(' & ');
+            return 'Team '+(ti===0?'A':'B');
+          };
+          best = {vp, name: getLabel(ti), date: r.date, course: r.course};
+        }
+      });
+    });
+    if(best) records.push({icon:'⛳', label:'Best Scramble Score', value: fmtVsPar(best.vp), name: best.name, date: best.date, course: best.course});
+  }
+
+  if(!records.length){
+    el.innerHTML = '<div class="empty-state">No records yet.</div>';
+    return;
+  }
+
+  let html = records.map(rec=>`
+    <div class="hof-card">
+      <div class="hof-icon">${rec.icon}</div>
+      <div class="hof-body">
+        <div class="hof-label">${esc(rec.label)}</div>
+        <div class="hof-name">${esc(rec.name)}</div>
+        ${rec.date||rec.course ? `<div class="hof-meta">${[rec.course?esc(rec.course):null, rec.date?fmtDate(rec.date):null].filter(Boolean).join(' · ')}</div>` : ''}
+      </div>
+      <div class="hof-value">${esc(rec.value)}</div>
+    </div>
+  `).join('');
+
+  el.innerHTML = html;
+}
+
+/* ══════════════════════════════════════
+   HANDICAP TRACKER
+══════════════════════════════════════ */
+function renderHandicap(){
+  let el = document.getElementById('handicapContent');
+  let all = loadHistory();
+  let stRounds = all.filter(r=>r.game==='stroke' && r.players && r.playerTotals && r.holeParDist && r.holeParDist.length);
+  if(!stRounds.length){
+    el.innerHTML = '<div class="empty-state">Play some stroke rounds to track handicap index.</div>';
+    return;
+  }
+
+  // Collect all players
+  let playerSet = new Set();
+  stRounds.forEach(r=>r.players.forEach(n=>playerSet.add(n)));
+
+  let html = '';
+  playerSet.forEach(playerName=>{
+    let myRounds = stRounds
+      .filter(r=>r.players.includes(playerName))
+      .map(r=>{
+        let idx = r.players.indexOf(playerName);
+        let score = r.playerTotals[idx];
+        let par = r.holeParDist.reduce((s,h)=>s+(h.par||4),0);
+        let slope = r.courseSlope || 113;
+        let rating = r.courseRating || par;
+        // Handicap differential: (Score - Course Rating) x 113 / Slope
+        let diff = ((score - rating) * 113 / slope);
+        return {date: r.date, course: r.course||'Unknown', score, par, diff: +diff.toFixed(1)};
+      })
+      .sort((a,b)=>new Date(a.date)-new Date(b.date));
+
+    if(!myRounds.length) return;
+
+    // Handicap index: avg of lowest 8 of last 20 differentials × 0.96
+    let recent = myRounds.slice(-20);
+    let sorted = [...recent].sort((a,b)=>a.diff-b.diff);
+    let useCount = Math.min(8, Math.max(1, Math.floor(recent.length * 0.4)));
+    let best = sorted.slice(0, useCount);
+    let hcpIdx = +(best.reduce((s,r)=>s+r.diff,0) / best.length * 0.96).toFixed(1);
+
+    let rows = myRounds.slice(-10).reverse().map(r=>{
+      let diffCls = r.diff < 0 ? 'tag-good' : r.diff > 15 ? 'tag-bad' : 'ins-muted';
+      return [
+        fmtDate(r.date),
+        esc(r.course),
+        r.score,
+        fmtVsPar(r.score - r.par),
+        `<span class="${diffCls}">${r.diff > 0 ? '+' : ''}${r.diff}</span>`
+      ];
+    });
+
+    html += `<div class="section-title" style="margin-top:${html?'12':'0'}px;">${esc(playerName)}
+      <span style="float:right;font-size:11px;font-weight:normal;color:var(--gold);opacity:.9">HCP ${hcpIdx > 0 ? '+' : ''}${hcpIdx}</span>
+    </div>
+    <div class="ins-panel">${sboardTable(['Date','Course','Score','vPar','Diff'], rows)}</div>`;
+  });
+
+  el.innerHTML = html || '<div class="empty-state">No data.</div>';
+}
+
+renderInsights();
+renderHallOfFame();
+renderHandicap();
 </script>
 
 <!-- ── Pill nav bar ── -->

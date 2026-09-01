@@ -370,22 +370,35 @@ function initSetupListeners() {
 // ── Render ────────────────────────────────────────────────────────
 function renderCarryTable() {
   const hidden = state.hiddenClubs||[];
-  const standardRows = CLUBS.filter(({id})=>!hidden.includes(id)).map(({id,label})=>{
+
+  // Build all rows with their carry value for sorting
+  let allRows = [];
+  CLUBS.filter(({id})=>!hidden.includes(id)).forEach(({id,label})=>{
     const base=state.carries[id]??SPEC[id];
     const lockMark=state.locked[id]?'<span class="lock-badge">●</span>':'';
-    return `<tr class="${state.locked[id]?'locked':''}" data-id="${id}">
-      <td class="col-club">${label}${lockMark}</td>
-      <td class="col-adj">${adjustedCarry(base)}</td>
-    </tr>`;
-  }).join('');
-  const customRows = (state.customClubs||[]).map((c,i)=>{
-    return `<tr data-custom="${i}">
-      <td class="col-club">${c.label}</td>
-      <td class="col-adj">${c.carry}</td>
-    </tr>`;
-  }).join('');
+    allRows.push({
+      carry: adjustedCarry(base),
+      html: `<tr class="${state.locked[id]?'locked':''}" data-id="${id}">
+        <td class="col-club">${label}${lockMark}</td>
+        <td class="col-adj">${adjustedCarry(base)}</td>
+      </tr>`,
+      type:'standard', id
+    });
+  });
+  (state.customClubs||[]).forEach((c,i)=>{
+    allRows.push({
+      carry: c.carry,
+      html: `<tr data-custom="${i}">
+        <td class="col-club">${c.label}</td>
+        <td class="col-adj">${c.carry}</td>
+      </tr>`,
+      type:'custom', idx:i
+    });
+  });
+  allRows.sort((a,b)=>b.carry-a.carry);
+
   const restoreRow = hidden.length ? `<tr><td colspan="2" style="text-align:center;padding:10px 0;"><button onclick="restoreAllClubs()" style="background:none;border:none;color:rgba(255,212,71,0.5);font-size:12px;cursor:pointer;letter-spacing:.4px;font-family:inherit;">↩ Restore ${hidden.length} removed club${hidden.length>1?'s':''}</button></td></tr>` : '';
-  document.getElementById('carry-body').innerHTML = standardRows + customRows + restoreRow;
+  document.getElementById('carry-body').innerHTML = allRows.map(r=>r.html).join('') + restoreRow;
   document.querySelectorAll('#carry-body tr[data-id]').forEach(row=>
     row.addEventListener('click',()=>openClubModal(row.dataset.id))
   );

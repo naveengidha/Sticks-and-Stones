@@ -331,21 +331,27 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
     </svg>
   </div>
 
-  <hr class="divider" style="margin-top:8px;">
-  <div id="activeSeasonsSection"></div>
-
   </div><!-- end .container -->
 
-  <!-- ── Active rounds ── -->
-  <div class="rounds-section" id="activeRoundsSection" style="display:none;padding-bottom:0;">
-    <div class="rounds-section-label" style="padding-top:14px;">Active Rounds</div>
-    <div id="activeRoundCards"></div>
+  <!-- Tab bar -->
+  <div style="display:flex;margin:12px 16px 0;background:#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:12px;overflow:hidden;">
+    <button id="tabRoundsBtn" onclick="showHomeTab('rounds')" style="flex:1;padding:11px 4px;background:none;border:none;border-bottom:2px solid #ffd447;color:#ffd447;font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;box-shadow:none;margin:0;font-family:'Georgia','Times New Roman',serif;border-radius:0;outline:none;">Rounds</button>
+    <button id="tabTourneysBtn" onclick="showHomeTab('tourneys')" style="flex:1;padding:11px 4px;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,212,71,0.4);font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;box-shadow:none;margin:0;font-family:'Georgia','Times New Roman',serif;border-radius:0;outline:none;">Tournaments</button>
   </div>
 
-  <!-- ── Round cards ── -->
-  <div class="rounds-section">
-    <div class="rounds-section-label" style="padding-top:14px;">Recent Rounds</div>
-    <div id="roundCards"></div>
+  <!-- ── Rounds tab ── -->
+  <div id="homeTabRounds" class="rounds-section">
+    <!-- Active rounds -->
+    <div id="activeRoundsSection" style="display:none;padding-bottom:0;">
+      <div class="rounds-section-label" style="padding-top:14px;">Active Rounds</div>
+      <div id="activeRoundCards"></div>
+    </div>
+    <div id="roundCards" style="padding-top:10px;"></div>
+  </div>
+
+  <!-- ── Tournaments tab ── -->
+  <div id="homeTabTourneys" class="rounds-section" style="display:none;padding-top:10px;">
+    <div id="activeSeasonsSection"></div>
   </div>
 
 <!-- ══════════════════════════════════
@@ -546,15 +552,16 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
       let players = r.players||[];
       switch(r.game){
         case 'stroke':{
-          let totalPar = (r.holeParDist||[]).reduce((s,h)=>s+(h.par||4),0);
-          return players.map((p,i)=>{
+          let totalPar = (r.holeParDist||[]).reduce((s,h)=>s+(h.par||4),0) || r.coursePar || 0;
+          let rows = players.map((p,i)=>{
             let gross = r.playerTotals?.[i];
             let diff = gross != null ? gross - totalPar : null;
             return { name:p, num:gross, par: diff!=null?fmtVsPar(diff):'' };
           });
+          return rows.sort((a,b)=>(a.num??999)-(b.num??999));
         }
-        case 'stableford': case 'f1':
-          return players.map((p,i)=>{
+        case 'stableford': case 'f1':{
+          let rows = players.map((p,i)=>{
             let v = r.playerTotals?.[i];
             let disp = v!=null ? (Number.isInteger(v)?v:Number(v).toFixed(1)) : null;
             let segs = '';
@@ -567,8 +574,10 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
             }
             return { name:p, num:disp, par:'pts', segs };
           });
-        case 'banker':
-          return players.map((p,i)=>{
+          return rows.sort((a,b)=>(b.num??-999)-(a.num??-999));
+        }
+        case 'banker':{
+          let rows = players.map((p,i)=>{
             let net = r.playerNetTotals?.[i];
             let numStr = net!=null ? (net>=0?'+$':'−$')+Math.abs(net) : null;
             let segs = '';
@@ -579,22 +588,23 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
                 return `<div class="${cls}"></div>`;
               }).join('');
             }
-            return { name:p, num:numStr, par:'', netColor: net>0?'#4ade80':net<0?'#f87171':'rgba(255,255,255,0.4)', segs };
+            return { name:p, num:numStr, par:'', netColor: net>0?'#4ade80':net<0?'#f87171':'rgba(255,255,255,0.4)', segs, _net: net??0 };
           });
+          return rows.sort((a,b)=>b._net-a._net);
+        }
         case 'scramble':{
           let scores = r.teamScores||[];
           let getTeamLabel = (ti) => {
-            // New format: players flat array
             if(r.players && r.players[ti*2]) {
               return [r.players[ti*2], r.players[ti*2+1]].filter(Boolean).join(' & ');
             }
-            // Old format: playerNames is nested [[p1,p2],[p3,p4]]
             if(Array.isArray(r.playerNames) && Array.isArray(r.playerNames[ti])) {
               return r.playerNames[ti].filter(Boolean).join(' & ');
             }
             return `Team ${String.fromCharCode(65+ti)}`;
           };
-          return [0,1].map(ti=>({ name:getTeamLabel(ti), num:scores[ti], par:r.teamVsPar?.[ti]!=null?fmtVsPar(r.teamVsPar[ti]):'' }));
+          let rows = [0,1].map(ti=>({ name:getTeamLabel(ti), num:scores[ti], par:r.teamVsPar?.[ti]!=null?fmtVsPar(r.teamVsPar[ti]):'' }));
+          return rows.sort((a,b)=>(a.num??999)-(b.num??999));
         }
         case 'matchplay':
           return players.map((p,i)=>({ name:p, num:null, par:'' }));
@@ -610,8 +620,8 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
       let players = r.players||[];
       let bars = [];
 
-      // Scramble/Banker/Stableford: results shown in sd rows, no separate hole bar needed
-      if(r.game==='scramble' || r.game==='banker' || r.game==='stableford' || r.game==='f1') return '';
+      // These games show scores in the sd rows already; no separate hole bar needed
+      if(r.game==='scramble' || r.game==='banker' || r.game==='stableford' || r.game==='f1' || r.game==='stroke') return '';
 
       // Banker: score-vs-par coloring (same as all other games)
       if(r.game==='banker' && r.holeHistory && r.holeHistory.length && r.players){
@@ -933,6 +943,20 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 <script>
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+
+function showHomeTab(tab){
+  let isRounds = tab === 'rounds';
+  document.getElementById('homeTabRounds').style.display = isRounds ? '' : 'none';
+  document.getElementById('homeTabTourneys').style.display = isRounds ? 'none' : '';
+  let rb = document.getElementById('tabRoundsBtn');
+  let tb = document.getElementById('tabTourneysBtn');
+  rb.style.background = 'none';
+  rb.style.borderBottom = isRounds ? '2px solid #ffd447' : '2px solid transparent';
+  rb.style.color = isRounds ? '#ffd447' : 'rgba(255,212,71,0.4)';
+  tb.style.background = 'none';
+  tb.style.borderBottom = isRounds ? '2px solid transparent' : '2px solid #ffd447';
+  tb.style.color = isRounds ? 'rgba(255,212,71,0.4)' : '#ffd447';
 }
 
 /* ══════════════════════════════════
@@ -1709,25 +1733,148 @@ function buildInsights(stats,name){
 
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-(function renderActiveSeasons(){
+(function renderTournamentCards(){
   try{
-    let seasons = JSON.parse(localStorage.getItem('seasons')||'[]').filter(s=>s.status==='active');
+    let seasons = JSON.parse(localStorage.getItem('seasons')||'[]');
     let el = document.getElementById('activeSeasonsSection');
     if(!seasons.length){ el.innerHTML=''; return; }
 
-    let html = '<div class="active-seasons-label">Active Tournaments</div>';
-    seasons.forEach(s=>{
-      let metaRounds = s.seasonLength ? `${s.rounds.length}/${s.seasonLength} rounds` : `${s.rounds.length} round${s.rounds.length!==1?'s':''}`;
-      html += `<a class="active-season-card" href="tournaments.html?id=${s.id}">
-        <span class="asc-icon">🏆</span>
-        <div class="asc-body">
-          <div class="asc-name">${esc(s.name)}</div>
-          <div class="asc-meta">${metaRounds} · ${s.players.length} players</div>
-        </div>
-        <span class="asc-arrow">›</span>
-      </a>`;
+    // Sort: active first, then complete; within each group most recent first
+    seasons = seasons.slice().sort((a,b)=>{
+      if(a.status===b.status) return (b.id||0)-(a.id||0);
+      return a.status==='active' ? -1 : 1;
     });
-    el.innerHTML = html + '<hr class="divider" style="margin:16px 0;">';
+
+    function buildWinnerLine(s){
+      let isBracket = !!s.bracketMode;
+      if(isBracket){
+        let finalMatch = (s.matches||[]).find(m=>m.id==='final');
+        if(finalMatch?.result?.winnerName) return `<div style="font-size:12px;font-weight:bold;color:#ffd447;line-height:1.4;">${esc(finalMatch.result.winnerName)} 🏆</div>`;
+        let done = (s.matches||[]).filter(m=>m.result).length;
+        let total = (s.matches||[]).length;
+        if(done) return `<div style="font-size:11px;color:rgba(255,212,71,0.6);">${done}/${total} matches played</div>`;
+        return '';
+      }
+      // Standard: find leader
+      if(!s.rounds||!s.rounds.length) return '';
+      let totals = s.players.map((p,i)=>({name:p.name,pts:0}));
+      s.rounds.forEach(r=>{
+        (r.playerFinishes||[]).forEach(f=>{
+          if(f && totals[f.playerIdx]) totals[f.playerIdx].pts += f.points||0;
+        });
+      });
+      totals.sort((a,b)=>b.pts-a.pts);
+      if(!totals.length||!totals[0].pts) return '';
+      return `<div style="font-size:12px;font-weight:bold;color:#ffd447;line-height:1.4;">${esc(totals[0].name)} 🥇</div><div style="font-size:11px;color:rgba(255,212,71,0.6);font-family:'Courier New',monospace;">${totals[0].pts%1===0?totals[0].pts:totals[0].pts.toFixed(1)} pts</div>`;
+    }
+
+    function buildBracketDetail(s){
+      let matches = s.matches||[];
+      if(!matches.length) return '';
+      let finalMatch = matches.find(m=>m.id==='final');
+      let losersMatch = matches.find(m=>m.id==='losersF');
+      let positions = [];
+      if(finalMatch?.result){
+        // Extract scores from score string "TeamA X pts · TeamB Y pts"
+        let winScore = '', loseScore = '';
+        if(finalMatch.result.score){
+          let parts = finalMatch.result.score.split(' · ');
+          parts.forEach(p=>{ if(p.startsWith(finalMatch.result.winnerName+' ')) winScore=p.slice(finalMatch.result.winnerName.length+1); else if(p.startsWith(finalMatch.result.loserName+' ')) loseScore=p.slice(finalMatch.result.loserName.length+1); });
+        }
+        positions.push({medal:'🥇', name:finalMatch.result.winnerName, score:winScore});
+        positions.push({medal:'🥈', name:finalMatch.result.loserName, score:loseScore});
+      }
+      if(losersMatch?.result){
+        let winScore = '', loseScore = '';
+        if(losersMatch.result.score){
+          let parts = losersMatch.result.score.split(' · ');
+          parts.forEach(p=>{ if(p.startsWith(losersMatch.result.winnerName+' ')) winScore=p.slice(losersMatch.result.winnerName.length+1); else if(p.startsWith(losersMatch.result.loserName+' ')) loseScore=p.slice(losersMatch.result.loserName.length+1); });
+        }
+        positions.push({medal:'🥉', name:losersMatch.result.winnerName, score:winScore});
+        positions.push({medal:'4th', name:losersMatch.result.loserName, score:loseScore});
+      }
+      if(!positions.length){
+        let done = matches.filter(m=>m.result).length;
+        return `<div style="font-size:11px;color:rgba(255,255,255,0.3);padding:6px 0;">${done}/${matches.length} matches played</div>`;
+      }
+      let header = `<div style="font-size:9px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);padding:8px 0 4px;">Standings</div>`;
+      return header + positions.map((p,i)=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px;">
+          <span style="color:${i===0?'#ffd447':'rgba(255,255,255,0.75)'};">${p.medal} ${esc(p.name)}</span>
+          ${p.score?`<span style="font-family:'Courier New',monospace;font-weight:bold;color:${i===0?'#ffd447':'rgba(255,255,255,0.5)'};">${esc(p.score)}</span>`:''}
+        </div>`).join('');
+    }
+
+    function buildStandingsDetail(s){
+      if(!s.rounds||!s.rounds.length) return '<div style="font-size:11px;color:rgba(255,255,255,0.3);padding:6px 0;">No rounds played yet</div>';
+      let totals = s.players.map((p,i)=>({name:p.name, pts:0}));
+      s.rounds.forEach(r=>{
+        (r.playerFinishes||[]).forEach(f=>{
+          if(f && totals[f.playerIdx]) totals[f.playerIdx].pts += f.points||0;
+        });
+      });
+      totals.sort((a,b)=>b.pts-a.pts);
+      let medals = ['🥇','🥈','🥉'];
+      return totals.map((p,i)=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px;">
+          <span style="color:${i===0?'#ffd447':'rgba(255,255,255,0.75)'};">${medals[i]||`<span style="display:inline-block;width:18px;text-align:center;font-size:11px;color:rgba(255,255,255,0.3);">${i+1}</span>`} ${esc(p.name)}</span>
+          <span style="font-family:'Courier New',monospace;font-weight:bold;color:${i===0?'#ffd447':'rgba(255,255,255,0.6)'};">${p.pts%1===0?p.pts:p.pts.toFixed(1)} pts</span>
+        </div>`).join('');
+    }
+
+    let expanded = new Set();
+
+    function render(){
+      let html = '';
+      seasons.forEach(s=>{
+        let isBracket = !!s.bracketMode;
+        let isActive = s.status === 'active';
+        let statusDot = isActive
+          ? '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#2ecc71;margin-right:5px;"></span>'
+          : '';
+        let metaLine = isBracket
+          ? (() => { let done=(s.matches||[]).filter(m=>m.result).length, total=(s.matches||[]).length; return done===total&&total>0?`${total} matches complete`:`${done}/${total} matches played`; })()
+          : (s.seasonLength ? `${(s.rounds||[]).length}/${s.seasonLength} rounds` : `${(s.rounds||[]).length} round${(s.rounds||[]).length!==1?'s':''}`) + ` · ${s.players.length} players`;
+
+        let typeLabel = isBracket
+          ? (s.bracketType==='team'?'Team':'Solo')+' Bracket'
+          : 'Tournament';
+        let dateStr = s.createdAt ? new Date(s.createdAt).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}) : '';
+        let winnerLine = buildWinnerLine(s);
+
+        let isExp = expanded.has(s.id);
+        let detail = isExp ? (isBracket ? buildBracketDetail(s) : buildStandingsDetail(s)) : '';
+
+        html += `<div class="rcard${isExp?' expanded':''}" onclick="toggleTourneyCard(${s.id})">
+          <div class="rcard-body">
+            <div class="rcard-top">
+              <span class="rcard-game">🏆 ${esc(typeLabel)} · ${s.players.length} players</span>
+              <span class="rcard-date">${dateStr}</span>
+            </div>
+            <div class="rcard-mid">
+              <div class="rcard-info">
+                <div class="rcard-course">${statusDot}${esc(s.name)}</div>
+</div>
+              ${!isExp && winnerLine ? `<div style="text-align:right;flex-shrink:0;max-width:130px;margin-left:12px;">${winnerLine}</div>` : ''}
+            </div>
+          </div>
+          <div class="rcard-expand">
+            ${detail}
+            <div class="rcard-expand-footer">
+              <a href="tournaments.html?id=${s.id}" onclick="event.stopPropagation()" style="font-size:11px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:rgba(255,212,71,0.6);text-decoration:none;">Open Tournament ›</a>
+            </div>
+          </div>
+        </div>`;
+      });
+      el.innerHTML = html;
+
+      window.toggleTourneyCard = function(id){
+        if(expanded.has(id)) expanded.delete(id); else expanded.add(id);
+        render();
+      };
+    }
+
+    render();
   }catch(e){}
 })();
 

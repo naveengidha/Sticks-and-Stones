@@ -283,6 +283,33 @@ let playerTotals = [];   // cumulative points per player
 let holeParDist = [];
 let currentPar = 4;
 let holeScores = [];     // per-player score state for current hole
+
+/* ── Tournament bracket context (set when launched from tournaments.html) ── */
+let tournamentContext = null;
+(function parseTournamentParams(){
+  let p = new URLSearchParams(location.search);
+  let tid = p.get('tournamentId');
+  let mid = p.get('matchId');
+  let teamA = p.get('teamAPlayers'); // comma-separated names
+  let teamB = p.get('teamBPlayers');
+  if(tid && mid && teamA && teamB){
+    tournamentContext = {
+      tournamentId: parseInt(tid),
+      matchId: mid,
+      teamAPlayers: teamA.split(','),
+      teamBPlayers: teamB.split(','),
+      teamAName: p.get('teamAName')||'Team A',
+      teamBName: p.get('teamBName')||'Team B'
+    };
+    // Pre-fill player names and lock them
+    let allPlayers = [...tournamentContext.teamAPlayers, ...tournamentContext.teamBPlayers];
+    allPlayers.forEach((name, i)=>{ let el = document.getElementById('name'+i); if(el){ el.value = name; el.readOnly = true; el.style.opacity = '0.6'; } });
+    // Hide season selector row
+    let seasonRow = document.getElementById('seasonSelect')?.closest('.row-setting');
+    if(seasonRow) seasonRow.style.display = 'none';
+  }
+})();
+
 /* ── Course loading ── */
 document.getElementById('roundDate').value = new Date().toLocaleDateString('en-CA');
 
@@ -422,6 +449,30 @@ function restoreActiveState(){
 }
 
 function renderStandings(){
+  if(tournamentContext){
+    let tc = tournamentContext;
+    let teams = [
+      {name: tc.teamAName, players: tc.teamAPlayers},
+      {name: tc.teamBName, players: tc.teamBPlayers}
+    ];
+    let teamTotals = teams.map(t=>
+      t.players.reduce((sum,name)=>{ let idx=playerNames.indexOf(name); return sum+(idx>=0?playerTotals[idx]:0); },0)
+    );
+    let leading = teamTotals[0]>teamTotals[1]?0:teamTotals[1]>teamTotals[0]?1:-1;
+    document.getElementById('standingsList').innerHTML = teams.map((t,ti)=>`
+      <div style="margin-bottom:${ti===0?'10px':'0'};">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0 4px;border-bottom:1px solid rgba(255,212,71,0.15);">
+          <span style="font-size:11px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:${leading===ti?'#ffd447':'rgba(255,255,255,0.45)'};">${esc(t.name)}</span>
+          <span style="font-family:'Courier New',monospace;font-weight:bold;font-size:14px;color:${leading===ti?'#ffd447':'rgba(255,255,255,0.4)'};">${teamTotals[ti]} pts</span>
+        </div>
+        ${t.players.map(name=>{ let idx=playerNames.indexOf(name); let pts=idx>=0?playerTotals[idx]:0; return `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0 5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">
+          <span style="font-size:13px;color:rgba(255,255,255,0.65);">${esc(name)}</span>
+          <span style="font-family:'Courier New',monospace;font-size:13px;color:${pts>0?'#2ecc71':'rgba(255,255,255,0.25)'};">${pts} pts</span>
+        </div>`; }).join('')}
+      </div>`).join('');
+    return;
+  }
   let sorted = playerNames.map((n,i)=>({n, t:playerTotals[i], i}))
     .sort((a,b)=>b.t-a.t);
   let rankCls = ['r1','r2','r3'];
@@ -539,6 +590,30 @@ function saveGameResult(){
 function endGame(){
   localStorage.removeItem('activeGame_stableford');
   saveGameResult();
+
+  // If launched from a tournament bracket match, redirect back with team totals
+  if(tournamentContext){
+    let tc = tournamentContext;
+    let teamATotal = tc.teamAPlayers.reduce((sum, name)=>{
+      let idx = playerNames.indexOf(name);
+      return sum + (idx >= 0 ? playerTotals[idx] : 0);
+    }, 0);
+    let teamBTotal = tc.teamBPlayers.reduce((sum, name)=>{
+      let idx = playerNames.indexOf(name);
+      return sum + (idx >= 0 ? playerTotals[idx] : 0);
+    }, 0);
+    let params = new URLSearchParams({
+      id: tc.tournamentId,
+      matchResult: tc.matchId,
+      teamAScore: teamATotal,
+      teamBScore: teamBTotal,
+      teamAName: tc.teamAName,
+      teamBName: tc.teamBName
+    });
+    window.location.href = 'tournaments.html?' + params.toString();
+    return;
+  }
+
   document.getElementById('gameScreen').classList.add('hidden');
   document.getElementById('finalScreen').classList.remove('hidden');
 
