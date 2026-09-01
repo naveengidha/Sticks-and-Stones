@@ -79,13 +79,13 @@ h3{text-align:center;margin-top:0;color:rgba(255,255,255,0.75);}
 @keyframes arc-pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
 button{width:100%;padding:13px;border:none;border-radius:8px;font-size:15px;font-weight:bold;background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);color:#1a1a0a;cursor:pointer;margin-bottom:4px;box-shadow:0 2px 8px rgba(139,94,60,0.4);letter-spacing:.5px;}
 button:hover,button:active{background:linear-gradient(135deg,#b8912e,#ffc93a,#b8912e);}
-button.btn-secondary{background:transparent;border:1px solid rgba(139,94,60,0.4);color:rgba(255,212,71,0.75);font-size:14px;padding:10px;box-shadow:none;letter-spacing:.5px;}
+button.btn-secondary{background:transparent;border:1px solid rgba(139,94,60,0.4);color:#a07840;font-size:14px;padding:10px;box-shadow:none;letter-spacing:.5px;}
 button.btn-secondary:hover,button.btn-secondary:active{background:rgba(139,94,60,0.08);border-color:rgba(255,212,71,0.6);color:#ffd447;}
 .hidden{display:none!important;}
 /* ── Bottom pill nav ── */
 .bottom-nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:1000;pointer-events:none;}
 .nav-pill{display:flex;align-items:center;gap:2px;background:#0e1a12;border:1px solid rgba(255,212,71,0.28);border-radius:50px;padding:6px 10px;box-shadow:0 4px 24px rgba(0,0,0,0.6);pointer-events:all;}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 14px;border-radius:40px;cursor:pointer;text-decoration:none;color:rgba(255,212,71,0.35);font-size:9px;font-weight:bold;letter-spacing:.5px;text-transform:uppercase;transition:color .15s,background .15s;-webkit-user-select:none;}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 14px;border-radius:40px;cursor:pointer;text-decoration:none;color:#a07840;font-size:9px;font-weight:bold;letter-spacing:.5px;text-transform:uppercase;transition:color .15s,background .15s;-webkit-user-select:none;}
 .nav-item:hover,.nav-item:active{color:rgba(255,212,71,0.7);}
 .nav-item.active{color:#ffd447;}
 .nav-item svg{width:20px;height:20px;flex-shrink:0;}
@@ -94,22 +94,22 @@ button.btn-secondary:hover,button.btn-secondary:active{background:rgba(139,94,60
 
 /* ── Round cards ── */
 .rounds-section{width:100%;padding:0 16px 110px;}
-.rounds-section-label{font-size:13px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.55);margin:0 0 10px;text-align:center;font-family:'Georgia','Times New Roman',serif;}
+.rounds-section-label{font-size:13px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:#ffd447;margin:0 0 10px;text-align:center;font-family:'Georgia','Times New Roman',serif;}
 .rcard{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:12px;margin-bottom:10px;overflow:hidden;cursor:pointer;transition:border-color .15s;}
 .rcard:hover,.rcard:active{border-color:rgba(255,212,71,0.55);}
 .rcard-body{padding:13px 14px 10px;}
 .rcard-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
-.rcard-game{font-size:11px;font-weight:bold;color:rgba(255,212,71,0.55);letter-spacing:.5px;text-transform:uppercase;font-family:'Georgia','Times New Roman',serif;}
-.rcard-date{font-size:11px;color:rgba(255,255,255,0.35);}
+.rcard-game{font-size:11px;font-weight:bold;color:#ffd447;letter-spacing:.5px;text-transform:uppercase;font-family:'Georgia','Times New Roman',serif;}
+.rcard-date{font-size:11px;color:rgba(255,255,255,0.5);}
 .rcard-mid{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
 .rcard-info{flex:1;min-width:0;}
-.rcard-course{font-size:15px;font-weight:bold;color:#fff;line-height:1.2;margin-bottom:2px;font-family:'Georgia','Times New Roman',serif;}
+.rcard-course{font-size:15px;font-weight:bold;color:rgba(255,235,180,0.92);line-height:1.2;margin-bottom:2px;font-family:'Georgia','Times New Roman',serif;}
 .rcard-format{font-size:11px;color:rgba(255,255,255,0.4);}
 .rcard-scores{display:flex;flex-direction:column;gap:3px;flex-shrink:0;margin-left:12px;align-items:flex-end;}
 .rcard-score-row{display:flex;align-items:baseline;gap:6px;}
 .rcard-score-name{font-size:10px;color:rgba(255,255,255,0.4);white-space:nowrap;max-width:70px;overflow:hidden;text-overflow:ellipsis;}
 .rcard-score-num{font-size:15px;font-weight:bold;color:#fff;font-variant-numeric:tabular-nums;}
-.rcard-score-par{font-size:11px;color:rgba(255,212,71,0.6);font-variant-numeric:tabular-nums;min-width:28px;text-align:right;}
+.rcard-score-par{font-size:11px;color:#ffd447;font-variant-numeric:tabular-nums;min-width:28px;text-align:right;}
 .hole-bar{display:grid;grid-template-columns:minmax(0,auto) 1fr 90px;gap:3px 6px;padding:4px 0 10px;align-items:center;}
 .hb-row{display:contents;}
 .hb-label{font-size:11px;font-weight:bold;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1;min-width:0;}
@@ -118,11 +118,11 @@ button.btn-secondary:hover,button.btn-secondary:active{background:rgba(139,94,60
 .hb-score{font-size:11px;font-weight:bold;color:#fff;font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1;text-align:right;}
 .hb-vspar{font-size:11px;color:rgba(255,255,255,0.45);font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1;}
 .hb-seg{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,0.08);}
-.hb-eagle{background:#9333ea;}
-.hb-birdie{background:#0ea5e9;}
-.hb-par{background:#10b981;}
-.hb-bogey{background:#f59e0b;}
-.hb-double{background:#ef4444;}
+.hb-eagle{background:#6b21a8;}
+.hb-birdie{background:#1e5a8e;}
+.hb-par{background:#1a6b4a;}
+.hb-bogey{background:#92650a;}
+.hb-double{background:#8b2020;}
 
 /* ── Expanded scorecard ── */
 .rcard-delete{background:none;border:1px solid rgba(220,50,50,0.35);border-radius:8px;color:rgba(220,100,100,0.8);font-size:11px;font-weight:bold;padding:5px 12px;cursor:pointer;letter-spacing:.5px;align-self:flex-start;}
@@ -198,7 +198,7 @@ button.btn-secondary:hover,button.btn-secondary:active{background:rgba(139,94,60
 .field-input:focus,.field-select:focus{outline:none;border-color:rgba(255,212,71,0.6);}
 .field-btn-primary{width:100%;padding:13px;border:none;border-radius:4px;font-size:14px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;background:linear-gradient(135deg,#b8962e,#ffd700,#b8962e);color:#0a0a0f;cursor:pointer;box-shadow:0 2px 12px rgba(180,150,46,0.3);}
 .field-btn-primary:active{opacity:.85;}
-.field-btn-secondary{width:100%;padding:11px;border:1px solid rgba(139,94,60,0.35);border-radius:4px;font-size:13px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;background:none;color:rgba(255,212,71,0.7);cursor:pointer;margin-top:8px;}
+.field-btn-secondary{width:100%;padding:11px;border:1px solid rgba(139,94,60,0.35);border-radius:4px;font-size:13px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;background:none;color:#a07840;cursor:pointer;margin-top:8px;}
 .field-btn-secondary:active{background:rgba(139,94,60,0.08);}
 .field-filters{display:flex;justify-content:center;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
 .field-filters button{padding:5px 12px;background:#0e1a12;color:rgba(255,255,255,0.5);border:1px solid rgba(139,94,60,0.2);border-radius:20px;font-size:12px;cursor:pointer;letter-spacing:.5px;}
@@ -336,7 +336,7 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
   <!-- Tab bar -->
   <div style="display:flex;margin:12px 16px 0;background:#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:12px;overflow:hidden;">
     <button id="tabRoundsBtn" onclick="showHomeTab('rounds')" style="flex:1;padding:11px 4px;background:none;border:none;border-bottom:2px solid #ffd447;color:#ffd447;font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;box-shadow:none;margin:0;font-family:'Georgia','Times New Roman',serif;border-radius:0;outline:none;">Rounds</button>
-    <button id="tabTourneysBtn" onclick="showHomeTab('tourneys')" style="flex:1;padding:11px 4px;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,212,71,0.4);font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;box-shadow:none;margin:0;font-family:'Georgia','Times New Roman',serif;border-radius:0;outline:none;">Tournaments</button>
+    <button id="tabTourneysBtn" onclick="showHomeTab('tourneys')" style="flex:1;padding:11px 4px;background:none;border:none;border-bottom:2px solid transparent;color:#a07840;font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;box-shadow:none;margin:0;font-family:'Georgia','Times New Roman',serif;border-radius:0;outline:none;">Tournaments</button>
   </div>
 
   <!-- ── Rounds tab ── -->
@@ -858,7 +858,7 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
           <div class="rcard-mid">
             <div class="rcard-info">
               <div class="rcard-course">${esc(r.course||'Unknown Course')}</div>
-              ${sd.length ? `<div style="display:grid;grid-template-columns:max-content 1fr max-content;gap:4px 8px;align-items:center;margin-top:6px;">${sd.map(p=>`<span style="font-size:13px;color:#ffd447;font-weight:bold;letter-spacing:.2px;white-space:nowrap;">${esc(p.name)}</span>${p.segs?`<div style="display:flex;gap:1px;min-width:0;">${p.segs}</div>`:'<div></div>'}<span style="font-family:'Courier New',monospace;font-size:19px;font-weight:bold;color:${p.netColor||'#fff'};white-space:nowrap;text-align:right;">${p.num??'–'}${p.par?`<span style="font-size:12px;color:rgba(255,212,71,0.55);margin-left:5px;">(${p.par})</span>`:''}</span>`).join('')}</div>` : ''}
+              ${sd.length ? `<div style="display:grid;grid-template-columns:max-content 1fr max-content;gap:4px 8px;align-items:center;margin-top:6px;">${sd.map(p=>`<span style="font-size:13px;color:#a07840;font-weight:bold;letter-spacing:.2px;white-space:nowrap;">${esc(p.name)}</span>${p.segs?`<div style="display:flex;gap:1px;min-width:0;">${p.segs}</div>`:'<div></div>'}<span style="font-family:'Courier New',monospace;font-size:19px;font-weight:bold;color:${p.netColor||'#fff'};white-space:nowrap;text-align:right;">${p.num??'–'}${p.par?`<span style="font-size:12px;color:#ffd447;margin-left:5px;">(${p.par})</span>`:''}</span>`).join('')}</div>` : ''}
             </div>
           </div>
           ${bar?`<div class="hole-bar">${bar}</div>`:''}
@@ -953,10 +953,10 @@ function showHomeTab(tab){
   let tb = document.getElementById('tabTourneysBtn');
   rb.style.background = 'none';
   rb.style.borderBottom = isRounds ? '2px solid #ffd447' : '2px solid transparent';
-  rb.style.color = isRounds ? '#ffd447' : 'rgba(255,212,71,0.4)';
+  rb.style.color = isRounds ? '#ffd447' : '#a07840';
   tb.style.background = 'none';
   tb.style.borderBottom = isRounds ? '2px solid transparent' : '2px solid #ffd447';
-  tb.style.color = isRounds ? 'rgba(255,212,71,0.4)' : '#ffd447';
+  tb.style.color = isRounds ? '#a07840' : '#ffd447';
 }
 
 /* ══════════════════════════════════
@@ -1800,7 +1800,8 @@ function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').rep
       let header = `<div style="font-size:9px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);padding:8px 0 4px;">Standings</div>`;
       return header + positions.map((p,i)=>`
         <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px;">
-          <span style="color:${i===0?'#ffd447':'rgba(255,255,255,0.75)'};">${p.medal} ${esc(p.name)}</span>
+          <span style="color:${i===0?'#ffd447':'rgba(255,255,255,0.75)'};">
+            <span style="font-family:'Courier New',monospace;font-size:11px;color:rgba(255,212,71,0.4);margin-right:6px;">${i+1}</span>${esc(p.name)}</span>
           ${p.score?`<span style="font-family:'Courier New',monospace;font-weight:bold;color:${i===0?'#ffd447':'rgba(255,255,255,0.5)'};">${esc(p.score)}</span>`:''}
         </div>`).join('');
     }
@@ -1814,10 +1815,10 @@ function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').rep
         });
       });
       totals.sort((a,b)=>b.pts-a.pts);
-      let medals = ['🥇','🥈','🥉'];
       return totals.map((p,i)=>`
         <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px;">
-          <span style="color:${i===0?'#ffd447':'rgba(255,255,255,0.75)'};">${medals[i]||`<span style="display:inline-block;width:18px;text-align:center;font-size:11px;color:rgba(255,255,255,0.3);">${i+1}</span>`} ${esc(p.name)}</span>
+          <span style="color:${i===0?'#ffd447':'rgba(255,255,255,0.75)'};">
+            <span style="font-family:'Courier New',monospace;font-size:11px;color:rgba(255,212,71,0.4);margin-right:6px;">${i+1}</span>${esc(p.name)}</span>
           <span style="font-family:'Courier New',monospace;font-weight:bold;color:${i===0?'#ffd447':'rgba(255,255,255,0.6)'};">${p.pts%1===0?p.pts:p.pts.toFixed(1)} pts</span>
         </div>`).join('');
     }
