@@ -82,9 +82,9 @@ button.btn-secondary:active{color:#ffd447;}
 .par-btn-sq.active{background:rgba(139,94,60,0.25);border-color:#ffd447;color:#ffd447;}
 /* Stepper shared */
 .stepper-row{display:flex;align-items:center;gap:4px;justify-content:center;}
-.stepper-row button{width:28px;height:28px;padding:0;border-radius:6px;font-size:16px;font-weight:bold;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#fff;box-shadow:none;margin:0;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.stepper-row button{width:24px;height:24px;padding:0;border-radius:5px;font-size:14px;font-weight:bold;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#fff;box-shadow:none;margin:0;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .stepper-row button:active{background:rgba(255,255,255,0.15);}
-.stepper-row span{font-size:16px;font-weight:bold;font-family:'Courier New',monospace;min-width:24px;text-align:center;color:#fff;}
+.stepper-row span{font-size:15px;font-weight:bold;font-family:'Courier New',monospace;min-width:20px;text-align:center;color:#fff;}
 /* Dealer card */
 .dealer-card-inner{display:flex;flex-direction:column;align-items:center;gap:6px;max-width:140px;margin:0 auto;}
 .dealer-name-lbl{font-size:13px;font-weight:bold;color:#ffd447;letter-spacing:.5px;text-transform:uppercase;text-align:center;}
@@ -100,7 +100,7 @@ button.btn-secondary:active{color:#ffd447;}
 /* Double pill — checkbox style from banker.html */
 .double-label{display:flex;align-items:center;justify-content:center;margin-top:2px;cursor:pointer;}
 .double-label input{display:none;}
-.double-pill{font-size:10px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;padding:4px 14px;border-radius:20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.4);transition:background .2s,border-color .2s,color .2s;user-select:none;}
+.double-pill{font-size:10px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.4);transition:background .2s,border-color .2s,color .2s;user-select:none;}
 .double-label input:checked + .double-pill{background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);border-color:#ffd447;color:#1a1a0a;box-shadow:0 0 10px rgba(255,212,71,0.4);}
 .wager-stepper.doubled .wager-step-btn{opacity:.25;pointer-events:none;}
 /* Banker badge selector */
@@ -124,11 +124,11 @@ button.btn-secondary:active{color:#ffd447;}
 .wager-chip-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;}
 .wager-chip-label{font-size:7px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);}
 .wager-stepper{display:flex;align-items:center;gap:0;background:rgba(0,0,0,0.55);border:1px solid rgba(255,212,71,0.45);border-radius:6px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04);}
-.wager-step-btn{width:28px;height:36px;background:rgba(255,212,71,0.07);border:none;border-radius:0;color:rgba(255,212,71,0.7);font-size:18px;font-weight:bold;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:background .12s,color .12s;flex-shrink:0;box-shadow:none;margin:0;}
+.wager-step-btn{width:24px;height:30px;background:rgba(255,212,71,0.07);border:none;border-radius:0;color:rgba(255,212,71,0.7);font-size:16px;font-weight:bold;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:background .12s,color .12s;flex-shrink:0;box-shadow:none;margin:0;}
 .wager-step-btn:active{background:rgba(255,212,71,0.2);color:#ffd447;}
 .wager-step-btn.left{border-right:1px solid rgba(255,212,71,0.2);}
 .wager-step-btn.right{border-left:1px solid rgba(255,212,71,0.2);}
-.wager-val-display{min-width:42px;text-align:center;font-family:'Courier New',monospace;font-size:16px;font-weight:bold;color:#ffd447;letter-spacing:.5px;padding:0 4px;line-height:36px;text-shadow:0 0 10px rgba(255,212,71,0.4);}
+.wager-val-display{min-width:32px;text-align:center;font-family:'Courier New',monospace;font-size:14px;font-weight:bold;color:#ffd447;letter-spacing:.5px;padding:0 2px;line-height:30px;text-shadow:0 0 10px rgba(255,212,71,0.4);}
 
 /* Summary */
 .summary-section{margin-bottom:20px;}
@@ -404,44 +404,32 @@ function updateScoreboard(){
   let hasP = state.pinHolesPlayed > 0;
   let hasPM = state.pinMoneyHolesPlayed > 0;
 
-  if(!(hasB||hasS||hasStr||hasP)){
-    let rows = state.players.map(p=>`<tr><td>${esc(p)}</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td></tr>`).join('');
-    document.getElementById('scoreboardRows').innerHTML =
-      `<table class="sb-grid" style="width:100%"><thead><tr><th></th><th>Banker</th><th>Stab</th><th>Stroke</th><th>Pin</th></tr></thead><tbody>${rows}</tbody></table>`;
-    return;
-  }
-
-  let headers = [''];
-  if(hasB) headers.push('Banker');
-  if(hasS) headers.push('Stab');
-  // Always show stroke column once any holes scored
-  headers.push('Stroke');
-  if(hasP && !hasPM) headers.push('Pin');
-  if(hasPM) headers.push('Pin');
-
-  let html = `<table class="sb-grid"><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>`;
+  let html = `<table class="sb-grid" style="width:100%;"><thead><tr><th></th><th>Banker</th><th>Stab</th><th>Stroke</th><th>Pin</th></tr></thead><tbody>`;
   state.players.forEach((name,i)=>{
     html += `<tr><td>${esc(name)}</td>`;
+    // Banker
     if(hasB){
       let v = state.bankerTotals[i];
       let cls = v>0?'pos':v<0?'neg':'dash';
       let str = v===0?'—':(v>0?'+$'+v:'-$'+Math.abs(v));
       html += `<td class="${cls}">${str}</td>`;
-    }
-    if(hasS) html += `<td>${state.stablefordTotals[i]}pts</td>`;
-    // Stroke always shown
+    } else { html += `<td class="dash">—</td>`; }
+    // Stab
+    if(hasS){ html += `<td>${state.stablefordTotals[i]}pts</td>`; }
+    else { html += `<td class="dash">—</td>`; }
+    // Stroke
     let sv = state.strokeTotals[i];
     html += `<td class="${sv===0?'dash':''}">${sv===0?'—':sv}</td>`;
-    if(hasP && !hasPM){
-      let v = state.pinTotals[i];
-      html += `<td class="${v===0?'dash':''}">${v===0?'—':v+'W'}</td>`;
-    }
+    // Pin
     if(hasPM){
       let v = state.pinMoneyTotals[i];
       let cls = v>0?'pos':v<0?'neg':'dash';
       let str = v===0?'—':(v>0?'+$'+v:'-$'+Math.abs(v));
       html += `<td class="${cls}">${str}</td>`;
-    }
+    } else if(hasP){
+      let v = state.pinTotals[i];
+      html += `<td class="${v===0?'dash':''}">${v===0?'—':v+'W'}</td>`;
+    } else { html += `<td class="dash">—</td>`; }
     html += `</tr>`;
   });
   html += `</tbody></table>`;
@@ -494,14 +482,14 @@ function renderDynCard(){
 
   if(holeFormat==='banker'){
     // CSS grid — all rows share same column template for perfect alignment
-    html += `<div style="display:grid;grid-template-columns:1fr auto auto auto auto;gap:0;margin-bottom:12px;">`;
+    html += `<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(80px,auto) 52px minmax(72px,auto) 36px;gap:0 4px;margin-bottom:12px;align-items:center;">`;
 
     // Header row
     html += `<div></div>
-      <div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.3);text-align:center;padding:2px 8px 6px;border-bottom:1px solid rgba(255,255,255,0.05);">Wager</div>
-      <div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.3);text-align:center;padding:2px 8px 6px;border-bottom:1px solid rgba(255,255,255,0.05);">Dbl</div>
-      <div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.3);text-align:center;padding:2px 8px 6px 20px;border-bottom:1px solid rgba(255,255,255,0.05);">Score</div>
-      <div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.3);text-align:right;padding:2px 0 6px;border-bottom:1px solid rgba(255,255,255,0.05);min-width:40px;">Bal</div>`;
+      <div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.3);text-align:center;padding:2px 0 6px;border-bottom:1px solid rgba(255,255,255,0.05);">Wager</div>
+      <div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.3);text-align:center;padding:2px 0 6px;border-bottom:1px solid rgba(255,255,255,0.05);">Dbl</div>
+      <div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.3);text-align:center;padding:2px 0 6px;border-bottom:1px solid rgba(255,255,255,0.05);">Score</div>
+      <div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.3);text-align:right;padding:2px 0 6px;border-bottom:1px solid rgba(255,255,255,0.05);">Bal</div>`;
 
     state.players.forEach((name,i)=>{
       let isBanker = i===bankerIdx;
@@ -518,16 +506,16 @@ function renderDynCard(){
       let rowStyle = 'display:contents;';
 
       // Name cell
-      html += `<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);min-width:0;">
+      html += `<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);min-width:0;overflow:hidden;">
         <div style="font-size:14px;font-weight:bold;color:${nameColor};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(name)}${carry}</div>
-        <div style="margin-top:2px;">
+        <div style="margin-top:3px;">
           ${isBanker
-            ? `<span style="font-size:8px;font-weight:bold;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,212,71,0.6);background:rgba(255,212,71,0.1);border:1px solid rgba(255,212,71,0.3);border-radius:10px;padding:1px 6px;white-space:nowrap;">Banker</span>`
+            ? `<span style="font-size:8px;font-weight:bold;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,212,71,0.6);background:rgba(255,212,71,0.1);border:1px solid rgba(255,212,71,0.3);border-radius:10px;padding:1px 6px;white-space:nowrap;display:inline-block;">Banker</span>`
             : `<button class="banker-badge-btn" onclick="setBanker(${i})">Set Banker</button>`}
         </div>
       </div>`;
       // Wager cell
-      html += `<div style="display:flex;align-items:center;justify-content:center;padding:8px 8px 8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+      html += `<div style="display:flex;align-items:center;justify-content:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
         <div class="wager-stepper${isBanker?' doubled':doubled?' doubled':''}" style="${isBanker?'opacity:0.3;pointer-events:none;':''}">
           <button class="wager-step-btn left" onclick="stepWager(${i},-1)">−</button>
           <div class="wager-val-display" id="wv_${i}">$${eff}</div>
@@ -535,14 +523,14 @@ function renderDynCard(){
         </div>
       </div>`;
       // Dbl cell
-      html += `<div style="display:flex;align-items:center;justify-content:center;padding:8px 8px 8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+      html += `<div style="display:flex;align-items:center;justify-content:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
         <label class="double-label" style="margin:0;">
           <input type="checkbox" id="${dblId}" ${dblChecked?'checked':''} onchange="${dblChange}">
           <span class="double-pill">2×</span>
         </label>
       </div>`;
       // Score cell
-      html += `<div style="display:flex;align-items:center;justify-content:center;padding:8px 8px 8px 20px;border-bottom:1px solid rgba(255,255,255,0.04);">
+      html += `<div style="display:flex;align-items:center;justify-content:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
         <div class="stepper-row">
           <button onclick="adjScore(${i},-1)">−</button>
           <span id="sv_${i}">${fmtScore(holeScores[i])}</span>
@@ -551,7 +539,7 @@ function renderDynCard(){
       </div>`;
       // Bal cell
       html += `<div style="display:flex;align-items:center;justify-content:flex-end;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
-        <div style="font-size:12px;font-family:'Courier New',monospace;font-weight:bold;color:${balColor};min-width:40px;text-align:right;">${balStr}</div>
+        <div style="font-size:12px;font-family:'Courier New',monospace;font-weight:bold;color:${balColor};min-width:36px;text-align:right;">${balStr}</div>
       </div>`;
     });
     html += `</div>`;
