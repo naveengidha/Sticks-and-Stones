@@ -90,6 +90,19 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 .sboard tr:last-child td{border-bottom:none;}
 .rank-num{display:inline-block;width:18px;font-size:11px;color:rgba(255,255,255,0.85);font-family:'Courier New',monospace;}
 .mono{font-family:'Courier New',monospace;}
+.hcp-card{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:10px;margin-bottom:10px;overflow:hidden;}
+.hcp-card-header{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;-webkit-user-select:none;user-select:none;}
+.hcp-card-header:active{background:rgba(255,212,71,0.04);}
+.hcp-player{font-size:15px;font-weight:bold;color:#ffd447;}
+.hcp-index{font-size:20px;font-weight:bold;color:#ffd447;font-family:'Courier New',monospace;}
+.hcp-index-label{font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,212,71,0.45);text-align:right;margin-top:1px;}
+.hcp-chevron{font-size:11px;color:rgba(255,212,71,0.4);margin-left:10px;transition:transform .2s;}
+.hcp-body{display:none;border-top:1px solid rgba(255,212,71,0.1);}
+.hcp-body.open{display:block;}
+.sboard tr.hcp-counting td{background:rgba(255,212,71,0.06);}
+.sboard tr.hcp-counting .hcp-diff{color:#ffd447;font-weight:bold;}
+.sboard tr.hcp-dimmed td{opacity:0.45;}
+.hcp-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:#ffd447;margin-right:5px;vertical-align:middle;}
 /* ── Section label ── */
 .rounds-section-label{font-size:13px;font-weight:bold;letter-spacing:.5px;color:#ffd447;padding:14px 2px 6px;}
 /* ── Hall of Fame cards ── */
@@ -424,13 +437,17 @@ function renderInsights(){
         let totalPar = pd.length ? pd.reduce((s,h)=>s+(h.par||4),0) : (r.coursePar||null);
         let min = Math.min(...r.playerTotals);
         r.players.forEach((name,i)=>{
-          if(!players[name]) players[name]={rounds:0,totalScore:0,totalParRounds:0,totalPar:0,wins:0,bestScore:null};
+          if(!players[name]) players[name]={rounds:0,totalScore:0,totalParRounds:0,totalPar:0,wins:0,bestScore:null,bestVsPar:null};
           players[name].rounds++;
           let score = r.playerTotals[i]||0;
           players[name].totalScore += score;
           if(score===min) players[name].wins++;
           if(players[name].bestScore===null || score < players[name].bestScore) players[name].bestScore=score;
-          if(totalPar){ players[name].totalPar += totalPar; players[name].totalParRounds++; }
+          if(totalPar){
+            players[name].totalPar += totalPar; players[name].totalParRounds++;
+            let vp = score - totalPar;
+            if(players[name].bestVsPar===null || vp < players[name].bestVsPar) players[name].bestVsPar=vp;
+          }
         });
       });
       let rows = Object.entries(players)
@@ -445,11 +462,19 @@ function renderInsights(){
             avgDisp = (avgVp>=0?'+':'')+avgVp.toFixed(1);
             avgCls = avgVp<0?'tag-good':avgVp>0?'tag-bad':'ins-muted';
           }
+          let bestDisp, bestCls;
+          if(p.bestVsPar!==null){
+            bestDisp = fmtVsPar(p.bestVsPar);
+            bestCls = p.bestVsPar<0?'tag-good':p.bestVsPar>0?'tag-bad':'ins-muted';
+          } else {
+            bestDisp = p.bestScore??'—';
+            bestCls = 'ins-muted';
+          }
           return [
             `<span class="rank-num">${rank+1}</span>`,
             esc(name),
             `<span class="${avgCls}">${avgDisp}</span>`,
-            `<span class="ins-muted">${p.bestScore??'—'}</span>`,
+            `<span class="${bestCls}">${bestDisp}</span>`,
             p.wins,
             `<span class="ins-muted">${p.rounds}</span>`
           ];
@@ -591,11 +616,11 @@ function renderHandicap(){
     return;
   }
 
-  // Collect all players
   let playerSet = new Set();
   stRounds.forEach(r=>r.players.forEach(n=>playerSet.add(n)));
 
   let html = '';
+  let cardIdx = 0;
   playerSet.forEach(playerName=>{
     let myRounds = stRounds
       .filter(r=>r.players.includes(playerName))
@@ -605,38 +630,87 @@ function renderHandicap(){
         let par = (r.holeParDist && r.holeParDist.length) ? r.holeParDist.reduce((s,h)=>s+(h.par||4),0) : r.coursePar;
         let slope = r.courseSlope || 113;
         let rating = r.courseRating || par;
-        let diff = ((score - rating) * 113 / slope);
-        return {date: r.date, course: r.course||'Unknown', score, par, diff: +diff.toFixed(1)};
+        let diff = +((score - rating) * 113 / slope).toFixed(1);
+        return {date: r.date, course: r.course||'Unknown', score, par, diff};
       })
       .sort((a,b)=>new Date(a.date)-new Date(b.date));
 
     if(!myRounds.length) return;
 
-    // Handicap index: avg of lowest 8 of last 20 differentials × 0.96
     let recent = myRounds.slice(-20);
     let sorted = [...recent].sort((a,b)=>a.diff-b.diff);
     let useCount = Math.min(8, Math.max(1, Math.floor(recent.length * 0.4)));
     let best = sorted.slice(0, useCount);
-    let hcpIdx = +(best.reduce((s,r)=>s+r.diff,0) / best.length * 0.96).toFixed(1);
-
-    let rows = myRounds.slice(-10).reverse().map(r=>{
-      let diffCls = r.diff < 0 ? 'tag-good' : r.diff > 15 ? 'tag-bad' : 'ins-muted';
-      return [
-        fmtDate(r.date),
-        esc(r.course),
-        r.score,
-        fmtVsPar(r.score - r.par),
-        `<span class="${diffCls}">${r.diff > 0 ? '+' : ''}${r.diff}</span>`
-      ];
+    let bestDates = new Set(best.map((r,i)=>r.date+'|'+r.diff+'|'+i));
+    // mark counting rounds by identity
+    let countingSet = new Set();
+    let tempCounts = {};
+    sorted.slice(0, useCount).forEach(r=>{
+      let key = r.date+'|'+r.course+'|'+r.diff;
+      tempCounts[key] = (tempCounts[key]||0)+1;
+    });
+    let usedCounts = {};
+    recent.slice().reverse().forEach((r,ri)=>{
+      let key = r.date+'|'+r.course+'|'+r.diff;
+      if(tempCounts[key]){
+        usedCounts[key] = (usedCounts[key]||0)+1;
+        if(usedCounts[key] <= tempCounts[key]) countingSet.add(recent.length-1-ri);
+      }
     });
 
-    html += `<div class="section-title" style="margin-top:${html?'12':'0'}px;">${esc(playerName)}
-      <span style="float:right;font-size:11px;font-weight:normal;color:var(--gold);opacity:.9">HCP ${hcpIdx > 0 ? '+' : ''}${hcpIdx}</span>
-    </div>
-    <div class="ins-panel">${sboardTable(['Date','Course','Score','vPar','Diff'], rows)}</div>`;
+    let hcpIdx = +(best.reduce((s,r)=>s+r.diff,0) / best.length * 0.96).toFixed(1);
+    let hcpDisp = String(hcpIdx);
+    let id = 'hcp-'+cardIdx++;
+
+    let rows = recent.slice().reverse().map((r,ri)=>{
+      let isCounting = countingSet.has(recent.length-1-ri);
+      let diffCls = 'hcp-diff '+(r.diff<0?'tag-good':r.diff>15?'tag-bad':'ins-muted');
+      let rowCls = isCounting ? 'hcp-counting' : 'hcp-dimmed';
+      let dot = isCounting ? '<span class="hcp-dot"></span>' : '';
+      return `<tr class="${rowCls}">
+        <td>${dot}${fmtDate(r.date)}</td>
+        <td style="max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(r.course)}</td>
+        <td style="text-align:center;">${fmtVsPar(r.score-r.par)}</td>
+        <td style="text-align:right;" class="${diffCls}">${r.diff>0?'+':''}${r.diff}</td>
+      </tr>`;
+    }).join('');
+
+    html += `<div class="hcp-card">
+      <div class="hcp-card-header" onclick="toggleHcp('${id}')">
+        <div>
+          <div class="hcp-player">${esc(playerName)}</div>
+          <div style="font-size:11px;color:rgba(255,212,71,0.4);margin-top:2px;">${recent.length} round${recent.length!==1?'s':''} · best ${useCount} count</div>
+        </div>
+        <div style="display:flex;align-items:center;">
+          <div style="text-align:right;">
+            <div class="hcp-index">${hcpDisp}</div>
+            <div class="hcp-index-label">HCP Index</div>
+          </div>
+          <span class="hcp-chevron" id="${id}-chev">▼</span>
+        </div>
+      </div>
+      <div class="hcp-body" id="${id}">
+        <table class="sboard" style="margin:0;">
+          <thead><tr>
+            <th style="text-align:left;">Date</th>
+            <th style="text-align:left;">Course</th>
+            <th style="text-align:center;">vPar</th>
+            <th style="text-align:right;">Diff</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
   });
 
   el.innerHTML = html || '<div class="empty-state">No data.</div>';
+}
+
+function toggleHcp(id){
+  let body = document.getElementById(id);
+  let chev = document.getElementById(id+'-chev');
+  let open = body.classList.toggle('open');
+  chev.style.transform = open ? 'rotate(180deg)' : '';
 }
 
 renderInsights();

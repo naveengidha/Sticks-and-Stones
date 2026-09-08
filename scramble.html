@@ -24,6 +24,10 @@ body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;margin:0;p
 .field-input{width:100%;padding:7px 10px;box-sizing:border-box;border-radius:4px;border:1px solid rgba(255,212,71,0.2);border-bottom:2px solid rgba(255,212,71,0.4);color:#fff;font-size:14px;background:rgba(0,0,0,0.4);font-family:'Courier New',monospace;letter-spacing:.3px;margin-bottom:0;}
 .field-input::placeholder{color:rgba(255,255,255,0.25);}
 .field-input:focus{outline:none;border-color:rgba(255,212,71,0.7);background:rgba(0,0,0,0.55);}
+.ac-dropdown{position:absolute;top:calc(100% + 2px);left:0;right:0;z-index:200;background:#0e1a12;border:1px solid rgba(255,212,71,0.35);border-radius:6px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.6);}
+.ac-item{padding:9px 11px;font-size:13px;font-family:'Courier New',monospace;color:#fff;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.05);}
+.ac-item:last-child{border-bottom:none;}
+.ac-item:active,.ac-item.focused{background:rgba(255,212,71,0.12);color:#ffd447;}
 .select-input{width:100%;padding:7px 10px;border-radius:4px;border:1px solid rgba(255,212,71,0.2);border-bottom:2px solid rgba(255,212,71,0.4);color:#ffd447;font-size:14px;background:rgba(0,0,0,0.5);font-family:'Courier New',monospace;color-scheme:dark;}
 .date-course-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
 input[type="date"].field-input{-webkit-appearance:none;appearance:none;color-scheme:dark;}
@@ -41,6 +45,8 @@ input[type="date"].field-input{-webkit-appearance:none;appearance:none;color-sch
 .vspar-even{color:rgba(255,255,255,0.4);}
 .save-btn{width:100%;padding:13px;border:none;border-radius:8px;font-size:15px;font-weight:bold;background:linear-gradient(135deg,#5c3317,#ffd447,#5c3317);color:#0a0a00;cursor:pointer;box-shadow:0 2px 16px rgba(139,94,60,0.5);letter-spacing:2px;text-transform:uppercase;font-family:'Georgia','Times New Roman',serif;margin-top:4px;}
 .save-btn:active{opacity:.85;}
+.set-teams-btn{width:100%;padding:11px;border:1px solid rgba(255,212,71,0.4);border-radius:8px;font-size:13px;font-weight:bold;background:rgba(255,212,71,0.07);color:#ffd447;cursor:pointer;letter-spacing:1.5px;text-transform:uppercase;font-family:'Georgia','Times New Roman',serif;margin-bottom:10px;}
+.set-teams-btn:active{background:rgba(255,212,71,0.14);}
 .error-msg{color:#ff6b6b;font-size:13px;text-align:center;margin:6px 0;display:none;}
 .confirm-screen{display:none;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:40px 24px 110px;text-align:center;}
 .confirm-icon{font-size:48px;margin-bottom:16px;}
@@ -60,6 +66,15 @@ input[type="date"].field-input{-webkit-appearance:none;appearance:none;color-sch
 .nav-item svg{width:20px;height:20px;flex-shrink:0;}
 .nav-center{background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;margin:0 4px;cursor:pointer;box-shadow:0 2px 10px rgba(139,94,60,0.5);flex-shrink:0;text-decoration:none;border:none;}
 .nav-center svg{width:36px;height:36px;}
+/* player-row: input + hcp badge side by side */
+.player-row{display:flex;align-items:center;gap:6px;position:relative;}
+.player-row .field-input{flex:1;min-width:0;}
+.hcp-badge{font-size:10px;font-family:'Courier New',monospace;font-weight:bold;color:rgba(255,212,71,0.5);background:rgba(255,212,71,0.07);border:1px solid rgba(255,212,71,0.2);border-radius:5px;padding:3px 6px;white-space:nowrap;min-width:36px;text-align:center;flex-shrink:0;}
+/* team name display inside team cards after set */
+.team-names{font-size:16px;font-weight:bold;color:#fff;margin-bottom:10px;line-height:1.4;}
+.accept-btn{width:100%;padding:11px;border:1px solid rgba(76,200,120,0.4);border-radius:8px;font-size:13px;font-weight:bold;background:rgba(76,200,120,0.07);color:#2ecc71;cursor:pointer;letter-spacing:1.5px;text-transform:uppercase;font-family:'Georgia','Times New Roman',serif;margin-bottom:10px;}
+.accept-btn:active{background:rgba(76,200,120,0.14);}
+.accepted-banner{text-align:center;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#2ecc71;margin-bottom:10px;padding:8px;border:1px solid rgba(76,200,120,0.25);border-radius:6px;background:rgba(76,200,120,0.06);}
 </style>
 </head>
 <body>
@@ -79,28 +94,35 @@ input[type="date"].field-input{-webkit-appearance:none;appearance:none;color-sch
         </div>
       </div>
 
-      <div class="setup-section team-a">
-        <div class="setup-section-label">Team A</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 56px;gap:6px;align-items:center;">
-          <input class="field-input" id="a1" placeholder="Player 1">
-          <input class="field-input" id="a2" placeholder="Player 2">
-          <input type="number" class="score-input" id="scoreA" inputmode="numeric" placeholder="72" min="1" max="200" oninput="updateVsPar()" style="text-align:center;padding:7px 4px;font-size:14px;">
+      <div class="setup-section" id="playersSection">
+        <div class="setup-section-label">Players</div>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
+          <div class="player-row"><input class="field-input" id="p1" placeholder="Player 1" autocomplete="off"><div class="hcp-badge" id="hcp1">—</div></div>
+          <div class="player-row"><input class="field-input" id="p2" placeholder="Player 2" autocomplete="off"><div class="hcp-badge" id="hcp2">—</div></div>
+          <div class="player-row"><input class="field-input" id="p3" placeholder="Player 3" autocomplete="off"><div class="hcp-badge" id="hcp3">—</div></div>
+          <div class="player-row"><input class="field-input" id="p4" placeholder="Player 4" autocomplete="off"><div class="hcp-badge" id="hcp4">—</div></div>
         </div>
+        <button class="set-teams-btn" onclick="setTeams()">Set Teams →</button>
+      </div>
+
+      <div class="setup-section team-a" id="teamACard" style="display:none;">
+        <div class="setup-section-label">Team A</div>
+        <div id="teamANames" class="team-names"></div>
+        <input type="number" class="score-input" id="scoreA" inputmode="numeric" placeholder="Score" min="1" max="200" oninput="updateVsPar()" style="text-align:center;padding:7px 4px;font-size:18px;">
         <div class="vspar-row" id="vspA"></div>
       </div>
 
-      <div class="setup-section team-b">
+      <div class="setup-section team-b" id="teamBCard" style="display:none;">
         <div class="setup-section-label b">Team B</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 56px;gap:6px;align-items:center;">
-          <input class="field-input" id="b1" placeholder="Player 3">
-          <input class="field-input" id="b2" placeholder="Player 4">
-          <input type="number" class="score-input team-b" id="scoreB" inputmode="numeric" placeholder="72" min="1" max="200" oninput="updateVsPar()" style="text-align:center;padding:7px 4px;font-size:14px;">
-        </div>
+        <div id="teamBNames" class="team-names"></div>
+        <input type="number" class="score-input team-b" id="scoreB" inputmode="numeric" placeholder="Score" min="1" max="200" oninput="updateVsPar()" style="text-align:center;padding:7px 4px;font-size:18px;">
         <div class="vspar-row" id="vspB"></div>
       </div>
 
       <div class="error-msg" id="errorMsg">Enter player names and scores for both teams.</div>
-      <button class="save-btn" onclick="saveRound()">Save Round</button>
+      <button class="accept-btn" id="acceptBtn" style="display:none;" onclick="acceptTeams()">Accept Teams</button>
+      <div class="accepted-banner" id="acceptedBanner" style="display:none;">Teams confirmed — enter scores below</div>
+      <button class="save-btn" id="saveBtn" style="display:none;" onclick="saveRound()">Save Round</button>
 
     </div>
   </div>
@@ -149,11 +171,236 @@ document.getElementById('roundDate').value = new Date().toLocaleDateString('en-C
     const seasons = JSON.parse(localStorage.getItem('seasons')||'[]')
       .filter(s=>s.status==='active'&&(!s.allowedGames||s.allowedGames.includes('scramble')));
     const sel = document.getElementById('seasonSelect');
-    seasons.forEach(s=>{ const o=document.createElement('option'); o.value=s.id; o.textContent=s.name; sel.appendChild(o); });
+    if(sel) seasons.forEach(s=>{ const o=document.createElement('option'); o.value=s.id; o.textContent=s.name; sel.appendChild(o); });
     const urlSeasonId = new URLSearchParams(location.search).get('seasonId');
-    if(urlSeasonId){ sel.value=urlSeasonId; if(sel.value==urlSeasonId) onSeasonPick(); }
+    if(urlSeasonId && sel){ sel.value=urlSeasonId; if(sel.value==urlSeasonId) onSeasonPick(); }
   }catch(e){}
 })();
+
+// ── Handicap index lookup ──────────────────────────────────────────────────
+
+function getHandicapIndex(name){
+  try{
+    const hist = JSON.parse(localStorage.getItem('gameHistory')||'[]');
+    const rounds = hist.filter(r=>
+      r.game==='stroke' && r.players && r.playerTotals &&
+      ((r.holeParDist && r.holeParDist.length) || r.coursePar) &&
+      r.players.includes(name)
+    ).map(r=>{
+      const idx = r.players.indexOf(name);
+      const score = r.playerTotals[idx];
+      const par = (r.holeParDist && r.holeParDist.length)
+        ? r.holeParDist.reduce((s,h)=>s+(h.par||4),0) : r.coursePar;
+      const slope = r.courseSlope||113;
+      const rating = r.courseRating||par;
+      return {date:r.date, diff:+((score-rating)*113/slope).toFixed(1)};
+    }).sort((a,b)=>new Date(a.date)-new Date(b.date));
+
+    if(!rounds.length) return null;
+    const recent = rounds.slice(-20);
+    const useCount = Math.min(8, Math.max(1, Math.floor(recent.length*0.4)));
+    const best = [...recent].sort((a,b)=>a.diff-b.diff).slice(0, useCount);
+    return +(best.reduce((s,r)=>s+r.diff,0)/best.length*0.96).toFixed(1);
+  }catch(e){ return null; }
+}
+
+// ── Known player names ─────────────────────────────────────────────────────
+
+function getKnownPlayers(){
+  try{
+    const hist = JSON.parse(localStorage.getItem('gameHistory')||'[]');
+    const names = new Set();
+    hist.forEach(r=>{ if(r.players) r.players.forEach(n=>{ if(n) names.add(n.trim()); }); });
+    return [...names].sort((a,b)=>a.localeCompare(b));
+  }catch(e){ return []; }
+}
+
+// ── Autocomplete ───────────────────────────────────────────────────────────
+
+const playerIds = ['p1','p2','p3','p4'];
+
+function setupPlayerAutocomplete(){
+  const allNames = getKnownPlayers();
+  if(!allNames.length) return;
+  let activeDropdown = null;
+
+  function closeDropdown(){
+    if(activeDropdown){ activeDropdown.remove(); activeDropdown=null; }
+  }
+
+  function openDropdown(input, matches){
+    closeDropdown();
+    if(!matches.length) return;
+    const wrap = input.closest('.player-row');
+    const dd = document.createElement('div');
+    dd.className = 'ac-dropdown';
+    matches.forEach(name=>{
+      const item = document.createElement('div');
+      item.className = 'ac-item';
+      item.textContent = name;
+      item.addEventListener('mousedown', e=>{ e.preventDefault(); input.value=name; updateHcpBadge(input.id); closeDropdown(); });
+      item.addEventListener('touchstart', e=>{ e.preventDefault(); input.value=name; updateHcpBadge(input.id); closeDropdown(); input.blur(); }, {passive:false});
+      dd.appendChild(item);
+    });
+    wrap.appendChild(dd);
+    activeDropdown = dd;
+  }
+
+  playerIds.forEach(id=>{
+    const input = document.getElementById(id);
+    if(!input) return;
+    input.addEventListener('input', ()=>{
+      updateHcpBadge(id);
+      const val = input.value.trim().toLowerCase();
+      if(!val){ closeDropdown(); return; }
+      const otherVals = new Set(playerIds.filter(x=>x!==id).map(x=>document.getElementById(x)?.value.trim()).filter(Boolean));
+      const matches = allNames.filter(n=>n.toLowerCase().startsWith(val) && !otherVals.has(n));
+      if(matches.length===1 && matches[0].toLowerCase()===val){ closeDropdown(); return; }
+      openDropdown(input, matches.slice(0,5));
+    });
+    input.addEventListener('blur', ()=>setTimeout(closeDropdown, 150));
+  });
+
+  document.addEventListener('touchstart', e=>{
+    if(activeDropdown && !activeDropdown.contains(e.target)) closeDropdown();
+  });
+}
+
+function updateHcpBadge(inputId){
+  const num = inputId.replace('p','');
+  const badge = document.getElementById('hcp'+num);
+  if(!badge) return;
+  const name = document.getElementById(inputId).value.trim();
+  if(!name){ badge.textContent='—'; return; }
+  const idx = getHandicapIndex(name);
+  badge.textContent = idx!==null ? String(idx) : '—';
+}
+
+setupPlayerAutocomplete();
+
+// ── Set Teams ──────────────────────────────────────────────────────────────
+
+let teamAssignment = null; // {a:[name,name], b:[name,name]}
+
+restoreActiveRound();
+
+function setTeams(){
+  const names = playerIds.map(id=>document.getElementById(id).value.trim()).filter(Boolean);
+  if(names.length < 2){
+    const err = document.getElementById('errorMsg');
+    err.textContent = 'Enter at least 2 player names.';
+    err.style.display='block';
+    setTimeout(()=>err.style.display='none', 2500);
+    return;
+  }
+  document.getElementById('errorMsg').style.display='none';
+
+  // Attach handicap index (null = no history, treated as mid-range for pairing)
+  const withHcp = names.map(name=>({ name, hcp: getHandicapIndex(name) }));
+
+  // Sort by handicap: nulls go to the middle
+  withHcp.sort((a,b)=>{
+    if(a.hcp===null && b.hcp===null) return 0;
+    if(a.hcp===null) return 1;
+    if(b.hcp===null) return -1;
+    return a.hcp - b.hcp;
+  });
+
+  // Snake draft: rank 1+4 vs 2+3 (best balanced pairing)
+  let teamA, teamB;
+  if(withHcp.length === 4){
+    teamA = [withHcp[0].name, withHcp[3].name];
+    teamB = [withHcp[1].name, withHcp[2].name];
+  } else if(withHcp.length === 3){
+    teamA = [withHcp[0].name, withHcp[2].name];
+    teamB = [withHcp[1].name];
+  } else {
+    teamA = [withHcp[0].name];
+    teamB = [withHcp[1].name];
+  }
+
+  teamAssignment = {a: teamA, b: teamB};
+
+  // Render team name labels
+  document.getElementById('teamANames').innerHTML =
+    teamA.map(n=>`<span style="color:#ffd447;">${esc(n)}</span>`).join('<span style="color:rgba(255,255,255,0.3);margin:0 4px;">&</span>');
+  document.getElementById('teamBNames').innerHTML =
+    teamB.map(n=>`<span style="color:#64a0dc;">${n}</span>`).join('<span style="color:rgba(255,255,255,0.3);margin:0 4px;">&</span>');
+
+  document.getElementById('teamACard').style.display='block';
+  document.getElementById('teamBCard').style.display='block';
+  document.getElementById('acceptBtn').style.display='block';
+  document.getElementById('acceptedBanner').style.display='none';
+  document.getElementById('saveBtn').style.display='none';
+}
+
+// ── Accept & active round ──────────────────────────────────────────────────
+
+function acceptTeams(){
+  if(!teamAssignment) return;
+  saveActiveRound();
+  document.getElementById('acceptBtn').style.display='none';
+  document.getElementById('acceptedBanner').style.display='block';
+  document.getElementById('saveBtn').style.display='block';
+  // lock player inputs and Set Teams button
+  document.getElementById('playersSection').style.pointerEvents='none';
+  document.getElementById('playersSection').style.opacity='0.5';
+}
+
+function saveActiveRound(){
+  if(!teamAssignment) return;
+  const course = document.getElementById('courseInput').value.trim();
+  const dateVal = document.getElementById('roundDate').value;
+  const par = document.getElementById('parInput').value;
+  localStorage.setItem('activeGame_scramble', JSON.stringify({
+    teamAssignment,
+    course,
+    dateVal,
+    par,
+    players: [...teamAssignment.a, ...teamAssignment.b],
+    startedAt: new Date().toISOString()
+  }));
+}
+
+function clearActiveRound(){
+  localStorage.removeItem('activeGame_scramble');
+}
+
+function restoreActiveRound(){
+  try{
+    const s = JSON.parse(localStorage.getItem('activeGame_scramble')||'null');
+    if(!s || !s.teamAssignment) return false;
+
+    teamAssignment = s.teamAssignment;
+
+    // Restore round detail fields
+    if(s.course) document.getElementById('courseInput').value = s.course;
+    if(s.dateVal) document.getElementById('roundDate').value = s.dateVal;
+    if(s.par) document.getElementById('parInput').value = s.par;
+
+    // Fill player inputs (greyed out) and hcp badges
+    const allPlayers = [...s.teamAssignment.a, ...s.teamAssignment.b];
+    playerIds.forEach((id,i)=>{
+      const el = document.getElementById(id);
+      if(el && allPlayers[i]){ el.value = allPlayers[i]; updateHcpBadge(id); }
+    });
+
+    // Render team cards
+    document.getElementById('teamANames').innerHTML =
+      s.teamAssignment.a.map(n=>`<span style="color:#ffd447;">${esc(n)}</span>`).join('<span style="color:rgba(255,255,255,0.3);margin:0 6px;">&</span>');
+    document.getElementById('teamBNames').innerHTML =
+      s.teamAssignment.b.map(n=>`<span style="color:#64a0dc;">${esc(n)}</span>`).join('<span style="color:rgba(255,255,255,0.3);margin:0 6px;">&</span>');
+
+    document.getElementById('teamACard').style.display='block';
+    document.getElementById('teamBCard').style.display='block';
+    document.getElementById('acceptBtn').style.display='none';
+    document.getElementById('acceptedBanner').style.display='block';
+    document.getElementById('saveBtn').style.display='block';
+    document.getElementById('playersSection').style.pointerEvents='none';
+    document.getElementById('playersSection').style.opacity='0.5';
+    return true;
+  }catch(e){ return false; }
+}
 
 function onSeasonPick(){
   try{
@@ -162,11 +409,16 @@ function onSeasonPick(){
     const season = JSON.parse(localStorage.getItem('seasons')||'[]').find(s=>s.id===seasonId);
     if(!season||!season.players||season.players.length<2) return;
     const p = season.players;
-    const ids = ['a1','a2','b1','b2'];
-    ids.forEach((id,i)=>{ const el=document.getElementById(id); if(el&&p[i]) el.value=p[i].name||''; });
+    playerIds.forEach((id,i)=>{
+      const el=document.getElementById(id);
+      if(el&&p[i]){ el.value=p[i].name||''; updateHcpBadge(id); }
+    });
   }catch(e){}
 }
 
+// ── Utils ──────────────────────────────────────────────────────────────────
+
+function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
 function fmtVsPar(v){ return v>0?'+'+v:v===0?'E':String(v); }
 
 function updateVsPar(){
@@ -187,25 +439,25 @@ function updateVsPar(){
   } else { vspB.className='vspar-row'; vspB.textContent=''; }
 }
 
+// ── Save ───────────────────────────────────────────────────────────────────
+
 function saveRound(){
-  const a1=document.getElementById('a1').value.trim();
-  const a2=document.getElementById('a2').value.trim();
-  const b1=document.getElementById('b1').value.trim();
-  const b2=document.getElementById('b2').value.trim();
+  if(!teamAssignment){ return; }
+  const teamA = teamAssignment.a;
+  const teamB = teamAssignment.b;
   const sA=parseInt(document.getElementById('scoreA').value);
   const sB=parseInt(document.getElementById('scoreB').value);
   const par=parseInt(document.getElementById('parInput').value);
   const err=document.getElementById('errorMsg');
 
-  if(!a1||!b1||isNaN(sA)||isNaN(sB)){
+  if(!teamA.length||!teamB.length||isNaN(sA)||isNaN(sB)){
+    err.textContent='Enter scores for both teams.';
     err.style.display='block';
     setTimeout(()=>err.style.display='none',2500);
     return;
   }
   err.style.display='none';
 
-  const teamA=[a1,a2].filter(Boolean);
-  const teamB=[b1,b2].filter(Boolean);
   const teamNameA=teamA.join(' & ');
   const teamNameB=teamB.join(' & ');
   const dateVal=document.getElementById('roundDate').value;
@@ -229,7 +481,7 @@ function saveRound(){
   }catch(e){}
 
   try{
-    const seasonId=parseInt(document.getElementById('seasonSelect').value);
+    const seasonId=parseInt(document.getElementById('seasonSelect')?.value);
     if(seasonId&&typeof _addRoundToSeason==='function'){
       const aWins=sA<sB, tied=sA===sB;
       const positions=[
@@ -240,6 +492,7 @@ function saveRound(){
     }
   }catch(e){}
 
+  clearActiveRound();
   showConfirm(teamNameA,teamNameB,sA,sB,par,course,dateVal);
 }
 
