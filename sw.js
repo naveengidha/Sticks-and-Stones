@@ -5,7 +5,6 @@ const ASSETS = [
   BASE + '/splash.html',
   BASE + '/games.html',
   BASE + '/edit-round.html',
-  BASE + '/f1.html',
   BASE + '/banker.html',
   BASE + '/practice.html',
   BASE + '/caddy.html',

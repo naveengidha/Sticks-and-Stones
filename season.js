@@ -12,7 +12,6 @@ function _seasonSaveSeasons(arr){ localStorage.setItem('seasons', JSON.stringify
 /* ── Derive finishing positions from a gameHistory record ── */
 function derivePositions(r){
   switch(r.game){
-    case 'f1':
     case 'stableford':
     case 'wolf':
       return _rankByTotals(r.players, r.playerTotals, 'desc');
