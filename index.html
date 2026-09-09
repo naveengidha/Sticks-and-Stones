@@ -294,7 +294,7 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 <body>
 <div class="container">
 
-  <div class="logo" id="logoEl">
+  <div class="logo" id="logoEl" onclick="handleLogoClick()">
     <svg width="100" height="100" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="57" stroke="rgba(184,150,46,0.4)" stroke-width="1.5"/>
       <circle cx="60" cy="60" r="50" stroke="rgba(184,150,46,0.2)" stroke-width="1"/>
@@ -1949,6 +1949,18 @@ function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').rep
     render();
   }catch(e){}
 })();
+
+// Triple-click logo → Gambler's Gauntlet strategy
+let _logoClickCount = 0, _logoClickTimer = null;
+function handleLogoClick(){
+  _logoClickCount++;
+  clearTimeout(_logoClickTimer);
+  _logoClickTimer = setTimeout(()=>{ _logoClickCount = 0; }, 600);
+  if(_logoClickCount >= 3){
+    _logoClickCount = 0;
+    window.location.href = 'gauntlet-strategy.html';
+  }
+}
 
 </script>
 </body>

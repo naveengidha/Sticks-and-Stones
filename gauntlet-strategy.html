@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#080f0a">
+<title>Gambler's Dossier</title>
+<link rel="manifest" href="manifest.json">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{--bg:#080f0a;--bg-card:#0e1a12;--gold:#ffd447;--gold-dim:rgba(255,212,71,0.45);--emerald:#2d9e6b;--ruby:#c0404a;}
+body{font-family:'Georgia','Times New Roman',serif;background:var(--bg);margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;}
+.topnav{display:flex;align-items:center;background:var(--bg-card);padding:10px 16px;gap:12px;flex-shrink:0;border-bottom:2px solid rgba(184,150,46,0.35);box-shadow:0 2px 12px rgba(0,0,0,0.5);}
+.back-btn{background:none;border:none;color:var(--gold);font-size:15px;font-weight:bold;cursor:pointer;padding:4px 8px 4px 0;text-decoration:none;font-family:inherit;}
+.topnav-title{font-size:15px;font-weight:bold;color:var(--gold);flex:1;text-align:center;letter-spacing:.5px;}
+.topnav-spacer{width:60px;}
+.scroll-area{flex:1;overflow-y:auto;padding:14px 14px 40px;}
+.empty-state{text-align:center;color:rgba(255,255,255,0.35);padding:50px 20px;font-size:14px;line-height:2;}
+
+/* Player cards */
+.player-card{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:12px;margin-bottom:16px;overflow:hidden;}
+.player-header{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;-webkit-user-select:none;}
+.player-header:active{background:rgba(255,212,71,0.04);}
+.player-name{font-size:16px;font-weight:bold;color:var(--gold);}
+.player-rounds{font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px;}
+.player-chevron{font-size:11px;color:rgba(255,212,71,0.4);transition:transform .2s;}
+.player-body{border-top:1px solid rgba(255,212,71,0.1);}
+
+/* Insight sections */
+.insight-section{padding:10px 14px 6px;}
+.insight-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;}
+.insight-label{font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dim);}
+.insight-verdict{font-size:9px;font-weight:bold;letter-spacing:.8px;text-transform:uppercase;padding:2px 7px;border-radius:3px;}
+.verdict-threat{background:rgba(192,64,74,0.2);color:#e07070;border:1px solid rgba(192,64,74,0.3);}
+.verdict-good{background:rgba(45,158,107,0.15);color:#5ecfa0;border:1px solid rgba(45,158,107,0.3);}
+.verdict-neutral{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.1);}
+.insight-bullets{list-style:none;margin:0;padding:0;}
+.insight-bullets li{font-size:13px;color:rgba(255,255,255,0.8);line-height:1.45;padding:4px 0 4px 16px;position:relative;border-bottom:1px solid rgba(255,255,255,0.04);}
+.insight-bullets li:last-child{border-bottom:none;}
+.insight-bullets li::before{content:'·';position:absolute;left:4px;color:var(--gold-dim);font-size:16px;line-height:1;}
+.insight-bullets li strong{color:#fff;}
+
+/* Par breakdown bar */
+.par-bars{display:flex;gap:8px;margin-top:4px;}
+.par-bar-wrap{flex:1;text-align:center;}
+.par-bar-label{font-size:9px;color:var(--gold-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+.par-bar-track{height:6px;background:rgba(255,255,255,0.07);border-radius:3px;overflow:hidden;}
+.par-bar-fill{height:100%;border-radius:3px;}
+.par-bar-val{font-size:11px;color:rgba(255,255,255,0.6);margin-top:3px;}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <a class="back-btn" href="index.html">‹ Back</a>
+  <div class="topnav-title">Gambler's Dossier</div>
+  <div class="topnav-spacer"></div>
+</div>
+
+<div class="scroll-area" id="scrollArea">
+  <div style="text-align:center;padding:40px;color:rgba(255,255,255,0.3);">Analysing…</div>
+</div>
+
+<script>
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function loadHistory(){ try{ return JSON.parse(localStorage.getItem('gameHistory')||'[]'); }catch(e){ return []; } }
+
+function pct(n,d){ return d ? Math.round(n/d*100) : 0; }
+function fmtVsPar(v){ return v===0?'E':v>0?'+'+v:String(v); }
+
+function analyse(){
+  let all = loadHistory();
+  let area = document.getElementById('scrollArea');
+
+  // Gather per-player data across stableford, stroke, mixed, banker
+  let players = {};
+
+  function ensurePlayer(name){
+    if(!players[name]) players[name] = {
+      rounds: 0,
+      // Par breakdown: for each par type, track total vs-par diff and hole count
+      parBreak: {3:{diff:0,holes:0}, 4:{diff:0,holes:0}, 5:{diff:0,holes:0}},
+      // Stableford: 0-point holes (struggle holes)
+      sfZeros: 0, sfHoles: 0,
+      // Banker: wins/losses as player, wins/losses as banker
+      bankerNet: 0, bankerPlayerHoles: 0, bankerWins: 0,
+      bankerBankerHoles: 0, bankerSweeps: 0,
+      // Pin: wins on par 3s
+      pinWins: 0, pinHoles: 0,
+      // Mixed gauntlet net
+      gauntletNet: 0, gauntletRounds: 0
+    };
+    return players[name];
+  }
+
+  // Stableford rounds
+  all.filter(r=>r.game==='stableford' && r.players && r.scoreHistory && r.holeParDist).forEach(r=>{
+    r.players.forEach((name,pi)=>{
+      let p = ensurePlayer(name);
+      p.rounds++;
+      r.scoreHistory.forEach((hole,hi)=>{
+        let score = hole[pi], par = r.holeParDist[hi]?.par;
+        if(score==null || !par) return;
+        let diff = score - par;
+        p.parBreak[par] && (p.parBreak[par].diff += diff, p.parBreak[par].holes++);
+        p.sfHoles++;
+        if(diff >= 2) p.sfZeros++; // score >= bogey+1 = 0 pts in stableford
+      });
+    });
+  });
+
+  // Stroke rounds
+  all.filter(r=>r.game==='stroke' && r.players && r.scoreHistory && r.holeParDist).forEach(r=>{
+    r.players.forEach((name,pi)=>{
+      let p = ensurePlayer(name);
+      p.rounds++;
+      r.scoreHistory.forEach((hole,hi)=>{
+        let score = hole[pi], par = r.holeParDist[hi]?.par;
+        if(score==null || !par) return;
+        let diff = score - par;
+        p.parBreak[par] && (p.parBreak[par].diff += diff, p.parBreak[par].holes++);
+      });
+    });
+  });
+
+  // Banker rounds
+  all.filter(r=>r.game==='banker' && r.players && r.holeHistory).forEach(r=>{
+    r.players.forEach(name=>ensurePlayer(name));
+    (r.holeHistory||[]).forEach(h=>{
+      let bankerName = r.players[h.bankerIdx];
+      if(bankerName){
+        let bp = ensurePlayer(bankerName);
+        bp.bankerBankerHoles++;
+        let playerWins = (h.matchups||[]).filter(m=>m.result==='player').length;
+        if(playerWins===0) bp.bankerSweeps++;
+      }
+      (h.matchups||[]).forEach(m=>{
+        let name = r.players[m.playerIdx];
+        if(!name) return;
+        let p = ensurePlayer(name);
+        p.bankerPlayerHoles++;
+        if(m.result==='player') p.bankerWins++;
+      });
+    });
+    r.players.forEach((name,i)=>{
+      ensurePlayer(name).bankerNet += r.playerNetTotals?.[i]||0;
+    });
+  });
+
+  // Gambler's Gauntlet (mixed) rounds
+  all.filter(r=>r.game==='mixed' && r.players && r.moneyNet).forEach(r=>{
+    r.players.forEach((name,i)=>{
+      let p = ensurePlayer(name);
+      p.rounds++;
+      p.gauntletNet += r.moneyNet[i]||0;
+      p.gauntletRounds++;
+      // Per-hole par breakdown from holeHistory
+      (r.holeHistory||[]).forEach(h=>{
+        if(!h.scores || !h.par) return;
+        h.scores.forEach((score,pi)=>{
+          if(score==null) return;
+          let diff = score - h.par;
+          let par = h.par;
+          p.parBreak[par] && (p.parBreak[par].diff += diff, p.parBreak[par].holes++);
+        });
+        // Pin wins
+        if(h.format==='pin' && h.pinWinner != null){
+          let pName = r.players[h.pinWinner];
+          if(pName){ ensurePlayer(pName).pinWins++; }
+          r.players.forEach(n=>ensurePlayer(n).pinHoles++);
+        }
+      });
+    });
+  });
+
+  let playerNames = Object.keys(players).filter(n=>
+    Object.values(players[n]).some(v=>typeof v==='number'&&v!==0)
+  );
+
+  if(!playerNames.length){
+    area.innerHTML = '<div class="empty-state">No round data yet.<br>Play some rounds to unlock dossiers.</div>';
+    return;
+  }
+
+  // Sort by most rounds played
+  playerNames.sort((a,b)=>players[b].gauntletRounds - players[a].gauntletRounds);
+
+  let html = `<div style="font-size:11px;color:rgba(255,255,255,0.25);text-align:center;margin-bottom:14px;letter-spacing:.5px;">TAP A PLAYER TO EXPAND</div>`;
+
+  playerNames.forEach((name,idx)=>{
+    let p = players[name];
+    let insights = buildInsights(name, p, players);
+    let id = 'pc-'+idx;
+    html += `<div class="player-card">
+      <div class="player-header" onclick="toggleCard('${id}')">
+        <div>
+          <div class="player-name">${esc(name)}</div>
+          <div class="player-rounds">${p.gauntletRounds} Gauntlet round${p.gauntletRounds!==1?'s':''} on record</div>
+        </div>
+        <span class="player-chevron" id="${id}-chev">▼</span>
+      </div>
+      <div class="player-body" id="${id}" style="display:none;">
+        ${insights}
+      </div>
+    </div>`;
+  });
+
+  area.innerHTML = html;
+}
+
+function toggleCard(id){
+  let body = document.getElementById(id);
+  let chev = document.getElementById(id+'-chev');
+  let open = body.style.display === 'none';
+  body.style.display = open ? 'block' : 'none';
+  chev.style.transform = open ? 'rotate(180deg)' : '';
+}
+
+function buildInsights(name, p, allPlayers){
+  let sections = '';
+
+  function section(label, verdictCls, verdictText, bullets){
+    let hdr = `<div class="insight-header"><div class="insight-label">${label}</div>${verdictText?`<div class="insight-verdict ${verdictCls}">${verdictText}</div>`:''}</div>`;
+    let li = bullets.map(b=>`<li>${b}</li>`).join('');
+    return `<div class="insight-section">${hdr}<ul class="insight-bullets">${li}</ul></div>`;
+  }
+
+  // ── Par Breakdown ──
+  let parData = [3,4,5].map(par=>{
+    let d = p.parBreak[par];
+    return {par, avg: d.holes ? d.diff/d.holes : null, holes: d.holes};
+  }).filter(d=>d.holes > 0);
+
+  if(parData.length){
+    let worst = [...parData].sort((a,b)=>b.avg-a.avg)[0];
+    let best  = [...parData].sort((a,b)=>a.avg-b.avg)[0];
+
+    let barHtml = `<div class="par-bars">`;
+    [3,4,5].forEach(par=>{
+      let d = p.parBreak[par];
+      if(!d.holes){ barHtml += `<div class="par-bar-wrap"><div class="par-bar-label">Par ${par}</div><div class="par-bar-track"><div class="par-bar-fill" style="width:0%;background:rgba(255,255,255,0.1);"></div></div><div class="par-bar-val">—</div></div>`; return; }
+      let avg = d.diff/d.holes;
+      let dispStr = (avg>=0?'+':'')+avg.toFixed(1);
+      let color = avg < -0.1 ? '#2d9e6b' : avg < 0.5 ? '#ffd447' : avg < 1.2 ? '#e0943a' : '#c0404a';
+      let fillPct = Math.min(100, Math.max(0, avg/2*100));
+      barHtml += `<div class="par-bar-wrap">
+        <div class="par-bar-label">Par ${par}</div>
+        <div class="par-bar-track"><div class="par-bar-fill" style="width:${fillPct}%;background:${color};"></div></div>
+        <div class="par-bar-val" style="color:${color};">${dispStr}</div>
+      </div>`;
+    });
+    barHtml += `</div>`;
+
+    let bullets = [];
+    bullets.push(`Weakest on par ${worst.par}s — avg <strong>${(worst.avg>=0?'+':'')+worst.avg.toFixed(1)}</strong> per hole <span class="insight-verdict verdict-threat" style="margin-left:6px;">Target</span>`);
+    if(best.par !== worst.par) bullets.push(`Strongest on par ${best.par}s — avg <strong>${(best.avg>=0?'+':'')+best.avg.toFixed(1)}</strong> per hole`);
+
+    sections += `<div class="insight-section">
+      <div class="insight-header"><div class="insight-label">Scoring by Par</div></div>
+      ${barHtml}
+      <ul class="insight-bullets" style="margin-top:8px;">${bullets.map(b=>`<li>${b}</li>`).join('')}</ul>
+    </div>`;
+  }
+
+  // ── Stableford tendencies ──
+  if(p.sfHoles > 0){
+    let zeroPct = pct(p.sfZeros, p.sfHoles);
+    let vcls = zeroPct >= 30 ? 'verdict-threat' : zeroPct <= 15 ? 'verdict-good' : 'verdict-neutral';
+    let vtxt = zeroPct >= 30 ? 'Inconsistent' : zeroPct <= 15 ? 'Consistent' : 'Average';
+    sections += section('Stableford', '', '', [
+      `Scores <strong>0 pts</strong> on <strong>${zeroPct}%</strong> of holes <span class="insight-verdict ${vcls}" style="margin-left:6px;">${vtxt}</span>`
+    ]);
+  }
+
+  // ── Banker tendencies ──
+  if(p.bankerPlayerHoles > 0 || p.bankerBankerHoles > 0){
+    let bullets = [];
+    let vcls = 'verdict-neutral', vtxt = '';
+    if(p.bankerPlayerHoles > 0){
+      let winPct = pct(p.bankerWins, p.bankerPlayerHoles);
+      vcls = winPct >= 55 ? 'verdict-threat' : winPct <= 35 ? 'verdict-good' : 'verdict-neutral';
+      vtxt = winPct >= 55 ? 'Hard to beat' : winPct <= 35 ? 'Easy pickings' : 'Average';
+      bullets.push(`Wins <strong>${winPct}%</strong> of holes as player vs banker <span class="insight-verdict ${vcls}" style="margin-left:6px;">${vtxt}</span>`);
+    }
+    if(p.bankerBankerHoles > 0){
+      let sweepPct = pct(p.bankerSweeps, p.bankerBankerHoles);
+      let svcls = sweepPct >= 50 ? 'verdict-threat' : 'verdict-neutral';
+      let svtxt = sweepPct >= 50 ? 'Dominant banker' : '';
+      bullets.push(`Sweeps all players on <strong>${sweepPct}%</strong> of holes as banker${svtxt ? ` <span class="insight-verdict ${svcls}" style="margin-left:6px;">${svtxt}</span>` : ''}`);
+    }
+    if(p.bankerNet !== 0){
+      let netStr = (p.bankerNet>0?'+$':'-$')+Math.abs(p.bankerNet);
+      let clr = p.bankerNet>0?'#2d9e6b':'#c0404a';
+      bullets.push(`Overall net: <strong style="color:${clr};">${netStr}</strong>`);
+    }
+    sections += section('Banker', '', '', bullets);
+  }
+
+  // ── Pin tendencies ──
+  if(p.pinHoles > 0){
+    let pinPct = pct(p.pinWins, p.pinHoles);
+    let vcls = pinPct >= 40 ? 'verdict-threat' : pinPct <= 10 ? 'verdict-good' : 'verdict-neutral';
+    let vtxt = pinPct >= 40 ? 'Pin threat' : pinPct <= 10 ? 'No pin threat' : '';
+    sections += section('Closest to Pin', '', '', [
+      `Wins pin on <strong>${pinPct}%</strong> of par 3 holes${vtxt ? ` <span class="insight-verdict ${vcls}" style="margin-left:6px;">${vtxt}</span>` : ''}`
+    ]);
+  }
+
+  // ── Gauntlet net ──
+  if(p.gauntletRounds > 0){
+    let netStr = (p.gauntletNet>=0?'+$':'-$')+Math.abs(p.gauntletNet);
+    let clr = p.gauntletNet>0?'#2d9e6b':'#c0404a';
+    let vcls = p.gauntletNet < 0 ? 'verdict-good' : p.gauntletNet > 0 ? 'verdict-threat' : 'verdict-neutral';
+    let vtxt = p.gauntletNet < 0 ? 'Losing' : p.gauntletNet > 0 ? 'Winning' : 'Even';
+    sections += section('Gauntlet Record', '', '', [
+      `Net across ${p.gauntletRounds} round${p.gauntletRounds!==1?'s':''}: <strong style="color:${clr};">${netStr}</strong> <span class="insight-verdict ${vcls}" style="margin-left:6px;">${vtxt}</span>`
+    ]);
+  }
+
+  if(!sections) sections = `<div style="padding:16px 14px;font-size:13px;color:rgba(255,255,255,0.3);">Not enough data yet.</div>`;
+
+  return sections + '<div style="height:6px;"></div>';
+}
+
+analyse();
+</script>
+</body>
+</html>

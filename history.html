@@ -19,7 +19,7 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 .tab.active{color:var(--gold);border-bottom-color:var(--gold);}
 
 /* ── Scroll area ── */
-.scroll-area{flex:1;overflow-y:auto;padding:14px 14px 110px;}
+.scroll-area{flex:1;overflow-y:auto;padding:0 14px 110px;}
 .tab-panel{display:none;}
 .tab-panel.active{display:block;}
 .empty-state{text-align:center;color:rgba(255,255,255,0.35);padding:50px 20px;font-size:14px;line-height:2;}
@@ -39,11 +39,10 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 .s-chip{font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.55);}
 .s-chip.leader{background:rgba(255,212,71,0.15);color:var(--gold);font-weight:bold;}
 
-/* ── Filter pills ── */
-.filter-bar{display:flex;flex-wrap:wrap;gap:6px;padding:10px 0 8px;margin-bottom:4px;justify-content:center;}
-.filter-bar::-webkit-scrollbar{display:none;}
-.pill{display:inline-block;padding:5px 12px;border-radius:18px;font-size:11px;font-weight:bold;letter-spacing:.4px;cursor:pointer;border:1px solid rgba(255,212,71,0.2);color:#a07840;background:transparent;transition:all .15s;-webkit-user-select:none;}
-.pill.active{background:rgba(255,212,71,0.14);color:var(--gold);border-color:rgba(255,212,71,0.5);}
+/* ── Filter tab bar ── */
+.filter-tab-bar{display:flex;margin:0 0 14px;background:#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:12px;overflow:hidden;}
+.ftab{flex:1;padding:11px 4px;text-align:center;font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;color:rgba(255,212,71,0.4);cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;-webkit-user-select:none;border:none;background:none;font-family:'Georgia','Times New Roman',serif;}
+.ftab.active{color:#ffd447;border-bottom:2px solid #ffd447;}
 
 /* ── Round cards ── */
 .round-card{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:10px;padding:13px;margin-bottom:10px;cursor:pointer;transition:border-color .15s;}
@@ -75,12 +74,12 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 .stat-tile{background:var(--bg-card);border:2px solid var(--border);border-top:3px solid var(--gold);border-radius:8px;padding:12px;text-align:center;}
 .stat-tile .sv{font-size:22px;font-weight:bold;color:var(--gold);font-family:'Courier New',monospace;}
 .stat-tile .sl{font-size:9px;color:rgba(255,212,71,0.45);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px;}
-.ins-panel{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:10px;margin-bottom:12px;overflow:hidden;}
+.ins-panel{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:10px;margin-bottom:18px;overflow:hidden;}
 .ins-panel-title{color:var(--gold);font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:9px 13px 7px;border-bottom:1px solid rgba(255,212,71,0.1);}
 .ins-row{display:flex;align-items:center;justify-content:space-between;padding:8px 13px;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;}
 .ins-row:last-child{border-bottom:none;}
 .ins-name{font-weight:bold;flex:1;}
-.ins-val{font-family:'Courier New',monospace;font-weight:bold;color:var(--gold);}
+.ins-val{font-weight:bold;color:var(--gold);}
 .ins-muted{font-size:11px;color:rgba(255,255,255,0.85);}
 .tag-good{color:#1a9e5c;font-weight:bold;}
 .tag-bad{color:#c0392b;font-weight:bold;}
@@ -88,8 +87,8 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 .sboard th{font-size:9px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:#a07840;padding:8px 12px 6px;border-bottom:1px solid rgba(255,212,71,0.1);white-space:nowrap;}
 .sboard td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;vertical-align:top;}
 .sboard tr:last-child td{border-bottom:none;}
-.rank-num{display:inline-block;width:18px;font-size:11px;color:rgba(255,255,255,0.85);font-family:'Courier New',monospace;}
-.mono{font-family:'Courier New',monospace;}
+.rank-num{display:inline-block;width:18px;font-size:11px;color:rgba(255,255,255,0.85);}
+.mono{font-family:'Georgia','Times New Roman',serif;}
 .hcp-card{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:10px;margin-bottom:10px;overflow:hidden;}
 .hcp-card-header{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;-webkit-user-select:none;user-select:none;}
 .hcp-card-header:active{background:rgba(255,212,71,0.04);}
@@ -130,7 +129,7 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 <div class="page-header">Round Statistics</div>
 
 <!-- Tab bar -->
-<div style="display:flex;margin:12px 14px 0;background:#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:12px;overflow:hidden;">
+<div style="display:flex;margin:12px 14px 14px;background:#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:12px;overflow:hidden;">
   <button id="tabStats" onclick="showHistoryTab('stats')" style="flex:1;padding:11px 4px;background:none;border:none;border-bottom:2px solid #ffd447;color:#ffd447;font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;box-shadow:none;margin:0;font-family:'Georgia','Times New Roman',serif;">Stats</button>
   <button id="tabHof" onclick="showHistoryTab('hof')" style="flex:1;padding:11px 4px;background:none;border:none;border-bottom:2px solid transparent;color:#a07840;font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;box-shadow:none;margin:0;font-family:'Georgia','Times New Roman',serif;">Honours</button>
   <button id="tabHcp" onclick="showHistoryTab('hcp')" style="flex:1;padding:11px 4px;background:none;border:none;border-bottom:2px solid transparent;color:#a07840;font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;box-shadow:none;margin:0;font-family:'Georgia','Times New Roman',serif;">Handicap</button>
@@ -140,12 +139,12 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 
   <!-- ── STATISTICS ── -->
   <div class="tab-panel active" id="tab-stats">
-    <div class="filter-bar" id="insightsFilterBar">
-      <span class="pill active" data-game="all">All</span>
-      <span class="pill" data-game="stroke">Stroke Play</span>
-      <span class="pill" data-game="scramble">Scramble</span>
-      <span class="pill" data-game="stableford">Stableford</span>
-      <span class="pill" data-game="banker">Banker</span>
+    <div class="filter-tab-bar" id="insightsFilterBar">
+      <button class="ftab active" data-game="all">All</button>
+      <button class="ftab" data-game="stroke">Stroke</button>
+      <button class="ftab" data-game="stableford">Stableford</button>
+      <button class="ftab" data-game="scramble">Scramble</button>
+      <button class="ftab" data-game="banker">Banker</button>
     </div>
     <div id="insightsContent"></div>
   </div>
@@ -189,11 +188,11 @@ function loadHistory(){ try{ return JSON.parse(localStorage.getItem('gameHistory
 
 let insightsFilter = 'all';
 document.getElementById('insightsFilterBar').addEventListener('click', e=>{
-  let pill = e.target.closest('.pill');
-  if(!pill) return;
-  document.querySelectorAll('#insightsFilterBar .pill').forEach(p=>p.classList.remove('active'));
-  pill.classList.add('active');
-  insightsFilter = pill.dataset.game;
+  let tab = e.target.closest('.ftab');
+  if(!tab) return;
+  document.querySelectorAll('#insightsFilterBar .ftab').forEach(t=>t.classList.remove('active'));
+  tab.classList.add('active');
+  insightsFilter = tab.dataset.game;
   renderInsights();
 });
 
@@ -246,7 +245,7 @@ function renderInsights(){
           return [
             `<span class="rank-num">${rank+1}</span>`,
             esc(name),
-            `<span class="ins-val mono">${avg}</span>`,
+            `<span class="ins-val">${avg}</span>`,
             p.wins,
             p.rounds
           ];
@@ -276,14 +275,17 @@ function renderInsights(){
         .map(([name,d],rank)=>[
           `<span class="rank-num">${rank+1}</span>`,
           esc(name),
-          `<span class="ins-muted">${pct(d.eagle+d.birdie,d.holes)}</span>`,
-          `<span class="ins-muted">${pct(d.par,d.holes)}</span>`,
-          `<span class="ins-muted">${pct(d.bogey+d.double,d.holes)}</span>`
+          `<span>${pct(d.eagle+d.birdie,d.holes)}</span>`,
+          `<span>${pct(d.par,d.holes)}</span>`,
+          `<span>${pct(d.bogey+d.double,d.holes)}</span>`
         ]);
-      sections += `<div class="section-title">Stableford</div>
-        <div class="ins-panel">${sboardTable(['#','Player','Pts/Rnd','Wins','Rounds'], rows)}</div>
-        <div class="section-title" style="margin-top:4px;">Stableford — Distribution</div>
-        <div class="ins-panel">${sboardTable(['#','Player','Birdie+%','Par%','Bogey+%'], dRows)}</div>`;
+      sections += `<div class="ins-panel">
+          <div class="ins-panel-title" style="text-align:center;">Stableford — Results</div>
+          ${sboardTable(['#','Player','Pts/Rnd','Wins','Rounds'], rows)}
+          <div style="border-top:1px solid rgba(255,212,71,0.1);margin:4px 0;"></div>
+          <div class="ins-panel-title" style="text-align:center;">Stableford — Scoring</div>
+          ${sboardTable(['#','Player','Birdie+%','Par%','Bogey+%'], dRows)}
+        </div>`;
     }
   }
 
@@ -313,116 +315,78 @@ function renderInsights(){
         });
       });
       let rows = Object.entries(teams)
-        .sort((a,b)=>b[1].wins-a[1].wins||(a[1].totalScore/a[1].rounds)-(b[1].totalScore/b[1].rounds))
+        .sort((a,b)=>b[1].wins-a[1].wins||(a[1].totalVsPar/a[1].vpRounds||0)-(b[1].totalVsPar/b[1].vpRounds||0))
         .map(([,t],rank)=>{
-          let avgScore = (t.totalScore/t.rounds).toFixed(1);
-          let vpStr='—', vpCls='ins-muted';
+          let vpStr='—';
           if(t.vpRounds>0){
             let avg=t.totalVsPar/t.vpRounds, r=Math.round(avg);
             vpStr=r===0?'E':r>0?'+'+r:String(r);
-            vpCls=avg<0?'tag-good':avg>0?'tag-bad':'ins-muted';
           }
           return [
             `<span class="rank-num">${rank+1}</span>`,
             esc(t.label),
-            `<span class="ins-muted mono">${avgScore}</span>`,
-            `<span class="${vpCls}">${vpStr}</span>`,
+            `<span class="${t.vpRounds>0&&t.totalVsPar/t.vpRounds<0?'tag-good':'ins-val'}">${vpStr}</span>`,
             t.wins,
             t.rounds
           ];
         });
-      sections += `<div class="section-title">Team Scramble</div>
-        <div class="ins-panel">${sboardTable(['#','Players','Avg','vPar','Wins','Rnds'], rows)}</div>`;
+      sections += `<div class="ins-panel"><div class="ins-panel-title" style="text-align:center;">Team Scramble</div>${sboardTable(['#','Players','vPar','Wins','Rnds'], rows)}</div>`;
     }
   }
 
-  // Banker — As Player + As Banker
+  // Banker
   if(gamesToShow.includes('banker')){
     let rounds = all.filter(r=>r.game==='banker' && r.players && r.playerNetTotals);
+    let bankerRoundsWithHistory = all.filter(r=>r.game==='banker' && r.players && r.holeHistory);
     if(rounds.length){
-      // As Player: net $, holes played as non-banker, win% vs banker
       let players = {};
+      // Net $ from round totals
       rounds.forEach(r=>{
-        let nets = r.playerNetTotals;
         r.players.forEach((name,i)=>{
-          if(!players[name]) players[name]={holes:0,net:0,wins:0,total:0};
-          players[name].net += nets[i]||0;
+          if(!players[name]) players[name]={net:0,playerHoles:0,wins:0,winTotal:0,bankerHoles:0,sweeps:0};
+          players[name].net += r.playerNetTotals[i]||0;
         });
       });
-      // Hole-by-hole for win% (beat the banker on that hole)
-      let bankerRoundsWithHistory = all.filter(r=>r.game==='banker' && r.players && r.holeHistory);
+      // Win% — holes played as non-banker
       bankerRoundsWithHistory.forEach(r=>{
         (r.holeHistory||[]).forEach(h=>{
           (h.matchups||[]).forEach(m=>{
             let name = r.players[m.playerIdx];
             if(!name) return;
-            if(!players[name]) players[name]={holes:0,net:0,wins:0,total:0};
-            players[name].holes++;
-            players[name].total++;
+            if(!players[name]) players[name]={net:0,playerHoles:0,wins:0,winTotal:0,bankerHoles:0,sweeps:0};
+            players[name].playerHoles++;
+            players[name].winTotal++;
             if(m.result==='player') players[name].wins++;
           });
+        });
+        // Sweep% — holes played as banker
+        (r.holeHistory||[]).forEach(h=>{
+          let bankerName = r.players[h.bankerIdx];
+          if(!bankerName) return;
+          if(!players[bankerName]) players[bankerName]={net:0,playerHoles:0,wins:0,winTotal:0,bankerHoles:0,sweeps:0};
+          players[bankerName].bankerHoles++;
+          let playerWins = (h.matchups||[]).filter(m=>m.result==='player').length;
+          if(playerWins===0) players[bankerName].sweeps++;
         });
       });
       let rows = Object.entries(players)
         .sort((a,b)=>b[1].net-a[1].net)
         .map(([name,p],rank)=>{
-          let sign = p.net>0?'+':p.net<0?'-':'';
-          let netStr = sign+'$'+Math.abs(p.net);
+          let netStr = (p.net>0?'+':p.net<0?'-':'')+'$'+Math.abs(p.net);
           let netCls = p.net>0?'tag-good':p.net<0?'tag-bad':'ins-muted';
-          let winPct = p.total>0 ? Math.round(p.wins/p.total*100)+'%' : '—';
-          let winCls = p.total>0 ? (p.wins/p.total>=0.5?'tag-good':'tag-bad') : 'ins-muted';
+          let totalHoles = p.playerHoles + p.bankerHoles;
+          let avgVal = totalHoles>0 ? (p.net/totalHoles).toFixed(2) : null;
+          let avgStr = avgVal===null ? '—' : (avgVal>=0?'+$':'-$')+Math.abs(avgVal);
+          let avgCls = avgVal===null?'ins-muted':avgVal>0?'tag-good':avgVal<0?'tag-bad':'ins-muted';
           return [
             `<span class="rank-num">${rank+1}</span>`,
             esc(name),
-            `<span class="${netCls} mono" style="font-weight:bold">${netStr}</span>`,
-            p.holes||'—',
-            `<span class="${winCls}">${winPct}</span>`
+            `<span class="${netCls}" style="font-weight:bold">${netStr}</span>`,
+            totalHoles||'—',
+            `<span class="${avgCls}">${avgStr}</span>`
           ];
         });
-      sections += `<div class="section-title">Banker — As Player</div>
-        <div class="ins-panel">${sboardTable(['#','Player','Net $','Holes','Win%'], rows)}</div>`;
-
-      // As Banker: net $, holes as banker, sweep% (beat all players)
-      if(bankerRoundsWithHistory.length){
-        let bperf = {};
-        bankerRoundsWithHistory.forEach(r=>{
-          r.players.forEach(name=>{ if(!bperf[name]) bperf[name]={holes:0,net:0,sweeps:0}; });
-          (r.holeHistory||[]).forEach(h=>{
-            let bankerName = r.players[h.bankerIdx];
-            if(!bankerName) return;
-            bperf[bankerName].holes++;
-            // net $ as banker this hole
-            (h.matchups||[]).forEach(m=>{
-              if(m.result==='banker') bperf[bankerName].net += m.amount||0;
-              else if(m.result==='player') bperf[bankerName].net -= m.amount||0;
-            });
-            // sweep = banker beat or tied all players (no player wins)
-            let playerWins = (h.matchups||[]).filter(m=>m.result==='player').length;
-            if(playerWins===0) bperf[bankerName].sweeps++;
-          });
-        });
-        let bRows = Object.entries(bperf)
-          .filter(([,p])=>p.holes>0)
-          .sort((a,b)=>b[1].net-a[1].net)
-          .map(([name,p],rank)=>{
-            let netSign = p.net>=0?'+':'-';
-            let netStr = netSign+'$'+Math.abs(p.net);
-            let netCls = p.net>0?'tag-good':p.net<0?'tag-bad':'ins-muted';
-            let sweepPct = Math.round(p.sweeps/p.holes*100)+'%';
-            let sweepCls = p.sweeps/p.holes>=0.5?'tag-good':'ins-muted';
-            return [
-              `<span class="rank-num">${rank+1}</span>`,
-              esc(name),
-              `<span class="${netCls} mono">${netStr}</span>`,
-              p.holes,
-              `<span class="${sweepCls}">${sweepPct}</span>`
-            ];
-          });
-        if(bRows.length){
-          sections += `<div class="section-title" style="margin-top:4px;">Banker — As Banker</div>
-            <div class="ins-panel">${sboardTable(['#','Player','Net $','Holes','Sweep%'], bRows)}</div>`;
-        }
-      }
+      sections += `<div class="ins-panel"><div class="ins-panel-title" style="text-align:center;">Banker</div>${sboardTable(['#','Player','Net $','Holes','$/Hole'], rows)}</div>`;
     }
   }
 
@@ -456,31 +420,25 @@ function renderInsights(){
           let avgScore = (p.totalScore/p.rounds).toFixed(1);
           // show vs-par avg only if we have par data
           let avgDisp = avgScore;
-          let avgCls = 'ins-muted';
           if(p.totalParRounds>0){
             let avgVp = (p.totalScore - p.totalPar) / p.totalParRounds;
             avgDisp = (avgVp>=0?'+':'')+avgVp.toFixed(1);
-            avgCls = avgVp<0?'tag-good':avgVp>0?'tag-bad':'ins-muted';
           }
-          let bestDisp, bestCls;
+          let bestDisp;
           if(p.bestVsPar!==null){
             bestDisp = fmtVsPar(p.bestVsPar);
-            bestCls = p.bestVsPar<0?'tag-good':p.bestVsPar>0?'tag-bad':'ins-muted';
           } else {
             bestDisp = p.bestScore??'—';
-            bestCls = 'ins-muted';
           }
           return [
             `<span class="rank-num">${rank+1}</span>`,
             esc(name),
-            `<span class="${avgCls}">${avgDisp}</span>`,
-            `<span class="${bestCls}">${bestDisp}</span>`,
-            p.wins,
+            `<span class="ins-val">${avgDisp}</span>`,
+            `<span class="tag-good">${bestDisp}</span>`,
             `<span class="ins-muted">${p.rounds}</span>`
           ];
         });
-      sections += `<div class="section-title">Stroke Play</div>
-        <div class="ins-panel">${sboardTable(['#','Player','Avg','Best','Wins','Rounds'], rows)}</div>`;
+      sections += `<div class="ins-panel"><div class="ins-panel-title" style="text-align:center;">Stroke Play</div>${sboardTable(['#','Player','Avg','Best','Rounds'], rows)}</div>`;
     }
   }
 
