@@ -845,22 +845,28 @@ td{font-family:'Courier New',monospace;color:rgba(255,255,255,0.75);}
   <!-- ══ GAME ══ -->
   <div id="gameScreen" class="hidden">
 
-    <div style="text-align:center;">
-      <span id="courseNameLabel" style="font-size:11px;color:rgba(255,212,71,0.55);letter-spacing:.5px;text-transform:uppercase;display:none;"></span>
-      <div class="hole-counter" id="holeCounter">1 / 18</div>
-    </div>
-
-    <div class="hole-card-header">
-      <div class="hole-info-row">
-        <div class="par-btns">
-          <span class="par-btns-label">Par</span>
-          <button class="par-btn" id="parBtn3" onclick="adjustPar(3)">3</button>
-          <button class="par-btn active" id="parBtn4" onclick="adjustPar(4)">4</button>
-          <button class="par-btn" id="parBtn5" onclick="adjustPar(5)">5</button>
+    <div class="game-card" style="margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <span id="courseNameLabel" style="font-size:10px;color:rgba(255,212,71,0.45);letter-spacing:.5px;text-transform:uppercase;display:none;"></span>
+          <div class="hole-counter" id="holeCounter" style="margin:0;text-align:left;">1 / 18</div>
         </div>
-        <input type="number" id="yardsVal" class="dist-input" min="0" max="700" placeholder="Yds" oninput="holeYards=parseInt(this.value)||0">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div>
+            <div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);text-align:center;margin-bottom:4px;">Par</div>
+            <div style="display:flex;gap:5px;">
+              <button class="par-btn" id="parBtn3" onclick="adjustPar(3)">3</button>
+              <button class="par-btn active" id="parBtn4" onclick="adjustPar(4)">4</button>
+              <button class="par-btn" id="parBtn5" onclick="adjustPar(5)">5</button>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);text-align:center;margin-bottom:4px;">Yards</div>
+            <input type="number" id="yardsVal" class="dist-input" min="0" max="700" placeholder="Yds" oninput="holeYards=parseInt(this.value)||0">
+          </div>
+        </div>
       </div>
-      <div class="hole-progress-track" style="margin:4px 0 0;width:100%;">
+      <div class="hole-progress-track" style="margin:10px 0 0;width:100%;">
         <div class="hole-progress-fill" id="holeProgressFill" style="width:0%"></div>
       </div>
     </div>

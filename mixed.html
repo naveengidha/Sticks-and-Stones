@@ -258,12 +258,16 @@ button.btn-secondary:active{color:#ffd447;}
   <!-- ── Game Screen ── -->
   <div id="gameScreen" class="hidden">
     <div class="card" style="margin-bottom:12px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
         <div>
           <div class="hole-label" id="holeLabel">Hole 1</div>
           <div class="hole-sub" id="holeSub"></div>
         </div>
+        <div id="parDots" style="display:flex;flex-direction:column;align-items:center;gap:4px;"></div>
         <button class="btn-secondary" onclick="confirmEnd()" style="width:auto;padding:7px 14px;font-size:12px;margin:0;">End Round</button>
+      </div>
+      <div style="height:2px;background:rgba(255,212,71,0.1);border-radius:2px;margin-bottom:10px;overflow:hidden;">
+        <div id="holeProgressFill" style="height:100%;background:linear-gradient(90deg,#5c3317,#ffd447);border-radius:2px;width:0%;transition:width .4s ease;"></div>
       </div>
       <div style="display:flex;gap:6px;">
         <button class="fmt-btn active" id="fmtBanker" onclick="setFormat('banker')">Banker</button>
@@ -435,6 +439,7 @@ function enterHole(){
   updateFormatBar();
   updateScoreboard();
   renderDynCard();
+  renderParDots();
   show('game');
 }
 
@@ -442,6 +447,9 @@ function updateHoleHeader(){
   document.getElementById('holeLabel').textContent = 'Hole '+state.hole;
   document.getElementById('holeSub').textContent = (state.course||'') + (state.course ? ' · ' : '') + state.hole+' / '+state.totalHoles;
   document.getElementById('pageHeader').textContent = state.course ? state.course : "Gambler's Gauntlet";
+  let pct = state.totalHoles > 0 ? Math.round(((state.hole - 1) / state.totalHoles) * 100) : 0;
+  let fill = document.getElementById('holeProgressFill');
+  if(fill) fill.style.width = pct + '%';
 }
 
 function setFormat(fmt){
@@ -543,24 +551,16 @@ function renderDynCard(){
 
   let html = '';
 
-  // Par row — only for non-banker formats
-  if(holeFormat!=='banker'){
-    html += `<div class="par-btns" style="justify-content:center;margin-bottom:12px;">
-      <span class="par-btns-label">Par</span>
-      ${[3,4,5].map(p=>`<button class="par-btn-sq${holePar===p?' active':''}" onclick="setPar(${p})">${p}</button>`).join('')}
-    </div>`;
-  }
-
   if(holeFormat==='banker'){
     // CSS grid — all rows share same column template for perfect alignment
-    html += `<div style="display:grid;grid-template-columns:minmax(0,1fr) 52px 44px 80px 44px;gap:0 4px;margin-bottom:12px;align-items:center;">`;
+    html += `<div style="display:grid;grid-template-columns:minmax(0,1fr) auto 52px 60px 96px;gap:0 8px;margin-bottom:12px;align-items:center;">`;
 
     // Header row
-    html += `<div></div>
-      <div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.3);text-align:center;padding:2px 0 6px;border-bottom:1px solid rgba(255,255,255,0.05);">Wager</div>
+    html += `<div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.3);padding:2px 0 6px;border-bottom:1px solid rgba(255,255,255,0.05);">Player</div>
+      <div style="padding:2px 0 6px;border-bottom:1px solid rgba(255,255,255,0.05);"></div>
       <div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.3);text-align:center;padding:2px 0 6px;border-bottom:1px solid rgba(255,255,255,0.05);">Dbl</div>
-      <div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.3);text-align:center;padding:2px 0 6px;border-bottom:1px solid rgba(255,255,255,0.05);">Score</div>
-      <div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.3);text-align:right;padding:2px 0 6px;border-bottom:1px solid rgba(255,255,255,0.05);">Bal</div>`;
+      <div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.3);text-align:center;padding:2px 0 6px;border-bottom:1px solid rgba(255,255,255,0.05);">Wager</div>
+      <div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.3);text-align:center;padding:2px 0 6px;border-bottom:1px solid rgba(255,255,255,0.05);">Score</div>`;
 
     state.players.forEach((name,i)=>{
       let isBanker = i===bankerIdx;
@@ -577,17 +577,15 @@ function renderDynCard(){
       let rowStyle = 'display:contents;';
 
       // Name cell
-      html += `<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);min-width:0;overflow:hidden;text-align:center;">
-        <div style="font-size:14px;font-weight:bold;color:${nameColor};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(name)}${carry}</div>
-        <div style="margin-top:3px;">
-          ${isBanker
-            ? `<button class="banker-badge-btn active" disabled>Banker</button>`
-            : `<button class="banker-badge-btn" onclick="setBanker(${i})">Banker</button>`}
-        </div>
+      html += `<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);min-width:0;overflow:hidden;">
+        <div style="font-size:14px;font-weight:bold;color:${nameColor};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(name)}</div>
       </div>`;
-      // Wager cell — static label, doubles still multiply the base
-      html += `<div style="display:flex;align-items:center;justify-content:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
-        <div style="font-family:'Courier New',monospace;font-size:14px;font-weight:bold;color:${doubled?'#ffd447':'rgba(255,212,71,0.55)'};text-align:center;${isBanker?'opacity:0.3;':''}">$${eff}</div>
+      // Badge cell
+      html += `<div style="display:flex;align-items:center;gap:5px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+        ${isBanker
+          ? `<button class="banker-badge-btn active" disabled>Banker</button>`
+          : `<button class="banker-badge-btn" onclick="setBanker(${i})">Banker</button>`}
+        ${carry}
       </div>`;
       // Dbl cell
       html += `<div style="display:flex;align-items:center;justify-content:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
@@ -596,6 +594,10 @@ function renderDynCard(){
           <span class="double-pill">2×</span>
         </label>
       </div>`;
+      // Wager cell — static label, doubles still multiply the base
+      html += `<div style="display:flex;align-items:center;justify-content:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+        <div style="font-family:'Courier New',monospace;font-size:14px;font-weight:bold;color:${doubled?'#ffd447':'rgba(255,212,71,0.55)'};text-align:center;${isBanker?'opacity:0.3;':''}">$${eff}</div>
+      </div>`;
       // Score cell
       html += `<div style="display:flex;align-items:center;justify-content:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
         <div class="stepper-row">
@@ -603,10 +605,6 @@ function renderDynCard(){
           <span id="sv_${i}">${fmtScore(holeScores[i])}</span>
           <button onclick="adjScore(${i},1)">+</button>
         </div>
-      </div>`;
-      // Bal cell
-      html += `<div style="display:flex;align-items:center;justify-content:flex-end;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
-        <div style="font-size:12px;font-family:'Courier New',monospace;font-weight:bold;color:${balColor};min-width:36px;text-align:right;">${balStr}</div>
       </div>`;
     });
     html += `</div>`;
@@ -630,11 +628,22 @@ function renderDynCard(){
   body.innerHTML = html;
 }
 
+function renderParDots(){
+  let el = document.getElementById('parDots');
+  if(!el) return;
+  let dots = [3,4,5].map(p=>{
+    let active = holePar===p;
+    let bg = active ? '#ffd447' : 'rgba(255,212,71,0.15)';
+    let color = active ? '#0e1a12' : 'rgba(255,212,71,0.45)';
+    let border = active ? '' : 'border:1px solid rgba(255,212,71,0.2);';
+    return `<span onclick="setPar(${p})" style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:${bg};color:${color};font-size:11px;font-weight:bold;cursor:pointer;${border}">${p}</span>`;
+  }).join('');
+  el.innerHTML = `<div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);">Par</div><div style="display:flex;gap:5px;">${dots}</div>`;
+}
+
 function setPar(p){
   holePar = p;
-  document.querySelectorAll('.par-btn-sq').forEach(b=>{
-    b.classList.toggle('active', Number(b.textContent)===p);
-  });
+  renderParDots();
   // Default untouched scores to new par (stableford/stroke only)
   if(holeFormat==='stableford'||holeFormat==='stroke'){
     holeScores.forEach((_,i)=>{
