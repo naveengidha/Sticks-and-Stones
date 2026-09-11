@@ -231,7 +231,7 @@ button.btn-secondary:active{color:#ffd447;}
           </label>
         </div>
         <div class="row-setting">
-          <label id="par4WagerLabel">Stableford winner:</label>
+          <label id="par4WagerLabel">Stableford pot:</label>
           <div class="row-control" style="display:flex;align-items:center;gap:6px;">
             <span style="color:#a07840;font-size:14px;">$</span>
             <input type="number" id="par4WagerInput" min="0" step="1" value="5" class="course-input" style="width:64px;text-align:center;padding:6px;">
@@ -350,7 +350,7 @@ function initSetup(){
 
 function setSetupFmt(fmt){
   let label = document.getElementById('par4WagerLabel');
-  if(label) label.textContent = fmt==='stroke' ? 'Stroke Play winner:' : 'Stableford winner:';
+  if(label) label.textContent = fmt==='stroke' ? 'Stroke Play pot:' : 'Stableford pot:';
 }
 
 function startRound(){

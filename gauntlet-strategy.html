@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-:root{--bg:#080f0a;--bg-card:#0e1a12;--gold:#ffd447;--gold-dim:rgba(255,212,71,0.45);--emerald:#2d9e6b;--ruby:#c0404a;--bar-hi:#c8a84b;--bar-mid:#7a8fa6;--bar-lo:#4a6070;--bar-warn:#b87040;}
+:root{--bg:#080f0a;--bg-card:#0e1a12;--gold:#ffd447;--gold-dim:rgba(255,212,71,0.45);--emerald:#2d9e6b;--ruby:#c0404a;--bar-hi:#2d9e6b;--bar-mid:#3a6899;--bar-lo:#4a6070;--bar-warn:#c0404a;}
 body{font-family:'Georgia','Times New Roman',serif;background:var(--bg);margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100vh;}
 .page-header{padding:16px 16px 4px;font-size:22px;font-weight:bold;color:#ffd447;letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;text-align:center;}
 .scroll-area{flex:1;overflow-y:auto;padding:14px 14px 110px;}
@@ -37,9 +37,9 @@ body{font-family:'Georgia','Times New Roman',serif;background:var(--bg);margin:0
 .insight-section{padding:8px 14px 10px;}
 .insight-section+.insight-section{padding-top:8px;}
 .insight-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;}
-.section-divider{display:flex;align-items:center;justify-content:center;gap:0;padding:14px 14px 10px;}
-.section-divider::before,.section-divider::after{content:'';flex:0 0 80px;height:1px;background:rgba(255,212,71,0.45);}
-.section-divider-label{font-size:10px;font-weight:bold;letter-spacing:3px;text-transform:uppercase;color:rgba(255,212,71,0.8);white-space:nowrap;padding:0 10px;border-left:2px solid rgba(255,212,71,0.55);border-right:2px solid rgba(255,212,71,0.55);}
+.section-divider{display:flex;align-items:center;justify-content:center;gap:0;padding:18px 14px 12px;}
+.section-divider::before,.section-divider::after{content:'';flex:0 0 60px;height:1px;background:rgba(255,212,71,0.45);}
+.section-divider-label{font-size:13px;font-weight:bold;letter-spacing:3px;text-transform:uppercase;color:rgba(255,212,71,0.9);white-space:nowrap;padding:0 12px;border-left:2px solid rgba(255,212,71,0.55);border-right:2px solid rgba(255,212,71,0.55);}
 .insight-label{font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dim);}
 .insight-verdict{font-size:9px;font-weight:bold;letter-spacing:.8px;text-transform:uppercase;padding:2px 7px;border-radius:3px;}
 .verdict-threat{background:rgba(45,158,107,0.18);color:#4dda9a;border:1px solid rgba(45,158,107,0.4);}
@@ -53,9 +53,9 @@ body{font-family:'Georgia','Times New Roman',serif;background:var(--bg);margin:0
 .root-cause{display:none;}
 
 /* Par breakdown bar */
-.par-bars{display:flex;gap:8px;margin-top:4px;}
+.par-bars{display:flex;gap:8px;margin-top:4px;padding:0 2px;}
 .par-bar-wrap{flex:1;text-align:center;}
-.par-bar-label{font-size:9px;color:var(--gold-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+.par-bar-label{font-size:9px;color:rgba(255,255,255,0.75);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
 .par-bar-track{height:6px;background:rgba(255,255,255,0.07);border-radius:3px;overflow:hidden;position:relative;width:80%;margin:0 auto;}
 .par-bar-track::after{content:'';position:absolute;left:50%;top:0;width:1px;height:100%;background:rgba(255,255,255,0.25);z-index:1;}
 .par-bar-track.no-mid::after{display:none;}
@@ -118,7 +118,7 @@ function analyse(){
       // Score distribution
       scoreDist: {eagle:0,birdie:0,par:0,bogey:0,double:0,worse:0,total:0},
       // Stableford: 0-point holes (struggle holes)
-      sfZeros: 0, sf1pt: 0, sf2pts: 0, sfHoles: 0,
+      sfZeros: 0, sf1pt: 0, sf2pts: 0, sf3pts: 0, sf4pts: 0, sfHoles: 0,
       // Banker: wins/losses as player, wins/losses as banker
       bankerNet: 0, bankerPlayerHoles: 0, bankerWins: 0,
       bankerBankerHoles: 0, bankerSweeps: 0,
@@ -151,9 +151,11 @@ function analyse(){
         let diff = score - par;
         p.parBreak[par] && (p.parBreak[par].diff += diff, p.parBreak[par].holes++);
         p.sfHoles++;
-        if(diff >= 2) p.sfZeros++;
+        if(diff >= 2)       p.sfZeros++;
         else if(diff === 1) p.sf1pt++;
-        else p.sf2pts++;
+        else if(diff === 0) p.sf2pts++;
+        else if(diff ===-1) p.sf3pts++;
+        else                p.sf4pts++;
         trackDist(p, diff);
       });
     });
@@ -229,9 +231,11 @@ function analyse(){
           let p = ensurePlayer(name);
           let diff = score - h.par;
           p.sfHoles++;
-          if(diff >= 2) p.sfZeros++;
+          if(diff >= 2)       p.sfZeros++;
           else if(diff === 1) p.sf1pt++;
-          else p.sf2pts++;
+          else if(diff === 0) p.sf2pts++;
+          else if(diff ===-1) p.sf3pts++;
+          else                p.sf4pts++;
         });
       }
 
@@ -384,8 +388,8 @@ function buildInsights(name, p, allPlayers){
       let bogeypct     = pct(sd.bogey, sd.total);
       let blowupPct    = pct(sd.double + sd.worse, sd.total);
 
-      let birdieColor = birdiePct >= 25 ? 'var(--bar-warn)' : birdiePct >= 10 ? 'var(--bar-mid)' : 'var(--bar-lo)';
-      let parColor    = parPct    >= 40 ? 'var(--bar-hi)' : parPct    <= 20 ? 'var(--bar-lo)' : 'var(--bar-mid)';
+      let birdieColor = birdiePct >= 25 ? 'var(--bar-hi)' : birdiePct >= 10 ? 'var(--bar-mid)' : 'var(--bar-lo)';
+      let parColor    = 'var(--bar-mid)';
       let bogeyColor  = bogeypct  <= 25 ? 'var(--bar-mid)' : 'var(--bar-warn)';
       let blowupColor = blowupPct >= 25 ? 'var(--bar-warn)' : blowupPct <= 10 ? 'var(--bar-hi)' : 'var(--bar-mid)';
 
@@ -399,36 +403,24 @@ function buildInsights(name, p, allPlayers){
 
     sections += `${sections?sectionDiv('Scoring by Par'):sectionDiv('Scoring by Par')}<div class="insight-section">
       ${barHtml}
-      ${distHtml}
-    </div>`;
+    </div>${distHtml}`;
   }
 
   // ── Stableford tendencies ──
   if(p.sfHoles > 0){
-    let zeroPct  = pct(p.sfZeros, p.sfHoles);
-    let onePct   = pct(p.sf1pt,   p.sfHoles);
-    let twoPct   = pct(p.sf2pts,  p.sfHoles);
-    let vcls = zeroPct >= 30 ? 'verdict-good' : zeroPct <= 15 ? 'verdict-threat' : 'verdict-neutral';
-    let vtxt = zeroPct >= 30 ? 'Avoid' : zeroPct <= 15 ? 'Consistent' : 'Average';
-    let sfWorst = [3,4,5].map(par=>{
-      let d = p.parBreak[par];
-      return {par, avg: d.holes ? d.diff/d.holes : -99, holes: d.holes};
-    }).filter(d=>d.holes>0).sort((a,b)=>b.avg-a.avg)[0];
-    let sfCauses = zeroPct >= 30
-      ? (sfWorst?.par===3 ? ['Iron consistency','Tee shot on par 3s','Putting under pressure']
-        : sfWorst?.par===5 ? ['Driver reliability','Lay-up club selection','Short game around green']
-        : ['Approach iron accuracy','Recovery shots','Scrambling'])
-      : [];
+    let zeroPct    = pct(p.sfZeros, p.sfHoles);
+    let onePct     = pct(p.sf1pt,   p.sfHoles);
+    let twoPct     = pct(p.sf2pts,  p.sfHoles);
+    let threePlusPct = pct(p.sf3pts + p.sf4pts, p.sfHoles);
+    let avgPts = ((p.sf4pts * 4) + (p.sf3pts * 3) + (p.sf2pts * 2) + (p.sf1pt * 1)) / p.sfHoles;
+    let avgColor = avgPts >= 2.5 ? 'var(--bar-hi)' : avgPts >= 1.8 ? 'var(--bar-mid)' : 'var(--bar-warn)';
     let sfBarHtml = `<div class="par-bars">
-      ${distBar('Birdie+', twoPct, twoPct >= 40 ? 'var(--bar-warn)' : twoPct >= 20 ? 'var(--bar-mid)' : 'var(--bar-lo)')}
-      ${distBar('Par', onePct, 'var(--bar-mid)')}
-      ${distBar('0 pts', zeroPct, zeroPct >= 30 ? 'var(--bar-warn)' : zeroPct <= 15 ? 'var(--bar-hi)' : 'var(--bar-mid)')}
-    </div>`;
-    let sfBullets = [];
-    if(zeroPct >= 30) sfBullets.push(`Scores dead on <strong>${zeroPct}%</strong> of holes — struggles to stay in the card <span class="insight-verdict verdict-good" style="margin-left:6px;">Avoid</span>`);
-    else if(zeroPct <= 15) sfBullets.push(`Only <strong>${zeroPct}%</strong> dead holes — rarely gives up a hole <span class="insight-verdict verdict-threat" style="margin-left:6px;">Consistent</span>`);
-    if(sfWorst) sfBullets.push(`Worst on par ${sfWorst.par}s — avg <strong>${(sfWorst.avg>=0?'+':'')+sfWorst.avg.toFixed(1)}</strong> per hole`);
-    if(twoPct >= 20) sfBullets.push(`Birdie rate of <strong>${twoPct}%</strong> — generates points above expectation <span class="insight-verdict verdict-threat" style="margin-left:6px;">Upside</span>`);
+      ${distBar('3+ pts', threePlusPct, threePlusPct >= 25 ? 'var(--bar-hi)' : threePlusPct >= 10 ? 'var(--bar-mid)' : 'var(--bar-lo)')}
+      ${distBar('2 pts',  twoPct,       'var(--bar-mid)')}
+      ${distBar('1 pt',   onePct,       'var(--bar-mid)')}
+      ${distBar('0 pts',  zeroPct,      zeroPct >= 30 ? 'var(--bar-warn)' : zeroPct <= 15 ? 'var(--bar-hi)' : 'var(--bar-mid)')}
+    </div>
+    <div style="text-align:center;margin-top:8px;font-size:12px;color:rgba(255,255,255,0.45);">Avg <strong style="color:${avgColor};">${avgPts.toFixed(2)}</strong> pts / hole</div>`;
     sections += `${sectionDiv('Stableford')}<div class="insight-section">${sfBarHtml}</div>`;
   }
 
@@ -441,8 +433,8 @@ function buildInsights(name, p, allPlayers){
       let winPct  = pct(p.bankerWins, p.bankerPlayerHoles);
       let losePct = 100 - winPct;
       let vcls = winPct >= 55 ? 'verdict-good' : winPct <= 35 ? 'verdict-threat' : 'verdict-neutral';
-      let winColor  = winPct >= 55 ? 'var(--bar-warn)' : winPct <= 35 ? 'var(--bar-hi)' : 'var(--bar-mid)';
-      let loseColor = winPct >= 55 ? 'var(--bar-hi)' : winPct <= 35 ? 'var(--bar-warn)' : 'var(--bar-lo)';
+      let winColor  = winPct >= 55 ? 'var(--bar-hi)' : winPct <= 35 ? 'var(--bar-warn)' : 'var(--bar-mid)';
+      let loseColor = losePct >= 65 ? 'var(--bar-warn)' : losePct >= 50 ? 'var(--bar-mid)' : 'var(--bar-lo)';
       bankerBarHtml += `<div style="font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;text-align:center;">As Player</div>
         <div class="par-bars">
           ${distBar('Win', winPct, winColor)}
@@ -455,7 +447,7 @@ function buildInsights(name, p, allPlayers){
     if(p.bankerBankerHoles > 0){
       let sweepPct   = pct(p.bankerSweeps, p.bankerBankerHoles);
       let noSweepPct = 100 - sweepPct;
-      let sweepColor = sweepPct >= 50 ? 'var(--bar-warn)' : 'var(--bar-mid)';
+      let sweepColor = sweepPct >= 50 ? 'var(--bar-hi)' : 'var(--bar-mid)';
       bankerBarHtml += `${p.bankerPlayerHoles > 0 ? '<div style="height:10px;"></div>' : ''}
         <div style="font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;text-align:center;">As Banker</div>
         <div class="par-bars">
@@ -479,7 +471,7 @@ function buildInsights(name, p, allPlayers){
     }
     if(p.bankerNet !== 0){
       let netStr = (p.bankerNet>0?'+$':'-$')+Math.abs(p.bankerNet);
-      let clr = p.bankerNet>0?'var(--bar-warn)':'var(--bar-hi)';
+      let clr = p.bankerNet>0?'var(--bar-hi)':'var(--bar-warn)';
       bankerBullets.push(`Overall banker net: <strong style="color:${clr};">${netStr}</strong>`);
     }
     sections += `${sectionDiv('Banker')}<div class="insight-section">${bankerBarHtml}</div>`;
@@ -491,7 +483,7 @@ function buildInsights(name, p, allPlayers){
     let pinMissPct = 100 - pinPct;
     let vcls = pinPct >= 40 ? 'verdict-good' : pinPct <= 10 ? 'verdict-threat' : 'verdict-neutral';
     let vtxt = pinPct >= 40 ? 'Avoid' : pinPct <= 10 ? 'Target' : '';
-    let pinColor  = pinPct >= 40 ? 'var(--bar-warn)' : pinPct <= 10 ? 'var(--bar-hi)' : 'var(--bar-mid)';
+    let pinColor  = pinPct >= 40 ? 'var(--bar-hi)' : pinPct <= 10 ? 'var(--bar-warn)' : 'var(--bar-mid)';
     let missColor = 'var(--bar-lo)';
     let pinCauses = pinPct >= 40
       ? ['Dangerous tee iron / hybrid','Accurate distance control','Reads greens well from tee']
@@ -502,7 +494,7 @@ function buildInsights(name, p, allPlayers){
       <div class="par-bar-wrap" style="flex:0 0 70%;">
         <div class="par-bar-label">Pin Win Rate</div>
         <div class="par-bar-track no-mid"><div class="par-bar-fill" style="left:0;width:${pinPct}%;background:${pinColor};border-radius:3px;"></div></div>
-        <div class="par-bar-val" style="color:${pinColor};">${pinPct}% — ${p.pinWins} win${p.pinWins!==1?'s':''} from ${p.pinHoles} holes</div>
+        <div class="par-bar-val" style="color:${pinColor};">${pinPct}% — ${p.pinWins}/${p.pinHoles} holes</div>
       </div>
     </div>`;
     let pinBullets = [];
@@ -520,9 +512,9 @@ function buildInsights(name, p, allPlayers){
     if(p.gauntletRounds > 0){
       let netStr = (p.gauntletNet>=0?'+$':'-$')+Math.abs(p.gauntletNet);
       if(p.gauntletNet < -5)
-        notes.push(`Down <strong style="color:#4dda9a;">${netStr}</strong> across ${p.gauntletRounds} round${p.gauntletRounds!==1?'s':''} — consistently losing money <span class="insight-verdict verdict-threat" style="margin-left:6px;">Target</span>`);
+        notes.push(`Down <strong style="color:var(--bar-warn);">${netStr}</strong> across ${p.gauntletRounds} round${p.gauntletRounds!==1?'s':''} — consistently losing money`);
       else if(p.gauntletNet > 5)
-        notes.push(`Up <strong style="color:#e8445a;">${netStr}</strong> across ${p.gauntletRounds} round${p.gauntletRounds!==1?'s':''} — extracting value from the group <span class="insight-verdict verdict-good" style="margin-left:6px;">Avoid</span>`);
+        notes.push(`Up <strong style="color:var(--bar-hi);">${netStr}</strong> across ${p.gauntletRounds} round${p.gauntletRounds!==1?'s':''} — extracting value from the group`);
       else
         notes.push(`Net <strong>${netStr}</strong> across ${p.gauntletRounds} round${p.gauntletRounds!==1?'s':''} — roughly breaking even`);
     }
@@ -543,12 +535,12 @@ function buildInsights(name, p, allPlayers){
 
     // Stableford consistency
     if(p.sfHoles >= 6){
-      let zeroPct = pct(p.sfZeros, p.sfHoles);
-      let twoPct  = pct(p.sf2pts,  p.sfHoles);
+      let zeroPct   = pct(p.sfZeros, p.sfHoles);
+      let birdiePct = pct(p.sf3pts + p.sf4pts, p.sfHoles);
       if(zeroPct >= 30)
         notes.push(`Gives up <strong>${zeroPct}%</strong> of stableford holes — inconsistent scorer <span class="insight-verdict verdict-threat" style="margin-left:6px;">Target</span>`);
-      else if(twoPct >= 40)
-        notes.push(`Birdies <strong>${twoPct}%</strong> of stableford holes — elite points generator <span class="insight-verdict verdict-good" style="margin-left:6px;">Avoid</span>`);
+      else if(birdiePct >= 35)
+        notes.push(`Birdies or better on <strong>${birdiePct}%</strong> of stableford holes — elite points generator <span class="insight-verdict verdict-good" style="margin-left:6px;">Avoid</span>`);
     }
 
     // Banker tendencies
