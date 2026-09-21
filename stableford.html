@@ -14,7 +14,9 @@
 body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;margin:0;padding:0;color:#fff;display:flex;flex-direction:column;min-height:100dvh;overscroll-behavior:none;}
 h2{text-align:center;margin-top:0;color:#ffd447;letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;}
 h3{text-align:center;margin-top:0;color:rgba(255,255,255,0.75);}
-.hole-counter{font-size:20px;font-weight:bold;color:#ffd447;letter-spacing:.5px;text-align:center;margin-bottom:8px;font-family:'Georgia','Times New Roman',serif;}
+.card{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:12px;padding:16px;margin-bottom:12px;}
+.hole-label{font-size:22px;font-weight:bold;color:#ffd447;font-family:'Georgia','Times New Roman',serif;}
+.hole-sub{font-size:12px;color:rgba(255,255,255,0.4);}
 .scroll-area{flex:1;overflow-y:auto;padding:12px 14px 110px;display:flex;justify-content:center;align-items:stretch;}
 .container{width:100%;max-width:480px;display:flex;flex-direction:column;}
 .setup-card{background:none;border:none;box-shadow:none;padding:0;}
@@ -43,34 +45,35 @@ button:active{opacity:.9;}
 button.btn-secondary{background:transparent;border:1px solid rgba(255,212,71,0.3);color:rgba(255,212,71,0.7);font-size:14px;padding:10px;box-shadow:none;letter-spacing:.5px;font-family:inherit;}
 button.btn-secondary:active{background:rgba(255,212,71,0.06);border-color:rgba(255,212,71,0.6);color:#ffd447;}
 .hidden{display:none!important;}
-.score-row{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:8px;}
-.player-box{display:flex;flex-direction:column;align-items:center;}
-.player-box>label{font-size:12px;font-weight:bold;margin-bottom:6px;text-align:center;color:rgba(255,255,255,0.8);letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px;}
-.stepper{display:flex;align-items:center;gap:8px;}
-.stepper button{width:32px;height:32px;padding:0;border-radius:6px;font-size:18px;font-weight:bold;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#fff;box-shadow:none;margin-bottom:0;flex-shrink:0;}
-.stepper span{font-size:18px;font-weight:bold;font-family:'Courier New',monospace;min-width:24px;text-align:center;}
+.score-rows{margin-bottom:12px;}
+.score-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.score-row:last-child{border-bottom:none;}
+.score-name{font-size:14px;font-weight:bold;color:#a07840;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.stepper{display:flex;align-items:center;margin-left:auto;}
+.step-btn{background:rgba(255,212,71,0.1);border:1px solid rgba(255,212,71,0.25);color:#ffd447;font-size:18px;font-weight:bold;width:36px;height:36px;border-radius:6px;cursor:pointer;box-shadow:none;margin:0;padding:0;display:flex;align-items:center;justify-content:center;}
+.step-btn:active{background:rgba(255,212,71,0.25);}
+.step-val{font-family:'Courier New',monospace;font-size:20px;font-weight:bold;color:#fff;min-width:36px;text-align:center;}
 .game-card{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:10px;padding:14px 16px;margin-bottom:8px;}
 .game-card-label{font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:#ffd447;margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(255,212,71,0.1);text-align:center;}
-.standings-panel{background:none;padding:0;border-radius:0;border:none;}
-.standings-panel h3{font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.45);margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(255,212,71,0.1);}
-.standing-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.07);font-size:15px;}
-.standing-row:last-child{border-bottom:none;}
-.pts-positive{color:#2ecc71;font-weight:bold;font-family:'Courier New',monospace;}
-.pts-zero{color:rgba(255,255,255,0.25);font-family:'Courier New',monospace;}
-.rank-badge{display:inline-block;width:22px;height:22px;line-height:22px;border-radius:3px;text-align:center;font-size:10px;font-weight:bold;margin-right:8px;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);}
-.rank-badge.r1{background:#ffd447;color:#0d1117;}
-.rank-badge.r2{background:#b0b0b0;color:#0d1117;}
-.rank-badge.r3{background:#cd7f32;color:#fff;}
+.card-title{font-size:10px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:#ffd447;margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid rgba(255,212,71,0.25);text-align:center;}
+.sb-grid{width:100%;border-collapse:collapse;table-layout:fixed;}
+.sb-grid th{font-size:9px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.5);padding:0 4px 8px;text-align:center;width:68px;}
+.sb-grid th:first-child{text-align:left;color:rgba(255,255,255,0.3);width:auto;}
+.sb-grid td{padding:7px 4px;border-top:1px solid rgba(255,255,255,0.05);font-family:'Courier New',monospace;font-size:13px;font-weight:bold;text-align:center;color:#ffd447;width:68px;}
+.sb-grid td:first-child{font-family:'Georgia','Times New Roman',serif;font-size:13px;color:#a07840;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:0;width:auto;}
+.sb-grid td.neg{color:#c0404a;}
+.sb-grid td.pos{color:#2d9e6b;}
+.sb-grid td.dash{color:rgba(255,255,255,0.15);font-weight:normal;}
 .final-standings{margin:16px 0;}
 .final-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;margin-bottom:6px;border-radius:6px;background:rgba(0,0,0,0.3);font-size:15px;border:1px solid rgba(139,94,60,0.15);}
 .final-row.winner{border-color:rgba(255,212,71,0.5);background:rgba(255,212,71,0.06);}
 .final-name{font-weight:bold;letter-spacing:.5px;}
 .final-pts{font-family:'Courier New',monospace;font-size:18px;font-weight:bold;color:#ffd447;}
-table{width:100%;border-collapse:collapse;margin-top:6px;}
-th,td{border:1px solid rgba(139,94,60,0.15);padding:5px 4px;text-align:center;font-size:12px;}
-thead th{background:rgba(0,0,0,0.4);color:#ffd447;letter-spacing:.5px;text-transform:uppercase;font-size:10px;}
-td{font-family:'Courier New',monospace;}
-tfoot td{background:rgba(0,0,0,0.4);color:#ffd447;font-family:Arial,sans-serif;font-size:11px;letter-spacing:.5px;}
+.modal-body table,.final-standings~div table,#finalTable{width:100%;border-collapse:collapse;margin-top:6px;}
+.modal-body th,.modal-body td,#finalTable th,#finalTable td{border:1px solid rgba(139,94,60,0.15);padding:5px 4px;text-align:center;font-size:12px;}
+.modal-body thead th,#finalTable thead th{background:rgba(0,0,0,0.4);color:#ffd447;letter-spacing:.5px;text-transform:uppercase;font-size:10px;}
+.modal-body td,#finalTable td{font-family:'Courier New',monospace;}
+.modal-body tfoot td,#finalTable tfoot td{background:rgba(0,0,0,0.4);color:#ffd447;font-family:Arial,sans-serif;font-size:11px;letter-spacing:.5px;}
 td.pts-cell-good{color:#2ecc71;}
 td.pts-cell-zero{color:rgba(255,255,255,0.25);}
 .current-hole td{background:rgba(139,94,60,0.1);font-weight:bold;}
@@ -82,8 +85,8 @@ td.pts-cell-zero{color:rgba(255,255,255,0.25);}
 .points-legend{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:16px;}
 .legend-pill{font-size:10px;padding:3px 8px;border-radius:20px;letter-spacing:.5px;background:rgba(0,0,0,0.3);border:1px solid rgba(139,94,60,0.2);color:rgba(255,255,255,0.5);}
 .legend-pill span{color:#ffd447;font-weight:bold;}
-.rules-scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:2000;align-items:flex-end;justify-content:center;}
-.rules-sheet{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.22);border-radius:18px 18px 0 0;padding:24px 20px 44px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;}
+.rules-scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;align-items:flex-end;justify-content:center;}
+.rules-sheet{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.22);border-radius:18px 18px 0 0;padding:24px 20px 110px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;}
 .rules-handle{width:36px;height:4px;background:rgba(255,212,71,0.25);border-radius:2px;margin:0 auto 20px;}
 .info-btn{background:none;border:1px solid rgba(255,212,71,0.35);color:rgba(255,212,71,0.7);border-radius:50%;width:22px;height:22px;font-size:12px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;box-shadow:none;text-transform:none;letter-spacing:0;flex-shrink:0;}
 .info-btn:active{background:rgba(255,212,71,0.12);color:#ffd447;}
@@ -96,12 +99,7 @@ td.pts-cell-zero{color:rgba(255,255,255,0.25);}
 .hole-card-header{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:12px;}
 .hole-progress-track{height:2px;background:rgba(255,212,71,0.1);border-radius:2px;overflow:hidden;width:100%;}
 .hole-progress-fill{height:100%;background:linear-gradient(90deg,#5c3317,#ffd447);border-radius:2px;transition:width .4s ease;}
-.par-btns{display:flex;align-items:center;gap:4px;}
-.par-btns-label{font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:.5px;text-transform:uppercase;margin-right:2px;}
-.par-btn{width:34px;height:34px;padding:0;border-radius:6px;font-size:14px;font-weight:bold;background:rgba(0,0,0,0.25);border:1px solid rgba(139,94,60,0.3);color:rgba(255,255,255,0.5);box-shadow:none;margin:0;letter-spacing:0;}
-.par-btn.active{background:rgba(139,94,60,0.25);border-color:#ffd447;color:#ffd447;}
 .dist-input{width:72px;padding:7px 8px;border-radius:6px;border:1px solid rgba(139,94,60,0.3);background:rgba(0,0,0,0.25);color:#fff;font-size:14px;text-align:center;}
-.hole-info-row{display:flex;align-items:center;justify-content:center;gap:8px;}
 .rules-table td:last-child{font-weight:bold;font-family:'Courier New',monospace;color:#ffd447;}
 .rules-note{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.7;text-align:center;margin-top:4px;}
 .bottom-nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:1000;pointer-events:none;}
@@ -164,7 +162,7 @@ td.pts-cell-zero{color:rgba(255,255,255,0.25);}
       <div id="rules-scrim" class="rules-scrim" onclick="if(event.target===this)closeRules()">
         <div class="rules-sheet">
           <div class="rules-handle"></div>
-          <div class="rules-title">🎯 Stableford</div>
+          <div class="rules-title">Stableford</div>
           <div class="rules-sub">2–6 players · points vs par</div>
           <table class="rules-table">
             <tr><td>Eagle or better</td><td>4 pts</td></tr>
@@ -184,42 +182,31 @@ td.pts-cell-zero{color:rgba(255,255,255,0.25);}
 
   <!-- GAME -->
   <div id="gameScreen" class="hidden">
-    <div class="game-card" style="margin-bottom:8px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
+    <div class="card" style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
         <div>
-          <span id="courseNameLabel" style="font-size:10px;color:rgba(255,212,71,0.45);letter-spacing:.5px;text-transform:uppercase;display:none;"></span>
-          <div class="hole-counter" id="holeCounter" style="margin:0;text-align:left;">1 / 18</div>
+          <div class="hole-label" id="holeLabel">Hole 1</div>
+          <div class="hole-sub" id="holeSub"></div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div>
-            <div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);text-align:center;margin-bottom:4px;">Par</div>
-            <div style="display:flex;gap:5px;">
-              <button type="button" class="par-btn" onclick="setPar(3)">3</button>
-              <button type="button" class="par-btn" onclick="setPar(4)">4</button>
-              <button type="button" class="par-btn" onclick="setPar(5)">5</button>
-            </div>
-          </div>
-          <div>
-            <div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);text-align:center;margin-bottom:4px;">Yards</div>
-            <input type="number" class="dist-input" id="distInput" inputmode="numeric" placeholder="Yds" min="1">
-          </div>
+        <div id="parDots" style="display:flex;flex-direction:column;align-items:center;gap:4px;"></div>
+        <div>
+          <div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);text-align:center;margin-bottom:4px;">Yards</div>
+          <input type="number" class="dist-input" id="distInput" inputmode="numeric" placeholder="Yds" min="1">
         </div>
       </div>
-      <div class="hole-progress-track" style="margin:10px 0 0;">
-        <div class="hole-progress-fill" id="holeProgressFill" style="width:0%"></div>
+      <div style="height:2px;background:rgba(255,212,71,0.1);border-radius:2px;overflow:hidden;">
+        <div id="holeProgressFill" style="height:100%;background:linear-gradient(90deg,#5c3317,#ffd447);border-radius:2px;width:0%;transition:width .4s ease;"></div>
       </div>
+    </div>
+
+    <div class="card" id="scoreboard" style="margin:0 0 12px;">
+      <div class="card-title">Standings</div>
+      <div id="standingsList"></div>
     </div>
 
     <div class="game-card">
       <div class="game-card-label">Scores</div>
-      <div id="scoreRow" class="score-row"></div>
-    </div>
-
-    <div class="game-card">
-      <div class="standings-panel">
-        <h3>Standings</h3>
-        <div id="standingsList"></div>
-      </div>
+      <div id="scoreRow"></div>
     </div>
 
     <div id="holeError" style="color:#ff6b6b;font-size:13px;margin:6px 0 0;display:none;"></div>
@@ -334,17 +321,29 @@ function startGame(){
   renderStandings();
 }
 
+function renderParDots(){
+  let el = document.getElementById('parDots');
+  if(!el) return;
+  let dots = [3,4,5].map(p=>{
+    let active = currentPar===p;
+    let bg = active ? '#ffd447' : 'rgba(255,212,71,0.15)';
+    let color = active ? '#0e1a12' : 'rgba(255,212,71,0.45)';
+    let border = active ? '' : 'border:1px solid rgba(255,212,71,0.2);';
+    return `<span onclick="setPar(${p})" style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:${bg};color:${color};font-size:11px;font-weight:bold;cursor:pointer;${border}">${p}</span>`;
+  }).join('');
+  el.innerHTML = `<div style="font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);">Par</div><div style="display:flex;gap:5px;">${dots}</div>`;
+}
+
 function setPar(p){
   currentPar = p;
-  document.querySelectorAll('.par-btn').forEach(b=>b.classList.toggle('active', Number(b.textContent)===p));
+  renderParDots();
 }
 
 function renderHoleInfo(){
-  document.getElementById('holeCounter').textContent = 'Hole ' + hole + ' / ' + totalHoles;
+  document.getElementById('holeLabel').textContent = 'Hole ' + hole;
+  document.getElementById('holeSub').textContent = (courseName ? courseName + ' · ' : '') + hole + ' / ' + totalHoles;
   document.getElementById('holeProgressFill').style.width = (hole / totalHoles * 100).toFixed(1) + '%';
-  let cnl = document.getElementById('courseNameLabel');
-  cnl.textContent = courseName; cnl.style.display = courseName ? '' : 'none';
-  document.querySelectorAll('.par-btn').forEach(b=>b.classList.toggle('active', Number(b.textContent)===currentPar));
+  renderParDots();
   document.getElementById('distInput').value = '';
   let bb = document.getElementById('backBtn');
   if(bb){ bb.style.opacity = scoreHistory.length === 0 ? '0.35' : '1'; bb.style.pointerEvents = scoreHistory.length === 0 ? 'none' : ''; }
@@ -352,22 +351,22 @@ function renderHoleInfo(){
 
 function renderInputs(){
   holeScores = new Array(playerNames.length).fill(null);
-  let cols = playerNames.length === 4 ? 2 : playerNames.length;
-  document.getElementById('scoreRow').style.gridTemplateColumns = `repeat(${cols},1fr)`;
-  document.getElementById('scoreRow').innerHTML = playerNames.map((name,i)=>`
-    <div class="player-box">
-      <label title="${esc(name)}">${esc(name.length>9?name.slice(0,9)+'…':name)}</label>
-      <div class="stepper" style="justify-content:center;">
-        <button type="button" onclick="stepScore(${i},-1)">−</button>
-        <span id="p${i}">${currentPar}</span>
-        <button type="button" onclick="stepScore(${i},1)">+</button>
-      </div>
-    </div>`).join('');
+  document.getElementById('scoreRow').innerHTML =
+    `<div class="score-rows">${playerNames.map((name,i)=>`
+      <div class="score-row">
+        <div class="score-name">${esc(name)}</div>
+        <div class="stepper">
+          <button type="button" class="step-btn" onclick="stepScore(${i},-1)">−</button>
+          <div class="step-val" id="sv_${i}">${currentPar}</div>
+          <button type="button" class="step-btn" onclick="stepScore(${i},1)">+</button>
+        </div>
+      </div>`).join('')}
+    </div>`;
 }
 
 function stepScore(i, d){
   holeScores[i] = Math.max(1, (holeScores[i] ?? currentPar) + d);
-  document.getElementById('p'+i).textContent = holeScores[i];
+  document.getElementById('sv_'+i).textContent = holeScores[i];
 }
 
 /* ── Scoring ── */
@@ -457,28 +456,29 @@ function renderStandings(){
       t.players.reduce((sum,name)=>{ let idx=playerNames.indexOf(name); return sum+(idx>=0?playerTotals[idx]:0); },0)
     );
     let leading = teamTotals[0]>teamTotals[1]?0:teamTotals[1]>teamTotals[0]?1:-1;
-    document.getElementById('standingsList').innerHTML = teams.map((t,ti)=>`
-      <div style="margin-bottom:${ti===0?'10px':'0'};">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0 4px;border-bottom:1px solid rgba(255,212,71,0.15);">
-          <span style="font-size:11px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:${leading===ti?'#ffd447':'rgba(255,255,255,0.45)'};">${esc(t.name)}</span>
-          <span style="font-family:'Courier New',monospace;font-weight:bold;font-size:14px;color:${leading===ti?'#ffd447':'rgba(255,255,255,0.4)'};">${teamTotals[ti]} pts</span>
-        </div>
-        ${t.players.map(name=>{ let idx=playerNames.indexOf(name); let pts=idx>=0?playerTotals[idx]:0; return `
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0 5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">
-          <span style="font-size:13px;color:rgba(255,255,255,0.65);">${esc(name)}</span>
-          <span style="font-family:'Courier New',monospace;font-size:13px;color:${pts>0?'#2ecc71':'rgba(255,255,255,0.25)'};">${pts} pts</span>
-        </div>`; }).join('')}
-      </div>`).join('');
+    let rows = teams.map((t,ti)=>{
+      let cls = leading===ti ? 'pos' : 'dash';
+      let val = teamTotals[ti] === 0 ? '—' : teamTotals[ti] + ' pts';
+      let playerRows = t.players.map(name=>{
+        let idx=playerNames.indexOf(name); let pts=idx>=0?playerTotals[idx]:0;
+        let pcls = pts>0?'':'dash'; let pval = pts===0?'—':pts+' pts';
+        return `<tr><td style="padding-left:12px;color:rgba(255,255,255,0.5);">${esc(name)}</td><td class="${pcls}">${pval}</td></tr>`;
+      }).join('');
+      return `<tr><td style="font-weight:bold;color:${leading===ti?'#ffd447':'#a07840'};">${esc(t.name)}</td><td class="${cls}">${val}</td></tr>${playerRows}`;
+    }).join('');
+    document.getElementById('standingsList').innerHTML =
+      `<table class="sb-grid"><thead><tr><th></th><th>Pts</th></tr></thead><tbody>${rows}</tbody></table>`;
     return;
   }
   let sorted = playerNames.map((n,i)=>({n, t:playerTotals[i], i}))
     .sort((a,b)=>b.t-a.t);
-  let rankCls = ['r1','r2','r3'];
-  document.getElementById('standingsList').innerHTML = sorted.map((p,rank)=>`
-    <div class="standing-row">
-      <span><span class="rank-badge ${rankCls[rank]||''}">${rank+1}</span>${esc(p.n)}</span>
-      <span class="${p.t>0?'pts-positive':'pts-zero'}">${p.t} pts</span>
-    </div>`).join('');
+  let rows = sorted.map(p=>{
+    let cls = p.t === 0 ? 'dash' : '';
+    let val = p.t === 0 ? '—' : p.t + ' pts';
+    return `<tr><td>${esc(p.n)}</td><td class="${cls}">${val}</td></tr>`;
+  }).join('');
+  document.getElementById('standingsList').innerHTML =
+    `<table class="sb-grid"><thead><tr><th></th><th>Pts</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
 /* ── Scorecard modal ── */
@@ -620,7 +620,7 @@ function endGame(){
     .sort((a,b)=>b.t-a.t);
   document.getElementById('finalStandings').innerHTML = sorted.map((p,rank)=>`
     <div class="final-row ${rank===0?'winner':''}">
-      <span class="final-name">${rank===0?'🏆 ':''}${esc(p.n)}</span>
+      <span class="final-name">${esc(p.n)}${rank===0?' 🏆':''}</span>
       <span class="final-pts">${p.t} pts</span>
     </div>`).join('');
 

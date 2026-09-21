@@ -93,13 +93,23 @@ table.wedge-table tr.wt-roll-row td{padding-top:0;padding-bottom:10px;}
 .wt-roll-label{font-size:10px;color:var(--muted);opacity:.6;}
 
 /* ── Target screen ── */
-.target-input-row{display:flex;align-items:center;justify-content:center;gap:14px;padding:12px 16px;flex-shrink:0;margin:12px 16px 0;background:var(--texture),var(--bg-card);border:1px solid rgba(255,212,71,0.2);border-radius:12px;}
+.target-input-row{display:flex;flex-direction:column;gap:10px;padding:12px 16px;flex-shrink:0;margin:12px 16px 0;background:var(--texture),var(--bg-card);border:1px solid rgba(255,212,71,0.2);border-radius:12px;}
 .stepper-btn{width:40px;height:40px;border-radius:50%;background:rgba(255,212,71,0.08);border:1px solid rgba(255,212,71,0.25);color:var(--gold);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .stepper-btn:active{background:rgba(255,212,71,0.18);}
-.target-yardage{font-size:28px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums;width:80px;text-align:center;background:rgba(0,0,0,0.4);border:2px solid rgba(255,212,71,0.3);border-radius:8px;padding:4px 8px;outline:none;color:var(--gold);}
+.target-yardage{font-size:28px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums;width:80px;text-align:center;background:rgba(0,0,0,0.4);border:2px solid rgba(255,212,71,0.3);border-radius:8px;padding:4px 8px;outline:none;}
 .target-yardage:focus{border-color:var(--gold);}
 .target-unit{font-size:13px;font-weight:bold;color:var(--muted);align-self:flex-end;padding-bottom:6px;}
+.lie-row{display:flex;align-items:center;gap:5px;}
+.lie-btn{flex:1;padding:7px 4px;border-radius:8px;border:1px solid rgba(255,212,71,0.2);background:transparent;color:rgba(255,212,71,0.45);font-size:11px;font-weight:bold;letter-spacing:.4px;cursor:pointer;font-family:'Georgia','Times New Roman',serif;transition:all .12s;}
+.lie-btn.active{background:rgba(255,212,71,0.12);border-color:rgba(255,212,71,0.55);color:var(--gold);}
+.expected-row{font-size:11px;color:rgba(255,212,71,0.5);letter-spacing:.4px;padding-top:8px;border-top:1px solid rgba(255,212,71,0.1);text-align:center;min-height:18px;}
 .target-wrap{flex:1;padding:12px 16px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;padding-bottom:110px;margin-top:12px;}
+
+/* ── Me / Profile modal ── */
+.profile-label{font-size:9px;font-weight:bold;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px;}
+.profile-input{width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,212,71,0.2);border-bottom:2px solid rgba(255,212,71,0.4);background:rgba(0,0,0,0.4);color:var(--text);font-size:16px;font-family:'Courier New',monospace;outline:none;box-sizing:border-box;}
+.profile-input:focus{border-color:rgba(255,212,71,0.7);}
+.profile-saved-note{text-align:center;font-size:11px;color:rgba(255,212,71,0.5);letter-spacing:.4px;margin-top:10px;min-height:16px;}
 .target-card{background:var(--texture),var(--bg-card);border:1px solid rgba(255,212,71,0.2);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;}
 .target-card.full{border-color:rgba(255,212,71,0.5);background:var(--texture),rgba(255,212,71,0.06);}
 .target-card.flight{border-color:rgba(46,180,80,0.4);background:var(--texture),rgba(46,180,80,0.05);}
@@ -153,7 +163,12 @@ table.wedge-table tr.wt-roll-row td{padding-top:0;padding-bottom:10px;}
 <div id="shell">
   <div id="content">
 
-    <div class="page-header">Club Caddy</div>
+    <div class="page-header" style="display:flex;align-items:center;justify-content:center;position:relative;">
+      <span>Club Caddy</span>
+      <button onclick="openProfile()" style="position:absolute;right:16px;background:none;border:none;color:rgba(255,212,71,0.45);cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;" aria-label="Profile settings">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
 
     <!-- Anchor inputs -->
     <div class="anchor-bar">
@@ -218,14 +233,52 @@ table.wedge-table tr.wt-roll-row td{padding-top:0;padding-bottom:10px;}
     <!-- Screen: Target Distance -->
     <div class="screen" id="screen-target">
       <div class="target-input-row">
-        <button class="stepper-btn" id="target-minus">−</button>
-        <input class="target-yardage" id="target-display" type="number" inputmode="numeric" min="1" max="999" value="150"/>
-        <span class="target-unit">yds</span>
-        <button class="stepper-btn" id="target-plus">+</button>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <button class="stepper-btn" id="target-minus">−</button>
+          <input class="target-yardage" id="target-display" type="number" inputmode="numeric" min="1" max="999" value="150"/>
+          <span class="target-unit">yds</span>
+          <button class="stepper-btn" id="target-plus">+</button>
+          <div style="width:1px;background:rgba(255,212,71,0.12);align-self:stretch;margin:0 2px;flex-shrink:0;"></div>
+          <div class="lie-row">
+            <button class="lie-btn active" data-lie="fairway">Fairway</button>
+            <button class="lie-btn" data-lie="rough">Rough</button>
+            <button class="lie-btn" data-lie="sand">Sand</button>
+          </div>
+        </div>
+        <div class="expected-row" id="expected-row"></div>
       </div>
       <div class="target-wrap" id="target-body"></div>
     </div>
 
+    <!-- Screen: Me / Profile — removed; now a modal sheet -->
+
+  </div>
+</div>
+
+<!-- ══ PROFILE MODAL ══ -->
+<div id="profile-scrim" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:400;align-items:flex-end;justify-content:center;">
+  <div class="modal-sheet" style="padding-bottom:90px;">
+    <div class="modal-header">
+      <span class="modal-title">My Profile</span>
+      <button class="modal-close" onclick="closeProfile()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div>
+          <div class="profile-label">Name</div>
+          <input class="profile-input" id="profile-name" type="text" placeholder="Your name" autocomplete="off" maxlength="40"/>
+        </div>
+        <div>
+          <div class="profile-label">Handicap Index</div>
+          <input class="profile-input" id="profile-hcp" type="number" inputmode="decimal" min="0" max="54" step="0.1" placeholder="e.g. 14.2"/>
+          <div style="font-size:11px;color:rgba(255,255,255,0.25);margin-top:6px;">Used to estimate expected strokes on the Target tab</div>
+        </div>
+      </div>
+      <div class="modal-actions" style="margin-top:16px;">
+        <button class="mbtn-primary" onclick="saveProfile()">Save Profile</button>
+      </div>
+      <div class="profile-saved-note" id="profile-saved-note"></div>
+    </div>
   </div>
 </div>
 
@@ -319,14 +372,84 @@ const SPEC = { driver:215,'5w':198,'4h':183,'5i':160,'6i':145,'7i':135,'8i':125,
 const WEDGE_CLUBS = ['pw','aw','sw'];
 const SWING_MULT  = [1.00, 0.83, 0.65];
 // ── State ────────────────────────────────────────────────────────
-const state = { isSetupComplete:false, anchors:null, carries:{}, locked:{}, targetYds:150, customClubs:[], hiddenClubs:[] };
+const state = { isSetupComplete:false, anchors:null, carries:{}, locked:{}, targetYds:150, customClubs:[], hiddenClubs:[], lie:'fairway' };
 
 function loadState() {
-  try { const s = JSON.parse(localStorage.getItem('club-caddy-v3')||'null'); if(s) Object.assign(state,s); if(!state.customClubs) state.customClubs=[]; if(!state.hiddenClubs) state.hiddenClubs=[]; } catch(e){}
+  try { const s = JSON.parse(localStorage.getItem('club-caddy-v3')||'null'); if(s) Object.assign(state,s); if(!state.customClubs) state.customClubs=[]; if(!state.hiddenClubs) state.hiddenClubs=[]; if(!state.lie) state.lie='fairway'; } catch(e){}
 }
 function saveState() {
-  const { isSetupComplete,anchors,carries,locked,targetYds,customClubs,hiddenClubs } = state;
-  localStorage.setItem('club-caddy-v3', JSON.stringify({ isSetupComplete,anchors,carries,locked,targetYds,customClubs,hiddenClubs }));
+  const { isSetupComplete,anchors,carries,locked,targetYds,customClubs,hiddenClubs,lie } = state;
+  localStorage.setItem('club-caddy-v3', JSON.stringify({ isSetupComplete,anchors,carries,locked,targetYds,customClubs,hiddenClubs,lie }));
+}
+
+// ── Profile ───────────────────────────────────────────────────────
+function loadProfile(){
+  try { return JSON.parse(localStorage.getItem('playerProfile')||'null'); } catch(e){ return null; }
+}
+function saveProfile(){
+  const name = document.getElementById('profile-name').value.trim();
+  const hcpRaw = parseFloat(document.getElementById('profile-hcp').value);
+  const hcp = isNaN(hcpRaw) ? null : Math.min(54, Math.max(0, hcpRaw));
+  const profile = { name, handicapIndex: hcp };
+  localStorage.setItem('playerProfile', JSON.stringify(profile));
+  const note = document.getElementById('profile-saved-note');
+  note.textContent = 'Saved ✓';
+  setTimeout(()=>{ closeProfile(); }, 700);
+  renderTarget();
+}
+// ── Profile modal ─────────────────────────────────────────────────
+function openProfile(){
+  const p = loadProfile();
+  if(p){
+    if(p.name) document.getElementById('profile-name').value = p.name;
+    if(p.handicapIndex != null) document.getElementById('profile-hcp').value = p.handicapIndex;
+  }
+  document.getElementById('profile-saved-note').textContent = '';
+  const scrim = document.getElementById('profile-scrim');
+  scrim.style.display = 'flex';
+}
+function closeProfile(){
+  document.getElementById('profile-scrim').style.display = 'none';
+}
+document.getElementById('profile-scrim').addEventListener('click', e=>{
+  if(e.target === document.getElementById('profile-scrim')) closeProfile();
+});
+
+// ── Expected strokes ──────────────────────────────────────────────
+// Rows: [dist, scratch, hcp10, hcp18, hcp28]
+const EXP_TABLE = [
+  [  50, 2.6, 2.8, 3.0, 3.3 ],
+  [ 100, 2.8, 3.1, 3.4, 3.7 ],
+  [ 150, 3.0, 3.4, 3.8, 4.2 ],
+  [ 200, 3.3, 3.8, 4.3, 4.9 ],
+  [ 250, 3.6, 4.2, 4.8, 5.5 ],
+];
+const LIE_PENALTY = { fairway:0, rough:0.3, sand:0.5 };
+function expectedStrokes(yds, lie){
+  const p = loadProfile();
+  const hcp = (p && p.handicapIndex != null) ? p.handicapIndex : 18;
+  // Clamp distance
+  const d = Math.max(10, Math.min(300, yds));
+  // Interpolate between table rows
+  let lo = EXP_TABLE[0], hi = EXP_TABLE[EXP_TABLE.length-1];
+  for(let i=0; i<EXP_TABLE.length-1; i++){
+    if(d >= EXP_TABLE[i][0] && d <= EXP_TABLE[i+1][0]){ lo=EXP_TABLE[i]; hi=EXP_TABLE[i+1]; break; }
+  }
+  const t = lo[0]===hi[0] ? 0 : (d-lo[0])/(hi[0]-lo[0]);
+  function interpRow(row){ return row[1] + t*(row[2]-row[1]); }
+  // hcp brackets: 0, 10, 18, 28
+  const HCP_BREAKS = [0, 10, 18, 28];
+  function interpHcp(loRow, hiRow){
+    const vals = [1,2,3,4].map((_,ci)=>loRow[ci+1]+(hiRow[ci+1]-loRow[ci+1])*t);
+    const h = Math.min(54, Math.max(0, hcp));
+    let bi = HCP_BREAKS.length-2;
+    for(let i=0; i<HCP_BREAKS.length-1; i++){ if(h>=HCP_BREAKS[i]&&h<=HCP_BREAKS[i+1]){ bi=i; break; } }
+    const ht = (HCP_BREAKS[bi+1]-HCP_BREAKS[bi])===0 ? 0 : (h-HCP_BREAKS[bi])/(HCP_BREAKS[bi+1]-HCP_BREAKS[bi]);
+    return vals[bi] + (vals[bi+1]-vals[bi])*ht;
+  }
+  const base = interpHcp(lo, hi);
+  const penalty = LIE_PENALTY[lie]||0;
+  return Math.round((base + penalty) * 10) / 10;
 }
 
 // ── Math ─────────────────────────────────────────────────────────
@@ -422,14 +545,34 @@ function wedgeCarry(id,si){
 function renderTarget(){
   const t=state.targetYds, input=document.getElementById('target-display');
   if(input&&document.activeElement!==input) input.value=t;
-  const pwFull=wedgeCarry('pw',0), isWedge=t<=pwFull;
+  const lie = state.lie || 'fairway';
+
+  // Convert actual distance to plays-like fairway distance
+  const LIE_MULT = { fairway:1.0, rough:0.85, sand:0.75 };
+  const playsLike = lie==='fairway' ? t : Math.round(t / LIE_MULT[lie]);
+
+  // Expected strokes — use plays-like distance for base, add lie penalty on top
+  const expEl = document.getElementById('expected-row');
+  if(expEl){
+    const exp = expectedStrokes(playsLike, lie);
+    const p = loadProfile();
+    const hcpNote = (p && p.handicapIndex != null) ? ` · HCP ${p.handicapIndex}` : '';
+    const playsNote = lie!=='fairway' ? ` (plays like ${playsLike} yds)` : '';
+    expEl.textContent = `Expected: ${exp} strokes${playsNote}${hcpNote}`;
+  }
+
+  // Club matching uses playsLike against fairway carries.
+  // isWedge gates on actual yardage. Driver is excluded from suggestions — tee club only.
+  const pwFull = state.carries['pw']??SPEC['pw'];
+  const isWedge = t <= pwFull;
   let picks;
   if(isWedge){
     const candidates=[];
     WEDGE_CLUBS.forEach(id=>{
       const label=CLUBS.find(c=>c.id===id).label;
       SWING_MULT.forEach((_,si)=>{
-        const adj=wedgeCarry(id,si), roll=Math.round(adj*0.08), total=adj+roll, diff=total-t;
+        const adj=Math.round((state.carries[id]??SPEC[id])*SWING_MULT[si]);
+        const roll=Math.round(adj*0.08), total=adj+roll, diff=total-playsLike;
         candidates.push({label,swingLabel:SWING_LABELS[si],adj,roll,total,diff,absDiff:Math.abs(diff),id,si});
       });
     });
@@ -446,12 +589,12 @@ function renderTarget(){
     ].filter(Boolean);
   } else {
     const allClubs=[
-      ...CLUBS.filter(({id})=>!(state.hiddenClubs||[]).includes(id)).map(({id,label})=>{const base=state.carries[id]??SPEC[id];return{label,base};}),
+      ...CLUBS.filter(({id})=>!(state.hiddenClubs||[]).includes(id) && id!=='driver').map(({id,label})=>{const base=state.carries[id]??SPEC[id];return{label,base};}),
       ...(state.customClubs||[]).map(c=>({label:c.name,base:c.carry}))
     ];
     const rows=allClubs.map(({label,base})=>{
-      const adj=adjustedCarry(base), roll=Math.round(adj*0.08);
-      const total=adj+roll, diff=total-t;
+      const adj=base, roll=Math.round(adj*0.08);
+      const total=adj+roll, diff=total-playsLike;
       return {label,adj,roll,total,diff,sign:diff>0?'+':'',cls:diff>0?'over':'under',absDiff:Math.abs(diff)};
     });
     const overRows=rows.filter(r=>r.diff>=0);
@@ -494,6 +637,20 @@ function initTargetCtrl(){
   input.addEventListener('blur',()=>{input.value=state.targetYds;});
 }
 initTargetCtrl();
+
+// ── Lie selector ──────────────────────────────────────────────────
+document.querySelectorAll('.lie-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    state.lie = btn.dataset.lie;
+    document.querySelectorAll('.lie-btn').forEach(b=>b.classList.toggle('active', b===btn));
+    renderTarget(); saveState();
+  });
+});
+// Sync lie buttons to saved state
+(function(){
+  const saved = state.lie||'fairway';
+  document.querySelectorAll('.lie-btn').forEach(b=>b.classList.toggle('active', b.dataset.lie===saved));
+})();
 
 // ── Inner tabs ────────────────────────────────────────────────────
 document.getElementById('inner-tabs').addEventListener('click',e=>{

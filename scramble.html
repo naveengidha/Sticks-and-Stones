@@ -75,12 +75,41 @@ input[type="date"].field-input{-webkit-appearance:none;appearance:none;color-sch
 .accept-btn{width:100%;padding:11px;border:1px solid rgba(76,200,120,0.4);border-radius:8px;font-size:13px;font-weight:bold;background:rgba(76,200,120,0.07);color:#2ecc71;cursor:pointer;letter-spacing:1.5px;text-transform:uppercase;font-family:'Georgia','Times New Roman',serif;margin-bottom:10px;}
 .accept-btn:active{background:rgba(76,200,120,0.14);}
 .accepted-banner{text-align:center;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#2ecc71;margin-bottom:10px;padding:8px;border:1px solid rgba(76,200,120,0.25);border-radius:6px;background:rgba(76,200,120,0.06);}
+/* ── Mode toggle ── */
+.mode-toggle{display:flex;gap:6px;margin-bottom:10px;}
+.mode-btn{flex:1;padding:8px 4px;border-radius:8px;border:1px solid rgba(255,212,71,0.2);background:transparent;color:rgba(255,212,71,0.45);font-size:11px;font-weight:bold;letter-spacing:.4px;text-transform:uppercase;cursor:pointer;font-family:'Georgia','Times New Roman',serif;transition:all .12s;}
+.mode-btn.active{background:rgba(255,212,71,0.12);border-color:rgba(255,212,71,0.55);color:#ffd447;}
+/* ── A/B team pills ── */
+.team-pill{font-size:10px;font-weight:bold;letter-spacing:1px;padding:3px 9px;border-radius:20px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:rgba(255,255,255,0.25);cursor:pointer;font-family:'Georgia','Times New Roman',serif;transition:all .12s;white-space:nowrap;}
+.team-pill.a{border-color:rgba(255,212,71,0.55);background:rgba(255,212,71,0.12);color:#ffd447;}
+.team-pill.b{border-color:rgba(100,160,220,0.55);background:rgba(100,160,220,0.12);color:#64a0dc;}
+/* ── Info button (matches banker/stableford) ── */
+.info-btn{background:none;border:1px solid rgba(255,212,71,0.35);color:rgba(255,212,71,0.7);border-radius:50%;width:22px;height:22px;font-size:12px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;box-shadow:none;text-transform:none;letter-spacing:0;flex-shrink:0;}
+.info-btn:active{background:rgba(255,212,71,0.12);color:#ffd447;}
+.game-title-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:2px;}
+/* ── Rules modal ── */
+.rules-scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;align-items:flex-end;justify-content:center;}
+.rules-scrim.open{display:flex;}
+.rules-sheet{width:100%;max-width:480px;background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.22);border-radius:18px 18px 0 0;padding:24px 20px 110px;max-height:80vh;overflow-y:auto;}
+.rules-handle{width:36px;height:4px;background:rgba(255,212,71,0.25);border-radius:2px;margin:0 auto 20px;}
+.rules-title{font-size:18px;font-weight:bold;color:#ffd447;text-align:center;margin:0 0 6px;letter-spacing:1px;}
+.rules-sub{text-align:center;color:rgba(255,255,255,0.5);font-size:12px;margin:0 0 20px;letter-spacing:1px;text-transform:uppercase;}
+.rules-table{width:100%;border-collapse:collapse;margin-bottom:16px;}
+.rules-table td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.07);font-size:14px;}
+.rules-table td:first-child{color:rgba(255,255,255,0.5);width:45%;}
+.rules-table td:last-child{font-weight:bold;font-family:'Courier New',monospace;color:#ffd447;}
+.rules-note{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.7;text-align:center;margin-top:4px;}
 </style>
 </head>
 <body>
 
 <div id="setupScreen" style="display:flex;flex-direction:column;flex:1;">
-  <div class="page-header">Scramble</div>
+  <div class="page-header">
+    <div class="game-title-row">
+      <span>Scramble</span>
+      <button class="info-btn" onclick="openRules()">?</button>
+    </div>
+  </div>
   <div class="page-sub">Post-round results</div>
   <div class="scroll-area">
     <div class="container">
@@ -96,13 +125,17 @@ input[type="date"].field-input{-webkit-appearance:none;appearance:none;color-sch
 
       <div class="setup-section" id="playersSection">
         <div class="setup-section-label">Players</div>
-        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
-          <div class="player-row"><input class="field-input" id="p1" placeholder="Player 1" autocomplete="off"><div class="hcp-badge" id="hcp1">—</div></div>
-          <div class="player-row"><input class="field-input" id="p2" placeholder="Player 2" autocomplete="off"><div class="hcp-badge" id="hcp2">—</div></div>
-          <div class="player-row"><input class="field-input" id="p3" placeholder="Player 3" autocomplete="off"><div class="hcp-badge" id="hcp3">—</div></div>
-          <div class="player-row"><input class="field-input" id="p4" placeholder="Player 4" autocomplete="off"><div class="hcp-badge" id="hcp4">—</div></div>
+        <div class="mode-toggle">
+          <button class="mode-btn active" id="modeAuto" onclick="setMode('auto')">Auto (Handicap)</button>
+          <button class="mode-btn" id="modeManual" onclick="setMode('manual')">Manual</button>
         </div>
-        <button class="set-teams-btn" onclick="setTeams()">Set Teams →</button>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
+          <div class="player-row"><input class="field-input" id="p1" placeholder="Player 1" autocomplete="off"><div class="hcp-badge" id="hcp1">—</div><button class="team-pill" id="pill1" onclick="cyclePill(1)" style="display:none;">A</button></div>
+          <div class="player-row"><input class="field-input" id="p2" placeholder="Player 2" autocomplete="off"><div class="hcp-badge" id="hcp2">—</div><button class="team-pill" id="pill2" onclick="cyclePill(2)" style="display:none;">A</button></div>
+          <div class="player-row"><input class="field-input" id="p3" placeholder="Player 3" autocomplete="off"><div class="hcp-badge" id="hcp3">—</div><button class="team-pill" id="pill3" onclick="cyclePill(3)" style="display:none;">A</button></div>
+          <div class="player-row"><input class="field-input" id="p4" placeholder="Player 4" autocomplete="off"><div class="hcp-badge" id="hcp4">—</div><button class="team-pill" id="pill4" onclick="cyclePill(4)" style="display:none;">A</button></div>
+        </div>
+        <button class="set-teams-btn" id="setTeamsBtn" onclick="handleSetTeams()">Set Teams →</button>
       </div>
 
       <div class="setup-section team-a" id="teamACard" style="display:none;">
@@ -159,6 +192,26 @@ input[type="date"].field-input{-webkit-appearance:none;appearance:none;color-sch
     </a>
   </div>
 </nav>
+
+<!-- ══ RULES MODAL ══ -->
+<div class="rules-scrim" id="rulesScrim" onclick="if(event.target===this)closeRules()">
+  <div class="rules-sheet">
+    <div class="rules-handle"></div>
+    <div class="rules-title">Scramble</div>
+    <div class="rules-sub">2–4 players · team format</div>
+    <table class="rules-table">
+      <tr><td>Tee off</td><td>All players tee off each hole</td></tr>
+      <tr><td>Best shot</td><td>Team picks the best shot; everyone plays from that spot</td></tr>
+      <tr><td>Repeat</td><td>All hit from the chosen spot; pick best again</td></tr>
+      <tr><td>Hole out</td><td>Continue until holed — record the team score</td></tr>
+      <tr><td>Winner</td><td>Lowest total score wins the round</td></tr>
+    </table>
+    <div class="rules-note">
+      The team shares a single score each hole.<br>
+      Use handicap strokes to set fair team pairings.
+    </div>
+  </div>
+</div>
 
 <script src="season.js"></script>
 <script>
@@ -494,6 +547,92 @@ function saveRound(){
 
   clearActiveRound();
   showConfirm(teamNameA,teamNameB,sA,sB,par,course,dateVal);
+}
+
+// ── Rules modal ───────────────────────────────────────────────────────────────
+function openRules(){ document.getElementById('rulesScrim').classList.add('open'); }
+function closeRules(){ document.getElementById('rulesScrim').classList.remove('open'); }
+
+// ── Team mode toggle ──────────────────────────────────────────────────────────
+let teamMode = 'auto';
+const pillState = {1:'', 2:'', 3:'', 4:''}; // '' | 'a' | 'b'
+
+function setMode(mode){
+  teamMode = mode;
+  document.getElementById('modeAuto').classList.toggle('active', mode==='auto');
+  document.getElementById('modeManual').classList.toggle('active', mode==='manual');
+  // Show/hide A/B pills
+  [1,2,3,4].forEach(i=>{
+    const pill = document.getElementById('pill'+i);
+    if(pill) pill.style.display = mode==='manual' ? '' : 'none';
+    pillState[i] = '';
+    if(pill){ pill.textContent='A'; pill.className='team-pill'; }
+  });
+  document.getElementById('setTeamsBtn').textContent = mode==='manual' ? 'Confirm Teams →' : 'Set Teams →';
+  // Clear previous team assignment
+  resetTeamCards();
+}
+
+function resetTeamCards(){
+  teamAssignment = null;
+  document.getElementById('teamACard').style.display='none';
+  document.getElementById('teamBCard').style.display='none';
+  document.getElementById('acceptBtn').style.display='none';
+  document.getElementById('acceptedBanner').style.display='none';
+  document.getElementById('saveBtn').style.display='none';
+}
+
+function cyclePill(num){
+  const pill = document.getElementById('pill'+num);
+  const name = document.getElementById('p'+num).value.trim();
+  if(!name) return;
+  const cur = pillState[num];
+  if(cur===''){
+    pillState[num]='a';
+    pill.textContent='A'; pill.className='team-pill a';
+  } else if(cur==='a'){
+    pillState[num]='b';
+    pill.textContent='B'; pill.className='team-pill b';
+  } else {
+    pillState[num]='';
+    pill.textContent='A'; pill.className='team-pill';
+  }
+}
+
+function handleSetTeams(){
+  if(teamMode==='manual') setTeamsManual();
+  else setTeams();
+}
+
+function setTeamsManual(){
+  const err = document.getElementById('errorMsg');
+  const named = [1,2,3,4].filter(i=>document.getElementById('p'+i).value.trim());
+  if(named.length < 2){
+    err.textContent='Enter at least 2 player names.'; err.style.display='block';
+    setTimeout(()=>err.style.display='none',2500); return;
+  }
+  const unassigned = named.filter(i=>pillState[i]==='');
+  if(unassigned.length){
+    err.textContent='Assign all players to Team A or Team B.'; err.style.display='block';
+    setTimeout(()=>err.style.display='none',2500); return;
+  }
+  const teamA = named.filter(i=>pillState[i]==='a').map(i=>document.getElementById('p'+i).value.trim());
+  const teamB = named.filter(i=>pillState[i]==='b').map(i=>document.getElementById('p'+i).value.trim());
+  if(!teamA.length || !teamB.length){
+    err.textContent='Each team needs at least one player.'; err.style.display='block';
+    setTimeout(()=>err.style.display='none',2500); return;
+  }
+  err.style.display='none';
+  teamAssignment = {a:teamA, b:teamB};
+  document.getElementById('teamANames').innerHTML =
+    teamA.map(n=>`<span style="color:#ffd447;">${esc(n)}</span>`).join('<span style="color:rgba(255,255,255,0.3);margin:0 4px;">&</span>');
+  document.getElementById('teamBNames').innerHTML =
+    teamB.map(n=>`<span style="color:#64a0dc;">${esc(n)}</span>`).join('<span style="color:rgba(255,255,255,0.3);margin:0 4px;">&</span>');
+  document.getElementById('teamACard').style.display='block';
+  document.getElementById('teamBCard').style.display='block';
+  document.getElementById('acceptBtn').style.display='block';
+  document.getElementById('acceptedBanner').style.display='none';
+  document.getElementById('saveBtn').style.display='none';
 }
 
 function showConfirm(nameA,nameB,sA,sB,par,course,dateVal){

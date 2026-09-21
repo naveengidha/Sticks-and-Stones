@@ -39,10 +39,6 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 .s-chip{font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.55);}
 .s-chip.leader{background:rgba(255,212,71,0.15);color:var(--gold);font-weight:bold;}
 
-/* ── Filter tab bar ── */
-.filter-tab-bar{display:flex;margin:0 0 14px;background:#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:12px;overflow:hidden;}
-.ftab{flex:1;padding:11px 4px;text-align:center;font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;color:rgba(255,212,71,0.4);cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;-webkit-user-select:none;border:none;background:none;font-family:'Georgia','Times New Roman',serif;}
-.ftab.active{color:#ffd447;border-bottom:2px solid #ffd447;}
 
 /* ── Round cards ── */
 .round-card{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:10px;padding:13px;margin-bottom:10px;cursor:pointer;transition:border-color .15s;}
@@ -126,11 +122,11 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 </head>
 <body>
 
-<div class="page-header">Round Statistics</div>
+<div class="page-header">History</div>
 
 <!-- Tab bar -->
 <div style="display:flex;margin:12px 14px 14px;background:#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:12px;overflow:hidden;">
-  <button id="tabStats" onclick="showHistoryTab('stats')" style="flex:1;padding:11px 4px;background:none;border:none;border-bottom:2px solid #ffd447;color:#ffd447;font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;box-shadow:none;margin:0;font-family:'Georgia','Times New Roman',serif;">Stats</button>
+  <button id="tabStats" onclick="showHistoryTab('stats')" style="flex:1;padding:11px 4px;background:none;border:none;border-bottom:2px solid #ffd447;color:#ffd447;font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;box-shadow:none;margin:0;font-family:'Georgia','Times New Roman',serif;">Standings</button>
   <button id="tabHof" onclick="showHistoryTab('hof')" style="flex:1;padding:11px 4px;background:none;border:none;border-bottom:2px solid transparent;color:#a07840;font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;box-shadow:none;margin:0;font-family:'Georgia','Times New Roman',serif;">Honours</button>
   <button id="tabHcp" onclick="showHistoryTab('hcp')" style="flex:1;padding:11px 4px;background:none;border:none;border-bottom:2px solid transparent;color:#a07840;font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;box-shadow:none;margin:0;font-family:'Georgia','Times New Roman',serif;">Handicap</button>
 </div>
@@ -139,13 +135,6 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 
   <!-- ── STATISTICS ── -->
   <div class="tab-panel active" id="tab-stats">
-    <div class="filter-tab-bar" id="insightsFilterBar">
-      <button class="ftab active" data-game="all">All</button>
-      <button class="ftab" data-game="stroke">Stroke</button>
-      <button class="ftab" data-game="stableford">Stableford</button>
-      <button class="ftab" data-game="scramble">Scramble</button>
-      <button class="ftab" data-game="banker">Banker</button>
-    </div>
     <div id="insightsContent"></div>
   </div>
 
@@ -187,14 +176,6 @@ function fmtVsPar(v){ return v>0?'+'+v:v===0?'E':String(v); }
 function loadHistory(){ try{ return JSON.parse(localStorage.getItem('gameHistory')||'[]'); }catch(e){ return []; } }
 
 let insightsFilter = 'all';
-document.getElementById('insightsFilterBar').addEventListener('click', e=>{
-  let tab = e.target.closest('.ftab');
-  if(!tab) return;
-  document.querySelectorAll('#insightsFilterBar .ftab').forEach(t=>t.classList.remove('active'));
-  tab.classList.add('active');
-  insightsFilter = tab.dataset.game;
-  renderInsights();
-});
 
 /* ══════════════════════════════════════
    INSIGHTS TAB

@@ -126,24 +126,19 @@ input[type="date"].course-input{-webkit-appearance:none;appearance:none;}
 }
 .start-btn:active{opacity:.85;}
 #nameError{color:#ff6b6b;font-size:13px;display:none;margin-top:6px;text-align:center;}
-.rules-scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:2000;align-items:flex-end;justify-content:center;}
-.rules-sheet{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.22);border-radius:18px 18px 0 0;padding:24px 20px 44px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;}
+.rules-scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;align-items:flex-end;justify-content:center;}
+.rules-sheet{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.22);border-radius:18px 18px 0 0;padding:24px 20px 110px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;}
 .rules-handle{width:36px;height:4px;background:rgba(255,212,71,0.25);border-radius:2px;margin:0 auto 20px;}
 .info-btn{background:none;border:1px solid rgba(255,212,71,0.35);color:rgba(255,212,71,0.7);border-radius:50%;width:22px;height:22px;font-size:12px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;box-shadow:none;text-transform:none;letter-spacing:0;flex-shrink:0;}
 .info-btn:active{background:rgba(255,212,71,0.12);color:#ffd447;}
 .game-title-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:2px;}
-.rules-title{
-  font-size:18px;font-weight:bold;
-  color:#ffd447;text-align:center;
-  margin:0 0 4px;letter-spacing:2px;
-  font-family:'Georgia','Times New Roman',serif;
-}
-.rules-sub{text-align:center;color:rgba(255,212,71,0.4);font-size:11px;margin:0 0 20px;letter-spacing:1.5px;text-transform:uppercase;}
+.rules-title{font-size:18px;font-weight:bold;color:#ffd447;text-align:center;margin:0 0 6px;letter-spacing:1px;}
+.rules-sub{text-align:center;color:rgba(255,255,255,0.5);font-size:12px;margin:0 0 20px;letter-spacing:1px;text-transform:uppercase;}
 .rules-table{width:100%;border-collapse:collapse;margin-bottom:16px;}
-.rules-table td{padding:9px 10px;border-bottom:1px solid rgba(255,212,71,0.08);font-size:13px;}
-.rules-table td:first-child{color:rgba(255,255,255,0.4);width:45%;}
-.rules-table td:last-child{font-weight:bold;font-family:'Courier New',monospace;color:rgba(255,212,71,0.9);}
-.rules-note{font-size:11px;color:rgba(255,255,255,0.3);line-height:1.8;text-align:center;margin-top:4px;letter-spacing:.3px;}
+.rules-table td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.07);font-size:14px;}
+.rules-table td:first-child{color:rgba(255,255,255,0.5);width:45%;}
+.rules-table td:last-child{font-weight:bold;font-family:'Courier New',monospace;color:#ffd447;}
+.rules-note{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.7;text-align:center;margin-top:4px;}
 
 /* ── Trophy nav card ── */
 .trophy-card{
@@ -822,7 +817,7 @@ td{font-family:'Courier New',monospace;color:rgba(255,255,255,0.75);}
       <div id="rules-scrim" class="rules-scrim" onclick="if(event.target===this)closeRules()">
         <div class="rules-sheet">
           <div class="rules-handle"></div>
-          <div class="rules-title">🏦 Banker</div>
+          <div class="rules-title">Banker</div>
           <div class="rules-sub">2–4 players · one banker per hole</div>
           <table class="rules-table">
             <tr><td>Banker</td><td>One player per hole faces all others</td></tr>

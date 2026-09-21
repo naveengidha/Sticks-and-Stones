@@ -564,7 +564,7 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
           let rows = players.map((p,i)=>{
             let v = r.playerTotals?.[i];
             let disp = v!=null ? (Number.isInteger(v)?v:Number(v).toFixed(1)) : null;
-            return { name:p, num:disp, par:'pts' };
+            return { name:p, num:disp!=null?disp+' pts':null, par:'' };
           });
           return rows.sort((a,b)=>(b.num??-999)-(a.num??-999));
         }
@@ -844,7 +844,12 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
         let thead=`<thead><tr><th>Hole</th><th>Par</th>${players.map(p=>`<th>${esc(p)}</th>`).join('')}</tr></thead>`;
         let rows=sh.map((hole,i)=>{
           let par=pd[i]?.par||4;
-          return `<tr><td>${i+1}</td><td>${par}</td>${hole.map(s=>`<td>${s??'–'}</td>`).join('')}</tr>`;
+          let ph=r.pointHistory?.[i];
+          return `<tr><td>${i+1}</td><td>${par}</td>${hole.map((s,pi)=>{
+            let cell=s??'–';
+            if(ph && ph[pi]!=null) cell+=` <span style="font-size:10px;color:rgba(255,212,71,0.55);">(${ph[pi]} pts)</span>`;
+            return `<td>${cell}</td>`;
+          }).join('')}</tr>`;
         }).join('');
         let totals=(r.playerTotals||[]).map(t=>`<td>${t!=null?(Number.isInteger(t)?t:Number(t).toFixed(1)):'-'}</td>`).join('');
         let totalPar=pd.reduce((s,h)=>s+(h.par||4),0);
