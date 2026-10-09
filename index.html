@@ -83,12 +83,11 @@ button.btn-secondary{background:transparent;border:1px solid rgba(139,94,60,0.4)
 button.btn-secondary:hover,button.btn-secondary:active{background:rgba(139,94,60,0.08);border-color:rgba(255,212,71,0.6);color:#ffd447;}
 .hidden{display:none!important;}
 /* ── Bottom pill nav ── */
-.bottom-nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:1000;pointer-events:none;}
-.nav-pill{display:flex;align-items:center;gap:2px;background:#0e1a12;border:1px solid rgba(255,212,71,0.28);border-radius:50px;padding:6px 10px;box-shadow:0 4px 24px rgba(0,0,0,0.6);pointer-events:all;}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 14px;border-radius:40px;cursor:pointer;text-decoration:none;color:#a07840;font-size:9px;font-weight:bold;letter-spacing:.5px;text-transform:uppercase;transition:color .15s,background .15s;-webkit-user-select:none;}
-.nav-item:hover,.nav-item:active{color:rgba(255,212,71,0.7);}
-.nav-item.active{color:#ffd447;}
-.nav-item svg{width:20px;height:20px;flex-shrink:0;}
+nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;padding:8px 16px max(env(safe-area-inset-bottom),12px);background:linear-gradient(to top,#080f0a 70%,transparent);z-index:100;pointer-events:none;}
+.nav-pill{display:flex;align-items:center;justify-content:space-between;background:rgba(14,26,18,0.97);border:1px solid rgba(255,212,71,0.18);border-radius:40px;padding:6px 16px;gap:4px;max-width:420px;width:100%;box-shadow:0 4px 24px rgba(0,0,0,0.5);pointer-events:all;}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;color:rgba(255,255,255,0.35);font-size:9px;font-weight:bold;letter-spacing:.8px;text-transform:uppercase;text-decoration:none;padding:4px 8px;border-radius:20px;transition:color .15s;font-family:'Georgia','Times New Roman',serif;}
+.nav-item svg{width:20px;height:20px;stroke:currentColor;}
+.nav-item.active,.nav-item:active{color:#ffd447;}
 .nav-center{background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;margin:0 4px;cursor:pointer;box-shadow:0 2px 10px rgba(139,94,60,0.5);flex-shrink:0;text-decoration:none;}
 .nav-center svg{width:36px;height:36px;}
 
@@ -294,7 +293,7 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 <body>
 <div class="container">
 
-  <div class="logo" id="logoEl" onclick="handleLogoClick()">
+  <div class="logo" id="logoEl">
     <svg width="100" height="100" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="60" cy="60" r="57" stroke="rgba(184,150,46,0.4)" stroke-width="1.5"/>
       <circle cx="60" cy="60" r="50" stroke="rgba(184,150,46,0.2)" stroke-width="1"/>
@@ -333,13 +332,7 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 
   </div><!-- end .container -->
 
-  <!-- Tab bar -->
-  <div style="display:flex;margin:12px 16px 0;background:#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:12px;overflow:hidden;">
-    <button id="tabRoundsBtn" onclick="showHomeTab('rounds')" style="flex:1;padding:11px 4px;background:none;border:none;border-bottom:2px solid #ffd447;color:#ffd447;font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;box-shadow:none;margin:0;font-family:'Georgia','Times New Roman',serif;border-radius:0;outline:none;">Rounds</button>
-    <button id="tabTourneysBtn" onclick="showHomeTab('tourneys')" style="flex:1;padding:11px 4px;background:none;border:none;border-bottom:2px solid transparent;color:#a07840;font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;box-shadow:none;margin:0;font-family:'Georgia','Times New Roman',serif;border-radius:0;outline:none;">Tournaments</button>
-  </div>
-
-  <!-- ── Rounds tab ── -->
+  <!-- ── Rounds ── -->
   <div id="homeTabRounds" class="rounds-section">
     <!-- Active rounds -->
     <div id="activeRoundsSection" style="display:none;padding-bottom:0;">
@@ -347,11 +340,6 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
       <div id="activeRoundCards"></div>
     </div>
     <div id="roundCards" style="padding-top:10px;"></div>
-  </div>
-
-  <!-- ── Tournaments tab ── -->
-  <div id="homeTabTourneys" class="rounds-section" style="display:none;padding-top:10px;">
-    <div id="activeSeasonsSection"></div>
   </div>
 
 <!-- ══════════════════════════════════
@@ -510,14 +498,12 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
       </svg>
       Stats
     </a>
-    <a class="nav-center" href="games.html" title="Play a Game">
+    <a class="nav-center" href="start.html" title="Play a Game">
       <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" fill="#1a1a0a"/><circle cx="12" cy="12" r="6.2" fill="white"/><circle cx="10.2" cy="11.2" r="1" fill="#ccc"/><circle cx="12" cy="9.5" r="1" fill="#ccc"/><circle cx="13.8" cy="11.2" r="1" fill="#ccc"/></svg>
     </a>
-    <a class="nav-item" href="tournaments.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-      </svg>
-      Tourneys
+    <a class="nav-item" href="dossier.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 9h2M15 13h2M5 17c0-2 1.5-3 4-3s4 1 4 3"/></svg>
+      Dossier
     </a>
     <a class="nav-item" href="caddy.html">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -556,25 +542,25 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
           let rows = players.map((p,i)=>{
             let gross = r.playerTotals?.[i];
             let diff = gross != null ? gross - totalPar : null;
-            return { name:p, num:gross, par: diff!=null?fmtVsPar(diff):'' };
+            return { name:p, num:gross, par: diff!=null?fmtVsPar(diff):'', _sortVal: gross!=null ? -gross : -9999 };
           });
-          return rows.sort((a,b)=>(a.num??999)-(b.num??999));
+          return rows.sort((a,b)=>b._sortVal-a._sortVal);
         }
         case 'stableford': case 'f1':{
           let rows = players.map((p,i)=>{
             let v = r.playerTotals?.[i];
             let disp = v!=null ? (Number.isInteger(v)?v:Number(v).toFixed(1)) : null;
-            return { name:p, num:disp!=null?disp+' pts':null, par:'' };
+            return { name:p, num:disp!=null?disp+' pts':null, par:'', _sortVal: v??-9999 };
           });
-          return rows.sort((a,b)=>(b.num??-999)-(a.num??-999));
+          return rows.sort((a,b)=>b._sortVal-a._sortVal);
         }
         case 'banker':{
           let rows = players.map((p,i)=>{
             let net = r.playerNetTotals?.[i];
             let numStr = net!=null ? (net>=0?'+$':'−$')+Math.abs(net) : null;
-            return { name:p, num:numStr, par:'', netColor: net>0?'#2d9e6b':net<0?'#c0404a':'rgba(255,255,255,0.4)', _net: net??0 };
+            return { name:p, num:numStr, par:'', netColor: net>0?'#2d9e6b':net<0?'#c0404a':'rgba(255,255,255,0.4)', _net: net??0, _sortVal: net??0 };
           });
-          return rows.sort((a,b)=>b._net-a._net);
+          return rows.sort((a,b)=>b._sortVal-a._sortVal);
         }
         case 'scramble':{
           let scores = r.teamScores||[];
@@ -587,8 +573,8 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
             }
             return `Team ${String.fromCharCode(65+ti)}`;
           };
-          let rows = [0,1].map(ti=>({ name:getTeamLabel(ti), num:scores[ti], par:r.teamVsPar?.[ti]!=null?fmtVsPar(r.teamVsPar[ti]):'' }));
-          return rows.sort((a,b)=>(a.num??999)-(b.num??999));
+          let rows = [0,1].map(ti=>({ name:getTeamLabel(ti), num:scores[ti], par:r.teamVsPar?.[ti]!=null?fmtVsPar(r.teamVsPar[ti]):'', _sortVal: scores[ti]!=null ? -scores[ti] : -9999 }));
+          return rows.sort((a,b)=>b._sortVal-a._sortVal);
         }
         case 'mixed':{
           // Use saved moneyNet for collapsed display if available
@@ -597,9 +583,9 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
               let v = r.moneyNet[i]||0;
               let num = (v>=0?'+$':'−$')+Math.abs(v);
               let netColor = v>0?'#2d9e6b':v<0?'#c0404a':'rgba(255,255,255,0.4)';
-              return { name:p, num, par:'', netColor, _net:v };
+              return { name:p, num, par:'', netColor, _net:v, _sortVal:v };
             });
-            return rows.sort((a,b)=>b._net-a._net);
+            return rows.sort((a,b)=>b._sortVal-a._sortVal);
           }
           // Legacy: no moneyNet saved
           let rows = players.map((p,i)=>{
@@ -607,9 +593,9 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
             let net = (b||0)+(pm||0);
             let num = (net>=0?'+$':'−$')+Math.abs(net);
             let netColor = net>0?'#2d9e6b':net<0?'#c0404a':'rgba(255,255,255,0.4)';
-            return { name:p, num, par:'', netColor, _net:net };
+            return { name:p, num, par:'', netColor, _net:net, _sortVal:net };
           });
-          return rows.sort((a,b)=>b._net-a._net);
+          return rows.sort((a,b)=>b._sortVal-a._sortVal);
         }
         case 'matchplay':
           return players.map((p,i)=>({ name:p, num:null, par:'' }));
@@ -908,6 +894,68 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
     }catch(e){ return ''; }
   }
 
+  function fmtMoney(v){ return v===0?'±$0':(v>0?'+$'+v:'-$'+Math.abs(v)); }
+  function moneyCls(v){ return v>0?'color:#2d9e6b':v<0?'color:#c0404a':'color:rgba(255,255,255,0.3)'; }
+
+  function buildSettlement(players, nets){
+    let creditors=[], debtors=[];
+    nets.forEach((v,i)=>{ if(v>0.001) creditors.push({name:players[i],amt:v}); else if(v<-0.001) debtors.push({name:players[i],amt:-v}); });
+    creditors.sort((a,b)=>b.amt-a.amt); debtors.sort((a,b)=>b.amt-a.amt);
+    let lines=[], ci=0, di=0;
+    while(ci<creditors.length && di<debtors.length){
+      let c=creditors[ci], d=debtors[di], settle=Math.min(c.amt,d.amt);
+      if(settle>0.001) lines.push(`<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:12px;"><span><span style="color:#c0404a;font-weight:bold">${esc(d.name)}</span> owes <span style="color:#2d9e6b;font-weight:bold">${esc(c.name)}</span></span><span style="color:#ffd447;font-weight:bold;font-family:'Courier New'">$${settle}</span></div>`);
+      c.amt-=settle; d.amt-=settle;
+      if(c.amt<0.001) ci++; if(d.amt<0.001) di++;
+    }
+    if(!lines.length) return `<div style="font-size:11px;color:rgba(255,255,255,0.3);text-align:center;padding:4px 0;">All square</div>`;
+    return lines.join('');
+  }
+
+  function buildSideBetSummary(r){
+    if(!r.players || (!r.bkPlayerNetTotals && !r.pinNetTotals)) return '';
+    const hasBk  = !!r.bkPlayerNetTotals;
+    const hasPin = !!r.pinNetTotals;
+    const hasBoth = hasBk && hasPin;
+
+    const thStyle = 'font-size:9px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:rgba(255,212,71,0.45);padding:4px 6px;text-align:right;border:none;background:none;';
+    const tdName  = 'font-size:12px;color:#a07840;font-weight:bold;padding:4px 6px 4px 0;border:none;';
+    const tdMoney = (v) => `font-family:'Courier New',monospace;font-size:13px;font-weight:bold;padding:4px 6px;text-align:right;border:none;${moneyCls(v)}`;
+
+    let headers = `<tr><th style="${thStyle}text-align:left;color:rgba(255,255,255,0);">—</th>${hasBk?`<th style="${thStyle}">Banker</th>`:''}${hasPin?`<th style="${thStyle}">Pin</th>`:''}${hasBoth?`<th style="${thStyle}">Total</th>`:''}</tr>`;
+
+    let rows = r.players.map((p,i)=>{
+      const bk  = hasBk  ? (r.bkPlayerNetTotals[i]||0) : 0;
+      const pin = hasPin ? (r.pinNetTotals[i]||0)       : 0;
+      const tot = bk + pin;
+      return `<tr>
+        <td style="${tdName}">${esc(p)}</td>
+        ${hasBk  ? `<td style="${tdMoney(bk)}">${fmtMoney(bk)}</td>`  : ''}
+        ${hasPin ? `<td style="${tdMoney(pin)}">${fmtMoney(pin)}</td>` : ''}
+        ${hasBoth? `<td style="${tdMoney(tot)};border-left:1px solid rgba(255,212,71,0.1);">${fmtMoney(tot)}</td>` : ''}
+      </tr>`;
+    }).join('');
+
+    // Settlement lines
+    const nets = r.players.map((_,i)=>(hasBk?r.bkPlayerNetTotals[i]||0:0)+(hasPin?r.pinNetTotals[i]||0:0));
+    const settle = buildSettlement(r.players, nets);
+
+    return `<div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,212,71,0.08);">
+      <table style="width:100%;border-collapse:collapse;">${headers}<tbody>${rows}</tbody></table>
+      <div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.05);">${settle}</div>
+    </div>`;
+  }
+
+  function gameLabel(r){
+    const base = {stableford:'Stableford',stroke:'Stroke Play',scramble:'Scramble',f1:'Grand Prix',banker:'Banker',matchplay:'Match Play',mixed:"Gambler's Gauntlet"};
+    let label = base[r.game] || r.game;
+    let extras = [];
+    if(r.bkPlayerNetTotals) extras.push('Banker');
+    if(r.pinNetTotals) extras.push('Pin');
+    if(extras.length) label += ' + ' + extras.join(' + ');
+    return label;
+  }
+
   let expanded = new Set();
 
   function render(){
@@ -924,12 +972,13 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
       let sc = buildScorecard(r);
       let isExp = expanded.has(r.id);
 
+      let hasSideBets = !!(r.bkPlayerNetTotals || r.pinNetTotals);
       let card = document.createElement('div');
       card.className = 'rcard' + (isExp?' expanded':'');
       card.innerHTML = `
         <div class="rcard-body">
           <div class="rcard-top">
-            <span class="rcard-game">${esc(GAME_LABELS[r.game]||r.game)}<span class="expand-chevron">▼</span></span>
+            <span class="rcard-game">${esc(gameLabel(r))}<span class="expand-chevron">▼</span></span>
             <span class="rcard-date">${esc(fmtDate(r.date))}</span>
           </div>
           <div class="rcard-mid">
@@ -938,8 +987,9 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
               ${sd.length ? `<div style="display:grid;grid-template-columns:1fr max-content;gap:4px 12px;align-items:center;margin-top:6px;width:100%;">${sd.map(p=>`<span style="font-size:13px;color:#a07840;font-weight:bold;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(p.name)}</span><span style="font-family:'Courier New',monospace;font-size:19px;font-weight:bold;color:${p.netColor||'#fff'};white-space:nowrap;text-align:right;">${p.num??'–'}${p.par?`<span style="font-size:12px;color:#ffd447;margin-left:5px;">(${p.par})</span>`:''}</span>`).join('')}</div>` : ''}
             </div>
           </div>
+          ${hasSideBets ? `<div style="font-size:10px;color:rgba(255,212,71,0.35);letter-spacing:.5px;padding:6px 0 2px;border-top:1px solid rgba(255,212,71,0.07);margin-top:4px;">Tap to view scorecard &amp; wagers</div>` : ''}
         </div>
-        <div class="rcard-expand">${sc?`<div class="rcard-expand-sc">${sc}</div>`:''}<div class="rcard-expand-footer"><button class="rcard-delete" data-id="${r.id}">Delete Round</button></div></div>`;
+        <div class="rcard-expand">${sc?`<div class="rcard-expand-sc">${sc}</div>`:''}${hasSideBets?`<div style="margin-top:4px;">${buildSideBetSummary(r)}</div>`:''}<div class="rcard-expand-footer"><button class="rcard-delete" data-id="${r.id}">Delete Round</button></div></div>`;
 
       card.addEventListener('click', e=>{
         if(e.target.closest('.rcard-delete')) return;
@@ -966,10 +1016,10 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 })();
 
 (function renderActiveRounds(){
-  const GAME_LABELS = {f1:'Grand Prix',stableford:'Stableford',banker:'Banker',scramble:'Scramble',practice:'Stroke Play',mixed:"Gambler's Gauntlet"};
-  const GAME_ICONS  = {f1:'🏎️',stableford:'🎯',banker:'🏦',scramble:'🤝',practice:'🏌️',mixed:'🎲'};
-  const GAME_URLS   = {stableford:'stableford.html',banker:'banker.html',scramble:'scramble.html',practice:'practice.html',mixed:'mixed.html'};
-  const KEYS = ['activeGame_stableford','activeGame_banker','activeGame_scramble','activeGame_practice','activeGame_mixed'];
+  const GAME_LABELS = {f1:'Grand Prix',stableford:'Stableford',banker:'Banker',scramble:'Scramble',practice:'Stroke Play',mixed:"Gambler's Gauntlet",round:'Round'};
+  const GAME_ICONS  = {f1:'🏎️',stableford:'🎯',banker:'🏦',scramble:'🤝',practice:'🏌️',mixed:'🎲',round:'⛳'};
+  const GAME_URLS   = {stableford:'start.html',banker:'start.html',scramble:'start.html',practice:'start.html',mixed:'mixed.html',round:'round.html'};
+  const KEYS = ['activeGame_round','activeGame_stableford','activeGame_banker','activeGame_scramble','activeGame_practice','activeGame_mixed'];
 
   function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
@@ -981,7 +1031,9 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
       try{
         let s = JSON.parse(raw);
         let type = key.replace('activeGame_','');
-        let label = GAME_LABELS[type]||type;
+        let label = type === 'round'
+          ? ({stableford:'Stableford',scramble:'Scramble',stroke:'Stroke Play'}[s.gameMode] || 'Round')
+          : (GAME_LABELS[type]||type);
         let icon  = GAME_ICONS[type]||'⛳';
         let url   = GAME_URLS[type]||'#';
         let course = esc(s.course||s.courseName||'Unknown Course');
@@ -1021,19 +1073,6 @@ if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js').catch(()=>{});
 }
 
-function showHomeTab(tab){
-  let isRounds = tab === 'rounds';
-  document.getElementById('homeTabRounds').style.display = isRounds ? '' : 'none';
-  document.getElementById('homeTabTourneys').style.display = isRounds ? 'none' : '';
-  let rb = document.getElementById('tabRoundsBtn');
-  let tb = document.getElementById('tabTourneysBtn');
-  rb.style.background = 'none';
-  rb.style.borderBottom = isRounds ? '2px solid #ffd447' : '2px solid transparent';
-  rb.style.color = isRounds ? '#ffd447' : '#a07840';
-  tb.style.background = 'none';
-  tb.style.borderBottom = isRounds ? '2px solid transparent' : '2px solid #ffd447';
-  tb.style.color = isRounds ? '#a07840' : '#ffd447';
-}
 
 /* ══════════════════════════════════
    COURSE DATA
@@ -1809,163 +1848,7 @@ function buildInsights(stats,name){
 
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-(function renderTournamentCards(){
-  try{
-    let seasons = JSON.parse(localStorage.getItem('seasons')||'[]');
-    let el = document.getElementById('activeSeasonsSection');
-    if(!seasons.length){ el.innerHTML=''; return; }
 
-    // Sort: active first, then complete; within each group most recent first
-    seasons = seasons.slice().sort((a,b)=>{
-      if(a.status===b.status) return (b.id||0)-(a.id||0);
-      return a.status==='active' ? -1 : 1;
-    });
-
-    function buildWinnerLine(s){
-      let isBracket = !!s.bracketMode;
-      if(isBracket){
-        let finalMatch = (s.matches||[]).find(m=>m.id==='final');
-        if(finalMatch?.result?.winnerName) return `<div style="font-size:12px;font-weight:bold;color:#ffd447;line-height:1.4;">${esc(finalMatch.result.winnerName)} 🏆</div>`;
-        let done = (s.matches||[]).filter(m=>m.result).length;
-        let total = (s.matches||[]).length;
-        if(done) return `<div style="font-size:11px;color:rgba(255,212,71,0.6);">${done}/${total} matches played</div>`;
-        return '';
-      }
-      // Standard: find leader
-      if(!s.rounds||!s.rounds.length) return '';
-      let totals = s.players.map((p,i)=>({name:p.name,pts:0}));
-      s.rounds.forEach(r=>{
-        (r.playerFinishes||[]).forEach(f=>{
-          if(f && totals[f.playerIdx]) totals[f.playerIdx].pts += f.points||0;
-        });
-      });
-      totals.sort((a,b)=>b.pts-a.pts);
-      if(!totals.length||!totals[0].pts) return '';
-      return `<div style="font-size:12px;font-weight:bold;color:#ffd447;line-height:1.4;">${esc(totals[0].name)} 🥇</div><div style="font-size:11px;color:rgba(255,212,71,0.6);font-family:'Courier New',monospace;">${totals[0].pts%1===0?totals[0].pts:totals[0].pts.toFixed(1)} pts</div>`;
-    }
-
-    function buildBracketDetail(s){
-      let matches = s.matches||[];
-      if(!matches.length) return '';
-      let finalMatch = matches.find(m=>m.id==='final');
-      let losersMatch = matches.find(m=>m.id==='losersF');
-      let positions = [];
-      if(finalMatch?.result){
-        // Extract scores from score string "TeamA X pts · TeamB Y pts"
-        let winScore = '', loseScore = '';
-        if(finalMatch.result.score){
-          let parts = finalMatch.result.score.split(' · ');
-          parts.forEach(p=>{ if(p.startsWith(finalMatch.result.winnerName+' ')) winScore=p.slice(finalMatch.result.winnerName.length+1); else if(p.startsWith(finalMatch.result.loserName+' ')) loseScore=p.slice(finalMatch.result.loserName.length+1); });
-        }
-        positions.push({medal:'🥇', name:finalMatch.result.winnerName, score:winScore});
-        positions.push({medal:'🥈', name:finalMatch.result.loserName, score:loseScore});
-      }
-      if(losersMatch?.result){
-        let winScore = '', loseScore = '';
-        if(losersMatch.result.score){
-          let parts = losersMatch.result.score.split(' · ');
-          parts.forEach(p=>{ if(p.startsWith(losersMatch.result.winnerName+' ')) winScore=p.slice(losersMatch.result.winnerName.length+1); else if(p.startsWith(losersMatch.result.loserName+' ')) loseScore=p.slice(losersMatch.result.loserName.length+1); });
-        }
-        positions.push({medal:'🥉', name:losersMatch.result.winnerName, score:winScore});
-        positions.push({medal:'4th', name:losersMatch.result.loserName, score:loseScore});
-      }
-      if(!positions.length){
-        let done = matches.filter(m=>m.result).length;
-        return `<div style="font-size:11px;color:rgba(255,255,255,0.3);padding:6px 0;">${done}/${matches.length} matches played</div>`;
-      }
-      let header = `<div style="font-size:9px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);padding:8px 0 4px;">Standings</div>`;
-      return header + positions.map((p,i)=>`
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px;">
-          <span style="color:${i===0?'#ffd447':'rgba(255,255,255,0.75)'};">
-            <span style="font-family:'Courier New',monospace;font-size:11px;color:rgba(255,212,71,0.4);margin-right:6px;">${i+1}</span>${esc(p.name)}</span>
-          ${p.score?`<span style="font-family:'Courier New',monospace;font-weight:bold;color:${i===0?'#ffd447':'rgba(255,255,255,0.5)'};">${esc(p.score)}</span>`:''}
-        </div>`).join('');
-    }
-
-    function buildStandingsDetail(s){
-      if(!s.rounds||!s.rounds.length) return '<div style="font-size:11px;color:rgba(255,255,255,0.3);padding:6px 0;">No rounds played yet</div>';
-      let totals = s.players.map((p,i)=>({name:p.name, pts:0}));
-      s.rounds.forEach(r=>{
-        (r.playerFinishes||[]).forEach(f=>{
-          if(f && totals[f.playerIdx]) totals[f.playerIdx].pts += f.points||0;
-        });
-      });
-      totals.sort((a,b)=>b.pts-a.pts);
-      return totals.map((p,i)=>`
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px;">
-          <span style="color:${i===0?'#ffd447':'rgba(255,255,255,0.75)'};">
-            <span style="font-family:'Courier New',monospace;font-size:11px;color:rgba(255,212,71,0.4);margin-right:6px;">${i+1}</span>${esc(p.name)}</span>
-          <span style="font-family:'Courier New',monospace;font-weight:bold;color:${i===0?'#ffd447':'rgba(255,255,255,0.6)'};">${p.pts%1===0?p.pts:p.pts.toFixed(1)} pts</span>
-        </div>`).join('');
-    }
-
-    let expanded = new Set();
-
-    function render(){
-      let html = '';
-      seasons.forEach(s=>{
-        let isBracket = !!s.bracketMode;
-        let isActive = s.status === 'active';
-        let statusDot = isActive
-          ? '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#2ecc71;margin-right:5px;"></span>'
-          : '';
-        let metaLine = isBracket
-          ? (() => { let done=(s.matches||[]).filter(m=>m.result).length, total=(s.matches||[]).length; return done===total&&total>0?`${total} matches complete`:`${done}/${total} matches played`; })()
-          : (s.seasonLength ? `${(s.rounds||[]).length}/${s.seasonLength} rounds` : `${(s.rounds||[]).length} round${(s.rounds||[]).length!==1?'s':''}`) + ` · ${s.players.length} players`;
-
-        let typeLabel = isBracket
-          ? (s.bracketType==='team'?'Team':'Solo')+' Bracket'
-          : 'Tournament';
-        let dateStr = s.createdAt ? new Date(s.createdAt).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}) : '';
-        let winnerLine = buildWinnerLine(s);
-
-        let isExp = expanded.has(s.id);
-        let detail = isExp ? (isBracket ? buildBracketDetail(s) : buildStandingsDetail(s)) : '';
-
-        html += `<div class="rcard${isExp?' expanded':''}" onclick="toggleTourneyCard(${s.id})">
-          <div class="rcard-body">
-            <div class="rcard-top">
-              <span class="rcard-game">🏆 ${esc(typeLabel)} · ${s.players.length} players</span>
-              <span class="rcard-date">${dateStr}</span>
-            </div>
-            <div class="rcard-mid">
-              <div class="rcard-info">
-                <div class="rcard-course">${statusDot}${esc(s.name)}</div>
-</div>
-              ${!isExp && winnerLine ? `<div style="text-align:right;flex-shrink:0;max-width:130px;margin-left:12px;">${winnerLine}</div>` : ''}
-            </div>
-          </div>
-          <div class="rcard-expand">
-            ${detail}
-            <div class="rcard-expand-footer">
-              <a href="tournaments.html?id=${s.id}" onclick="event.stopPropagation()" style="font-size:11px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:rgba(255,212,71,0.6);text-decoration:none;">Open Tournament ›</a>
-            </div>
-          </div>
-        </div>`;
-      });
-      el.innerHTML = html;
-
-      window.toggleTourneyCard = function(id){
-        if(expanded.has(id)) expanded.delete(id); else expanded.add(id);
-        render();
-      };
-    }
-
-    render();
-  }catch(e){}
-})();
-
-// Triple-click logo → Gambler's Gauntlet strategy
-let _logoClickCount = 0, _logoClickTimer = null;
-function handleLogoClick(){
-  _logoClickCount++;
-  clearTimeout(_logoClickTimer);
-  _logoClickTimer = setTimeout(()=>{ _logoClickCount = 0; }, 600);
-  if(_logoClickCount >= 3){
-    _logoClickCount = 0;
-    window.location.href = 'gauntlet-strategy.html';
-  }
-}
 
 </script>
 </body>

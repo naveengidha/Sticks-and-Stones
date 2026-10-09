@@ -147,13 +147,12 @@ table.wedge-table tr.wt-roll-row td{padding-top:0;padding-bottom:10px;}
 .mbtn-danger{background:transparent;color:#ff6464;border:1px solid rgba(255,77,77,0.35);border-radius:8px;padding:12px 16px;font-weight:700;font-size:13px;cursor:pointer;min-height:44px;}
 
 /* ── Pill nav ── */
-.bottom-nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:1000;pointer-events:none;}
-.nav-pill{display:flex;align-items:center;gap:2px;background:#0e1a12;border:1px solid rgba(255,212,71,0.28);border-radius:50px;padding:6px 10px;box-shadow:0 4px 24px rgba(0,0,0,0.6);pointer-events:all;}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 14px;border-radius:40px;cursor:pointer;text-decoration:none;color:#a07840;font-size:9px;font-weight:bold;letter-spacing:.5px;text-transform:uppercase;transition:color .15s,background .15s;-webkit-user-select:none;}
-.nav-item:hover,.nav-item:active{color:rgba(255,212,71,0.7);}
-.nav-item.active{color:#ffd447;}
-.nav-item svg{width:20px;height:20px;flex-shrink:0;}
-.nav-center{background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;margin:0 4px;cursor:pointer;box-shadow:0 2px 10px rgba(184,150,46,0.5);flex-shrink:0;text-decoration:none;}
+nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;padding:8px 16px max(env(safe-area-inset-bottom),12px);background:linear-gradient(to top,#080f0a 70%,transparent);z-index:100;pointer-events:none;}
+.nav-pill{display:flex;align-items:center;justify-content:space-between;background:rgba(14,26,18,0.97);border:1px solid rgba(255,212,71,0.18);border-radius:40px;padding:6px 16px;gap:4px;max-width:420px;width:100%;box-shadow:0 4px 24px rgba(0,0,0,0.5);pointer-events:all;}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;color:rgba(255,255,255,0.35);font-size:9px;font-weight:bold;letter-spacing:.8px;text-transform:uppercase;text-decoration:none;padding:4px 8px;border-radius:20px;transition:color .15s;font-family:'Georgia','Times New Roman',serif;}
+.nav-item svg{width:20px;height:20px;stroke:currentColor;}
+.nav-item.active,.nav-item:active{color:#ffd447;}
+.nav-center{background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;margin:0 4px;cursor:pointer;box-shadow:0 2px 10px rgba(139,94,60,0.5);flex-shrink:0;text-decoration:none;}
 .nav-center svg{width:36px;height:36px;}
 </style>
 </head>
@@ -318,6 +317,10 @@ table.wedge-table tr.wt-roll-row td{padding-top:0;padding-bottom:10px;}
           <div style="font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;">Carry Distance (yds)</div>
           <input id="custom-club-carry" type="number" inputmode="numeric" min="1" max="400" placeholder="e.g. 210" style="width:100%;padding:10px;border-radius:6px;border:1px solid rgba(184,150,46,0.3);border-bottom:2px solid rgba(184,150,46,0.5);color:white;font-size:15px;background:rgba(0,0,0,0.3);box-sizing:border-box;">
         </div>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:4px 0;">
+          <input id="custom-club-iswedge" type="checkbox" style="width:18px;height:18px;accent-color:#ffd447;cursor:pointer;">
+          <span style="font-size:13px;color:rgba(255,255,255,0.7);">Show on Wedge tab</span>
+        </label>
       </div>
       <div class="modal-actions" style="margin-top:16px;display:flex;flex-direction:column;gap:8px;">
         <button class="mbtn-primary" onclick="saveCustomClub()">Save Club</button>
@@ -338,12 +341,12 @@ table.wedge-table tr.wt-roll-row td{padding-top:0;padding-bottom:10px;}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
       Stats
     </a>
-    <a class="nav-center" href="games.html">
+    <a class="nav-center" href="start.html">
       <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" fill="#1a1a0a"/><circle cx="12" cy="12" r="6.2" fill="white"/><circle cx="10.2" cy="11.2" r="1" fill="#ccc"/><circle cx="12" cy="9.5" r="1" fill="#ccc"/><circle cx="13.8" cy="11.2" r="1" fill="#ccc"/></svg>
     </a>
-    <a class="nav-item" href="tournaments.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-      Tourneys
+    <a class="nav-item" href="dossier.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 9h2M15 13h2M5 17c0-2 1.5-3 4-3s4 1 4 3"/></svg>
+      Dossier
     </a>
     <a class="nav-item active" href="caddy.html">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><line x1="9" y1="2" x2="9" y2="6"/><line x1="15" y1="2" x2="15" y2="6"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
@@ -530,12 +533,19 @@ function renderCarryTable() {
 }
 const SWING_LABELS=['Full','¾','½'];
 function renderWedge() {
-  document.getElementById('wedge-body').innerHTML=WEDGE_CLUBS.map(id=>{
+  const customWedges = (state.customClubs||[]).filter(c=>c.isWedge);
+  const builtinRows = WEDGE_CLUBS.map(id=>{
     const base=state.carries[id]??SPEC[id], label=CLUBS.find(c=>c.id===id).label;
     const carries=SWING_MULT.map(s=>Math.round(base*s));
     return `<tr class="wt-carry-row"><td class="wt-name">${label}</td>${carries.map(c=>`<td class="wt-carry">${c}</td>`).join('')}</tr>`+
            `<tr class="wt-roll-row"><td class="wt-roll-label">roll</td>${carries.map(c=>`<td class="wt-roll">+${Math.round(c*0.08)}</td>`).join('')}</tr>`;
-  }).join('');
+  });
+  const customRows = customWedges.map(c=>{
+    const carries=SWING_MULT.map(s=>Math.round(c.carry*s));
+    return `<tr class="wt-carry-row"><td class="wt-name">${c.label}</td>${carries.map(v=>`<td class="wt-carry">${v}</td>`).join('')}</tr>`+
+           `<tr class="wt-roll-row"><td class="wt-roll-label">roll</td>${carries.map(v=>`<td class="wt-roll">+${Math.round(v*0.08)}</td>`).join('')}</tr>`;
+  });
+  document.getElementById('wedge-body').innerHTML=[...builtinRows,...customRows].join('');
 }
 function wedgeCarry(id,si){
   const base=state.carries[id]??SPEC[id];
@@ -573,6 +583,13 @@ function renderTarget(){
         const adj=Math.round((state.carries[id]??SPEC[id])*SWING_MULT[si]);
         const roll=Math.round(adj*0.08), total=adj+roll, diff=total-playsLike;
         candidates.push({label,swingLabel:SWING_LABELS[si],adj,roll,total,diff,absDiff:Math.abs(diff),id,si});
+      });
+    });
+    (state.customClubs||[]).filter(c=>c.isWedge).forEach(c=>{
+      SWING_MULT.forEach((_,si)=>{
+        const adj=Math.round(c.carry*SWING_MULT[si]);
+        const roll=Math.round(adj*0.08), total=adj+roll, diff=total-playsLike;
+        candidates.push({label:c.label,swingLabel:SWING_LABELS[si],adj,roll,total,diff,absDiff:Math.abs(diff),id:c.label,si});
       });
     });
     const over=candidates.filter(c=>c.diff>=0);
@@ -700,6 +717,7 @@ function openAddClubModal(){
   document.getElementById('custom-club-title').textContent = 'Add Club';
   document.getElementById('custom-club-name').value = '';
   document.getElementById('custom-club-carry').value = '';
+  document.getElementById('custom-club-iswedge').checked = false;
   document.getElementById('custom-club-delete-btn').style.display = 'none';
   customScrim.style.display = 'flex';
 }
@@ -711,6 +729,7 @@ function openEditCustomClub(idx){
   document.getElementById('custom-club-title').textContent = 'Edit Club';
   document.getElementById('custom-club-name').value = c.label;
   document.getElementById('custom-club-carry').value = c.carry;
+  document.getElementById('custom-club-iswedge').checked = !!c.isWedge;
   document.getElementById('custom-club-delete-btn').style.display = '';
   customScrim.style.display = 'flex';
 }
@@ -718,19 +737,20 @@ function openEditCustomClub(idx){
 function saveCustomClub(){
   const label = document.getElementById('custom-club-name').value.trim();
   const carry = parseInt(document.getElementById('custom-club-carry').value);
+  const isWedge = document.getElementById('custom-club-iswedge').checked;
   if(!label || isNaN(carry) || carry < 1) return;
   if(editingCustomIdx !== null){
-    state.customClubs[editingCustomIdx] = {label, carry};
+    state.customClubs[editingCustomIdx] = {label, carry, isWedge};
   } else {
-    state.customClubs.push({label, carry});
+    state.customClubs.push({label, carry, isWedge});
   }
-  saveState(); renderCarryTable(); renderTarget(); closeCustomClubModal();
+  saveState(); renderCarryTable(); renderWedge(); renderTarget(); closeCustomClubModal();
 }
 
 function deleteCustomClub(){
   if(editingCustomIdx === null) return;
   state.customClubs.splice(editingCustomIdx, 1);
-  saveState(); renderCarryTable(); renderTarget(); closeCustomClubModal();
+  saveState(); renderCarryTable(); renderWedge(); renderTarget(); closeCustomClubModal();
 }
 
 function closeCustomClubModal(){ customScrim.style.display = 'none'; editingCustomIdx = null; }

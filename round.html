@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#080f0a">
+<title>Round</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;color:#fff;display:flex;flex-direction:column;min-height:100dvh;overscroll-behavior:none;}
+button{font-family:inherit;cursor:pointer;}
+.hidden{display:none!important;}
+
+/* ── Layout ── */
+.scroll-area{flex:1;overflow-y:auto;padding:12px 14px 110px;display:flex;justify-content:center;align-items:stretch;}
+.container{width:100%;max-width:480px;display:flex;flex-direction:column;}
+
+/* ── Cards ── */
+.game-card{
+  background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),
+    repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;
+  border:1px solid rgba(255,212,71,0.2);border-radius:10px;padding:14px 16px;margin-bottom:8px;
+}
+.game-card-label{font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:#ffd447;margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(255,212,71,0.1);text-align:center;}
+
+/* ── Hole header card ── */
+.hole-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.hole-label{font-size:22px;font-weight:bold;color:#ffd447;font-family:'Georgia','Times New Roman',serif;letter-spacing:1px;}
+.hole-sub{font-size:11px;color:rgba(255,255,255,0.35);letter-spacing:.5px;}
+.hole-right{display:flex;align-items:center;gap:8px;}
+.par-cluster{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.par-cluster-lbl{font-size:7px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);}
+.par-dots{display:flex;gap:4px;}
+.par-dot{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:rgba(255,212,71,0.1);border:1px solid rgba(255,212,71,0.2);color:rgba(255,212,71,0.45);font-size:11px;font-weight:bold;cursor:pointer;transition:all .12s;}
+.par-dot.active{background:#ffd447;color:#0e1a12;border-color:#ffd447;}
+.yards-cluster{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.yards-lbl{font-size:7px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);}
+.dist-input{width:56px;padding:5px 4px;border-radius:6px;border:1px solid rgba(255,212,71,0.15);border-bottom:2px solid rgba(255,212,71,0.3);background:rgba(0,0,0,0.25);color:rgba(255,255,255,0.7);font-size:13px;text-align:center;font-family:'Courier New',monospace;}
+.dist-input:focus{outline:none;border-color:rgba(255,212,71,0.6);}
+.end-btn{padding:5px 10px;font-size:10px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;border-radius:6px;border:1px solid rgba(255,212,71,0.2);background:transparent;color:rgba(255,212,71,0.45);}
+.end-btn:active{background:rgba(255,212,71,0.06);color:#ffd447;}
+.hole-progress-track{height:2px;background:rgba(255,212,71,0.1);border-radius:2px;overflow:hidden;}
+.hole-progress-fill{height:100%;background:linear-gradient(90deg,#5c3317,#ffd447);border-radius:2px;transition:width .4s ease;}
+
+/* ── Per-hole module toggles ── */
+.module-row{display:flex;gap:6px;margin-top:10px;}
+.mod-btn{flex:1;padding:7px 4px;border-radius:8px;border:1px solid rgba(255,212,71,0.18);background:rgba(0,0,0,0.3);color:rgba(255,255,255,0.35);font-size:10px;font-weight:bold;letter-spacing:.8px;text-transform:uppercase;cursor:pointer;transition:all .12s;font-family:'Georgia','Times New Roman',serif;}
+.mod-btn:active{transform:scale(0.96);}
+.mod-btn.active{background:rgba(255,212,71,0.1);border-color:rgba(255,212,71,0.55);color:#ffd447;}
+
+/* ── Standings table ── */
+.sb-grid{width:100%;border-collapse:collapse;table-layout:fixed;}
+.sb-grid th{font-size:9px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.5);padding:0 4px 8px;text-align:center;vertical-align:middle;width:60px;border:none;}
+.sb-grid thead th{background:none;}
+.sb-grid td{padding:6px 4px;font-family:'Courier New',monospace;font-size:13px;font-weight:bold;text-align:center;color:#ffd447;width:60px;border:none;}
+.sb-grid td:first-child{font-family:'Georgia','Times New Roman',serif;font-size:13px;color:#a07840;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:0;width:auto;}
+.sb-grid td.neg{color:#c0404a;}
+.sb-grid td.pos{color:#2d9e6b;}
+.sb-grid td.dash{color:rgba(255,255,255,0.15);font-weight:normal;}
+
+/* ── Score input rows (Stroke / Stableford default) ── */
+.score-rows{margin-bottom:4px;}
+.score-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.score-row:last-child{border-bottom:none;}
+.score-name{font-size:14px;font-weight:bold;color:#a07840;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.stepper{display:flex;align-items:center;margin-left:auto;}
+.step-btn{background:rgba(255,212,71,0.1);border:1px solid rgba(255,212,71,0.25);color:#ffd447;font-size:18px;font-weight:bold;width:36px;height:36px;border-radius:6px;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;}
+.step-btn:active{background:rgba(255,212,71,0.25);}
+.step-val{font-family:'Courier New',monospace;font-size:20px;font-weight:bold;color:#fff;min-width:36px;text-align:center;}
+
+/* ── Scramble score inputs ── */
+/* ── Scramble team score rows ── */
+.scr-score-block{display:flex;flex-direction:column;gap:0;margin-bottom:4px;}
+.scr-team-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.scr-team-row:last-child{border-bottom:none;}
+.scr-team-info{flex:1;display:flex;flex-direction:column;gap:1px;min-width:0;}
+.scr-team-lbl{font-size:11px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.7);}
+.scr-team-row.b .scr-team-lbl{color:rgba(192,57,43,0.85);}
+.scr-team-names{font-size:10px;color:rgba(255,255,255,0.3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.scr-vspar{font-family:'Courier New',monospace;font-size:11px;font-weight:bold;min-width:28px;text-align:right;flex-shrink:0;}
+.vspar-under{color:#2ecc71;} .vspar-over{color:#ff6b6b;} .vspar-even{color:rgba(255,255,255,0.35);}
+
+/* ── Banker module ── */
+.banker-module{border-top:1px solid rgba(255,212,71,0.1);margin-top:10px;padding-top:10px;}
+.banker-mod-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.banker-mod-label{font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.5);}
+.banker-holding{font-size:11px;color:#ffd447;font-family:'Courier New',monospace;}
+.banker-wager-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px;}
+.wager-chip-label{font-size:8px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);}
+.wager-stepper{display:flex;align-items:center;background:rgba(0,0,0,0.55);border:1px solid rgba(255,212,71,0.45);border-radius:6px;overflow:hidden;}
+.wager-step-btn{width:26px;height:32px;background:rgba(255,212,71,0.07);border:none;border-radius:0;color:rgba(255,212,71,0.7);font-size:16px;font-weight:bold;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex-shrink:0;}
+.wager-step-btn:active{background:rgba(255,212,71,0.2);color:#ffd447;}
+.wager-step-btn.left{border-right:1px solid rgba(255,212,71,0.2);}
+.wager-step-btn.right{border-left:1px solid rgba(255,212,71,0.2);}
+.wager-val-display{min-width:36px;text-align:center;font-family:'Courier New',monospace;font-size:14px;font-weight:bold;color:#ffd447;line-height:32px;padding:0 4px;}
+/* Banker — row-based layout */
+.banker-players-grid{display:flex;flex-direction:column;gap:5px;}
+.bk-player{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,212,71,0.1);border-radius:8px;padding:8px 10px;}
+.bk-player.is-banker{border-color:rgba(255,212,71,0.45);background:rgba(255,212,71,0.04);}
+.bk-player-info{display:flex;flex-direction:column;gap:2px;min-width:0;}
+.bk-player-name{font-size:13px;font-weight:bold;color:rgba(255,255,255,0.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bk-player.is-banker .bk-player-name{color:#ffd447;}
+.bk-meta{display:flex;align-items:center;gap:6px;}
+.bk-net{font-size:11px;font-weight:bold;font-family:'Courier New',monospace;}
+.bk-net.pos{color:#ffd447;} .bk-net.neg{color:#ff6b6b;} .bk-net.zero{color:rgba(255,255,255,0.2);}
+.bk-carry{font-size:10px;font-family:'Courier New',monospace;color:rgba(255,212,71,0.6);}
+.banker-role-badge{font-size:7px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;padding:1px 6px;border-radius:10px;background:rgba(255,212,71,0.2);color:#ffd447;border:1px solid rgba(255,212,71,0.3);}
+.bk-stepper{display:flex;align-items:center;gap:0;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.12);border-radius:7px;overflow:hidden;}
+.bk-stepper button{width:34px;height:34px;padding:0;border:none;font-size:18px;font-weight:bold;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.6);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.bk-stepper button:active{background:rgba(255,255,255,0.15);color:#fff;}
+.bk-stepper button.left{border-right:1px solid rgba(255,255,255,0.1);}
+.bk-stepper button.right{border-left:1px solid rgba(255,255,255,0.1);}
+.bk-stepper span{font-size:16px;font-weight:bold;font-family:'Courier New',monospace;min-width:32px;text-align:center;color:#fff;}
+.double-label{display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.double-label input{display:none;}
+.double-pill{font-size:9px;font-weight:bold;letter-spacing:.8px;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.4);user-select:none;white-space:nowrap;}
+.double-label input:checked + .double-pill{background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);border-color:#ffd447;color:#1a1a0a;}
+
+/* ── Closest to Pin module ── */
+.pin-module{border-top:1px solid rgba(255,212,71,0.1);margin-top:10px;padding-top:10px;}
+.pin-mod-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.pin-mod-label{font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.5);}
+.pin-wager-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;}
+.pin-players{display:flex;flex-direction:column;gap:4px;}
+.pin-player-row{display:flex;align-items:center;padding:7px 10px;border-radius:7px;border:1px solid rgba(255,255,255,0.07);background:rgba(0,0,0,0.2);cursor:pointer;transition:all .12s;}
+.pin-player-row.selected{border-color:rgba(255,212,71,0.55);background:rgba(255,212,71,0.07);}
+.pin-player-name{flex:1;font-size:14px;font-weight:bold;color:rgba(255,255,255,0.6);font-family:'Courier New',monospace;}
+.pin-player-row.selected .pin-player-name{color:#ffd447;}
+.pin-check{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,212,71,0.3);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .12s;}
+.pin-player-row.selected .pin-check{background:#ffd447;border-color:#ffd447;}
+.pin-check-mark{font-size:10px;color:#0e1a12;display:none;}
+.pin-player-row.selected .pin-check-mark{display:block;}
+
+/* ── Buttons ── */
+.action-primary{width:100%;padding:11px;border:none;border-radius:6px;font-size:14px;font-weight:bold;background:linear-gradient(135deg,#5c3317,#ffd447,#5c3317);color:#0a0a00;cursor:pointer;box-shadow:0 2px 16px rgba(139,94,60,0.5);letter-spacing:2px;text-transform:uppercase;font-family:'Georgia','Times New Roman',serif;}
+.action-primary:active{opacity:.85;}
+.action-secondary{background:transparent;border:1px solid rgba(255,212,71,0.3);color:rgba(255,212,71,0.7);font-size:14px;padding:10px;border-radius:6px;width:100%;cursor:pointer;letter-spacing:.5px;}
+.action-secondary:active{background:rgba(255,212,71,0.06);color:#ffd447;}
+
+/* ── Final / Summary screen ── */
+.final-wrap{
+  background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),
+    repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;
+  border-radius:20px;border:3px solid #5c3317;
+  box-shadow:0 8px 32px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,212,71,0.08);
+  padding:28px 16px 32px;position:relative;overflow:hidden;
+}
+.final-wrap::before{content:'♠';position:absolute;font-size:320px;color:rgba(255,212,71,0.025);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;line-height:1;}
+.final-wrap h2{text-align:center;color:#ffd447;font-size:20px;margin-bottom:6px;letter-spacing:2px;text-transform:uppercase;font-family:'Georgia','Times New Roman',serif;position:relative;}
+.final-sub{text-align:center;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.4);margin-bottom:20px;border-bottom:1px solid rgba(255,212,71,0.15);padding-bottom:16px;position:relative;}
+.final-standings{margin-bottom:16px;}
+.final-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;margin-bottom:6px;border-radius:6px;background:rgba(0,0,0,0.3);font-size:15px;border:1px solid rgba(139,94,60,0.15);}
+.final-row.winner{border-color:rgba(255,212,71,0.5);background:rgba(255,212,71,0.06);}
+.final-name{font-weight:bold;letter-spacing:.5px;}
+.final-pts{font-family:'Courier New',monospace;font-size:18px;font-weight:bold;color:#ffd447;}
+.settle-row{display:flex;align-items:center;gap:8px;padding:9px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,212,71,0.1);border-radius:8px;margin-bottom:6px;font-size:14px;}
+.settle-from{color:#c0404a;font-weight:bold;}
+.settle-arrow{color:rgba(255,212,71,0.3);flex-shrink:0;}
+.settle-to{color:#2d9e6b;font-weight:bold;}
+.settle-amt{font-family:'Courier New',monospace;font-size:15px;font-weight:bold;color:#ffd447;margin-left:auto;}
+.settle-square{text-align:center;color:rgba(255,255,255,0.25);font-size:13px;padding:8px 0;}
+
+table{width:100%;border-collapse:collapse;margin-top:6px;}
+th,td{border:1px solid rgba(255,212,71,0.1);padding:5px 4px;text-align:center;font-size:12px;}
+thead th{background:rgba(0,0,0,0.5);color:rgba(255,212,71,0.7);letter-spacing:1px;text-transform:uppercase;font-size:10px;}
+td{font-family:'Courier New',monospace;color:rgba(255,255,255,0.75);}
+td.sc-pos{color:#5ee87b;font-weight:bold;}
+td.sc-neg{color:#ff7b7b;font-weight:bold;}
+
+/* ── Banker toast ── */
+.banker-toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#5c3317,#ffd447,#5c3317);color:#0a0a00;font-size:13px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;padding:10px 22px;border-radius:24px;box-shadow:0 4px 20px rgba(255,212,71,0.4);font-family:'Georgia','Times New Roman',serif;opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:200;white-space:nowrap;}
+.banker-toast.show{opacity:1;}
+
+/* ── Modal ── */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;justify-content:center;align-items:center;z-index:1000;}
+.modal-content{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:2px solid #5c3317;width:92%;max-width:620px;max-height:88vh;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 8px 32px rgba(0,0,0,0.8);}
+.modal-header{background:rgba(0,0,0,0.5);border-bottom:1px solid rgba(255,212,71,0.2);display:flex;justify-content:space-between;align-items:center;padding:12px 16px;font-weight:bold;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#ffd447;font-family:'Georgia','Times New Roman',serif;}
+.modal-body{overflow-y:auto;padding:12px;}
+.close-btn{background:none;border:1px solid rgba(255,212,71,0.2);color:rgba(255,212,71,0.6);font-size:18px;cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0;}
+.close-btn:active{background:rgba(255,212,71,0.1);color:#ffd447;}
+
+nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;padding:8px 16px max(env(safe-area-inset-bottom),12px);background:linear-gradient(to top,#080f0a 70%,transparent);z-index:100;pointer-events:none;}
+.nav-pill{display:flex;align-items:center;justify-content:space-between;background:rgba(14,26,18,0.97);border:1px solid rgba(255,212,71,0.18);border-radius:40px;padding:6px 16px;gap:4px;max-width:420px;width:100%;box-shadow:0 4px 24px rgba(0,0,0,0.5);pointer-events:all;}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;color:rgba(255,255,255,0.35);font-size:9px;font-weight:bold;letter-spacing:.8px;text-transform:uppercase;text-decoration:none;padding:4px 8px;border-radius:20px;transition:color .15s;font-family:'Georgia','Times New Roman',serif;}
+.nav-item svg{width:20px;height:20px;stroke:currentColor;}
+.nav-item.active,.nav-item:active{color:#ffd447;}
+.nav-center{background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;margin:0 4px;cursor:pointer;box-shadow:0 2px 10px rgba(139,94,60,0.5);flex-shrink:0;text-decoration:none;}
+.nav-center svg{width:36px;height:36px;}
+</style>
+</head>
+<body>
+
+<div class="scroll-area">
+<div class="container">
+
+  <!-- ══ GAME SCREEN ══ -->
+  <div id="gameScreen">
+
+    <!-- Hole header card -->
+    <div class="game-card" id="holeHeaderCard">
+      <div class="hole-top">
+        <div>
+          <div class="hole-label" id="holeLabel">Hole 1</div>
+          <div class="hole-sub" id="holeSub"></div>
+        </div>
+        <div class="hole-right">
+          <div class="par-cluster">
+            <div class="par-cluster-lbl">Par</div>
+            <div class="par-dots" id="parDots"></div>
+          </div>
+          <div class="yards-cluster">
+            <div class="yards-lbl">Yards</div>
+            <input type="number" class="dist-input" id="yardsInput" min="0" max="700" placeholder="Yds" inputmode="numeric" oninput="holeYards=parseInt(this.value)||0">
+          </div>
+          <button class="end-btn" onclick="confirmEnd()">End</button>
+        </div>
+      </div>
+      <div class="hole-progress-track">
+        <div class="hole-progress-fill" id="holeProgressFill" style="width:0%"></div>
+      </div>
+      <!-- Per-hole module toggles -->
+      <div class="module-row" id="moduleRow">
+        <button class="mod-btn" id="modBanker" onclick="toggleModule('banker')">Banker</button>
+        <button class="mod-btn" id="modPin" onclick="toggleModule('pin')">Pin</button>
+      </div>
+    </div>
+
+    <!-- Standings card -->
+    <div class="game-card" id="standingsCard">
+      <div class="game-card-label" id="standingsLabel">Standings</div>
+      <div id="standingsList"></div>
+    </div>
+
+    <!-- Score input card -->
+    <div class="game-card" id="scoreCard">
+      <div class="game-card-label" id="scoreCardLabel">Scores</div>
+      <div id="scoreInputArea"></div>
+      <!-- Banker module (shown when active) -->
+      <div class="banker-module hidden" id="bankerModule">
+        <div class="banker-mod-header">
+          <span class="banker-mod-label">Banker</span>
+          <span class="banker-holding" id="bankerHolding"></span>
+        </div>
+        <div class="banker-wager-row">
+          <div>
+            <div class="wager-chip-label" style="text-align:center;margin-bottom:3px;">Base Wager</div>
+            <div class="wager-stepper">
+              <button class="wager-step-btn left" onclick="stepBankerWager(-1)">−</button>
+              <div class="wager-val-display" id="bankerWagerDisplay">$1</div>
+              <button class="wager-step-btn right" onclick="stepBankerWager(1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="banker-players-grid" id="bankerPlayersGrid"></div>
+      </div>
+      <!-- Closest to Pin module (shown when active) -->
+      <div class="pin-module hidden" id="pinModule">
+        <div class="pin-mod-header">
+          <span class="pin-mod-label">Closest to Pin</span>
+        </div>
+        <div class="pin-wager-row">
+          <div>
+            <div class="wager-chip-label" style="text-align:center;margin-bottom:3px;">Pot</div>
+            <div class="wager-stepper">
+              <button class="wager-step-btn left" onclick="stepPinWager(-1)">−</button>
+              <div class="wager-val-display" id="pinWagerDisplay">$1</div>
+              <button class="wager-step-btn right" onclick="stepPinWager(1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="pin-players" id="pinPlayersList"></div>
+      </div>
+    </div>
+
+    <div id="holeError" style="display:none;color:#ff6b6b;font-size:13px;text-align:center;margin-bottom:6px;"></div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;">
+      <button class="action-secondary" id="backBtn" onclick="prevHole()" style="flex:1;margin:0;opacity:0.35;pointer-events:none;">Back</button>
+      <button class="action-primary" onclick="nextHole()" style="flex:1;margin:0;">Next Hole →</button>
+    </div>
+    <button class="action-secondary" onclick="openScorecard()" style="margin-bottom:8px;">View Scorecard</button>
+
+    <!-- Scorecard modal -->
+    <div id="scorecardModal" class="modal hidden" onclick="if(event.target===this)closeScorecard()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span>Scorecard</span>
+          <button class="close-btn" onclick="closeScorecard()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div style="overflow-x:auto;"><table id="scorecardTable"></table></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ FINAL SCREEN ══ -->
+  <div id="finalScreen" class="hidden">
+    <div class="final-wrap">
+      <h2>Final Results</h2>
+      <div class="final-sub" id="finalSub">Round Complete</div>
+      <div id="finalContent"></div>
+      <div style="margin-top:20px;">
+        <button class="action-primary" onclick="window.location.href='start.html'">Done</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<div id="bankerToast" class="banker-toast"></div>
+
+<nav class="bottom-nav">
+  <div class="nav-pill">
+    <a class="nav-item" href="index.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/><line x1="4" y1="14" x2="20" y2="14" stroke-width="1.5" stroke-dasharray="2 2"/></svg>
+      Rounds
+    </a>
+    <a class="nav-item" href="history.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
+      Stats
+    </a>
+    <a class="nav-center" href="start.html">
+      <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" fill="#1a1a0a"/><circle cx="12" cy="12" r="6.2" fill="white"/><circle cx="10.2" cy="11.2" r="1" fill="#ccc"/><circle cx="12" cy="9.5" r="1" fill="#ccc"/><circle cx="13.8" cy="11.2" r="1" fill="#ccc"/></svg>
+    </a>
+    <a class="nav-item" href="dossier.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 9h2M15 13h2M5 17c0-2 1.5-3 4-3s4 1 4 3"/></svg>
+      Dossier
+    </a>
+    <a class="nav-item" href="caddy.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><line x1="9" y1="2" x2="9" y2="6"/><line x1="15" y1="2" x2="15" y2="6"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
+      Caddy
+    </a>
+  </div>
+</nav>
+
+<script>
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+// ── State ──────────────────────────────────────────────────────────────────────────────
+
+let gameMode = 'stroke';    // 'stroke' | 'stableford' | 'scramble'
+let playerNames = [];
+let scrTeams = { a: [], b: [] };
+let hole = 1;
+let totalHoles = 18;
+let courseName = '';
+let roundDateStr = '';
+let currentPar = 4;
+let holeYards = 0;
+
+// Per-hole score state
+let holeScores = [];        // [player] = current score (vs par, absolute strokes for stroke)
+
+// History arrays
+let scoreHistory = [];      // [hole][player] = raw score
+let pointHistory = [];      // [hole][player] = stableford points (stableford only)
+let playerTotals = [];      // cumulative totals per player
+let holeParDist = [];       // [{par, yards}]
+
+// Scramble per-hole
+let scrScores = {a: null, b: null};  // current hole scores
+let scrHistory = [];                  // [{par, yards, scoreA, scoreB}]
+let scrTotals = {a: 0, b: 0};
+
+// Active modules this hole
+let bankerActive = false;
+let pinActive = false;
+
+// Banker state
+let bankerIdx = 0;
+let bkMinWager = 1;
+let bkMaxWager = 5;
+let bkBaseWager = 1;
+let bkCarryovers = [];      // [player] carry amount
+let bkPlayerNetTotals = []; // [player] net money
+let bkHistory = [];         // [{holeNum, bankerIdx, scores, matchups, carryovers, nextBankerIdx}]
+let bkScores = [];          // [player] score this hole (relative to par, like +1/-1)
+
+// Pin state
+let pinWager = 1;
+let pinWinner = null;       // index of selected winner
+let pinHistory = [];        // [{holeNum, winner, wager}]
+let pinNetTotals = [];      // [player] net money from pin
+
+// Undo snapshot
+let lastSnapshot = null;
+
+// ── Initialization ─────────────────────────────────────────────────────────────────────
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (!restoreActiveState()) {
+    loadFromPendingSetup();
+  }
+});
+
+function loadFromPendingSetup() {
+  let setup = null;
+  try { setup = JSON.parse(localStorage.getItem('pendingSetup') || 'null'); } catch(e) {}
+  if (!setup || !setup.players || !setup.game) {
+    window.location.href = 'start.html';
+    return;
+  }
+  localStorage.removeItem('pendingSetup');
+
+  gameMode = setup.game;
+  playerNames = setup.players;
+  courseName = setup.course || '';
+  roundDateStr = setup.date || new Date().toLocaleDateString('en-CA');
+  totalHoles = setup.totalHoles || 18;
+  scrTeams = setup.scrTeams || { a: playerNames.slice(0,2), b: playerNames.slice(2) };
+
+  initGameState();
+  if (setup.pinWager) { pinWager = setup.pinWager; const el=document.getElementById('pinWagerDisplay'); if(el) el.textContent='$'+pinWager; }
+  renderHoleHeader();
+  renderScoreInputArea();
+  renderStandings();
+  renderBankerPlayersGrid();
+  renderPinPlayersList();
+  saveActiveState();
+}
+
+function initGameState() {
+  hole = 1;
+  currentPar = 4;
+  holeYards = 0;
+  holeScores = new Array(playerNames.length).fill(null);
+  bkScores = new Array(playerNames.length).fill(0);
+  playerTotals = new Array(playerNames.length).fill(0);
+  scoreHistory = []; pointHistory = []; holeParDist = [];
+  scrHistory = []; scrTotals = {a:0,b:0}; scrScores = {a:null,b:null};
+  bkBaseWager = 1; bkCarryovers = new Array(playerNames.length).fill(0);
+  bkPlayerNetTotals = new Array(playerNames.length).fill(0); bkHistory = [];
+  pinWager = 1; pinHistory = []; pinNetTotals = new Array(playerNames.length).fill(0);
+  bankerActive = false; pinActive = false;
+  document.getElementById('modBanker').classList.remove('active');
+  document.getElementById('modPin').classList.remove('active');
+  document.getElementById('bankerModule').classList.add('hidden');
+  document.getElementById('pinModule').classList.add('hidden');
+}
+
+function restoreActiveState() {
+  let s = null;
+  try { s = JSON.parse(localStorage.getItem('activeGame_round') || 'null'); } catch(e) {}
+  if (!s || !s.playerNames || !s.hole) return false;
+
+  gameMode = s.gameMode || 'stroke';
+  playerNames = s.playerNames;
+  scrTeams = s.scrTeams || { a: [], b: [] };
+  hole = s.hole; totalHoles = s.totalHoles;
+  courseName = s.courseName || ''; roundDateStr = s.roundDateStr || '';
+  currentPar = s.currentPar || 4; holeYards = s.holeYards || 0;
+  playerTotals = s.playerTotals || new Array(playerNames.length).fill(0);
+  scoreHistory = s.scoreHistory || []; pointHistory = s.pointHistory || [];
+  holeParDist = s.holeParDist || [];
+  scrHistory = s.scrHistory || []; scrTotals = s.scrTotals || {a:0,b:0};
+  bankerActive = s.bankerActive || false; pinActive = s.pinActive || false;
+  bankerIdx = s.bankerIdx || 0; bkBaseWager = s.bkBaseWager || 1;
+  bkMinWager = s.bkMinWager || 1; bkMaxWager = s.bkMaxWager || 5;
+  bkCarryovers = s.bkCarryovers || new Array(playerNames.length).fill(0);
+  bkPlayerNetTotals = s.bkPlayerNetTotals || new Array(playerNames.length).fill(0);
+  bkHistory = s.bkHistory || [];
+  pinWager = s.pinWager || 1; pinHistory = s.pinHistory || [];
+  pinNetTotals = s.pinNetTotals || new Array(playerNames.length).fill(0);
+
+  renderHoleHeader();
+  renderScoreInputArea();
+  renderStandings();
+  renderBankerPlayersGrid();
+  renderPinPlayersList();
+  syncModuleToggleButtons();
+  return true;
+}
+
+function saveActiveState() {
+  let existing = {};
+  try { existing = JSON.parse(localStorage.getItem('activeGame_round') || '{}'); } catch(e) {}
+  localStorage.setItem('activeGame_round', JSON.stringify({
+    gameMode, playerNames, scrTeams, hole, totalHoles, courseName, roundDateStr,
+    currentPar, holeYards, playerTotals, scoreHistory, pointHistory, holeParDist,
+    scrHistory, scrTotals, bankerActive, pinActive,
+    bankerIdx, bkBaseWager, bkMinWager, bkMaxWager, bkCarryovers, bkPlayerNetTotals, bkHistory,
+    pinWager, pinHistory, pinNetTotals,
+    startedAt: existing.startedAt || new Date().toISOString()
+  }));
+}
+
+// ── Hole Header ────────────────────────────────────────────────────────────────────────
+
+function renderHoleHeader() {
+  document.getElementById('holeLabel').textContent = 'Hole ' + hole;
+  const sub = (courseName ? courseName + ' · ' : '') + hole + ' / ' + totalHoles;
+  document.getElementById('holeSub').textContent = sub;
+  document.getElementById('holeProgressFill').style.width = (hole / totalHoles * 100).toFixed(1) + '%';
+  renderParDots();
+  const yEl = document.getElementById('yardsInput');
+  yEl.value = holeYards > 0 ? holeYards : '';
+  // Back button
+  const bb = document.getElementById('backBtn');
+  const hasPrev = (gameMode === 'scramble' ? scrHistory.length : scoreHistory.length) > 0;
+  bb.style.opacity = hasPrev ? '1' : '0.35';
+  bb.style.pointerEvents = hasPrev ? '' : 'none';
+}
+
+function renderParDots() {
+  const container = document.getElementById('parDots');
+  container.innerHTML = [3,4,5].map(p => {
+    const active = currentPar === p;
+    return `<span class="par-dot${active?' active':''}" onclick="setPar(${p})">${p}</span>`;
+  }).join('');
+}
+
+function setPar(p) {
+  currentPar = p;
+  renderParDots();
+}
+
+// ── Per-hole module toggles ────────────────────────────────────────────────────────────
+
+function toggleModule(mod) {
+  if (mod === 'banker') {
+    bankerActive = !bankerActive;
+    document.getElementById('modBanker').classList.toggle('active', bankerActive);
+    document.getElementById('bankerModule').classList.toggle('hidden', !bankerActive);
+    if (bankerActive) renderBankerPlayersGrid();
+  } else if (mod === 'pin') {
+    pinActive = !pinActive;
+    document.getElementById('modPin').classList.toggle('active', pinActive);
+    document.getElementById('pinModule').classList.toggle('hidden', !pinActive);
+    if (pinActive) renderPinPlayersList();
+  }
+}
+
+function syncModuleToggleButtons() {
+  document.getElementById('modBanker').classList.toggle('active', bankerActive);
+  document.getElementById('modPin').classList.toggle('active', pinActive);
+  document.getElementById('bankerModule').classList.toggle('hidden', !bankerActive);
+  document.getElementById('pinModule').classList.toggle('hidden', !pinActive);
+}
+
+// ── Score Input Rendering ──────────────────────────────────────────────────────────────
+
+function renderScoreInputArea() {
+  const area = document.getElementById('scoreInputArea');
+  holeScores = new Array(playerNames.length).fill(null);
+  bkScores = new Array(playerNames.length).fill(0);
+  pinWinner = null;
+
+  if (gameMode === 'scramble') {
+    scrScores = {a: null, b: null};
+    document.getElementById('scoreCardLabel').textContent = 'Team Scores';
+    const teamANames = scrTeams.a.join(', ') || 'Gold Team';
+    const teamBNames = scrTeams.b.join(', ') || 'Crimson Team';
+    area.innerHTML = `
+      <div class="scr-score-block">
+        <div class="scr-team-row">
+          <div class="scr-team-info">
+            <div class="scr-team-lbl">Gold</div>
+            <div class="scr-team-names">${esc(teamANames)}</div>
+          </div>
+          <div class="stepper">
+            <button type="button" class="step-btn" onclick="stepScrScore('a',-1)">−</button>
+            <div class="step-val" id="scrScoreA">E</div>
+            <button type="button" class="step-btn" onclick="stepScrScore('a',1)">+</button>
+          </div>
+        </div>
+        <div class="scr-team-row b">
+          <div class="scr-team-info">
+            <div class="scr-team-lbl">Crimson</div>
+            <div class="scr-team-names">${esc(teamBNames)}</div>
+          </div>
+          <div class="stepper">
+            <button type="button" class="step-btn" style="border-color:rgba(192,57,43,0.35);color:#e74c3c;background:rgba(192,57,43,0.1);" onclick="stepScrScore('b',-1)">−</button>
+            <div class="step-val" id="scrScoreB" style="color:#e74c3c;">E</div>
+            <button type="button" class="step-btn" style="border-color:rgba(192,57,43,0.35);color:#e74c3c;background:rgba(192,57,43,0.1);" onclick="stepScrScore('b',1)">+</button>
+          </div>
+        </div>
+      </div>`;
+    scrScores = {a: currentPar, b: currentPar};
+    return;
+  }
+
+  const label = gameMode === 'stableford' ? 'Scores' : 'Scores';
+  document.getElementById('scoreCardLabel').textContent = label;
+  area.innerHTML = `<div class="score-rows">${
+    playerNames.map((name, i) => `
+      <div class="score-row">
+        <div class="score-name">${esc(name)}</div>
+        <div class="stepper">
+          <button type="button" class="step-btn" onclick="stepScore(${i},-1)">−</button>
+          <div class="step-val" id="sv_${i}">E</div>
+          <button type="button" class="step-btn" onclick="stepScore(${i},1)">+</button>
+        </div>
+      </div>`).join('')
+  }</div>`;
+}
+
+function stepScore(i, d) {
+  holeScores[i] = Math.max(1, (holeScores[i] !== null ? holeScores[i] : currentPar) + d);
+  const diff = holeScores[i] - currentPar;
+  const el = document.getElementById('sv_'+i);
+  if (el) { el.textContent = fmtScore(diff); el.style.color = diff < 0 ? '#2ecc71' : diff > 0 ? '#ff6b6b' : '#fff'; }
+  if (bankerActive) syncBankerScore(i);
+}
+
+function stepScrScore(team, d) {
+  scrScores[team] = Math.max(1, (scrScores[team] !== null ? scrScores[team] : currentPar) + d);
+  const diff = scrScores[team] - currentPar;
+  const vEl = document.getElementById('scrScore' + team.toUpperCase());
+  if (vEl) { vEl.textContent = fmtScore(diff); vEl.style.color = diff < 0 ? '#2ecc71' : diff > 0 ? '#ff6b6b' : (team === 'a' ? '#ffd447' : '#e74c3c'); }
+}
+
+// ── Banker Module ──────────────────────────────────────────────────────────────────────
+
+function renderBankerPlayersGrid() {
+  const grid = document.getElementById('bankerPlayersGrid');
+  if (!grid) return;
+  const wEl = document.getElementById('bankerWagerDisplay');
+  if (wEl) wEl.textContent = '$' + bkBaseWager;
+  const carry = bkCarryovers[bankerIdx] || 0;
+  const hEl = document.getElementById('bankerHolding');
+  if (hEl) hEl.textContent = carry > 0 ? '$' + carry + ' carry' : '';
+
+  grid.innerHTML = playerNames.map((name, i) => {
+    const isBanker = i === bankerIdx;
+    const net = bkPlayerNetTotals[i] || 0;
+    const netCls = net > 0 ? 'pos' : net < 0 ? 'neg' : 'zero';
+    const netStr = net === 0 ? '±$0' : (net > 0 ? '+$'+net : '-$'+Math.abs(net));
+    const carry = bkCarryovers[i] || 0;
+    const dblId = isBanker ? 'bkdbl_banker' : 'bkdbl_' + i;
+    return `
+      <div class="bk-player${isBanker ? ' is-banker' : ''}" id="bkp_${i}">
+        <div class="bk-player-info">
+          <div class="bk-player-name">${esc(name)}</div>
+          <div class="bk-meta">
+            <span class="bk-net ${netCls}">${netStr}</span>
+            ${isBanker ? '<span class="banker-role-badge">Banker</span>' : ''}
+            ${carry > 0 && !isBanker ? `<span class="bk-carry">+$${carry}</span>` : ''}
+          </div>
+        </div>
+        <div class="bk-stepper">
+          <button class="left" onclick="stepBkScore(${i},-1)">−</button>
+          <span id="bksv_${i}">${fmtScore(bkScores[i])}</span>
+          <button class="right" onclick="stepBkScore(${i},1)">+</button>
+        </div>
+        <label class="double-label"><input type="checkbox" id="${dblId}" onchange="onBkDouble(${isBanker ? -1 : i})"><span class="double-pill">2×</span></label>
+      </div>`;
+  }).join('');
+}
+
+function stepBkScore(i, d) {
+  bkScores[i] = Math.max(-10, Math.min(10, bkScores[i] + d));
+  const el = document.getElementById('bksv_' + i);
+  if (el) el.textContent = fmtScore(bkScores[i]);
+  // mirror to main score steppers if stableford/stroke mode
+  if (gameMode !== 'scramble') {
+    holeScores[i] = bkScores[i] + currentPar;
+    const sv = document.getElementById('sv_' + i);
+    if (sv) sv.textContent = holeScores[i];
+  }
+}
+
+function syncBankerScore(i) {
+  bkScores[i] = (holeScores[i] !== null ? holeScores[i] : currentPar) - currentPar;
+  const el = document.getElementById('bksv_' + i);
+  if (el) el.textContent = fmtScore(bkScores[i]);
+}
+
+function onBkDouble(i) {
+  // CSS input:checked + .double-pill handles visual; resolveBanker reads DOM state
+}
+
+function stepBankerWager(d) {
+  bkBaseWager = Math.max(bkMinWager, Math.min(bkMaxWager, bkBaseWager + d));
+  const el = document.getElementById('bankerWagerDisplay');
+  if (el) el.textContent = '$' + bkBaseWager;
+}
+
+function fmtScore(s) { return s === 0 ? 'E' : s > 0 ? '+' + s : '' + s; }
+
+// ── Closest-to-Pin Module ──────────────────────────────────────────────────────────────
+
+function renderPinPlayersList() {
+  const list = document.getElementById('pinPlayersList');
+  if (!list) return;
+  list.innerHTML = playerNames.map((name, i) => `
+    <div class="pin-player-row${pinWinner === i ? ' selected' : ''}" onclick="selectPinWinner(${i})">
+      <div class="pin-player-name">${esc(name)}</div>
+      <div class="pin-check"><span class="pin-check-mark">✓</span></div>
+    </div>`).join('');
+}
+
+function selectPinWinner(i) {
+  pinWinner = (pinWinner === i) ? null : i;
+  renderPinPlayersList();
+}
+
+function stepPinWager(d) {
+  pinWager = Math.max(1, pinWager + d);
+  const el = document.getElementById('pinWagerDisplay');
+  if (el) el.textContent = '$' + pinWager;
+}
+
+// ── Standings ─────────────────────────────────────────────────────────────────────────
+
+function renderStandings() {
+  const list = document.getElementById('standingsList');
+  if (!list) return;
+
+  const hasBanker = bkHistory.length > 0 || bkPlayerNetTotals.some(v => v !== 0);
+  const hasPin    = pinHistory.length > 0 || pinNetTotals.some(v => v !== 0);
+
+  const fmtMoney = v => v === 0 ? '—' : (v > 0 ? '+$'+v : '-$'+Math.abs(v));
+  const moneyCls = v => v > 0 ? 'pos' : v < 0 ? 'neg' : 'dash';
+
+  const extraHeaders = (hasBanker ? '<th>Banker</th>' : '') + (hasPin ? '<th>Pin</th>' : '');
+  const extraCells = i =>
+    (hasBanker ? `<td class="${moneyCls(bkPlayerNetTotals[i]||0)}">${fmtMoney(bkPlayerNetTotals[i]||0)}</td>` : '') +
+    (hasPin    ? `<td class="${moneyCls(pinNetTotals[i]||0)}">${fmtMoney(pinNetTotals[i]||0)}</td>` : '');
+
+  if (gameMode === 'scramble') {
+    document.getElementById('standingsLabel').textContent = 'Team Scores';
+    const aNet = scrHistory.reduce((s,h) => s + (h.scoreA - h.par), 0);
+    const bNet = scrHistory.reduce((s,h) => s + (h.scoreB - h.par), 0);
+    const fmtNet = n => n < 0 ? n : n > 0 ? '+' + n : 'E';
+    const aCls = aNet < bNet ? 'pos' : aNet > bNet ? 'neg' : 'dash';
+    const bCls = bNet < aNet ? 'pos' : bNet > aNet ? 'neg' : 'dash';
+    const holes = scrHistory.length;
+
+    // For scramble, banker/pin nets are per-player — sum by team
+    const teamNet = (team, arr) => {
+      const names = scrTeams[team] || [];
+      return names.reduce((s, name) => {
+        const idx = playerNames.indexOf(name);
+        return s + (idx >= 0 ? (arr[idx] || 0) : 0);
+      }, 0);
+    };
+    const bkA = teamNet('a', bkPlayerNetTotals), bkB = teamNet('b', bkPlayerNetTotals);
+    const pinA = teamNet('a', pinNetTotals), pinB = teamNet('b', pinNetTotals);
+    const scrExtraHeaders = (hasBanker ? '<th>Banker</th>' : '') + (hasPin ? '<th>Pin</th>' : '');
+    const scrExtraA = (hasBanker ? `<td class="${moneyCls(bkA)}">${fmtMoney(bkA)}</td>` : '') + (hasPin ? `<td class="${moneyCls(pinA)}">${fmtMoney(pinA)}</td>` : '');
+    const scrExtraB = (hasBanker ? `<td class="${moneyCls(bkB)}">${fmtMoney(bkB)}</td>` : '') + (hasPin ? `<td class="${moneyCls(pinB)}">${fmtMoney(pinB)}</td>` : '');
+
+    list.innerHTML = `<table class="sb-grid">
+      <thead><tr><th></th><th>Total</th><th>vs Par</th>${scrExtraHeaders}</tr></thead>
+      <tbody>
+        <tr><td style="color:#ffd447;">Gold</td><td>${holes > 0 ? scrTotals.a : '—'}</td><td class="${aCls}">${holes > 0 ? fmtNet(aNet) : '—'}</td>${scrExtraA}</tr>
+        <tr><td style="color:#e74c3c;">Crimson</td><td>${holes > 0 ? scrTotals.b : '—'}</td><td class="${bCls}">${holes > 0 ? fmtNet(bNet) : '—'}</td>${scrExtraB}</tr>
+      </tbody>
+    </table>`;
+    return;
+  }
+
+  if (gameMode === 'stableford') {
+    document.getElementById('standingsLabel').textContent = 'Standings';
+    const sorted = playerNames.map((n, i) => ({n, t: playerTotals[i], i})).sort((a, b) => b.t - a.t);
+    const rows = sorted.map(p => {
+      const cls = p.t === 0 ? 'dash' : '';
+      const val = p.t === 0 ? '—' : p.t + ' pts';
+      return `<tr><td>${esc(p.n)}</td><td class="${cls}">${val}</td>${extraCells(p.i)}</tr>`;
+    }).join('');
+    list.innerHTML = `<table class="sb-grid"><thead><tr><th></th><th>Pts</th>${extraHeaders}</tr></thead><tbody>${rows}</tbody></table>`;
+    return;
+  }
+
+  // Stroke play
+  document.getElementById('standingsLabel').textContent = 'Standings';
+  const sorted = playerNames.map((n, i) => ({n, t: playerTotals[i], i})).sort((a, b) => a.t - b.t);
+  const rows = sorted.map(p => {
+    const cls = p.t === 0 ? 'dash' : '';
+    const val = p.t === 0 ? '—' : p.t;
+    return `<tr><td>${esc(p.n)}</td><td class="${cls}">${val}</td>${extraCells(p.i)}</tr>`;
+  }).join('');
+  list.innerHTML = `<table class="sb-grid"><thead><tr><th></th><th>Total</th>${extraHeaders}</tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+// ── Hole scoring ───────────────────────────────────────────────────────────────────────
+
+function stablefordPoints(score, par) {
+  const diff = score - par;
+  if (diff <= -2) return 4;
+  if (diff === -1) return 3;
+  if (diff === 0) return 2;
+  if (diff === 1) return 1;
+  return 0;
+}
+
+function nextHole() {
+  document.getElementById('holeError').style.display = 'none';
+
+  // Snapshot for undo
+  lastSnapshot = {
+    hole, currentPar, holeYards,
+    playerTotals: [...playerTotals],
+    scoreHistoryLength: scoreHistory.length,
+    scrHistoryLength: scrHistory.length,
+    scrTotals: {...scrTotals},
+    bankerActive, pinActive,
+    bankerIdx, bkBaseWager,
+    bkCarryovers: [...bkCarryovers],
+    bkPlayerNetTotals: [...bkPlayerNetTotals],
+    bkHistoryLength: bkHistory.length,
+    pinWager, pinHistoryLength: pinHistory.length,
+    pinNetTotals: [...pinNetTotals]
+  };
+
+  if (gameMode === 'scramble') {
+    // Validate
+    if (scrScores.a === null && scrScores.b === null) {
+      // allow advancing with no scores (defaults to par)
+    }
+    const sa = scrScores.a !== null ? scrScores.a : currentPar;
+    const sb = scrScores.b !== null ? scrScores.b : currentPar;
+    scrTotals.a += sa;
+    scrTotals.b += sb;
+    scrHistory.push({ holeNum: hole, par: currentPar, yards: holeYards, scoreA: sa, scoreB: sb });
+  } else {
+    // Resolve each player's score
+    const scores = [], points = [];
+    for (let i = 0; i < playerNames.length; i++) {
+      const v = holeScores[i] !== null ? holeScores[i] : currentPar;
+      scores.push(v);
+      if (gameMode === 'stableford') {
+        const pts = stablefordPoints(v, currentPar);
+        points.push(pts);
+        playerTotals[i] += pts;
+      } else {
+        playerTotals[i] += v;
+        points.push(v);
+      }
+    }
+    scoreHistory.push(scores);
+    pointHistory.push(points);
+    holeParDist.push({ par: currentPar, yards: holeYards });
+  }
+
+  // Banker resolution
+  if (bankerActive) {
+    resolveBanker();
+  }
+
+  // Pin resolution
+  if (pinActive && pinWinner !== null) {
+    const totalPlayers = playerNames.length;
+    const pot = pinWager * (totalPlayers - 1);
+    pinNetTotals[pinWinner] += pot;
+    playerNames.forEach((_, i) => { if (i !== pinWinner) pinNetTotals[i] -= pinWager; });
+    pinHistory.push({ holeNum: hole, winner: pinWinner, wager: pinWager });
+  }
+
+  if (hole === totalHoles) {
+    endGame();
+    return;
+  }
+
+  hole++;
+  bankerActive = false; pinActive = false;
+  document.getElementById('modBanker').classList.remove('active');
+  document.getElementById('modPin').classList.remove('active');
+  document.getElementById('bankerModule').classList.add('hidden');
+  document.getElementById('pinModule').classList.add('hidden');
+  bkScores = new Array(playerNames.length).fill(0);
+  pinWinner = null;
+
+  saveActiveState();
+  renderHoleHeader();
+  renderScoreInputArea();
+  renderStandings();
+  renderBankerPlayersGrid();
+  renderPinPlayersList();
+}
+
+function resolveBanker() {
+  const bkScoresCopy = [...bkScores];
+  const bankerScore = bkScoresCopy[bankerIdx];
+  const bankerDoubled = document.getElementById('bkdbl_banker')?.checked || false;
+  const matchups = [];
+  const nonBankers = playerNames.map((_,i)=>i).filter(i => i !== bankerIdx);
+
+  nonBankers.forEach(i => {
+    const playerDoubled = document.getElementById('bkdbl_' + i)?.checked || false;
+    const doubles = (bankerDoubled ? 1 : 0) + (playerDoubled ? 1 : 0);
+    const holeValue = bkBaseWager * Math.pow(2, doubles) + (bkCarryovers[i] || 0);
+    let result;
+    if (bkScoresCopy[i] > bankerScore) {
+      result = 'banker';
+      bkPlayerNetTotals[bankerIdx] += holeValue;
+      bkPlayerNetTotals[i] -= holeValue;
+      bkCarryovers[i] = 0;
+    } else if (bkScoresCopy[i] < bankerScore) {
+      result = 'player';
+      bkPlayerNetTotals[i] += holeValue;
+      bkPlayerNetTotals[bankerIdx] -= holeValue;
+      bkCarryovers[i] = 0;
+    } else {
+      result = 'tie';
+      bkCarryovers[i] += bkBaseWager * Math.pow(2, doubles);
+    }
+    matchups.push({ playerIdx: i, holeValue, result, doubled: playerDoubled, bankerDoubled });
+  });
+
+  // Banker rotation
+  let nextBankerIdx = bankerIdx;
+  const beaters = matchups.filter(m => m.result === 'player')
+    .map(m => ({ idx: m.playerIdx, score: bkScoresCopy[m.playerIdx] }))
+    .sort((a, b) => a.score - b.score);
+  if (beaters.length > 0) {
+    const lowest = beaters[0].score;
+    const topBeaters = beaters.filter(b => b.score === lowest);
+    if (topBeaters.length === 1) nextBankerIdx = topBeaters[0].idx;
+  }
+
+  if (nextBankerIdx !== bankerIdx) {
+    bkCarryovers = new Array(playerNames.length).fill(0);
+    showBankerToast(playerNames[nextBankerIdx]);
+    bankerIdx = nextBankerIdx;
+  }
+
+  bkHistory.push({ holeNum: hole, bankerIdx, scores: bkScoresCopy, matchups, nextBankerIdx });
+}
+
+function prevHole() {
+  if (!lastSnapshot) return;
+  hole = lastSnapshot.hole;
+  currentPar = lastSnapshot.currentPar;
+  holeYards = lastSnapshot.holeYards;
+  playerTotals = [...lastSnapshot.playerTotals];
+  scrTotals = {...lastSnapshot.scrTotals};
+  bankerActive = lastSnapshot.bankerActive;
+  pinActive = lastSnapshot.pinActive;
+  bankerIdx = lastSnapshot.bankerIdx;
+  bkBaseWager = lastSnapshot.bkBaseWager;
+  bkCarryovers = [...lastSnapshot.bkCarryovers];
+  bkPlayerNetTotals = [...lastSnapshot.bkPlayerNetTotals];
+  pinWager = lastSnapshot.pinWager;
+  pinNetTotals = [...lastSnapshot.pinNetTotals];
+
+  if (gameMode === 'scramble') {
+    scrHistory.splice(lastSnapshot.scrHistoryLength);
+  } else {
+    scoreHistory.splice(lastSnapshot.scoreHistoryLength);
+    pointHistory.splice(lastSnapshot.scoreHistoryLength);
+    holeParDist.splice(lastSnapshot.scoreHistoryLength);
+  }
+  bkHistory.splice(lastSnapshot.bkHistoryLength);
+  pinHistory.splice(lastSnapshot.pinHistoryLength);
+  lastSnapshot = null;
+
+  saveActiveState();
+  renderHoleHeader();
+  renderScoreInputArea();
+  renderStandings();
+  renderBankerPlayersGrid();
+  renderPinPlayersList();
+  syncModuleToggleButtons();
+}
+
+// ── Scorecard ──────────────────────────────────────────────────────────────────────────
+
+function openScorecard() {
+  renderScorecardTable();
+  document.getElementById('scorecardModal').classList.remove('hidden');
+}
+
+function closeScorecard() {
+  document.getElementById('scorecardModal').classList.add('hidden');
+}
+
+function renderScorecardTable() {
+  const tbl = document.getElementById('scorecardTable');
+  if (!tbl) return;
+
+  if (gameMode === 'scramble') {
+    let html = '<thead><tr><th>#</th><th>Par</th><th>Yds</th><th>Gold</th><th>Crimson</th></tr></thead><tbody>';
+    scrHistory.forEach(h => {
+      const aD = h.scoreA - h.par, bD = h.scoreB - h.par;
+      const aCls = aD < 0 ? 'sc-pos' : aD > 0 ? 'sc-neg' : '';
+      const bCls = bD < 0 ? 'sc-pos' : bD > 0 ? 'sc-neg' : '';
+      html += `<tr><td>${h.holeNum}</td><td>${h.par}</td><td>${h.yards||'—'}</td><td class="${aCls}">${h.scoreA} (${aD>0?'+':''}${aD===0?'E':aD})</td><td class="${bCls}">${h.scoreB} (${bD>0?'+':''}${bD===0?'E':bD})</td></tr>`;
+    });
+    html += `<tr style="font-weight:bold;background:rgba(0,0,0,0.3)"><td>Tot</td><td>—</td><td>—</td><td>${scrTotals.a||'—'}</td><td>${scrTotals.b||'—'}</td></tr>`;
+    html += '</tbody>';
+    tbl.innerHTML = html;
+    return;
+  }
+
+  const cols = ['#', 'Par', 'Yds', ...playerNames];
+  let html = '<thead><tr>' + cols.map(c => `<th>${esc(String(c))}</th>`).join('') + '</tr></thead><tbody>';
+  for (let i = 0; i < scoreHistory.length; i++) {
+    const par = holeParDist[i]?.par ?? '—';
+    const yds = holeParDist[i]?.yards || '—';
+    html += `<tr><td>${i+1}</td><td>${par}</td><td>${yds}</td>`;
+    for (let j = 0; j < playerNames.length; j++) {
+      const sc = scoreHistory[i][j];
+      if (gameMode === 'stableford') {
+        const pts = pointHistory[i][j];
+        const diff = sc - holeParDist[i].par;
+        const cls = diff < 0 ? 'sc-pos' : diff > 0 ? 'sc-neg' : '';
+        html += `<td class="${cls}">${sc} <span style="font-size:9px;color:rgba(255,212,71,0.6);">(${pts}pt)</span></td>`;
+      } else {
+        html += `<td>${sc}</td>`;
+      }
+    }
+    html += '</tr>';
+  }
+  // Totals row
+  html += `<tr style="font-weight:bold;background:rgba(0,0,0,0.3)"><td>Tot</td><td>—</td><td>—</td>`;
+  playerTotals.forEach(t => { html += `<td>${t || '—'}</td>`; });
+  html += '</tr></tbody>';
+  tbl.innerHTML = html;
+}
+
+// ── End Round ──────────────────────────────────────────────────────────────────────────
+
+function confirmEnd() {
+  if (!confirm('End round? Progress will be saved.')) return;
+  endGame();
+}
+
+function endGame() {
+  localStorage.removeItem('activeGame_round');
+  saveGameResult();
+  document.getElementById('gameScreen').classList.add('hidden');
+  document.getElementById('finalScreen').classList.remove('hidden');
+  renderFinalScreen();
+}
+
+function saveGameResult() {
+  const history = JSON.parse(localStorage.getItem('gameHistory') || '[]');
+  const record = {
+    id: Date.now(), game: gameMode,
+    date: new Date((roundDateStr || new Date().toLocaleDateString('en-CA')) + 'T12:00:00').toISOString(),
+    course: courseName, players: [...playerNames], totalHoles,
+    playerTotals: [...playerTotals],
+    scoreHistory: gameMode !== 'scramble' ? scoreHistory.map(r => [...r]) : null,
+    pointHistory: gameMode === 'stableford' ? pointHistory.map(r => [...r]) : null,
+    holeParDist: gameMode !== 'scramble' ? [...holeParDist] : null,
+    scrTeams: gameMode === 'scramble' ? {...scrTeams} : null,
+    scrHistory: gameMode === 'scramble' ? [...scrHistory] : null,
+    scrTotals: gameMode === 'scramble' ? {...scrTotals} : null,
+    bankerHistory: bkHistory.length > 0 ? bkHistory.map(h => ({...h, scores:[...h.scores], matchups:h.matchups.map(m=>({...m}))})) : null,
+    bkPlayerNetTotals: bkHistory.length > 0 ? [...bkPlayerNetTotals] : null,
+    pinHistory: pinHistory.length > 0 ? [...pinHistory] : null,
+    pinNetTotals: pinHistory.length > 0 ? [...pinNetTotals] : null
+  };
+  history.push(record);
+  localStorage.setItem('gameHistory', JSON.stringify(history));
+}
+
+function renderFinalScreen() {
+  const holesPlayed = gameMode === 'scramble' ? scrHistory.length : scoreHistory.length;
+  document.getElementById('finalSub').textContent =
+    (courseName ? courseName + ' · ' : '') + holesPlayed + ' holes';
+
+  let html = '';
+
+  if (gameMode === 'scramble') {
+    const aNet = scrHistory.reduce((s, h) => s + (h.scoreA - h.par), 0);
+    const bNet = scrHistory.reduce((s, h) => s + (h.scoreB - h.par), 0);
+    const aWinner = aNet <= bNet;
+    const bWinner = bNet <= aNet;
+    const fmtNet = n => n < 0 ? n : n > 0 ? '+' + n : 'E';
+    html += `<div class="final-standings">
+      <div class="final-row${aNet <= bNet ? ' winner' : ''}">
+        <span class="final-name" style="color:#ffd447;">Gold Team</span>
+        <span class="final-pts">${scrTotals.a} <span style="font-size:12px;color:rgba(255,212,71,0.5);">(${fmtNet(aNet)})</span></span>
+      </div>
+      <div class="final-row${bNet <= aNet ? ' winner' : ''}">
+        <span class="final-name" style="color:#e74c3c;">Crimson Team</span>
+        <span class="final-pts">${scrTotals.b} <span style="font-size:12px;color:rgba(192,57,43,0.5);">(${fmtNet(bNet)})</span></span>
+      </div>
+    </div>`;
+  } else if (gameMode === 'stableford') {
+    const sorted = playerNames.map((n, i) => ({n, t: playerTotals[i], i})).sort((a, b) => b.t - a.t);
+    const maxPts = sorted[0]?.t || 0;
+    html += `<div class="final-standings">${sorted.map((p, rank) =>
+      `<div class="final-row${p.t === maxPts ? ' winner' : ''}">
+        <span class="final-name">${rank === 0 ? '🏆 ' : ''}${esc(p.n)}</span>
+        <span class="final-pts">${p.t} pts</span>
+      </div>`).join('')}</div>`;
+  } else {
+    // Stroke play — lowest wins
+    const sorted = playerNames.map((n, i) => ({n, t: playerTotals[i], i})).sort((a, b) => a.t - b.t);
+    const minScore = sorted[0]?.t || 0;
+    html += `<div class="final-standings">${sorted.map((p, rank) =>
+      `<div class="final-row${p.t === minScore ? ' winner' : ''}">
+        <span class="final-name">${rank === 0 ? '🏆 ' : ''}${esc(p.n)}</span>
+        <span class="final-pts">${p.t || '—'}</span>
+      </div>`).join('')}</div>`;
+  }
+
+  // Banker final results
+  if (bkHistory.length > 0) {
+    html += `<div class="game-card" style="margin-top:12px;">
+      <div class="game-card-label">Banker Results</div>`;
+    const sorted = playerNames.map((n, i) => ({n, net: bkPlayerNetTotals[i] || 0, i})).sort((a,b) => b.net - a.net);
+    sorted.forEach(p => {
+      const cls = p.net > 0 ? 'sc-pos' : p.net < 0 ? 'sc-neg' : '';
+      const str = p.net === 0 ? '±$0' : (p.net > 0 ? '+$' : '-$') + Math.abs(p.net);
+      html += `<div style="display:flex;justify-content:space-between;padding:7px 4px;border-bottom:1px solid rgba(255,255,255,0.05);">
+        <span style="font-size:14px;font-weight:bold;">${esc(p.n)}</span>
+        <span class="${cls}" style="font-family:'Courier New',monospace;font-size:14px;font-weight:bold;">${str}</span>
+      </div>`;
+    });
+    html += renderSettlementBlock(bkPlayerNetTotals);
+    html += '</div>';
+  }
+
+  // Pin final results
+  if (pinHistory.length > 0) {
+    html += `<div class="game-card" style="margin-top:8px;">
+      <div class="game-card-label">Closest to Pin</div>`;
+    playerNames.forEach((n, i) => {
+      const net = pinNetTotals[i] || 0;
+      if (net === 0) return;
+      const cls = net > 0 ? 'sc-pos' : 'sc-neg';
+      const str = net > 0 ? '+$' + net : '-$' + Math.abs(net);
+      html += `<div style="display:flex;justify-content:space-between;padding:7px 4px;border-bottom:1px solid rgba(255,255,255,0.05);">
+        <span style="font-size:14px;font-weight:bold;">${esc(n)}</span>
+        <span class="${cls}" style="font-family:'Courier New',monospace;font-size:14px;font-weight:bold;">${str}</span>
+      </div>`;
+    });
+    html += '</div>';
+  }
+
+  // Combined settlement if any money games
+  if (bkHistory.length > 0 || pinHistory.length > 0) {
+    const combinedNet = playerNames.map((_, i) => (bkPlayerNetTotals[i] || 0) + (pinNetTotals[i] || 0));
+    html += `<div class="game-card" style="margin-top:8px;">
+      <div class="game-card-label">Settlement</div>
+      ${renderSettlementBlock(combinedNet)}
+    </div>`;
+  }
+
+  document.getElementById('finalContent').innerHTML = html;
+}
+
+function renderSettlementBlock(netTotals) {
+  const creditors = [], debtors = [];
+  netTotals.forEach((v, i) => {
+    if (v > 0.001) creditors.push({idx: i, amt: v});
+    else if (v < -0.001) debtors.push({idx: i, amt: -v});
+  });
+  creditors.sort((a,b) => b.amt - a.amt);
+  debtors.sort((a,b) => b.amt - a.amt);
+
+  const transactions = [];
+  let ci = 0, di = 0;
+  while (ci < creditors.length && di < debtors.length) {
+    const c = creditors[ci], d = debtors[di];
+    const settle = Math.min(c.amt, d.amt);
+    if (settle > 0.001) transactions.push({from: playerNames[d.idx], to: playerNames[c.idx], amount: settle});
+    c.amt -= settle; d.amt -= settle;
+    if (c.amt < 0.001) ci++;
+    if (d.amt < 0.001) di++;
+  }
+
+  if (!transactions.length) return `<div class="settle-square">All square. No transfers needed.</div>`;
+  return transactions.map(t =>
+    `<div class="settle-row">
+      <span class="settle-from">${esc(t.from)}</span>
+      <span class="settle-arrow">owes</span>
+      <span class="settle-to">${esc(t.to)}</span>
+      <span class="settle-amt">$${t.amount.toFixed(2).replace(/\.00$/,'')}</span>
+    </div>`).join('');
+}
+
+// ── Utils ──────────────────────────────────────────────────────────────────────────────
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function showBankerToast(name) {
+  const t = document.getElementById('bankerToast');
+  t.textContent = 'New Banker: ' + name;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>
