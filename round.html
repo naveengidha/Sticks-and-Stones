@@ -107,14 +107,9 @@ button{font-family:inherit;cursor:pointer;}
 .bk-meta{display:flex;align-items:center;gap:6px;}
 .bk-net{font-size:11px;font-weight:bold;font-family:'Courier New',monospace;}
 .bk-net.pos{color:#ffd447;} .bk-net.neg{color:#ff6b6b;} .bk-net.zero{color:rgba(255,255,255,0.2);}
-.bk-carry{font-size:10px;font-family:'Courier New',monospace;color:rgba(255,212,71,0.6);}
-.banker-role-badge{font-size:7px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;padding:1px 6px;border-radius:10px;background:rgba(255,212,71,0.2);color:#ffd447;border:1px solid rgba(255,212,71,0.3);}
-.bk-stepper{display:flex;align-items:center;gap:0;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.12);border-radius:7px;overflow:hidden;}
-.bk-stepper button{width:34px;height:34px;padding:0;border:none;font-size:18px;font-weight:bold;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.6);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
-.bk-stepper button:active{background:rgba(255,255,255,0.15);color:#fff;}
-.bk-stepper button.left{border-right:1px solid rgba(255,255,255,0.1);}
-.bk-stepper button.right{border-left:1px solid rgba(255,255,255,0.1);}
-.bk-stepper span{font-size:16px;font-weight:bold;font-family:'Courier New',monospace;min-width:32px;text-align:center;color:#fff;}
+.bk-side{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:44px;}
+.bk-carry{font-size:12px;font-weight:bold;font-family:'Courier New',monospace;color:rgba(255,212,71,0.75);}
+.banker-role-badge{font-size:7px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:10px;background:rgba(255,212,71,0.2);color:#ffd447;border:1px solid rgba(255,212,71,0.3);white-space:nowrap;}
 .double-label{display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
 .double-label input{display:none;}
 .double-pill{font-size:9px;font-weight:bold;letter-spacing:.8px;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.4);user-select:none;white-space:nowrap;}
@@ -223,6 +218,7 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
         <div class="hole-progress-fill" id="holeProgressFill" style="width:0%"></div>
       </div>
       <!-- Per-hole module toggles -->
+      <div style="font-size:8px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.3);margin-top:10px;margin-bottom:4px;text-align:center;">Mini Games</div>
       <div class="module-row" id="moduleRow">
         <button class="mod-btn" id="modBanker" onclick="toggleModule('banker')">Banker</button>
         <button class="mod-btn" id="modPin" onclick="toggleModule('pin')">Pin</button>
@@ -317,23 +313,29 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
 <nav class="bottom-nav">
   <div class="nav-pill">
     <a class="nav-item" href="index.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/><line x1="4" y1="14" x2="20" y2="14" stroke-width="1.5" stroke-dasharray="2 2"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8" r="3"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/><line x1="4" y1="14" x2="20" y2="14" stroke-width="1.5" stroke-dasharray="2 2"/>
+      </svg>
       Rounds
     </a>
-    <a class="nav-item" href="history.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
-      Stats
+    <a class="nav-item" href="caddy.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2h12a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><line x1="9" y1="2" x2="9" y2="6"/><line x1="15" y1="2" x2="15" y2="6"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/>
+      </svg>
+      Caddy
     </a>
     <a class="nav-center" href="start.html">
       <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" fill="#1a1a0a"/><circle cx="12" cy="12" r="6.2" fill="white"/><circle cx="10.2" cy="11.2" r="1" fill="#ccc"/><circle cx="12" cy="9.5" r="1" fill="#ccc"/><circle cx="13.8" cy="11.2" r="1" fill="#ccc"/></svg>
     </a>
+    <a class="nav-item" href="history.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/>
+      </svg>
+      Stats
+    </a>
     <a class="nav-item" href="dossier.html">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 9h2M15 13h2M5 17c0-2 1.5-3 4-3s4 1 4 3"/></svg>
       Dossier
-    </a>
-    <a class="nav-item" href="caddy.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><line x1="9" y1="2" x2="9" y2="6"/><line x1="15" y1="2" x2="15" y2="6"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
-      Caddy
     </a>
   </div>
 </nav>
@@ -390,6 +392,9 @@ let pinNetTotals = [];      // [player] net money from pin
 // Undo snapshot
 let lastSnapshot = null;
 
+// Buy-in prize (stableford only)
+let buyIn = null;
+
 // ── Initialization ─────────────────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -416,6 +421,7 @@ function loadFromPendingSetup() {
 
   initGameState();
   if (setup.pinWager) { pinWager = setup.pinWager; const el=document.getElementById('pinWagerDisplay'); if(el) el.textContent='$'+pinWager; }
+  if (setup.buyIn) { buyIn = setup.buyIn; }
   renderHoleHeader();
   renderScoreInputArea();
   renderStandings();
@@ -466,6 +472,7 @@ function restoreActiveState() {
   bkHistory = s.bkHistory || [];
   pinWager = s.pinWager || 1; pinHistory = s.pinHistory || [];
   pinNetTotals = s.pinNetTotals || new Array(playerNames.length).fill(0);
+  buyIn = s.buyIn || null;
 
   renderHoleHeader();
   renderScoreInputArea();
@@ -484,7 +491,7 @@ function saveActiveState() {
     currentPar, holeYards, playerTotals, scoreHistory, pointHistory, holeParDist,
     scrHistory, scrTotals, bankerActive, pinActive,
     bankerIdx, bkBaseWager, bkMinWager, bkMaxWager, bkCarryovers, bkPlayerNetTotals, bkHistory,
-    pinWager, pinHistory, pinNetTotals,
+    pinWager, pinHistory, pinNetTotals, buyIn,
     startedAt: existing.startedAt || new Date().toISOString()
   }));
 }
@@ -638,36 +645,20 @@ function renderBankerPlayersGrid() {
           <div class="bk-player-name">${esc(name)}</div>
           <div class="bk-meta">
             <span class="bk-net ${netCls}">${netStr}</span>
-            ${isBanker ? '<span class="banker-role-badge">Banker</span>' : ''}
-            ${carry > 0 && !isBanker ? `<span class="bk-carry">+$${carry}</span>` : ''}
           </div>
         </div>
-        <div class="bk-stepper">
-          <button class="left" onclick="stepBkScore(${i},-1)">−</button>
-          <span id="bksv_${i}">${fmtScore(bkScores[i])}</span>
-          <button class="right" onclick="stepBkScore(${i},1)">+</button>
+        <div class="bk-side">
+          ${isBanker ? '<span class="banker-role-badge">Banker</span>' : ''}
+          ${carry > 0 && !isBanker ? `<span class="bk-carry">+$${carry}</span>` : ''}
+          ${!isBanker && carry === 0 ? '<span style="font-size:10px;color:rgba(255,255,255,0.1);">—</span>' : ''}
         </div>
         <label class="double-label"><input type="checkbox" id="${dblId}" onchange="onBkDouble(${isBanker ? -1 : i})"><span class="double-pill">2×</span></label>
       </div>`;
   }).join('');
 }
 
-function stepBkScore(i, d) {
-  bkScores[i] = Math.max(-10, Math.min(10, bkScores[i] + d));
-  const el = document.getElementById('bksv_' + i);
-  if (el) el.textContent = fmtScore(bkScores[i]);
-  // mirror to main score steppers if stableford/stroke mode
-  if (gameMode !== 'scramble') {
-    holeScores[i] = bkScores[i] + currentPar;
-    const sv = document.getElementById('sv_' + i);
-    if (sv) sv.textContent = holeScores[i];
-  }
-}
-
 function syncBankerScore(i) {
   bkScores[i] = (holeScores[i] !== null ? holeScores[i] : currentPar) - currentPar;
-  const el = document.getElementById('bksv_' + i);
-  if (el) el.textContent = fmtScore(bkScores[i]);
 }
 
 function onBkDouble(i) {
@@ -758,24 +749,30 @@ function renderStandings() {
   if (gameMode === 'stableford') {
     document.getElementById('standingsLabel').textContent = 'Standings';
     const sorted = playerNames.map((n, i) => ({n, t: playerTotals[i], i})).sort((a, b) => b.t - a.t);
+    const ptsOnly = !hasBanker && !hasPin;
+    const ptsThStyle = ptsOnly ? ' style="text-align:right;"' : '';
+    const ptsTdStyle = ptsOnly ? ' style="text-align:right;"' : '';
     const rows = sorted.map(p => {
       const cls = p.t === 0 ? 'dash' : '';
       const val = p.t === 0 ? '—' : p.t + ' pts';
-      return `<tr><td>${esc(p.n)}</td><td class="${cls}">${val}</td>${extraCells(p.i)}</tr>`;
+      return `<tr><td>${esc(p.n)}</td><td class="${cls}"${ptsTdStyle}>${val}</td>${extraCells(p.i)}</tr>`;
     }).join('');
-    list.innerHTML = `<table class="sb-grid"><thead><tr><th></th><th>Pts</th>${extraHeaders}</tr></thead><tbody>${rows}</tbody></table>`;
+    list.innerHTML = `<table class="sb-grid"><thead><tr><th></th><th${ptsThStyle}>Pts</th>${extraHeaders}</tr></thead><tbody>${rows}</tbody></table>`;
     return;
   }
 
   // Stroke play
   document.getElementById('standingsLabel').textContent = 'Standings';
   const sorted = playerNames.map((n, i) => ({n, t: playerTotals[i], i})).sort((a, b) => a.t - b.t);
+  const totalOnly = !hasBanker && !hasPin;
+  const totalThStyle = totalOnly ? ' style="text-align:right;"' : '';
+  const totalTdStyle = totalOnly ? ' style="text-align:right;"' : '';
   const rows = sorted.map(p => {
     const cls = p.t === 0 ? 'dash' : '';
     const val = p.t === 0 ? '—' : p.t;
-    return `<tr><td>${esc(p.n)}</td><td class="${cls}">${val}</td>${extraCells(p.i)}</tr>`;
+    return `<tr><td>${esc(p.n)}</td><td class="${cls}"${totalTdStyle}>${val}</td>${extraCells(p.i)}</tr>`;
   }).join('');
-  list.innerHTML = `<table class="sb-grid"><thead><tr><th></th><th>Total</th>${extraHeaders}</tr></thead><tbody>${rows}</tbody></table>`;
+  list.innerHTML = `<table class="sb-grid"><thead><tr><th></th><th${totalThStyle}>Total</th>${extraHeaders}</tr></thead><tbody>${rows}</tbody></table>`;
 }
 
 // ── Hole scoring ───────────────────────────────────────────────────────────────────────
@@ -1045,7 +1042,8 @@ function saveGameResult() {
     bankerHistory: bkHistory.length > 0 ? bkHistory.map(h => ({...h, scores:[...h.scores], matchups:h.matchups.map(m=>({...m}))})) : null,
     bkPlayerNetTotals: bkHistory.length > 0 ? [...bkPlayerNetTotals] : null,
     pinHistory: pinHistory.length > 0 ? [...pinHistory] : null,
-    pinNetTotals: pinHistory.length > 0 ? [...pinNetTotals] : null
+    pinNetTotals: pinHistory.length > 0 ? [...pinNetTotals] : null,
+    buyIn: gameMode === 'stableford' && buyIn ? buyIn : null
   };
   history.push(record);
   localStorage.setItem('gameHistory', JSON.stringify(history));
@@ -1079,16 +1077,43 @@ function renderFinalScreen() {
     const maxPts = sorted[0]?.t || 0;
     html += `<div class="final-standings">${sorted.map((p, rank) =>
       `<div class="final-row${p.t === maxPts ? ' winner' : ''}">
-        <span class="final-name">${rank === 0 ? '🏆 ' : ''}${esc(p.n)}</span>
+        <span class="final-name">${esc(p.n)}${p.t === maxPts ? ' 🏆' : ''}</span>
         <span class="final-pts">${p.t} pts</span>
       </div>`).join('')}</div>`;
+
+    if (buyIn && buyIn > 0) {
+      const winners = sorted.filter(p => p.t === maxPts);
+      const losers  = sorted.filter(p => p.t < maxPts);
+      const prizePerWinner = (losers.length * buyIn) / winners.length;
+      const prizeNet = playerNames.map((_, i) => {
+        const isWinner = winners.some(w => w.i === i);
+        const isLoser  = losers.some(l => l.i === i);
+        if (isWinner) return +prizePerWinner;
+        if (isLoser)  return -buyIn;
+        return 0;
+      });
+      html += `<div class="game-card" style="margin-top:12px;">
+        <div class="game-card-label">Prize — $${buyIn} Buy In</div>`;
+      playerNames.forEach((n, i) => {
+        const net = prizeNet[i];
+        if (net === 0) return;
+        const cls = net > 0 ? 'sc-pos' : 'sc-neg';
+        const str = net > 0 ? '+$' + net.toFixed(2).replace(/\.00$/,'') : '-$' + Math.abs(net).toFixed(2).replace(/\.00$/,'');
+        html += `<div style="display:flex;justify-content:space-between;padding:7px 4px;border-bottom:1px solid rgba(255,255,255,0.05);">
+          <span style="font-size:14px;font-weight:bold;">${esc(n)}</span>
+          <span class="${cls}" style="font-family:'Courier New',monospace;font-size:14px;font-weight:bold;">${str}</span>
+        </div>`;
+      });
+      html += renderSettlementBlock(prizeNet);
+      html += '</div>';
+    }
   } else {
     // Stroke play — lowest wins
     const sorted = playerNames.map((n, i) => ({n, t: playerTotals[i], i})).sort((a, b) => a.t - b.t);
     const minScore = sorted[0]?.t || 0;
     html += `<div class="final-standings">${sorted.map((p, rank) =>
       `<div class="final-row${p.t === minScore ? ' winner' : ''}">
-        <span class="final-name">${rank === 0 ? '🏆 ' : ''}${esc(p.n)}</span>
+        <span class="final-name">${esc(p.n)}${p.t === minScore ? ' 🏆' : ''}</span>
         <span class="final-pts">${p.t || '—'}</span>
       </div>`).join('')}</div>`;
   }
@@ -1114,13 +1139,13 @@ function renderFinalScreen() {
   if (pinHistory.length > 0) {
     html += `<div class="game-card" style="margin-top:8px;">
       <div class="game-card-label">Closest to Pin</div>`;
-    playerNames.forEach((n, i) => {
-      const net = pinNetTotals[i] || 0;
-      if (net === 0) return;
-      const cls = net > 0 ? 'sc-pos' : 'sc-neg';
-      const str = net > 0 ? '+$' + net : '-$' + Math.abs(net);
+    const pinSorted = playerNames.map((n, i) => ({n, net: pinNetTotals[i] || 0})).sort((a, b) => b.net - a.net);
+    pinSorted.forEach(p => {
+      if (p.net === 0) return;
+      const cls = p.net > 0 ? 'sc-pos' : 'sc-neg';
+      const str = p.net > 0 ? '+$' + p.net : '-$' + Math.abs(p.net);
       html += `<div style="display:flex;justify-content:space-between;padding:7px 4px;border-bottom:1px solid rgba(255,255,255,0.05);">
-        <span style="font-size:14px;font-weight:bold;">${esc(n)}</span>
+        <span style="font-size:14px;font-weight:bold;">${esc(p.n)}</span>
         <span class="${cls}" style="font-family:'Courier New',monospace;font-size:14px;font-weight:bold;">${str}</span>
       </div>`;
     });

@@ -38,7 +38,7 @@ body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;margin:0;p
   color:#ffd447;box-shadow:0 0 10px rgba(255,212,71,0.1);
 }
 .fmt-chip-suit{font-size:14px;line-height:1;}
-.fmt-active-label{font-size:10px;color:rgba(255,212,71,0.4);text-align:center;margin-top:8px;letter-spacing:1px;text-transform:uppercase;font-family:'Courier New',monospace;}
+.fmt-active-label{display:none;}
 
 /* Settings rows */
 .row-setting{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;margin-bottom:8px;}
@@ -91,13 +91,13 @@ body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;margin:0;p
 .big-score-input:focus{outline:none;border-color:rgba(255,212,71,0.7);}
 .big-score-input.b-team:focus{border-color:rgba(192,57,43,0.8);}
 
-/* Wager stepper */
-.wager-stepper{display:flex;align-items:center;background:rgba(0,0,0,0.4);border:1px solid rgba(255,212,71,0.25);border-radius:6px;overflow:hidden;}
-.wager-step-btn{width:28px;height:30px;background:rgba(255,212,71,0.07);border:none;color:rgba(255,212,71,0.7);font-size:16px;font-weight:bold;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex-shrink:0;}
-.wager-step-btn:active{background:rgba(255,212,71,0.2);color:#ffd447;}
-.wager-step-btn.left{border-right:1px solid rgba(255,212,71,0.2);}
-.wager-step-btn.right{border-left:1px solid rgba(255,212,71,0.2);}
-.wager-val{min-width:36px;text-align:center;font-family:'Courier New',monospace;font-size:14px;font-weight:bold;color:#ffd447;line-height:30px;padding:0 4px;}
+/* Stroke mode toggle */
+.stroke-mode-toggle{display:flex;gap:6px;margin-bottom:8px;}
+.smode-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:10px 6px;border-radius:8px;border:1px solid rgba(255,212,71,0.15);background:rgba(0,0,0,0.3);color:rgba(255,255,255,0.35);cursor:pointer;font-family:'Georgia','Times New Roman',serif;transition:all .15s;-webkit-user-select:none;}
+.smode-btn:active{transform:scale(0.97);}
+.smode-btn.active{background:rgba(255,212,71,0.1);border-color:rgba(255,212,71,0.6);color:#ffd447;box-shadow:0 0 10px rgba(255,212,71,0.1);}
+.smode-btn-title{font-size:11px;font-weight:bold;letter-spacing:.8px;text-transform:uppercase;}
+.smode-btn-sub{font-size:9px;opacity:.65;letter-spacing:.3px;}
 
 /* Confirm overlay */
 .confirm-overlay{display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:40px 24px 110px;text-align:center;}
@@ -164,12 +164,36 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
         <span class="fmt-chip-suit">♣♥</span>Scramble
       </div>
     </div>
-    <div class="fmt-active-label" id="fmtDefaultNote">Stroke Play</div>
+    <div id="strokeModeBlock" style="display:none;margin-top:8px;">
+      <div style="font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.4);margin-bottom:6px;padding-top:8px;border-top:1px solid rgba(255,212,71,0.1);">Stroke Play</div>
+      <div class="stroke-mode-toggle">
+        <div class="smode-btn active" id="smode-post" onclick="setStrokeMode('post')">
+          <div class="smode-btn-title">Post Round</div>
+          <div class="smode-btn-sub">Enter final scores now</div>
+        </div>
+        <div class="smode-btn" id="smode-live" onclick="setStrokeMode('live')">
+          <div class="smode-btn-title">Live</div>
+          <div class="smode-btn-sub">Track hole by hole</div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- Card 4: Settings (changes per format) -->
+  <!-- Card 4: Prize (Stableford only) -->
+  <div class="setup-section hidden" id="prizeCard">
+    <div class="setup-section-label">Prize</div>
+    <div class="row-setting">
+      <span class="row-label">Buy In</span>
+      <div class="row-control">
+        <span class="currency">$</span>
+        <input type="number" class="num-input" id="buyInInput" min="0" step="1" placeholder="0" inputmode="decimal" style="width:80px;">
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 5: Players (changes per format) -->
   <div class="setup-section" id="settingsCard">
-    <div class="setup-section-label">Settings</div>
+    <div class="setup-section-label">Players</div>
     <div id="settingsBody"></div>
   </div>
 
@@ -192,23 +216,29 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
 <nav class="bottom-nav">
   <div class="nav-pill">
     <a class="nav-item" href="index.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/><line x1="4" y1="14" x2="20" y2="14" stroke-width="1.5" stroke-dasharray="2 2"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8" r="3"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/><line x1="4" y1="14" x2="20" y2="14" stroke-width="1.5" stroke-dasharray="2 2"/>
+      </svg>
       Rounds
     </a>
-    <a class="nav-item" href="history.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
-      Stats
+    <a class="nav-item" href="caddy.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2h12a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><line x1="9" y1="2" x2="9" y2="6"/><line x1="15" y1="2" x2="15" y2="6"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/>
+      </svg>
+      Caddy
     </a>
-    <a class="nav-center active" href="start.html">
+    <a class="nav-center" href="start.html">
       <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" fill="#1a1a0a"/><circle cx="12" cy="12" r="6.2" fill="white"/><circle cx="10.2" cy="11.2" r="1" fill="#ccc"/><circle cx="12" cy="9.5" r="1" fill="#ccc"/><circle cx="13.8" cy="11.2" r="1" fill="#ccc"/></svg>
+    </a>
+    <a class="nav-item" href="history.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/>
+      </svg>
+      Stats
     </a>
     <a class="nav-item" href="dossier.html">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 9h2M15 13h2M5 17c0-2 1.5-3 4-3s4 1 4 3"/></svg>
       Dossier
-    </a>
-    <a class="nav-item" href="caddy.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><line x1="9" y1="2" x2="9" y2="6"/><line x1="15" y1="2" x2="15" y2="6"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
-      Caddy
     </a>
   </div>
 </nav>
@@ -217,6 +247,16 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
 // selectedFormats: 'stableford' or 'scramble'. Empty = stroke play (default).
 // Empty = stroke play (default)
 const selectedFormats = new Set();
+let strokeMode = 'post'; // 'post' | 'live'
+
+function setStrokeMode(mode){
+  strokeMode = mode;
+  document.getElementById('smode-post').classList.toggle('active', mode === 'post');
+  document.getElementById('smode-live').classList.toggle('active', mode === 'live');
+  // show/hide score inputs in settings
+  buildAndRenderSettings('stroke');
+  document.getElementById('startBtn').textContent = mode === 'live' ? 'Start Round →' : 'Save Round';
+}
 
 // selectedFormats: 'stableford' | 'scramble' — mutually exclusive. Empty = stroke play.
 function toggleFormat(f){
@@ -248,34 +288,38 @@ function formatLabel(){
 function updateCards(){
   const m = effectiveMode();
   const isScramble = m === 'scramble';
-
-  document.getElementById('fmtDefaultNote').textContent = formatLabel();
+  const isStroke = m === 'stroke';
+  const isStableford = m === 'stableford';
 
   document.getElementById('settingsCard').style.pointerEvents='';
   document.getElementById('settingsCard').style.opacity='';
+  document.getElementById('strokeModeBlock').style.display = isStroke ? '' : 'none';
+  document.getElementById('prizeCard').classList.toggle('hidden', !isStableford);
 
   buildAndRenderSettings(m);
 
   if(isScramble){
     document.getElementById('startBtn').textContent = 'Set Teams →';
     document.getElementById('startBtn').classList.toggle('hidden', scrTeamAssignment === null);
+  } else if(isStroke){
+    document.getElementById('startBtn').textContent = strokeMode === 'live' ? 'Start Round →' : 'Save Round';
+    document.getElementById('startBtn').classList.remove('hidden');
   } else {
-    document.getElementById('startBtn').textContent = (m === 'stroke') ? 'Save Round' : 'Start →';
+    document.getElementById('startBtn').textContent = 'Start →';
     document.getElementById('startBtn').classList.remove('hidden');
   }
 }
 
 function buildAndRenderSettings(m){
   document.getElementById('settingsBody').innerHTML = buildSettings(m);
+  const hideCard = m === 'stableford' || (m === 'stroke' && strokeMode === 'live');
+  document.getElementById('settingsCard').style.display = hideCard ? 'none' : '';
+  document.querySelector('#settingsCard .setup-section-label').textContent = m === 'scramble' ? 'Team Assignment' : 'Players';
 }
 
 function buildSettings(m){
-  const holesRow = `<div class="row-setting">
-    <span class="row-label">Holes</span>
-    <div class="row-control"><select id="settingHoles" class="select-input"><option value="9">9</option><option value="18" selected>18</option></select></div>
-  </div>`;
-
   if(m === 'stroke'){
+    if(strokeMode === 'live') return '';
     const playerRows = [0,1,2,3].map(i=>{
       const name = document.getElementById('p'+i)?.value.trim()||'';
       return name ? `<div class="stroke-grid">
@@ -284,26 +328,14 @@ function buildSettings(m){
       </div>` : '';
     }).filter(Boolean);
     const scoreRows = playerRows.length
-      ? `<hr class="divider">
-         <div style="display:grid;grid-template-columns:1fr 64px;gap:6px;margin-bottom:4px;">
+      ? `<div style="display:grid;grid-template-columns:1fr 64px;gap:6px;margin-bottom:4px;">
            <div class="col-header">Player</div><div class="col-header" style="text-align:center;">Score</div>
          </div>${playerRows.join('')}` : '';
-    return holesRow + scoreRows;
+    return scoreRows;
   }
 
   if(m === 'stableford'){
-    const pinRow = `<hr class="divider">
-    <div class="row-setting">
-      <span class="row-label">📍 Pin Wager</span>
-      <div class="row-control">
-        <div class="wager-stepper">
-          <button class="wager-step-btn left" onclick="stepPinWager(-1)">−</button>
-          <div class="wager-val" id="pinWagerDisplay">$${pinWagerVal}</div>
-          <button class="wager-step-btn right" onclick="stepPinWager(1)">+</button>
-        </div>
-      </div>
-    </div>`;
-    return holesRow + pinRow;
+    return '';
   }
 
   if(m === 'scramble'){
@@ -320,12 +352,8 @@ function buildSettings(m){
           </div>`;
         }).join('')
       : `<div style="font-size:12px;color:rgba(255,255,255,0.25);text-align:center;padding:12px 0;">Add players above</div>`;
-    return `<hr class="divider" style="margin-top:0;">
-    <div class="setup-section-label" style="margin:8px 0 10px;border:none;padding:0;">Team Assignment</div>
-    <div id="scrPlayerList">${rows}</div>
-    <button class="set-teams-btn" id="setTeamsBtn" onclick="setScrTeams()">Confirm Teams →</button>
-    <hr class="divider" style="margin:12px 0 8px;">
-    ${holesRow}`;
+    return `<div id="scrPlayerList">${rows}</div>
+    <button class="set-teams-btn" id="setTeamsBtn" onclick="setScrTeams()">Confirm Teams →</button>`;
   }
   return '';
 }
@@ -343,14 +371,21 @@ function startGame(){
   const players = getPlayers();
   const filledPlayers = players.filter(Boolean);
 
+  if(m === 'stroke' && strokeMode === 'live'){
+    if(filledPlayers.length < 2){ errEl.textContent='Add at least 2 players.'; errEl.style.display='block'; return; }
+    const setup = { game: 'stroke', course, date: date||null, players: filledPlayers, totalHoles: 18 };
+    localStorage.setItem('pendingSetup', JSON.stringify(setup));
+    window.location.href = 'round.html';
+    return;
+  }
   if(m === 'stroke'){ saveStrokeRound(); return; }
   if(m === 'scramble'){ saveScrambleRound(); return; }
 
   if(filledPlayers.length < 2){ errEl.textContent='Add at least 2 players.'; errEl.style.display='block'; return; }
 
   if(m === 'stableford'){
-    const totalHoles = parseInt(document.getElementById('settingHoles')?.value)||18;
-    const setup = { game: 'stableford', course, date: date||null, players: filledPlayers, totalHoles, pinWager: pinWagerVal };
+    const buyIn = parseFloat(document.getElementById('buyInInput')?.value) || 0;
+    const setup = { game: 'stableford', course, date: date||null, players: filledPlayers, totalHoles: 18, buyIn: buyIn > 0 ? buyIn : null };
     localStorage.setItem('pendingSetup', JSON.stringify(setup));
     window.location.href = 'round.html';
     return;
@@ -399,7 +434,8 @@ function resetToStart(){
   document.querySelector('.page-header').style.display='';
   document.getElementById('confirmOverlay').classList.remove('visible');
   scrTeamAssignment = null;
-  pinWagerVal = 1;
+  strokeMode = 'post';
+  setStrokeMode('post');
   document.getElementById('settingsCard').style.pointerEvents='';
   document.getElementById('settingsCard').style.opacity='';
   updateCards();
@@ -452,7 +488,7 @@ function saveScrambleRound(){
   errEl.style.display='none';
   const date = document.getElementById('roundDate').value;
   const course = document.getElementById('courseInput').value.trim();
-  const totalHoles = parseInt(document.getElementById('settingHoles')?.value)||18;
+  const totalHoles = 18;
   const allPlayers = [...scrTeamAssignment.a, ...scrTeamAssignment.b];
   const setup = {
     game: 'scramble',
@@ -466,13 +502,6 @@ function saveScrambleRound(){
 }
 
 function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
-
-let pinWagerVal = 1;
-function stepPinWager(d){
-  pinWagerVal = Math.max(1, pinWagerVal + d);
-  const el = document.getElementById('pinWagerDisplay');
-  if(el) el.textContent = '$' + pinWagerVal;
-}
 
 ['p0','p1','p2','p3'].forEach(id=>{
   document.getElementById(id)?.addEventListener('input', ()=>{

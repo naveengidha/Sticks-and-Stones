@@ -1,4 +1,4 @@
-const CACHE = 'golf-pwa-v391';
+const CACHE = 'golf-pwa-v416';
 const BASE = self.location.pathname.replace(/\/sw\.js$/, '');
 const ASSETS = [
   BASE + '/index.html',
@@ -24,9 +24,8 @@ self.addEventListener('install', e => {
           cache.add(url).catch(err => console.warn('Failed to cache:', url, err))
         )
       )
-    )
+    ).then(() => self.skipWaiting())
   );
-  self.skipWaiting();
 });
 
 self.addEventListener('activate', e => {
@@ -47,6 +46,6 @@ self.addEventListener('fetch', e => {
     return;
   }
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request))
+    caches.match(e.request).then(cached => cached || fetch(e.request).catch(() => {}))
   );
 });
