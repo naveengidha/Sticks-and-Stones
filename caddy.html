@@ -158,8 +158,10 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
 /* ── Dispersion ── */
 .disp-stab{flex:1;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,212,71,0.18);background:transparent;color:var(--gold-dim);font-size:11px;font-weight:bold;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:all .12s;}
 .disp-stab.active{background:rgba(255,212,71,0.1);border-color:rgba(255,212,71,0.5);color:var(--gold);}
-.disp-chip{flex-shrink:0;padding:6px 12px;border-radius:20px;border:1px solid rgba(255,212,71,0.18);background:transparent;color:var(--gold-dim);font-size:11px;font-weight:bold;letter-spacing:.4px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .12s;}
+.disp-chip{padding:3px 8px;border-radius:5px;border:1px solid rgba(255,212,71,0.18);background:transparent;color:var(--gold-dim);font-size:9px;font-weight:bold;letter-spacing:.2px;cursor:pointer;font-family:inherit;text-align:center;transition:all .12s;line-height:1.3;white-space:nowrap;min-width:32px;}
 .disp-chip.active{background:rgba(255,212,71,0.12);border-color:rgba(255,212,71,0.55);color:var(--gold);}
+.disp-tag{padding:3px 6px;border-radius:5px;border:1px solid rgba(255,212,71,0.15);background:transparent;color:rgba(255,255,255,0.35);font-size:9px;font-weight:bold;letter-spacing:.2px;cursor:pointer;font-family:inherit;text-align:center;white-space:nowrap;transition:all .12s;line-height:1.3;}
+.disp-tag.active{background:rgba(255,212,71,0.1);border-color:rgba(255,212,71,0.45);color:var(--gold);}
 .disp-wrap{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
 #disp-view-log{flex:1;display:flex;flex-direction:column;min-height:0;padding-bottom:0;}
 #disp-view-map{flex:1;display:flex;flex-direction:column;min-height:0;}
@@ -263,7 +265,7 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
     <!-- Screen: Shot Dispersion -->
     <div class="screen" id="screen-dispersion" style="position:relative;">
       <!-- Static sub-view toggle -->
-      <div style="display:flex;gap:8px;padding:10px 16px 8px;flex-shrink:0;">
+      <div style="display:flex;gap:8px;padding:10px 16px 8px;flex-shrink:0;align-items:center;">
         <button class="disp-stab active" data-view="log">Log Shot</button>
         <button class="disp-stab" data-view="map">View Map</button>
       </div>
@@ -277,7 +279,7 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
         <!-- Log Shot sub-view -->
         <div id="disp-view-log">
           <!-- Canvases: two equal columns, stretch to fill available height -->
-          <div id="disp-canvas-row" style="display:flex;gap:10px;padding:0 16px 110px;">
+          <div id="disp-canvas-row" style="display:flex;gap:10px;padding:0 16px 0;">
 
             <!-- Approach column -->
             <div id="disp-approach-col" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0;">
@@ -298,22 +300,44 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
               <button id="disp-save-btn" style="width:44px;height:44px;border-radius:50%;border:none;font-size:22px;line-height:1;background:rgba(74,180,100,0.08);color:rgba(74,180,100,0.25);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;" disabled>✓</button>
               <div id="disp-log-msg" style="text-align:center;font-size:11px;color:var(--green-ok);min-height:14px;"></div>
             </div>
+          </div>
 
+          <!-- Context: tags + note -->
+          <div style="padding:10px 16px 0;display:flex;flex-direction:column;gap:8px;">
+            <div id="disp-tag-row" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">
+              <button class="disp-tag" data-tag="Wind">Wind</button>
+              <button class="disp-tag" data-tag="Uphill">Uphill</button>
+              <button class="disp-tag" data-tag="Downhill">Downhill</button>
+              <button class="disp-tag" data-tag="Tight lie">Tight lie</button>
+              <button class="disp-tag" data-tag="Rough">Rough</button>
+              <button class="disp-tag" data-tag="Flyer">Flyer</button>
+            </div>
+            <input id="disp-note-input" type="text" maxlength="80" placeholder="Note (optional)" autocomplete="off"
+              style="background:rgba(0,0,0,0.3);border:1px solid rgba(255,212,71,0.15);border-radius:8px;color:var(--text);font-size:13px;font-family:inherit;padding:8px 12px;outline:none;width:100%;box-sizing:border-box;margin-bottom:110px;">
           </div>
         </div>
 
         <!-- View Map sub-view -->
         <div id="disp-view-map" style="display:none;">
-          <!-- Filter chips + clear -->
-          <div style="display:flex;align-items:center;padding:0 16px 8px;gap:8px;flex-shrink:0;">
-            <div id="disp-filter-scroll" style="flex:1;display:flex;overflow-x:auto;gap:8px;-webkit-overflow-scrolling:touch;"></div>
-            <button id="disp-clear-btn" style="flex-shrink:0;background:none;border:none;color:rgba(255,77,77,0.45);font-size:12px;cursor:pointer;padding:4px;font-family:inherit;letter-spacing:.3px;">Clear</button>
+          <!-- Club filter -->
+          <div style="flex-shrink:0;padding:4px 16px 2px;">
+            <div style="text-align:center;font-size:9px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:var(--gold-dim);margin-bottom:3px;">Clubs</div>
+            <div id="disp-filter-scroll" style="display:flex;flex-wrap:wrap;justify-content:center;gap:3px;"></div>
+          </div>
+          <!-- Tag filter -->
+          <div id="disp-tag-filter-row" style="flex-shrink:0;padding:6px 16px 4px;">
+            <div style="text-align:center;font-size:9px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:var(--gold-dim);margin-bottom:3px;">Conditions</div>
+            <div id="disp-tag-filter-scroll" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;"></div>
           </div>
           <!-- Map canvas -->
-          <div id="disp-map-wrap" style="flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center;padding:0 16px 110px;">
+          <div id="disp-map-wrap" style="flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center;padding:0 16px 0;">
             <canvas id="disp-map-canvas" style="border-radius:10px;border:1px solid rgba(255,212,71,0.12);max-width:100%;max-height:100%;"></canvas>
             <!-- Dot detail popup -->
             <div id="disp-dot-popup" style="display:none;position:absolute;z-index:20;background:#0e1a12;border:1px solid rgba(255,212,71,0.35);border-radius:8px;padding:6px 12px;box-shadow:0 3px 16px rgba(0,0,0,0.7);font-size:12px;white-space:nowrap;pointer-events:none;"></div>
+          </div>
+          <!-- Clear -->
+          <div style="display:flex;justify-content:flex-end;padding:4px 16px 110px;flex-shrink:0;">
+            <button id="disp-clear-btn" style="background:none;border:none;color:rgba(255,77,77,0.45);font-size:11px;cursor:pointer;padding:4px;font-family:inherit;letter-spacing:.3px;">Clear All</button>
           </div>
         </div>
       </div>
@@ -847,7 +871,7 @@ renderAll();
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 
 // ── Shot Dispersion ───────────────────────────────────────────────
-const DISP_COLORS = ['#ffd447','#4db87a','#e07b39','#6ab3d4','#c97bd4','#e05c6a','#a0c44d'];
+const DISP_COLORS = ['#5c3317','#8B5E3C','#C4915A','#ffd447','#fff0a0','#ffffff','#b8e8a0','#4db87a','#2e9e5e','#88b8a0','#909090'];
 const APPROACH_W = 140, APPROACH_H = 210;
 const LANDING_W  = 140, LANDING_H  = 160;
 const MAP_W      = 300, MAP_H      = 300;
@@ -873,13 +897,23 @@ function dispMapCanvasSize(){
 
 let dispInitialized = false;
 let dispSelectedClub = null;
-let dispApproachPt = null;  // {x,y} normalized
+let dispApproachPt = null;
 let dispLandingPt  = null;
 let dispActiveFilter = 'all';
-let dispRenderedDots = []; // [{cx,cy,shot}] for hit-testing on map
+let dispActiveTagFilter = 'all';
+let dispSelectedTags = new Set();
 
 function dispLoad(){ try{ return JSON.parse(localStorage.getItem('shotDispersion')||'[]'); }catch(e){ return []; } }
 function dispSave(arr){ localStorage.setItem('shotDispersion', JSON.stringify(arr)); }
+
+// Tag chip toggle
+document.getElementById('disp-tag-row').addEventListener('click', e => {
+  const btn = e.target.closest('.disp-tag'); if(!btn) return;
+  const tag = btn.dataset.tag;
+  if(dispSelectedTags.has(tag)) dispSelectedTags.delete(tag);
+  else dispSelectedTags.add(tag);
+  btn.classList.toggle('active', dispSelectedTags.has(tag));
+});
 
 function dispAllClubs(){
   return [
@@ -1019,9 +1053,8 @@ function dispDrawMap(shots){
       if(dist < 16){ px += 12; }
     });
     const color = dispClubColor(s.club);
-    ctx2.beginPath(); ctx2.arc(px, py, 7, 0, Math.PI*2);
+    ctx2.beginPath(); ctx2.arc(px, py, 6, 0, Math.PI*2);
     ctx2.fillStyle = color; ctx2.fill();
-    ctx2.strokeStyle = '#fff'; ctx2.lineWidth = 1.2; ctx2.stroke();
     dispRenderedDots.push({cx: px, cy: py, shot: s, num: i+1});
   });
   ctx2.restore();
@@ -1060,20 +1093,48 @@ function dispHideClubPopup(){
 }
 
 // ── Render filter chips (map view) ────────────────────────────────
+function dispApplyFilters(shots){
+  let out = shots;
+  if(dispActiveFilter !== 'all') out = out.filter(s => s.club === dispActiveFilter);
+  if(dispActiveTagFilter !== 'all') out = out.filter(s => (s.tags||[]).includes(dispActiveTagFilter));
+  return out;
+}
+
+const CLUB_SHORT = {driver:'DRV','5w':'5W','4h':'4H','5i':'5I','6i':'6I','7i':'7I','8i':'8I','9i':'9I',pw:'PW',aw:'AW',sw:'SW'};
+function dispClubShort(id){ return CLUB_SHORT[id] || dispClubLabel(id).replace(/\s+/g,'').substring(0,3).toUpperCase(); }
+
 function dispRenderFilterChips(shots){
-  const container = document.getElementById('disp-filter-scroll');
-  const clubIds = [...new Set(shots.map(s=>s.club))];
-  if(clubIds.length && !clubIds.includes(dispActiveFilter)) dispActiveFilter = 'all';
-  const chips = [{id:'all', label:'All', color: null}, ...clubIds.map(id=>({id, label:dispClubLabel(id), color:dispClubColor(id)}))];
-  container.innerHTML = chips.map(c=>
-    `<button class="disp-chip${c.id===dispActiveFilter?' active':''}" data-club="${c.id}">${c.color ? `<span style="color:${c.color}">${c.label}</span>` : c.label}</button>`
+  // Club row — all clubs in bag except driver and putter, always shown
+  const clubContainer = document.getElementById('disp-filter-scroll');
+  const allClubIds = dispAllClubs().map(c=>c.id).filter(id => id !== 'driver' && id !== 'putter');
+  if(!allClubIds.includes(dispActiveFilter)) dispActiveFilter = 'all';
+  const clubChips = [{id:'all', label:'All', color:null}, ...allClubIds.map(id=>({id, label:dispClubShort(id), color:dispClubColor(id)}))];
+  clubContainer.innerHTML = clubChips.map(c=>
+    `<button class="disp-chip${c.id===dispActiveFilter?' active':''}" data-club="${c.id}">${c.color?`<span style="color:${c.color}">${c.label}</span>`:c.label}</button>`
   ).join('');
-  container.onclick = e => {
+  clubContainer.onclick = e => {
     const btn = e.target.closest('.disp-chip'); if(!btn) return;
     dispActiveFilter = btn.dataset.club;
-    container.querySelectorAll('.disp-chip').forEach(b=>b.classList.toggle('active', b===btn));
-    const filtered = dispActiveFilter==='all' ? shots : shots.filter(s=>s.club===dispActiveFilter);
-    dispDrawMap(filtered);
+    clubContainer.querySelectorAll('.disp-chip').forEach(b=>b.classList.toggle('active', b===btn));
+    dispDrawMap(dispApplyFilters(shots));
+    const p = document.getElementById('disp-dot-popup'); if(p) p.style.display = 'none';
+  };
+
+  // Tag row — always show all 6 conditions
+  const tagContainer = document.getElementById('disp-tag-filter-scroll');
+  const tagRow = document.getElementById('disp-tag-filter-row');
+  const allTags = ['Wind','Uphill','Downhill','Tight lie','Rough','Flyer'];
+  if(!allTags.includes(dispActiveTagFilter)) dispActiveTagFilter = 'all';
+  tagRow.style.display = 'block';
+  const tagChips = [{id:'all', label:'All'}, ...allTags.map(t=>({id:t, label:t}))];
+  tagContainer.innerHTML = tagChips.map(t=>
+    `<button class="disp-chip${t.id===dispActiveTagFilter?' active':''}" data-tag="${t.id}">${t.label}</button>`
+  ).join('');
+  tagContainer.onclick = e => {
+    const btn = e.target.closest('.disp-chip'); if(!btn) return;
+    dispActiveTagFilter = btn.dataset.tag;
+    tagContainer.querySelectorAll('.disp-chip').forEach(b=>b.classList.toggle('active', b===btn));
+    dispDrawMap(dispApplyFilters(shots));
     const p = document.getElementById('disp-dot-popup'); if(p) p.style.display = 'none';
   };
 }
@@ -1104,8 +1165,7 @@ document.querySelector('#screen-dispersion').addEventListener('click', e=>{
 function dispRenderMap(){
   const shots = dispLoad();
   dispRenderFilterChips(shots);
-  const filtered = dispActiveFilter==='all' ? shots : shots.filter(s=>s.club===dispActiveFilter);
-  dispDrawMap(filtered);
+  dispDrawMap(dispApplyFilters(shots));
   if(!shots.length){
     const popup = document.getElementById('disp-dot-popup');
     if(popup) popup.style.display = 'none';
@@ -1124,7 +1184,12 @@ document.getElementById('disp-map-canvas').addEventListener('pointerdown', e=>{
   const hit = dispRenderedDots.find(d => Math.hypot(mx - d.cx, my - d.cy) < 14);
   const popup = document.getElementById('disp-dot-popup');
   if(hit){
-    popup.innerHTML = `<strong style="color:var(--gold);">${dispClubLabel(hit.shot.club)}</strong>&nbsp;·&nbsp;${hit.shot.distanceYards > 0 ? hit.shot.distanceYards+'y' : '—'}`;
+    const extra = [
+      hit.shot.distanceYards > 0 ? hit.shot.distanceYards+'y' : null,
+      ...(hit.shot.tags||[]),
+      hit.shot.note || null
+    ].filter(Boolean).join('&nbsp;· ');
+    popup.innerHTML = `<strong style="color:var(--gold);">${dispClubLabel(hit.shot.club)}</strong>${extra ? '&nbsp;· '+extra : ''}`;
     // position above the dot in canvas-relative px
     const dotX = rect.left + (hit.cx / scaleX);
     const dotY = rect.top  + (hit.cy / scaleY);
@@ -1176,11 +1241,16 @@ document.getElementById('disp-landing-canvas').addEventListener('pointerdown', e
 document.getElementById('disp-save-btn').addEventListener('click', ()=>{
   if(!dispSelectedClub || !dispApproachPt || !dispLandingPt) return;
   const dist = dispYToYards(dispApproachPt.y);
+  const note = document.getElementById('disp-note-input').value.trim();
+  const tags = [...dispSelectedTags];
   const shots = dispLoad();
-  shots.push({ club: dispSelectedClub, distanceYards: dist, approachX: dispApproachPt.x, approachY: dispApproachPt.y, landingX: dispLandingPt.x, landingY: dispLandingPt.y });
+  shots.push({ club: dispSelectedClub, distanceYards: dist, approachX: dispApproachPt.x, approachY: dispApproachPt.y, landingX: dispLandingPt.x, landingY: dispLandingPt.y, tags, note: note || undefined });
   dispSave(shots);
   // reset
   dispApproachPt = null; dispLandingPt = null; dispSelectedClub = null;
+  dispSelectedTags = new Set();
+  document.querySelectorAll('.disp-tag').forEach(b => b.classList.remove('active'));
+  document.getElementById('disp-note-input').value = '';
   dispHideClubPopup();
   dispDrawApproach(document.getElementById('disp-approach-canvas'), null);
   dispDrawGreen(document.getElementById('disp-landing-canvas'), null);

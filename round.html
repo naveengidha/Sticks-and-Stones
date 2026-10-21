@@ -63,14 +63,13 @@ button{font-family:inherit;cursor:pointer;}
 .sb-grid td.dash{color:rgba(255,255,255,0.15);font-weight:normal;}
 
 /* ── Score input rows (Stroke / Stableford default) ── */
-.score-rows{margin-bottom:4px;}
-.score-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
-.score-row:last-child{border-bottom:none;}
-.score-name{font-size:14px;font-weight:bold;color:#a07840;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.stepper{display:flex;align-items:center;margin-left:auto;}
-.step-btn{background:rgba(255,212,71,0.1);border:1px solid rgba(255,212,71,0.25);color:#ffd447;font-size:18px;font-weight:bold;width:36px;height:36px;border-radius:6px;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;}
+.score-rows{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:4px;}
+.score-row{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 6px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(0,0,0,0.2);}
+.score-name{font-size:12px;font-weight:bold;color:#a07840;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;text-align:center;}
+.stepper{display:flex;align-items:center;}
+.step-btn{background:rgba(255,212,71,0.1);border:1px solid rgba(255,212,71,0.25);color:#ffd447;font-size:16px;font-weight:bold;width:30px;height:30px;border-radius:6px;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;}
 .step-btn:active{background:rgba(255,212,71,0.25);}
-.step-val{font-family:'Courier New',monospace;font-size:20px;font-weight:bold;color:#fff;min-width:36px;text-align:center;}
+.step-val{font-family:'Courier New',monospace;font-size:18px;font-weight:bold;color:#fff;min-width:32px;text-align:center;}
 
 /* ── Scramble score inputs ── */
 /* ── Scramble team score rows ── */
@@ -348,6 +347,7 @@ if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch
 let gameMode = 'stroke';    // 'stroke' | 'stableford' | 'scramble'
 let playerNames = [];
 let scrTeams = { a: [], b: [] };
+let stabTeams = null;   // {a:[names], b:[names]} when stableford 2v2
 let hole = 1;
 let totalHoles = 18;
 let courseName = '';
@@ -418,6 +418,7 @@ function loadFromPendingSetup() {
   roundDateStr = setup.date || new Date().toLocaleDateString('en-CA');
   totalHoles = setup.totalHoles || 18;
   scrTeams = setup.scrTeams || { a: playerNames.slice(0,2), b: playerNames.slice(2) };
+  stabTeams = setup.teamAssignment || null;
 
   initGameState();
   if (setup.pinWager) { pinWager = setup.pinWager; const el=document.getElementById('pinWagerDisplay'); if(el) el.textContent='$'+pinWager; }
@@ -457,6 +458,7 @@ function restoreActiveState() {
   gameMode = s.gameMode || 'stroke';
   playerNames = s.playerNames;
   scrTeams = s.scrTeams || { a: [], b: [] };
+  stabTeams = s.stabTeams || null;
   hole = s.hole; totalHoles = s.totalHoles;
   courseName = s.courseName || ''; roundDateStr = s.roundDateStr || '';
   currentPar = s.currentPar || 4; holeYards = s.holeYards || 0;
@@ -487,7 +489,7 @@ function saveActiveState() {
   let existing = {};
   try { existing = JSON.parse(localStorage.getItem('activeGame_round') || '{}'); } catch(e) {}
   localStorage.setItem('activeGame_round', JSON.stringify({
-    gameMode, playerNames, scrTeams, hole, totalHoles, courseName, roundDateStr,
+    gameMode, playerNames, scrTeams, stabTeams, hole, totalHoles, courseName, roundDateStr,
     currentPar, holeYards, playerTotals, scoreHistory, pointHistory, holeParDist,
     scrHistory, scrTotals, bankerActive, pinActive,
     bankerIdx, bkBaseWager, bkMinWager, bkMaxWager, bkCarryovers, bkPlayerNetTotals, bkHistory,
@@ -594,15 +596,21 @@ function renderScoreInputArea() {
   const label = gameMode === 'stableford' ? 'Scores' : 'Scores';
   document.getElementById('scoreCardLabel').textContent = label;
   area.innerHTML = `<div class="score-rows">${
-    playerNames.map((name, i) => `
-      <div class="score-row">
-        <div class="score-name">${esc(name)}</div>
+    playerNames.map((name, i) => {
+      let nameColor = '';
+      if (stabTeams) {
+        if ((stabTeams.a||[]).includes(name)) nameColor = ' style="color:#ffd447;"';
+        else if ((stabTeams.b||[]).includes(name)) nameColor = ' style="color:#e74c3c;"';
+      }
+      return `<div class="score-row">
+        <div class="score-name"${nameColor}>${esc(name)}</div>
         <div class="stepper">
           <button type="button" class="step-btn" onclick="stepScore(${i},-1)">−</button>
           <div class="step-val" id="sv_${i}">E</div>
           <button type="button" class="step-btn" onclick="stepScore(${i},1)">+</button>
         </div>
-      </div>`).join('')
+      </div>`;
+    }).join('')
   }</div>`;
 }
 
@@ -708,10 +716,10 @@ function renderStandings() {
   const fmtMoney = v => v === 0 ? '—' : (v > 0 ? '+$'+v : '-$'+Math.abs(v));
   const moneyCls = v => v > 0 ? 'pos' : v < 0 ? 'neg' : 'dash';
 
-  const extraHeaders = (hasBanker ? '<th>Banker</th>' : '') + (hasPin ? '<th>Pin</th>' : '');
+  const extraHeaders = (hasBanker ? '<th style="text-align:right;">Banker</th>' : '') + (hasPin ? '<th style="text-align:right;">Pin</th>' : '');
   const extraCells = i =>
-    (hasBanker ? `<td class="${moneyCls(bkPlayerNetTotals[i]||0)}">${fmtMoney(bkPlayerNetTotals[i]||0)}</td>` : '') +
-    (hasPin    ? `<td class="${moneyCls(pinNetTotals[i]||0)}">${fmtMoney(pinNetTotals[i]||0)}</td>` : '');
+    (hasBanker ? `<td style="text-align:right;" class="${moneyCls(bkPlayerNetTotals[i]||0)}">${fmtMoney(bkPlayerNetTotals[i]||0)}</td>` : '') +
+    (hasPin    ? `<td style="text-align:right;" class="${moneyCls(pinNetTotals[i]||0)}">${fmtMoney(pinNetTotals[i]||0)}</td>` : '');
 
   if (gameMode === 'scramble') {
     document.getElementById('standingsLabel').textContent = 'Team Scores';
@@ -732,9 +740,9 @@ function renderStandings() {
     };
     const bkA = teamNet('a', bkPlayerNetTotals), bkB = teamNet('b', bkPlayerNetTotals);
     const pinA = teamNet('a', pinNetTotals), pinB = teamNet('b', pinNetTotals);
-    const scrExtraHeaders = (hasBanker ? '<th>Banker</th>' : '') + (hasPin ? '<th>Pin</th>' : '');
-    const scrExtraA = (hasBanker ? `<td class="${moneyCls(bkA)}">${fmtMoney(bkA)}</td>` : '') + (hasPin ? `<td class="${moneyCls(pinA)}">${fmtMoney(pinA)}</td>` : '');
-    const scrExtraB = (hasBanker ? `<td class="${moneyCls(bkB)}">${fmtMoney(bkB)}</td>` : '') + (hasPin ? `<td class="${moneyCls(pinB)}">${fmtMoney(pinB)}</td>` : '');
+    const scrExtraHeaders = (hasBanker ? '<th style="text-align:right;">Banker</th>' : '') + (hasPin ? '<th style="text-align:right;">Pin</th>' : '');
+    const scrExtraA = (hasBanker ? `<td style="text-align:right;" class="${moneyCls(bkA)}">${fmtMoney(bkA)}</td>` : '') + (hasPin ? `<td style="text-align:right;" class="${moneyCls(pinA)}">${fmtMoney(pinA)}</td>` : '');
+    const scrExtraB = (hasBanker ? `<td style="text-align:right;" class="${moneyCls(bkB)}">${fmtMoney(bkB)}</td>` : '') + (hasPin ? `<td style="text-align:right;" class="${moneyCls(pinB)}">${fmtMoney(pinB)}</td>` : '');
 
     list.innerHTML = `<table class="sb-grid">
       <thead><tr><th></th><th>Total</th><th>vs Par</th>${scrExtraHeaders}</tr></thead>
@@ -747,6 +755,37 @@ function renderStandings() {
   }
 
   if (gameMode === 'stableford') {
+    const teamNet = (team, arr) => {
+      const names = (stabTeams || {})[team] || [];
+      return names.reduce((s, name) => { const idx = playerNames.indexOf(name); return s + (idx >= 0 ? (arr[idx]||0) : 0); }, 0);
+    };
+
+    if (stabTeams) {
+      document.getElementById('standingsLabel').textContent = 'Team Standings';
+      const ptA = teamNet('a', playerTotals), ptB = teamNet('b', playerTotals);
+      const aCls = ptA > ptB ? 'pos' : ptA < ptB ? 'neg' : 'dash';
+      const bCls = ptB > ptA ? 'pos' : ptB < ptA ? 'neg' : 'dash';
+      let html = `<table class="sb-grid">
+        <thead><tr><th></th><th style="text-align:right;">Pts</th></tr></thead>
+        <tbody>
+          <tr><td style="color:#ffd447;">Gold</td><td class="${aCls}" style="text-align:right;">${ptA || '—'}</td></tr>
+          <tr><td style="color:#e74c3c;">Crimson</td><td class="${bCls}" style="text-align:right;">${ptB || '—'}</td></tr>
+        </tbody>
+      </table>`;
+      if (hasBanker || hasPin) {
+        const indivHeaders = (hasBanker ? '<th style="text-align:right;">Banker</th>' : '') + (hasPin ? '<th style="text-align:right;">Pin</th>' : '');
+        const indivRows = playerNames.map((n, i) =>
+          `<tr><td>${esc(n)}</td>${extraCells(i)}</tr>`
+        ).join('');
+        html += `<div style="border-top:1px solid rgba(255,212,71,0.1);margin-top:8px;padding-top:8px;">
+          <div style="font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:#ffd447;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(255,212,71,0.1);text-align:center;">Individual Games</div>
+          <table class="sb-grid"><thead><tr><th></th>${indivHeaders}</tr></thead><tbody>${indivRows}</tbody></table>
+        </div>`;
+      }
+      list.innerHTML = html;
+      return;
+    }
+
     document.getElementById('standingsLabel').textContent = 'Standings';
     const sorted = playerNames.map((n, i) => ({n, t: playerTotals[i], i})).sort((a, b) => b.t - a.t);
     const ptsOnly = !hasBanker && !hasPin;
@@ -1073,39 +1112,76 @@ function renderFinalScreen() {
       </div>
     </div>`;
   } else if (gameMode === 'stableford') {
-    const sorted = playerNames.map((n, i) => ({n, t: playerTotals[i], i})).sort((a, b) => b.t - a.t);
-    const maxPts = sorted[0]?.t || 0;
-    html += `<div class="final-standings">${sorted.map((p, rank) =>
-      `<div class="final-row${p.t === maxPts ? ' winner' : ''}">
-        <span class="final-name">${esc(p.n)}${p.t === maxPts ? ' 🏆' : ''}</span>
-        <span class="final-pts">${p.t} pts</span>
-      </div>`).join('')}</div>`;
+    if (stabTeams) {
+      const teamPts = team => (stabTeams[team]||[]).reduce((s,n) => { const i=playerNames.indexOf(n); return s+(i>=0?playerTotals[i]:0); }, 0);
+      const ptA = teamPts('a'), ptB = teamPts('b');
+      const aWins = ptA >= ptB, bWins = ptB >= ptA;
+      const fmtTeamNames = team => (stabTeams[team]||[]).join(' & ');
+      html += `<div class="final-standings">
+        <div class="final-row${aWins ? ' winner' : ''}">
+          <span class="final-name" style="color:#ffd447;">Gold — ${esc(fmtTeamNames('a'))}${aWins ? ' 🏆' : ''}</span>
+          <span class="final-pts">${ptA} pts</span>
+        </div>
+        <div class="final-row${bWins ? ' winner' : ''}">
+          <span class="final-name" style="color:#e74c3c;">Crimson — ${esc(fmtTeamNames('b'))}${bWins ? ' 🏆' : ''}</span>
+          <span class="final-pts">${ptB} pts</span>
+        </div>
+      </div>`;
+      if (buyIn && buyIn > 0) {
+        const totalPot = playerNames.length * buyIn;
+        const aWon = ptA > ptB, bWon = ptB > ptA, tied = ptA === ptB;
+        html += `<div class="game-card" style="margin-top:12px;">
+          <div class="game-card-label">Prize — $${buyIn} Buy In / player</div>`;
+        playerNames.forEach((n, i) => {
+          const inA = (stabTeams.a||[]).includes(n);
+          const net = tied ? 0 : (inA ? (aWon ? buyIn : -buyIn) : (bWon ? buyIn : -buyIn));
+          if (net === 0) return;
+          const cls = net > 0 ? 'sc-pos' : 'sc-neg';
+          const str = net > 0 ? '+$'+net : '-$'+Math.abs(net);
+          html += `<div style="display:flex;justify-content:space-between;padding:7px 4px;border-bottom:1px solid rgba(255,255,255,0.05);">
+            <span style="font-size:14px;font-weight:bold;">${esc(n)}</span>
+            <span class="${cls}" style="font-family:'Courier New',monospace;font-size:14px;font-weight:bold;">${str}</span>
+          </div>`;
+        });
+        const prizeNet = playerNames.map(n => { const inA=(stabTeams.a||[]).includes(n); return tied?0:(inA?(aWon?buyIn:-buyIn):(bWon?buyIn:-buyIn)); });
+        html += renderSettlementBlock(prizeNet);
+        html += '</div>';
+      }
+    } else {
+      const sorted = playerNames.map((n, i) => ({n, t: playerTotals[i], i})).sort((a, b) => b.t - a.t);
+      const maxPts = sorted[0]?.t || 0;
+      html += `<div class="final-standings">${sorted.map((p, rank) =>
+        `<div class="final-row${p.t === maxPts ? ' winner' : ''}">
+          <span class="final-name">${esc(p.n)}${p.t === maxPts ? ' 🏆' : ''}</span>
+          <span class="final-pts">${p.t} pts</span>
+        </div>`).join('')}</div>`;
 
-    if (buyIn && buyIn > 0) {
-      const winners = sorted.filter(p => p.t === maxPts);
-      const losers  = sorted.filter(p => p.t < maxPts);
-      const prizePerWinner = (losers.length * buyIn) / winners.length;
-      const prizeNet = playerNames.map((_, i) => {
-        const isWinner = winners.some(w => w.i === i);
-        const isLoser  = losers.some(l => l.i === i);
-        if (isWinner) return +prizePerWinner;
-        if (isLoser)  return -buyIn;
-        return 0;
-      });
-      html += `<div class="game-card" style="margin-top:12px;">
-        <div class="game-card-label">Prize — $${buyIn} Buy In</div>`;
-      playerNames.forEach((n, i) => {
-        const net = prizeNet[i];
-        if (net === 0) return;
-        const cls = net > 0 ? 'sc-pos' : 'sc-neg';
-        const str = net > 0 ? '+$' + net.toFixed(2).replace(/\.00$/,'') : '-$' + Math.abs(net).toFixed(2).replace(/\.00$/,'');
-        html += `<div style="display:flex;justify-content:space-between;padding:7px 4px;border-bottom:1px solid rgba(255,255,255,0.05);">
-          <span style="font-size:14px;font-weight:bold;">${esc(n)}</span>
-          <span class="${cls}" style="font-family:'Courier New',monospace;font-size:14px;font-weight:bold;">${str}</span>
-        </div>`;
-      });
-      html += renderSettlementBlock(prizeNet);
-      html += '</div>';
+      if (buyIn && buyIn > 0) {
+        const winners = sorted.filter(p => p.t === maxPts);
+        const losers  = sorted.filter(p => p.t < maxPts);
+        const prizePerWinner = (losers.length * buyIn) / winners.length;
+        const prizeNet = playerNames.map((_, i) => {
+          const isWinner = winners.some(w => w.i === i);
+          const isLoser  = losers.some(l => l.i === i);
+          if (isWinner) return +prizePerWinner;
+          if (isLoser)  return -buyIn;
+          return 0;
+        });
+        html += `<div class="game-card" style="margin-top:12px;">
+          <div class="game-card-label">Prize — $${buyIn} Buy In</div>`;
+        playerNames.forEach((n, i) => {
+          const net = prizeNet[i];
+          if (net === 0) return;
+          const cls = net > 0 ? 'sc-pos' : 'sc-neg';
+          const str = net > 0 ? '+$' + net.toFixed(2).replace(/\.00$/,'') : '-$' + Math.abs(net).toFixed(2).replace(/\.00$/,'');
+          html += `<div style="display:flex;justify-content:space-between;padding:7px 4px;border-bottom:1px solid rgba(255,255,255,0.05);">
+            <span style="font-size:14px;font-weight:bold;">${esc(n)}</span>
+            <span class="${cls}" style="font-family:'Courier New',monospace;font-size:14px;font-weight:bold;">${str}</span>
+          </div>`;
+        });
+        html += renderSettlementBlock(prizeNet);
+        html += '</div>';
+      }
     }
   } else {
     // Stroke play — lowest wins

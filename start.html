@@ -61,11 +61,11 @@ body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;margin:0;p
 .score-input:focus{outline:none;border-color:rgba(255,212,71,0.7);}
 
 /* Scramble team assignment — tap to toggle */
-.scr-player-row{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;margin-bottom:6px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.07);transition:background .12s;}
+.scr-player-row{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;margin-bottom:4px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.07);transition:background .12s;}
 .scr-player-row:last-child{margin-bottom:0;}
-.scr-player-name{font-size:13px;font-weight:bold;flex:1;font-family:'Courier New',monospace;letter-spacing:.3px;color:rgba(255,255,255,0.6);}
-.scr-team-toggle{display:flex;gap:6px;flex-shrink:0;}
-.scr-team-btn{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;background:transparent;transition:all .12s;padding:0;flex-shrink:0;}
+.scr-player-name{font-size:12px;font-weight:bold;flex:1;font-family:'Courier New',monospace;letter-spacing:.3px;color:rgba(255,255,255,0.6);}
+.scr-team-toggle{display:flex;gap:5px;flex-shrink:0;}
+.scr-team-btn{width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid transparent;background:transparent;transition:all .12s;padding:0;flex-shrink:0;}
 .scr-team-btn.blue{background:rgba(255,212,71,0.2);border-color:rgba(255,212,71,0.3);}
 .scr-team-btn.blue.active{background:#ffd447;border-color:#ffd447;box-shadow:0 0 6px rgba(255,212,71,0.5);}
 .scr-team-btn.red{background:rgba(192,57,43,0.2);border-color:rgba(192,57,43,0.3);}
@@ -84,7 +84,7 @@ body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;margin:0;p
 #scrambleTeamsBlock.hidden{display:none;}
 .vspar-row{text-align:center;font-family:'Courier New',monospace;font-size:11px;font-weight:bold;margin-top:4px;min-height:14px;}
 .vspar-under{color:#2ecc71;} .vspar-over{color:#ff6b6b;} .vspar-even{color:rgba(255,255,255,0.4);}
-.set-teams-btn{width:100%;padding:10px;border:1px solid rgba(255,212,71,0.4);border-radius:8px;font-size:13px;font-weight:bold;background:rgba(255,212,71,0.07);color:#ffd447;cursor:pointer;letter-spacing:1.5px;text-transform:uppercase;font-family:'Georgia','Times New Roman',serif;margin-top:8px;}
+.set-teams-btn{width:100%;padding:8px;border:1px solid rgba(255,212,71,0.4);border-radius:8px;font-size:13px;font-weight:bold;background:rgba(255,212,71,0.07);color:#ffd447;cursor:pointer;letter-spacing:1.5px;text-transform:uppercase;font-family:'Georgia','Times New Roman',serif;margin-top:6px;}
 .set-teams-btn:active{background:rgba(255,212,71,0.14);}
 .big-score-input{width:100%;padding:9px 6px;border-radius:4px;border:1px solid rgba(255,212,71,0.2);border-bottom:2px solid rgba(255,212,71,0.4);color:#ffd447;font-size:20px;font-weight:bold;background:rgba(0,0,0,0.4);font-family:'Courier New',monospace;text-align:center;-webkit-appearance:none;box-sizing:border-box;}
 .big-score-input.b-team{border-color:rgba(192,57,43,0.3);border-bottom-color:rgba(192,57,43,0.5);color:#e74c3c;}
@@ -153,10 +153,13 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
     </div>
   </div>
 
-  <!-- Card 3: Format -->
+  <!-- Card 3: Game Formats -->
   <div class="setup-section" style="padding:8px 12px 10px;">
-    <div class="setup-section-label" style="margin-bottom:8px;">Format</div>
-    <div class="format-chips">
+    <div class="setup-section-label" style="margin-bottom:8px;">Game Formats</div>
+    <div class="format-chips" style="display:flex;gap:6px;">
+      <div class="fmt-chip active" id="btn-stroke" onclick="toggleFormat('stroke')">
+        <span class="fmt-chip-suit">♠</span>Stroke Play
+      </div>
       <div class="fmt-chip" id="btn-stableford" onclick="toggleFormat('stableford')">
         <span class="fmt-chip-suit">♦</span>Stableford
       </div>
@@ -164,8 +167,10 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
         <span class="fmt-chip-suit">♣♥</span>Scramble
       </div>
     </div>
-    <div id="strokeModeBlock" style="display:none;margin-top:8px;">
-      <div style="font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.4);margin-bottom:6px;padding-top:8px;border-top:1px solid rgba(255,212,71,0.1);">Stroke Play</div>
+
+    <!-- Stroke mode toggle (Stroke Play only) -->
+    <div id="strokeModeBlock" style="margin-top:8px;">
+      <div style="font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.4);margin-bottom:6px;padding-top:8px;border-top:1px solid rgba(255,212,71,0.1);">Scoring</div>
       <div class="stroke-mode-toggle">
         <div class="smode-btn active" id="smode-post" onclick="setStrokeMode('post')">
           <div class="smode-btn-title">Post Round</div>
@@ -177,16 +182,26 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Card 4: Prize (Stableford only) -->
-  <div class="setup-section hidden" id="prizeCard">
-    <div class="setup-section-label">Prize</div>
-    <div class="row-setting">
-      <span class="row-label">Buy In</span>
-      <div class="row-control">
-        <span class="currency">$</span>
-        <input type="number" class="num-input" id="buyInInput" min="0" step="1" placeholder="0" inputmode="decimal" style="width:80px;">
+    <!-- Team Format toggle (Stableford + Stroke only) -->
+    <div id="teamFormatBlock" style="display:none;margin-top:8px;">
+      <div style="padding-top:8px;border-top:1px solid rgba(255,212,71,0.1);display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="toggleTeamFormat()">
+        <div id="teamFormatCheck" style="width:18px;height:18px;border-radius:4px;border:1px solid rgba(255,212,71,0.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s;"></div>
+        <div>
+          <div style="font-size:11px;font-weight:bold;color:rgba(255,212,71,0.75);letter-spacing:.5px;">Team Format (2v2)</div>
+          <div style="font-size:9px;color:rgba(255,255,255,0.3);margin-top:2px;">Assign players to teams</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Buy In (Stableford only) -->
+    <div id="buyInBlock" style="display:none;margin-top:8px;">
+      <div style="padding-top:8px;border-top:1px solid rgba(255,212,71,0.1);" class="row-setting" style="margin-bottom:0;">
+        <span class="row-label">Buy In <span style="font-size:8px;opacity:.6;letter-spacing:.3px;text-transform:none;">per player</span></span>
+        <div class="row-control">
+          <span class="currency">$</span>
+          <input type="number" class="num-input" id="buyInInput" min="0" step="1" placeholder="0" inputmode="decimal" style="width:80px;">
+        </div>
       </div>
     </div>
   </div>
@@ -198,7 +213,7 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
   </div>
 
   <div id="startError" class="error-msg"></div>
-  <button class="start-btn" id="startBtn" onclick="startGame()">Save Round</button>
+  <button class="start-btn" id="startBtn" onclick="startGame()">Start</button>
 
 </div>
 </div>
@@ -244,10 +259,9 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
 </nav>
 
 <script>
-// selectedFormats: 'stableford' or 'scramble'. Empty = stroke play (default).
-// Empty = stroke play (default)
-const selectedFormats = new Set();
+const selectedFormats = new Set(['stroke']);
 let strokeMode = 'post'; // 'post' | 'live'
+let teamFormat = false;
 
 function setStrokeMode(mode){
   strokeMode = mode;
@@ -255,20 +269,17 @@ function setStrokeMode(mode){
   document.getElementById('smode-live').classList.toggle('active', mode === 'live');
   // show/hide score inputs in settings
   buildAndRenderSettings('stroke');
-  document.getElementById('startBtn').textContent = mode === 'live' ? 'Start Round →' : 'Save Round';
+  document.getElementById('startBtn').textContent = 'Start';
 }
 
-// selectedFormats: 'stableford' | 'scramble' — mutually exclusive. Empty = stroke play.
+// selectedFormats: 'stroke' | 'stableford' | 'scramble' — mutually exclusive. Default: stroke.
 function toggleFormat(f){
-  if(selectedFormats.has(f)){
-    selectedFormats.delete(f);
-  } else {
-    selectedFormats.clear();
-    selectedFormats.add(f);
-  }
-  ['stableford','scramble'].forEach(k=>{
+  selectedFormats.clear();
+  selectedFormats.add(f);
+  ['stroke','stableford','scramble'].forEach(k=>{
     document.getElementById('btn-'+k).classList.toggle('active', selectedFormats.has(k));
   });
+  if(f === 'scramble') teamFormat = false;
   updateCards();
 }
 
@@ -276,6 +287,15 @@ function effectiveMode(){
   if(selectedFormats.has('scramble')) return 'scramble';
   if(selectedFormats.has('stableford')) return 'stableford';
   return 'stroke';
+}
+
+function toggleTeamFormat(){
+  teamFormat = !teamFormat;
+  const check = document.getElementById('teamFormatCheck');
+  check.innerHTML = teamFormat ? '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="#ffd447" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' : '';
+  check.style.background = teamFormat ? 'rgba(255,212,71,0.15)' : '';
+  if(!teamFormat) scrTeamAssignment = null;
+  updateCards();
 }
 
 function formatLabel(){
@@ -294,27 +314,33 @@ function updateCards(){
   document.getElementById('settingsCard').style.pointerEvents='';
   document.getElementById('settingsCard').style.opacity='';
   document.getElementById('strokeModeBlock').style.display = isStroke ? '' : 'none';
-  document.getElementById('prizeCard').classList.toggle('hidden', !isStableford);
+  document.getElementById('teamFormatBlock').style.display = isStableford ? 'block' : 'none';
+  document.getElementById('buyInBlock').style.display = isStableford ? 'block' : 'none';
 
   buildAndRenderSettings(m);
 
   if(isScramble){
-    document.getElementById('startBtn').textContent = 'Set Teams →';
-    document.getElementById('startBtn').classList.toggle('hidden', scrTeamAssignment === null);
+    document.getElementById('startBtn').textContent = 'Start';
+    document.getElementById('startBtn').classList.remove('hidden');
+  } else if(teamFormat){
+    document.getElementById('startBtn').textContent = 'Start';
+    document.getElementById('startBtn').classList.remove('hidden');
   } else if(isStroke){
-    document.getElementById('startBtn').textContent = strokeMode === 'live' ? 'Start Round →' : 'Save Round';
+    document.getElementById('startBtn').textContent = 'Start';
     document.getElementById('startBtn').classList.remove('hidden');
   } else {
-    document.getElementById('startBtn').textContent = 'Start →';
+    document.getElementById('startBtn').textContent = 'Start';
     document.getElementById('startBtn').classList.remove('hidden');
   }
 }
 
 function buildAndRenderSettings(m){
-  document.getElementById('settingsBody').innerHTML = buildSettings(m);
-  const hideCard = m === 'stableford' || (m === 'stroke' && strokeMode === 'live');
+  const useTeam = teamFormat && m === 'stableford';
+  const renderMode = useTeam ? 'scramble' : m;
+  document.getElementById('settingsBody').innerHTML = buildSettings(renderMode);
+  const hideCard = (m === 'stableford' && !useTeam) || (m === 'stroke' && strokeMode === 'live' && !useTeam);
   document.getElementById('settingsCard').style.display = hideCard ? 'none' : '';
-  document.querySelector('#settingsCard .setup-section-label').textContent = m === 'scramble' ? 'Team Assignment' : 'Players';
+  document.querySelector('#settingsCard .setup-section-label').textContent = (m === 'scramble' || useTeam) ? 'Team Assignment' : 'Players';
 }
 
 function buildSettings(m){
@@ -352,8 +378,7 @@ function buildSettings(m){
           </div>`;
         }).join('')
       : `<div style="font-size:12px;color:rgba(255,255,255,0.25);text-align:center;padding:12px 0;">Add players above</div>`;
-    return `<div id="scrPlayerList">${rows}</div>
-    <button class="set-teams-btn" id="setTeamsBtn" onclick="setScrTeams()">Confirm Teams →</button>`;
+    return `<div id="scrPlayerList">${rows}</div>`;
   }
   return '';
 }
@@ -371,6 +396,11 @@ function startGame(){
   const players = getPlayers();
   const filledPlayers = players.filter(Boolean);
 
+  // Handle team format: requires team assignment first (stableford only)
+  if(teamFormat && m === 'stableford'){
+    if(!scrTeamAssignment){ errEl.textContent='Please assign players to teams.'; errEl.style.display='block'; return; }
+  }
+
   if(m === 'stroke' && strokeMode === 'live'){
     if(filledPlayers.length < 2){ errEl.textContent='Add at least 2 players.'; errEl.style.display='block'; return; }
     const setup = { game: 'stroke', course, date: date||null, players: filledPlayers, totalHoles: 18 };
@@ -385,7 +415,7 @@ function startGame(){
 
   if(m === 'stableford'){
     const buyIn = parseFloat(document.getElementById('buyInInput')?.value) || 0;
-    const setup = { game: 'stableford', course, date: date||null, players: filledPlayers, totalHoles: 18, buyIn: buyIn > 0 ? buyIn : null };
+    const setup = { game: 'stableford', course, date: date||null, players: filledPlayers, totalHoles: 18, buyIn: buyIn > 0 ? buyIn : null, teamAssignment: teamFormat ? scrTeamAssignment : null };
     localStorage.setItem('pendingSetup', JSON.stringify(setup));
     window.location.href = 'round.html';
     return;
@@ -436,6 +466,10 @@ function resetToStart(){
   scrTeamAssignment = null;
   strokeMode = 'post';
   setStrokeMode('post');
+  teamFormat = false;
+  const check = document.getElementById('teamFormatCheck');
+  if(check){ check.innerHTML=''; check.style.background=''; }
+  toggleFormat('stroke');
   document.getElementById('settingsCard').style.pointerEvents='';
   document.getElementById('settingsCard').style.opacity='';
   updateCards();
@@ -451,6 +485,10 @@ function setScrPlayerTeam(idx, team){
   row.querySelectorAll('.scr-team-btn').forEach(btn=>{
     btn.classList.toggle('active', btn.classList.contains(team));
   });
+  // auto-commit once every player has a team
+  const rows = [...document.querySelectorAll('#scrPlayerList .scr-player-row')];
+  const allAssigned = rows.length > 0 && rows.every(r => r.classList.contains('blue') || r.classList.contains('red'));
+  if(allAssigned) setScrTeams();
 }
 
 function resetScrTeams(){
@@ -469,8 +507,6 @@ function setScrTeams(){
   scrTeamAssignment = {a: teamBlue, b: teamRed};
   document.getElementById('startBtn').classList.remove('hidden');
   document.getElementById('startBtn').textContent = 'Start Round →';
-  const setBtn = document.getElementById('setTeamsBtn');
-  if(setBtn) setBtn.textContent = 'Teams Set ✓';
 }
 
 function updateScrVsPar(){
@@ -484,18 +520,21 @@ function updateScrVsPar(){
 
 function saveScrambleRound(){
   const errEl = document.getElementById('startError');
-  if(!scrTeamAssignment){ errEl.textContent='Set teams first.'; errEl.style.display='block'; return; }
   errEl.style.display='none';
+  // collect current team state from rows
+  const rows = [...document.querySelectorAll('#scrPlayerList .scr-player-row')];
+  if(!rows.length){ errEl.textContent='Add at least 2 players.'; errEl.style.display='block'; return; }
+  const teamA = rows.filter(r=>r.classList.contains('blue')).map(r=>r.dataset.name).filter(Boolean);
+  const teamB = rows.filter(r=>r.classList.contains('red')).map(r=>r.dataset.name).filter(Boolean);
+  if(!teamA.length || !teamB.length){ errEl.textContent='Each team needs at least one player.'; errEl.style.display='block'; return; }
   const date = document.getElementById('roundDate').value;
   const course = document.getElementById('courseInput').value.trim();
-  const totalHoles = 18;
-  const allPlayers = [...scrTeamAssignment.a, ...scrTeamAssignment.b];
   const setup = {
     game: 'scramble',
     course, date: date||null,
-    players: allPlayers,
-    totalHoles,
-    scrTeams: { a: scrTeamAssignment.a, b: scrTeamAssignment.b }
+    players: [...teamA, ...teamB],
+    totalHoles: 18,
+    scrTeams: { a: teamA, b: teamB }
   };
   localStorage.setItem('pendingSetup', JSON.stringify(setup));
   window.location.href = 'round.html';
