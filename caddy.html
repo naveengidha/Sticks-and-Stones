@@ -28,7 +28,7 @@ input[type=number]{-moz-appearance:textfield;}
 :root{--texture:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px);}
 
 /* ── Layout shell ── */
-#shell{display:flex;flex-direction:column;height:100%;max-width:480px;margin:0 auto;}
+#shell{display:flex;flex-direction:column;height:100%;max-width:480px;margin:0 auto;padding-bottom:calc(64px + max(env(safe-area-inset-bottom),12px));}
 #content{flex:1;overflow:hidden;display:flex;flex-direction:column;}
 
 /* ── Page header ── */
@@ -160,8 +160,7 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
 .disp-tag{padding:3px 6px;border-radius:5px;border:1px solid rgba(255,212,71,0.15);background:transparent;color:rgba(255,255,255,0.35);font-size:9px;font-weight:bold;letter-spacing:.2px;cursor:pointer;font-family:inherit;text-align:center;white-space:nowrap;transition:all .12s;line-height:1.3;}
 .disp-tag.active{background:rgba(255,212,71,0.1);border-color:rgba(255,212,71,0.45);color:var(--gold);}
 .disp-wrap{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
-#disp-view-log{flex:1;display:flex;flex-direction:column;min-height:0;padding-bottom:0;}
-#disp-view-map{flex:1;display:flex;flex-direction:column;min-height:0;}
+#disp-view-log,#disp-view-map{flex:1;min-height:0;}
 </style>
 </head>
 <body>
@@ -281,8 +280,8 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
 
     <div class="disp-wrap">
         <!-- Log Shot sub-view -->
-        <div id="disp-view-log" style="padding:8px 16px 110px 16px;display:flex;flex-direction:row;gap:8px;overflow:hidden;align-items:flex-start;position:relative;">
-          <div id="disp-log-msg" style="position:absolute;bottom:90px;left:0;right:60px;text-align:center;font-size:11px;color:var(--green-ok);pointer-events:none;"></div>
+        <div id="disp-view-log" style="padding:8px 16px 8px 16px;display:flex;flex-direction:row;gap:8px;overflow:hidden;align-items:flex-start;position:relative;flex:1;min-height:0;">
+          <div id="disp-log-msg" style="position:absolute;bottom:12px;left:0;right:60px;text-align:center;font-size:11px;color:var(--green-ok);pointer-events:none;"></div>
 
           <!-- Maps column (left) -->
           <div style="display:flex;flex-direction:column;gap:8px;align-items:center;flex:1;min-width:0;">
@@ -294,8 +293,15 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
               </div>
             </div>
 
+            <!-- First putt input -->
+            <div style="width:100%;height:30px;display:flex;align-items:center;justify-content:center;gap:6px;flex-shrink:0;">
+              <span style="font-size:9px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:rgba(255,212,71,0.4);">1st Putt</span>
+              <input id="disp-putt-input" type="number" inputmode="numeric" min="1" max="999" placeholder="—" style="width:48px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,212,71,0.12);border-radius:6px;color:rgba(255,255,255,0.7);font-size:13px;font-family:'Georgia','Times New Roman',serif;padding:3px 6px;outline:none;text-align:center;">
+              <span style="font-size:9px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:rgba(255,212,71,0.4);">ft</span>
+            </div>
+
             <!-- Approach map -->
-            <div id="disp-approach-col" style="display:flex;flex-direction:column;align-items:center;">
+            <div id="disp-approach-col" style="display:flex;flex-direction:column;align-items:center;flex:1;min-height:0;">
               <div id="disp-approach-wrap" style="display:flex;align-items:center;justify-content:center;">
                 <canvas id="disp-approach-canvas" style="border-radius:8px;cursor:crosshair;touch-action:none;border:1px solid rgba(255,212,71,0.12);"></canvas>
               </div>
@@ -304,13 +310,14 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
 
           <!-- Club list (right) -->
           <div id="disp-right-col" style="width:52px;display:flex;flex-direction:column;gap:3px;flex-shrink:0;">
-            <div id="disp-club-list" style="flex:1;display:flex;flex-direction:column;gap:3px;overflow-y:auto;"></div>
-            <button id="disp-save-btn" style="width:100%;height:32px;border-radius:6px;border:none;font-size:16px;line-height:1;background:rgba(74,180,100,0.08);color:rgba(74,180,100,0.25);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;" disabled>✓</button>
+            <div id="disp-club-list" style="display:contents;"></div>
+            <button id="disp-save-btn" style="width:100%;flex:1;min-height:0;border-radius:6px;border:none;font-size:16px;line-height:1;background:rgba(74,180,100,0.08);color:rgba(74,180,100,0.25);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;" disabled>✓</button>
+            <button id="disp-clear-shot-btn" style="width:100%;flex:1;min-height:0;border-radius:6px;border:none;font-size:13px;font-weight:bold;background:rgba(255,77,77,0.06);color:rgba(255,77,77,0.25);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;" disabled>✕</button>
           </div>
         </div>
 
         <!-- View Map sub-view -->
-        <div id="disp-view-map" style="display:none;padding:8px 16px 110px 16px;flex-direction:row;gap:8px;overflow:hidden;align-items:flex-start;">
+        <div id="disp-view-map" style="display:none;padding:8px 16px 8px 16px;flex-direction:row;gap:8px;overflow:hidden;align-items:flex-start;flex:1;min-height:0;">
 
           <!-- Maps column (left) -->
           <div style="display:flex;flex-direction:column;gap:8px;align-items:center;flex:1;min-width:0;">
@@ -318,6 +325,8 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
             <div style="display:flex;align-items:center;justify-content:center;">
               <canvas id="disp-map-canvas" style="border-radius:8px;border:1px solid rgba(255,212,71,0.12);cursor:pointer;touch-action:none;"></canvas>
             </div>
+            <!-- Avg first putt -->
+            <div id="disp-avg-putt" style="width:100%;height:30px;display:flex;align-items:center;justify-content:center;gap:6px;flex-shrink:0;"></div>
             <!-- Approach map -->
             <div style="position:relative;display:flex;align-items:center;justify-content:center;">
               <canvas id="disp-map-approach-canvas" style="border-radius:8px;border:1px solid rgba(255,212,71,0.12);touch-action:none;"></canvas>
@@ -330,8 +339,8 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
 
           <!-- Club filter + clear (right) -->
           <div id="disp-map-right-col" style="width:52px;display:flex;flex-direction:column;gap:3px;flex-shrink:0;">
-            <div id="disp-filter-scroll" style="flex:1;display:flex;flex-direction:column;gap:3px;overflow-y:auto;"></div>
-            <button id="disp-clear-btn" style="width:100%;height:32px;border-radius:6px;border:none;font-size:12px;font-weight:bold;background:rgba(255,77,77,0.08);color:rgba(255,77,77,0.4);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s;">✕</button>
+            <div id="disp-filter-scroll" style="display:contents;"></div>
+            <button id="disp-clear-btn" style="width:100%;flex:1;min-height:0;border-radius:6px;border:none;font-size:12px;font-weight:bold;background:rgba(255,77,77,0.08);color:rgba(255,77,77,0.4);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;transition:all .12s;">✕</button>
           </div>
         </div>
       </div>
@@ -870,39 +879,55 @@ const MAP_W      = 300, MAP_H      = 300;
 function dispLogCanvasSize(){
   const view = document.getElementById('disp-view-log');
   if(!view) return {aw:140, ah:100, lw:140, lh:140};
-  const availW = view.clientWidth - 16 - 16 - 52 - 8; // minus left+right padding, club list, gap
-  const lw = availW, lh = Math.round(availW * 0.45); // wide rectangle, moderate height
-  const aw = availW, ah = Math.round(availW * 0.7); // shorter approach
-  return { aw, ah, lw, lh };
+  const availW = view.clientWidth - 16 - 16 - 52 - 8; // left+right padding, club list, gap
+  // Use available height to fill the space; fall back to width-ratio if height not measurable
+  const availH = view.clientHeight - 8 - 8 - 30 - 8; // padding + putt row + its gap
+  let lh, ah;
+  if(availH > 100){
+    // green map aims for square (capped at availW), fairway gets the rest
+    lh = Math.min(availW, Math.round((availH - 8) * 0.42));
+    ah = availH - 8 - lh;
+  } else {
+    lh = Math.round(availW * 0.45);
+    ah = Math.round(availW * 0.7);
+  }
+  return { aw: availW, ah, lw: availW, lh };
 }
 
 function dispSyncRightColHeight(){
   const sl = dispLogCanvasSize();
-  const logH = sl.lh + 8 + sl.ah;
+  const logH = sl.lh + 8 + 30 + 8 + sl.ah;
   const col = document.getElementById('disp-right-col');
   if(col) col.style.height = logH + 'px';
   const sm = dispMapCanvasSize();
-  const mapH = sm.lh + 8 + sm.ah;
+  const mapH = sm.lh + 8 + 30 + 8 + sm.ah;
   const mapCol = document.getElementById('disp-map-right-col');
   if(mapCol) mapCol.style.height = mapH + 'px';
 }
 
 function dispMapCanvasSize(){
-  // read from map view container when on map tab, fall back to log view
   const mapView = document.getElementById('disp-view-map');
   const logView = document.getElementById('disp-view-log');
   const view = (mapView && mapView.clientWidth > 0) ? mapView : logView;
   if(!view || view.clientWidth === 0) return {aw:140, ah:100, lw:140, lh:140};
   const availW = view.clientWidth - 16 - 16 - 52 - 8;
-  const lw = availW, lh = Math.round(availW * 0.45);
-  const aw = availW, ah = Math.round(availW * 0.7);
-  return { aw, ah, lw, lh };
+  const availH = view.clientHeight - 8 - 8 - 30 - 8; // padding + avg putt row + its gap
+  let lh, ah;
+  if(availH > 100){
+    lh = Math.min(availW, Math.round((availH - 8) * 0.42));
+    ah = availH - 8 - lh;
+  } else {
+    lh = Math.round(availW * 0.45);
+    ah = Math.round(availW * 0.7);
+  }
+  return { aw: availW, ah, lw: availW, lh };
 }
 
 let dispInitialized = false;
 let dispSelectedClub = null;
 let dispApproachPt = null;
 let dispLandingPt  = null;
+let dispBtnHeight  = 32;
 let dispActiveFilter = 'all';
 let dispSelectedTags = new Set();
 let dispRenderedDots = [];
@@ -952,6 +977,24 @@ function dispDrawApproach(canvas, dot, cssW, cssH){
   // rough background
   ctx.fillStyle = '#122618';
   ctx.fillRect(0, 0, w, h);
+  // grass texture in the rough strips (left and right of fairway)
+  ctx.strokeStyle = 'rgba(40,90,50,0.35)';
+  ctx.lineWidth = 1;
+  const fwGrass = w * 0.6, fxGrass = (w - fwGrass) / 2;
+  const roughW = fxGrass; // width of each rough strip
+  const cols = Math.floor(roughW / 14);
+  const rows = Math.floor(h / 22);
+  for(let r = 0; r <= rows; r++){
+    for(let c = 0; c < cols; c++){
+      const offset = (r % 2) * 7;
+      // left rough
+      const lx = 6 + c * 14 + offset, ly = 8 + r * 22;
+      ctx.beginPath(); ctx.moveTo(lx-2,ly+3); ctx.lineTo(lx,ly-3); ctx.lineTo(lx+2,ly+3); ctx.stroke();
+      // right rough
+      const rx = fxGrass + fwGrass + 6 + c * 14 + offset, ry = ly;
+      ctx.beginPath(); ctx.moveTo(rx-2,ry+3); ctx.lineTo(rx,ry-3); ctx.lineTo(rx+2,ry+3); ctx.stroke();
+    }
+  }
   // fairway corridor (center 60%)
   const fw = w * 0.6, fx = (w - fw) / 2;
   ctx.fillStyle = '#1e4d2e';
@@ -991,6 +1034,19 @@ function dispDrawApproach(canvas, dot, cssW, cssH){
     ctx.fillStyle = '#ffd447';
     ctx.fill();
     ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke();
+    // distance label
+    const yds = dispYToYards(dot.y);
+    const label = yds + ' yds';
+    ctx.font = '10px Georgia';
+    ctx.textBaseline = 'middle';
+    const tw = ctx.measureText(label).width;
+    const lx = px - tw/2, ly = py + 16;
+    const pad = 4;
+    ctx.fillStyle = 'rgba(8,15,10,0.75)';
+    ctx.beginPath(); ctx.roundRect(lx - pad, ly - 9, tw + pad*2, 18, 4); ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'left';
+    ctx.fillText(label, lx, ly);
   }
 }
 
@@ -1006,6 +1062,20 @@ function dispDrawGreen(canvas, dot, cssW, cssH){
   // background (rough)
   ctx.fillStyle = '#122618';
   ctx.fillRect(0, 0, w, h);
+  // subtle grass texture in the rough — short strokes scattered around
+  ctx.strokeStyle = 'rgba(40,90,50,0.35)';
+  ctx.lineWidth = 1;
+  const grassSeeds = [
+    [0.08,0.12],[0.18,0.22],[0.06,0.55],[0.14,0.78],[0.09,0.88],
+    [0.88,0.10],[0.92,0.32],[0.85,0.60],[0.91,0.82],[0.82,0.92],
+    [0.25,0.06],[0.5,0.04],[0.72,0.07],[0.3,0.94],[0.55,0.96],[0.75,0.93],
+    [0.04,0.38],[0.96,0.50],[0.07,0.70],[0.93,0.70],
+  ];
+  grassSeeds.forEach(([gx,gy])=>{
+    const px = gx*w, py = gy*h;
+    ctx.beginPath(); ctx.moveTo(px-2, py+3); ctx.lineTo(px, py-3); ctx.lineTo(px+2, py+3); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(px+4, py+3); ctx.lineTo(px+5, py-2); ctx.lineTo(px+7, py+3); ctx.stroke();
+  });
   // fringe rounded rect
   ctx.beginPath();
   ctx.roundRect(cx - fw/2, cy - fh/2, fw, fh, fr);
@@ -1016,6 +1086,18 @@ function dispDrawGreen(canvas, dot, cssW, cssH){
   ctx.roundRect(cx - gw/2, cy - gh/2, gw, gh, gr);
   ctx.fillStyle = '#1e4d2e';
   ctx.fill();
+  // quadrant lines clipped to green
+  ctx.save();
+  ctx.beginPath();
+  ctx.roundRect(cx - gw/2, cy - gh/2, gw, gh, gr);
+  ctx.clip();
+  ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([3, 4]);
+  ctx.beginPath(); ctx.moveTo(cx, cy - gh/2); ctx.lineTo(cx, cy + gh/2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx - gw/2, cy); ctx.lineTo(cx + gw/2, cy); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
   // dot
   if(dot){
     const px = dot.x * w, py = dot.y * h;
@@ -1081,11 +1163,18 @@ function dispDrawMapApproach(highlightShot){
 // ── Update save button state ──────────────────────────────────────
 function dispCheckSave(){
   const btn = document.getElementById('disp-save-btn');
+  const clr = document.getElementById('disp-clear-shot-btn');
   const ready = dispSelectedClub && dispApproachPt && dispLandingPt;
+  const hasAny = dispApproachPt || dispLandingPt;
   btn.disabled = !ready;
   btn.style.background = ready ? 'rgba(74,180,100,0.2)' : 'rgba(74,180,100,0.08)';
   btn.style.color       = ready ? 'rgba(74,180,100,1)'   : 'rgba(74,180,100,0.25)';
   btn.style.boxShadow   = ready ? '0 0 12px rgba(74,180,100,0.3)' : 'none';
+  if(clr){
+    clr.disabled = !hasAny;
+    clr.style.background = hasAny ? 'rgba(255,77,77,0.12)' : 'rgba(255,77,77,0.06)';
+    clr.style.color       = hasAny ? 'rgba(255,77,77,0.8)'  : 'rgba(255,77,77,0.25)';
+  }
 }
 
 // ── Club list (permanent sidebar) ────────────────────────────────
@@ -1183,6 +1272,17 @@ function dispRenderMap(){
   dispDrawMapApproach(null);
   const b = document.getElementById('disp-shot-bubble'); if(b) b.style.display='none';
   dispSyncRightColHeight();
+  // avg first putt
+  const puttEl = document.getElementById('disp-avg-putt');
+  if(puttEl){
+    const putts = dispMapShots.map(s=>s.firstPuttFt).filter(v=>v>0);
+    if(putts.length){
+      const avg = (putts.reduce((a,b)=>a+b,0) / putts.length).toFixed(1);
+      puttEl.innerHTML = `<span style="font-size:9px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:rgba(255,212,71,0.4);">Avg 1st Putt</span><span style="font-size:13px;font-weight:bold;color:var(--gold);font-family:'Georgia','Times New Roman',serif;margin-left:6px;">${avg} ft</span>`;
+    } else {
+      puttEl.innerHTML = `<span style="font-size:9px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:rgba(255,212,71,0.4);">Avg 1st Putt</span><span style="font-size:13px;font-weight:bold;color:rgba(255,212,71,0.25);font-family:'Georgia','Times New Roman',serif;margin-left:6px;">—</span>`;
+    }
+  }
 }
 
 function dispShowShotInfo(shot){
@@ -1276,7 +1376,6 @@ document.getElementById('disp-landing-canvas').addEventListener('pointerdown', e
     y: Math.max(0, Math.min(1, (e.clientY - rect.top)  / rect.height))
   };
   dispDrawGreen(canvas, dispLandingPt);
-  dispSelectedClub = null;
   dispCheckSave();
   dispShowClubPopup();
 });
@@ -1287,11 +1386,14 @@ document.getElementById('disp-save-btn').addEventListener('click', ()=>{
   const dist = dispYToYards(dispApproachPt.y);
   const note = '';
   const tags = [];
+  const puttInput = document.getElementById('disp-putt-input');
+  const puttFt = puttInput && puttInput.value ? parseInt(puttInput.value, 10) : undefined;
   const shots = dispLoad();
-  shots.push({ club: dispSelectedClub, distanceYards: dist, approachX: dispApproachPt.x, approachY: dispApproachPt.y, landingX: dispLandingPt.x, landingY: dispLandingPt.y, tags, note: note || undefined });
+  shots.push({ club: dispSelectedClub, distanceYards: dist, approachX: dispApproachPt.x, approachY: dispApproachPt.y, landingX: dispLandingPt.x, landingY: dispLandingPt.y, tags, note: note || undefined, firstPuttFt: puttFt || undefined });
   dispSave(shots);
   // reset
   dispApproachPt = null; dispLandingPt = null; dispSelectedClub = null;
+  if(puttInput) puttInput.value = '';
   dispSelectedTags = new Set();
   dispHideClubPopup();
   dispDrawApproach(document.getElementById('disp-approach-canvas'), null);
@@ -1302,6 +1404,17 @@ document.getElementById('disp-save-btn').addEventListener('click', ()=>{
   const msg = document.getElementById('disp-log-msg');
   msg.textContent = 'Shot logged ✓';
   setTimeout(()=>{ msg.textContent=''; }, 2000);
+});
+
+// ── Clear current shot ────────────────────────────────────────────
+document.getElementById('disp-clear-shot-btn').addEventListener('click', ()=>{
+  dispApproachPt = null; dispLandingPt = null; dispSelectedClub = null;
+  dispDrawApproach(document.getElementById('disp-approach-canvas'), null);
+  dispDrawGreen(document.getElementById('disp-landing-canvas'), null);
+  const puttInput = document.getElementById('disp-putt-input');
+  if(puttInput) puttInput.value = '';
+  dispRenderClubList();
+  dispCheckSave();
 });
 
 // ── Clear all shots ───────────────────────────────────────────────
