@@ -25,10 +25,10 @@ body{font-family:'Georgia','Times New Roman',serif;background:#080f0a;margin:0;p
 /* Format selector — compact chips */
 .format-chips{display:flex;gap:6px;}
 .fmt-chip{
-  position:relative;flex:1;display:flex;align-items:center;justify-content:center;gap:5px;
-  padding:8px 4px;border-radius:8px;cursor:pointer;
+  position:relative;flex:1;display:flex;align-items:center;justify-content:center;gap:4px;
+  padding:8px 2px;border-radius:8px;cursor:pointer;white-space:nowrap;
   background:rgba(0,0,0,0.3);border:1px solid rgba(255,212,71,0.15);
-  color:rgba(255,255,255,0.35);font-size:10px;font-weight:bold;letter-spacing:1px;
+  color:rgba(255,255,255,0.35);font-size:9.5px;font-weight:bold;letter-spacing:.6px;
   text-transform:uppercase;font-family:'Georgia','Times New Roman',serif;
   transition:all .15s;user-select:none;-webkit-user-select:none;
 }
@@ -132,13 +132,9 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
   <!-- Card 1: Date & Course -->
   <div class="setup-section">
     <div class="setup-section-label">Date &amp; Course</div>
-    <div style="display:grid;grid-template-columns:1fr 1.6fr auto;gap:8px;align-items:end;">
-      <input type="date" class="name-input" id="roundDate" style="-webkit-appearance:none;color-scheme:dark;">
-      <input type="text" class="name-input" id="courseInput" placeholder="Course Name" autocomplete="off">
-      <div style="display:flex;flex-direction:column;gap:3px;">
-        <div style="font-size:9px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);text-align:center;">Par</div>
-        <input type="number" class="num-input" id="coursePar" min="18" max="100" value="72" inputmode="numeric" style="width:52px;">
-      </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <input type="date" class="name-input" id="roundDate" style="-webkit-appearance:none;color-scheme:dark;flex-shrink:0;width:140px;">
+      <input type="text" class="name-input" id="courseInput" placeholder="Course Name" autocomplete="off" style="flex:1;min-width:0;">
     </div>
   </div>
 
@@ -427,7 +423,6 @@ function saveStrokeRound(){
   errEl.style.display = 'none';
   const date = document.getElementById('roundDate').value;
   const course = document.getElementById('courseInput').value.trim();
-  const coursePar = parseInt(document.getElementById('coursePar')?.value)||null;
   const players = [0,1,2,3].map(i=>{
     const name = document.getElementById('p'+i)?.value.trim()||'';
     const score = parseInt(document.getElementById('sc'+i)?.value)||null;
@@ -437,7 +432,7 @@ function saveStrokeRound(){
   const record = {
     id: Date.now(), game: 'stroke',
     date: new Date((date||new Date().toLocaleDateString('en-CA'))+'T12:00:00').toISOString(),
-    course, coursePar,
+    course,
     players: players.map(p=>p.name),
     playerTotals: players.map(p=>p.score),
     handicaps: null, scoreHistory: null, holeParDist: null, holes: null
@@ -510,12 +505,9 @@ function setScrTeams(){
 }
 
 function updateScrVsPar(){
-  const par = parseInt(document.getElementById('coursePar')?.value);
-  const sA = parseInt(document.getElementById('scrScoreA')?.value);
-  const sB = parseInt(document.getElementById('scrScoreB')?.value);
-  function render(el, score){ if(!el) return; if(!isNaN(score)&&!isNaN(par)){ const v=score-par; el.className='vspar-row '+(v<0?'vspar-under':v>0?'vspar-over':'vspar-even'); el.textContent=(v>0?'+':'')+v+' vs par'; } else { el.className='vspar-row'; el.textContent=''; } }
-  render(document.getElementById('scrVspA'), sA);
-  render(document.getElementById('scrVspB'), sB);
+  document.getElementById('scrVspA')?.classList.remove('vspar-under','vspar-over','vspar-even');
+  if(document.getElementById('scrVspA')) document.getElementById('scrVspA').textContent='';
+  if(document.getElementById('scrVspB')) document.getElementById('scrVspB').textContent='';
 }
 
 function saveScrambleRound(){
