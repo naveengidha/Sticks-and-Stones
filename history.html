@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#080f0a">
-<title>Scorecards & Stats</title>
+<title>Standings</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <style>
@@ -38,7 +38,6 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 .season-players{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;}
 .s-chip{font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.55);}
 .s-chip.leader{background:rgba(255,212,71,0.15);color:var(--gold);font-weight:bold;}
-
 
 /* ── Round cards ── */
 .round-card{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.03) 0,rgba(255,212,71,0.03) 1px,transparent 1px,transparent 10px),#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:10px;padding:13px;margin-bottom:10px;cursor:pointer;transition:border-color .15s;}
@@ -80,7 +79,9 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 .tag-good{color:#1a9e5c;font-weight:bold;}
 .tag-bad{color:#c0392b;font-weight:bold;}
 .sboard{width:100%;border-collapse:collapse;font-size:13px;padding:4px 0;}
-.sboard th{font-size:9px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:#a07840;padding:8px 12px 6px;border-bottom:1px solid rgba(255,212,71,0.1);white-space:nowrap;}
+.sboard th{font-size:9px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:#a07840;padding:8px 12px 6px;border-bottom:1px solid rgba(255,212,71,0.1);white-space:nowrap;user-select:none;}
+.sboard th:hover{color:#ffd447;background:rgba(255,212,71,0.05);}
+.sboard th .sort-arrow{color:#ffd447;transition:opacity .15s;}
 .sboard td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;vertical-align:top;}
 .sboard tr:last-child td{border-bottom:none;}
 .rank-num{display:inline-block;width:18px;font-size:11px;color:rgba(255,255,255,0.85);}
@@ -100,70 +101,27 @@ body{font-family:var(--font);background:var(--bg);margin:0;padding:0;color:#fff;
 .hcp-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:#ffd447;margin-right:5px;vertical-align:middle;}
 /* ── Section label ── */
 .rounds-section-label{font-size:13px;font-weight:bold;letter-spacing:.5px;color:#ffd447;padding:14px 2px 6px;}
-/* ── Hall of Fame cards ── */
-.hof-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 12px;}
-.hof-card{background:repeating-linear-gradient(45deg,rgba(255,212,71,0.025) 0,rgba(255,212,71,0.025) 1px,transparent 1px,transparent 9px),repeating-linear-gradient(-45deg,rgba(255,212,71,0.025) 0,rgba(255,212,71,0.025) 1px,transparent 1px,transparent 9px),#0e1a12;border:1px solid rgba(255,212,71,0.22);border-radius:12px;padding:14px 10px 12px;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;}
-.hof-card::after{content:'';position:absolute;inset:0;border-radius:12px;box-shadow:inset 0 1px 0 rgba(255,212,71,0.12);pointer-events:none;}
-.hof-icon{font-size:26px;line-height:1;margin-bottom:8px;}
-.hof-label{font-size:8px;font-weight:bold;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,212,71,0.45);margin-bottom:6px;}
-.hof-value{font-size:22px;font-weight:bold;color:var(--gold);font-family:'Georgia','Times New Roman',serif;line-height:1;margin-bottom:4px;}
-.hof-name{font-size:11px;font-weight:bold;color:rgba(255,255,255,0.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
-.hof-meta{font-size:9px;color:rgba(255,255,255,0.3);margin-top:3px;}
 /* ── Pill nav ── */
 nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;padding:8px 16px max(env(safe-area-inset-bottom),12px);background:linear-gradient(to top,#080f0a 70%,transparent);z-index:100;pointer-events:none;}
 .nav-pill{display:flex;align-items:center;justify-content:space-between;background:rgba(14,26,18,0.97);border:1px solid rgba(255,212,71,0.18);border-radius:40px;padding:6px 16px;gap:4px;max-width:420px;width:100%;box-shadow:0 4px 24px rgba(0,0,0,0.5);pointer-events:all;}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;color:rgba(255,255,255,0.35);font-size:9px;font-weight:bold;letter-spacing:.8px;text-transform:uppercase;text-decoration:none;padding:4px 8px;border-radius:20px;transition:color .15s;font-family:'Georgia','Times New Roman',serif;}
 .nav-item svg{width:20px;height:20px;stroke:currentColor;}
 .nav-item.active{color:#ffd447;}
-.nav-center{background:linear-gradient(135deg,#c9a227,#ffd447,#c9a227);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;margin:0 4px;cursor:pointer;box-shadow:0 2px 10px rgba(139,94,60,0.5);flex-shrink:0;text-decoration:none;}
-.nav-center svg{width:36px;height:36px;}
+
 .page-header{padding:16px 16px 4px;font-size:22px;font-weight:bold;color:#ffd447;letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;text-align:center;}
 </style>
 </head>
 <body>
 
-<div class="page-header">History</div>
-
-<!-- Tab bar -->
-<div style="display:flex;margin:12px 14px 14px;background:#0e1a12;border:1px solid rgba(255,212,71,0.2);border-radius:12px;overflow:hidden;">
-  <button id="tabStats" onclick="showHistoryTab('stats')" style="flex:1;padding:11px 4px;background:none;border:none;border-bottom:2px solid #ffd447;color:#ffd447;font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;box-shadow:none;margin:0;font-family:'Georgia','Times New Roman',serif;">Standings</button>
-  <button id="tabHof" onclick="showHistoryTab('hof')" style="flex:1;padding:11px 4px;background:none;border:none;border-bottom:2px solid transparent;color:#a07840;font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;box-shadow:none;margin:0;font-family:'Georgia','Times New Roman',serif;">Honours</button>
-  <button id="tabHcp" onclick="showHistoryTab('hcp')" style="flex:1;padding:11px 4px;background:none;border:none;border-bottom:2px solid transparent;color:#a07840;font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;box-shadow:none;margin:0;font-family:'Georgia','Times New Roman',serif;">Handicap</button>
-</div>
+<div class="page-header">Standings</div>
 
 <div class="scroll-area">
-
-  <!-- ── STATISTICS ── -->
-  <div class="tab-panel active" id="tab-stats">
-    <div id="insightsContent"></div>
-  </div>
-
-  <!-- ── HALL OF FAME ── -->
-  <div class="tab-panel" id="tab-hof">
-    <div id="hofContent"></div>
-  </div>
-
-  <!-- ── HANDICAP ── -->
-  <div class="tab-panel" id="tab-hcp">
-    <div id="handicapContent"></div>
-  </div>
-
+  <div id="insightsContent"></div>
 </div>
 
 <script src="season.js"></script>
 <script>
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
-
-function showHistoryTab(tab){
-  ['stats','hof','hcp'].forEach(t=>{
-    let panel = document.getElementById('tab-'+t);
-    let btn = document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1));
-    let active = t === tab;
-    panel.classList.toggle('active', active);
-    btn.style.borderBottom = active ? '2px solid #ffd447' : '2px solid transparent';
-    btn.style.color = active ? '#ffd447' : '#a07840';
-  });
-}
 
 const GAME_LABELS = {
   stableford:'Stableford', banker:'Banker',
@@ -175,524 +133,307 @@ function fmtDate(d){ if(!d) return ''; let dt=new Date(d); if(isNaN(dt)) return 
 function fmtVsPar(v){ return v>0?'+'+v:v===0?'E':String(v); }
 function loadHistory(){ try{ return JSON.parse(localStorage.getItem('gameHistory')||'[]'); }catch(e){ return []; } }
 
-let insightsFilter = 'all';
-
 /* ══════════════════════════════════════
-   INSIGHTS TAB
+   STANDINGS TAB
 ══════════════════════════════════════ */
-function sboardTable(headers, rows){
+function sboardTable(headers, rows, tableId){
   let n = headers.length;
   let statW = n > 3 ? Math.floor(52/(n-2)) : 20;
   let cols = `<colgroup><col style="width:5%"><col style="width:${100-5-(statW*(n-2))}%">${headers.slice(2).map(()=>`<col style="width:${statW}%">`).join('')}</colgroup>`;
-  let th = headers.map((h,i)=>`<th style="text-align:${i===0||i===1?'left':'right'};${i===headers.length-1?'padding-right:12px;':''}">${h}</th>`).join('');
-  let tr = rows.map(cells=>{
+  let th = headers.map((h,i)=>`<th data-col="${i}" style="text-align:${i===0||i===1?'left':'right'};${i===headers.length-1?'padding-right:12px;':''}cursor:pointer;">${h}<span class="sort-arrow" style="opacity:0;margin-left:3px;font-size:8px;"></span></th>`).join('');
+  let makeRow = (r)=>{
+    let cells = Array.isArray(r) ? r : r.cells;
+    let vals  = Array.isArray(r) ? null : r.vals;
+    let dataAttrs = vals ? vals.map((v,i)=>`data-v${i}="${String(v).replace(/"/g,'&quot;')}"`).join(' ') : '';
     let tds = cells.map((c,i)=>`<td style="text-align:${i===0||i===1?'left':'right'};${i===cells.length-1?'padding-right:12px;':''}">${c}</td>`).join('');
-    return `<tr>${tds}</tr>`;
-  }).join('');
-  return `<table class="sboard">${cols}<thead><tr>${th}</tr></thead><tbody>${tr}</tbody></table>`;
+    return `<tr ${dataAttrs}>${tds}</tr>`;
+  };
+  let tbody = rows.map(makeRow).join('');
+  let id = tableId ? `id="${tableId}"` : '';
+  return `<table class="sboard" ${id}>${cols}<thead><tr>${th}</tr></thead><tbody>${tbody}</tbody></table>`;
+}
+
+function attachSortHandlers(table){
+  if(!table) return;
+  let state = {col:-1, dir:1};
+  table.querySelector('thead').addEventListener('click', e=>{
+    let th = e.target.closest('th[data-col]');
+    if(!th) return;
+    let col = +th.dataset.col;
+    if(state.col === col) state.dir *= -1;
+    else { state.col = col; state.dir = 1; }
+    // update arrows
+    table.querySelectorAll('th[data-col] .sort-arrow').forEach((a,i)=>{
+      if(i === col){ a.textContent = state.dir===1?'▲':'▼'; a.style.opacity='1'; }
+      else { a.textContent=''; a.style.opacity='0'; }
+    });
+    // sort rows
+    let tbody = table.querySelector('tbody');
+    let trs = [...tbody.querySelectorAll('tr')];
+    trs.sort((a,b)=>{
+      let av = a.dataset['v'+col], bv = b.dataset['v'+col];
+      if(av===undefined||bv===undefined) return 0;
+      let an = parseFloat(av), bn = parseFloat(bv);
+      let cmp = (!isNaN(an)&&!isNaN(bn)) ? an-bn : av.localeCompare(bv);
+      return cmp * state.dir;
+    });
+    // re-number rank column (col 0) if present
+    trs.forEach((tr,i)=>{
+      let rankCell = tr.querySelector('td:first-child .rank-num');
+      if(rankCell) rankCell.textContent = i+1;
+    });
+    trs.forEach(tr=>tbody.appendChild(tr));
+  });
 }
 
 function renderInsights(){
   let el = document.getElementById('insightsContent');
   let all = loadHistory();
   if(!all.length){
-    el.innerHTML = '<div class="empty-state">No rounds saved yet.<br>Finish a game to see insights here.</div>';
+    el.innerHTML = '<div class="empty-state">No rounds saved yet.<br>Finish a game to see standings here.</div>';
     return;
   }
 
-  let sections = '';
-  let gamesToShow = insightsFilter === 'all'
-    ? ['stroke','scramble','stableford','banker']
-    : [insightsFilter];
-
-  // Stableford — individual
-  if(gamesToShow.includes('stableford')){
-    let rounds = all.filter(r=>r.game==='stableford' && r.players && r.playerTotals);
-    if(rounds.length){
-      let players = {};
-      rounds.forEach(r=>{
-        let max = Math.max(...r.playerTotals);
-        r.players.forEach((name,i)=>{
-          if(!players[name]) players[name]={rounds:0,total:0,wins:0};
-          players[name].rounds++;
-          players[name].total += r.playerTotals[i]||0;
-          if(r.playerTotals[i]===max) players[name].wins++;
-        });
-      });
-      let rows = Object.entries(players)
-        .sort((a,b)=>(b[1].total/b[1].rounds)-(a[1].total/a[1].rounds))
-        .map(([name,p],rank)=>{
-          let avg = (p.total/p.rounds).toFixed(1);
-          return [
-            `<span class="rank-num">${rank+1}</span>`,
-            esc(name),
-            `<span class="ins-val">${avg}</span>`,
-            p.wins,
-            p.rounds
-          ];
-        });
-      // Score distribution sub-table
-      let dist = {};
-      rounds.forEach(r=>{
-        if(!r.scoreHistory || !r.holeParDist) return;
-        r.players.forEach((name,pi)=>{
-          if(!dist[name]) dist[name]={eagle:0,birdie:0,par:0,bogey:0,double:0,holes:0};
-          r.scoreHistory.forEach((hole,hi)=>{
-            let s=hole[pi], par=r.holeParDist[hi]?.par;
-            if(s==null||par==null) return;
-            let d=s-par;
-            dist[name].holes++;
-            if(d<=-2) dist[name].eagle++;
-            else if(d===-1) dist[name].birdie++;
-            else if(d===0) dist[name].par++;
-            else if(d===1) dist[name].bogey++;
-            else dist[name].double++;
-          });
-        });
-      });
-      let pct=(n,t)=>t?Math.round(n/t*100)+'%':'–';
-      let dRows = Object.entries(dist)
-        .sort((a,b)=>(players[b[0]]?.total/players[b[0]]?.rounds||0)-(players[a[0]]?.total/players[a[0]]?.rounds||0))
-        .map(([name,d],rank)=>[
-          `<span class="rank-num">${rank+1}</span>`,
-          esc(name),
-          `<span>${pct(d.eagle+d.birdie,d.holes)}</span>`,
-          `<span>${pct(d.par,d.holes)}</span>`,
-          `<span>${pct(d.bogey+d.double,d.holes)}</span>`
-        ]);
-      sections += `<div class="ins-panel">
-          <div class="ins-panel-title" style="text-align:center;">Stableford — Results</div>
-          ${sboardTable(['#','Player','Pts/Rnd','Wins','Rounds'], rows)}
-          <div style="border-top:1px solid rgba(255,212,71,0.1);margin:4px 0;"></div>
-          <div class="ins-panel-title" style="text-align:center;">Stableford — Scoring</div>
-          ${sboardTable(['#','Player','Birdie+%','Par%','Bogey+%'], dRows)}
-        </div>`;
-    }
-  }
-
-  // Scramble — player-pair standings
-  if(gamesToShow.includes('scramble')){
-    let rounds = all.filter(r=>r.game==='scramble' && r.teamScores);
-    if(rounds.length){
-      let teams = {};
-      rounds.forEach(r=>{
-        let getTeamLabel = (ti) => {
-          if(r.players && r.players[ti*2])
-            return [r.players[ti*2], r.players[ti*2+1]].filter(Boolean).join(' & ');
-          if(Array.isArray(r.playerNames) && Array.isArray(r.playerNames[ti]))
-            return r.playerNames[ti].filter(Boolean).join(' & ');
-          return `Team ${String.fromCharCode(65+ti)}`;
-        };
-        let minScore = Math.min(...r.teamScores);
-        [0,1].forEach(ti=>{
-          let label = getTeamLabel(ti);
-          let key = label.split(' & ').sort().join('|');
-          let vp = r.teamVsPar?.[ti]??null;
-          if(!teams[key]) teams[key]={label,rounds:0,wins:0,totalScore:0,vpRounds:0,totalVsPar:0};
-          teams[key].rounds++;
-          teams[key].totalScore += r.teamScores[ti]||0;
-          if(vp!=null){ teams[key].totalVsPar+=vp; teams[key].vpRounds++; }
-          if(r.teamScores[ti]===minScore && r.teamScores.filter(s=>s===minScore).length===1) teams[key].wins++;
-        });
-      });
-      let rows = Object.entries(teams)
-        .sort((a,b)=>b[1].wins-a[1].wins||(a[1].totalVsPar/a[1].vpRounds||0)-(b[1].totalVsPar/b[1].vpRounds||0))
-        .map(([,t],rank)=>{
-          let vpStr='—';
-          if(t.vpRounds>0){
-            let avg=t.totalVsPar/t.vpRounds, r=Math.round(avg);
-            vpStr=r===0?'E':r>0?'+'+r:String(r);
-          }
-          return [
-            `<span class="rank-num">${rank+1}</span>`,
-            esc(t.label),
-            `<span class="${t.vpRounds>0&&t.totalVsPar/t.vpRounds<0?'tag-good':'ins-val'}">${vpStr}</span>`,
-            t.wins,
-            t.rounds
-          ];
-        });
-      sections += `<div class="ins-panel"><div class="ins-panel-title" style="text-align:center;">Team Scramble</div>${sboardTable(['#','Players','vPar','Wins','Rnds'], rows)}</div>`;
-    }
-  }
-
-  // Banker
-  if(gamesToShow.includes('banker')){
-    let rounds = all.filter(r=>r.game==='banker' && r.players && r.playerNetTotals);
-    let bankerRoundsWithHistory = all.filter(r=>r.game==='banker' && r.players && r.holeHistory);
-    if(rounds.length){
-      let players = {};
-      // Net $ from round totals
-      rounds.forEach(r=>{
-        r.players.forEach((name,i)=>{
-          if(!players[name]) players[name]={net:0,playerHoles:0,wins:0,winTotal:0,bankerHoles:0,sweeps:0};
-          players[name].net += r.playerNetTotals[i]||0;
-        });
-      });
-      // Win% — holes played as non-banker
-      bankerRoundsWithHistory.forEach(r=>{
-        (r.holeHistory||[]).forEach(h=>{
-          (h.matchups||[]).forEach(m=>{
-            let name = r.players[m.playerIdx];
-            if(!name) return;
-            if(!players[name]) players[name]={net:0,playerHoles:0,wins:0,winTotal:0,bankerHoles:0,sweeps:0};
-            players[name].playerHoles++;
-            players[name].winTotal++;
-            if(m.result==='player') players[name].wins++;
-          });
-        });
-        // Sweep% — holes played as banker
-        (r.holeHistory||[]).forEach(h=>{
-          let bankerName = r.players[h.bankerIdx];
-          if(!bankerName) return;
-          if(!players[bankerName]) players[bankerName]={net:0,playerHoles:0,wins:0,winTotal:0,bankerHoles:0,sweeps:0};
-          players[bankerName].bankerHoles++;
-          let playerWins = (h.matchups||[]).filter(m=>m.result==='player').length;
-          if(playerWins===0) players[bankerName].sweeps++;
-        });
-      });
-      let rows = Object.entries(players)
-        .sort((a,b)=>b[1].net-a[1].net)
-        .map(([name,p],rank)=>{
-          let netStr = (p.net>0?'+':p.net<0?'-':'')+'$'+Math.abs(p.net);
-          let netCls = p.net>0?'tag-good':p.net<0?'tag-bad':'ins-muted';
-          let totalHoles = p.playerHoles + p.bankerHoles;
-          let avgVal = totalHoles>0 ? (p.net/totalHoles).toFixed(2) : null;
-          let avgStr = avgVal===null ? '—' : (avgVal>=0?'+$':'-$')+Math.abs(avgVal);
-          let avgCls = avgVal===null?'ins-muted':avgVal>0?'tag-good':avgVal<0?'tag-bad':'ins-muted';
-          return [
-            `<span class="rank-num">${rank+1}</span>`,
-            esc(name),
-            `<span class="${netCls}" style="font-weight:bold">${netStr}</span>`,
-            totalHoles||'—',
-            `<span class="${avgCls}">${avgStr}</span>`
-          ];
-        });
-      sections += `<div class="ins-panel"><div class="ins-panel-title" style="text-align:center;">Banker</div>${sboardTable(['#','Player','Net $','Holes','$/Hole'], rows)}</div>`;
-    }
-  }
-
-  // Stroke Play
-  if(gamesToShow.includes('stroke')){
-    let rounds = all.filter(r=>r.game==='stroke' && r.players && r.playerTotals);
-    if(rounds.length){
-      let players = {};
-      rounds.forEach(r=>{
-        // par: from holeParDist (hole-by-hole) or top-level coursePar field
-        let pd = r.holeParDist||[];
-        let totalPar = pd.length ? pd.reduce((s,h)=>s+(h.par||4),0) : (r.coursePar||null);
-        let min = Math.min(...r.playerTotals);
-        r.players.forEach((name,i)=>{
-          if(!players[name]) players[name]={rounds:0,totalScore:0,totalParRounds:0,totalPar:0,wins:0,bestScore:null,bestVsPar:null};
-          players[name].rounds++;
-          let score = r.playerTotals[i]||0;
-          players[name].totalScore += score;
-          if(score===min) players[name].wins++;
-          if(players[name].bestScore===null || score < players[name].bestScore) players[name].bestScore=score;
-          if(totalPar){
-            players[name].totalPar += totalPar; players[name].totalParRounds++;
-            let vp = score - totalPar;
-            if(players[name].bestVsPar===null || vp < players[name].bestVsPar) players[name].bestVsPar=vp;
-          }
-        });
-      });
-      let rows = Object.entries(players)
-        .sort((a,b)=>(a[1].totalScore/a[1].rounds)-(b[1].totalScore/b[1].rounds))
-        .map(([name,p],rank)=>{
-          let avgScore = (p.totalScore/p.rounds).toFixed(1);
-          // show vs-par avg only if we have par data
-          let avgDisp = avgScore;
-          if(p.totalParRounds>0){
-            let avgVp = (p.totalScore - p.totalPar) / p.totalParRounds;
-            avgDisp = (avgVp>=0?'+':'')+avgVp.toFixed(1);
-          }
-          let bestDisp;
-          if(p.bestVsPar!==null){
-            bestDisp = fmtVsPar(p.bestVsPar);
-          } else {
-            bestDisp = p.bestScore??'—';
-          }
-          return [
-            `<span class="rank-num">${rank+1}</span>`,
-            esc(name),
-            `<span class="ins-val">${avgDisp}</span>`,
-            `<span class="tag-good">${bestDisp}</span>`,
-            `<span class="ins-muted">${p.rounds}</span>`
-          ];
-        });
-      sections += `<div class="ins-panel"><div class="ins-panel-title" style="text-align:center;">Stroke Play</div>${sboardTable(['#','Player','Avg','Best','Rounds'], rows)}</div>`;
-    }
-  }
-
-  if(!sections){
-    el.innerHTML = '<div class="empty-state">No data for this game format yet.</div>';
-    return;
-  }
-
-  el.innerHTML = sections;
-}
-
-// Init
-renderInsights();
-
-/* ══════════════════════════════════════
-   HALL OF FAME
-══════════════════════════════════════ */
-function renderHallOfFame(){
-  let el = document.getElementById('hofContent');
-  let all = loadHistory();
-  if(!all.length){
-    el.innerHTML = '<div class="empty-state">No rounds saved yet.</div>';
-    return;
-  }
-
-  let records = [];
-
-  // Highest Stableford score (single round, single player)
-  let sfRounds = all.filter(r=>r.game==='stableford' && r.players && r.playerTotals);
-  if(sfRounds.length){
-    let best = null;
-    sfRounds.forEach(r=>{
-      r.players.forEach((name,i)=>{
-        let pts = r.playerTotals[i]||0;
-        if(!best || pts > best.pts) best = {pts, name, date: r.date, course: r.course};
-      });
-    });
-    if(best) records.push({icon:'⭐', label:'Highest Stableford', value: best.pts+' pts', name: best.name, date: best.date, course: best.course});
-  }
-
-  // Lowest stroke score (single round, single player)
-  let stRounds = all.filter(r=>r.game==='stroke' && r.players && r.playerTotals);
-  if(stRounds.length){
-    let best = null;
-    stRounds.forEach(r=>{
-      r.players.forEach((name,i)=>{
-        let score = r.playerTotals[i]||0;
-        if(score > 0 && (!best || score < best.score)) best = {score, name, date: r.date, course: r.course};
-      });
-    });
-    if(best){
-      let par = best.course ? null : null;
-      // try to get par from holeParDist
-      let round = stRounds.find(r=>r.players.includes(best.name) && r.date===best.date);
-      if(round && round.holeParDist) par = round.holeParDist.reduce((s,h)=>s+(h.par||4),0);
-      let disp = par ? best.score + ' ('+fmtVsPar(best.score-par)+')' : String(best.score);
-      records.push({icon:'🎯', label:'Lowest Stroke Score', value: disp, name: best.name, date: best.date, course: best.course});
-    }
-  }
-
-  // Biggest Banker single-round net win
-  let bkRounds = all.filter(r=>r.game==='banker' && r.players && r.playerNetTotals);
-  if(bkRounds.length){
-    let best = null;
-    bkRounds.forEach(r=>{
-      r.players.forEach((name,i)=>{
-        let net = r.playerNetTotals[i]||0;
-        if(!best || net > best.net) best = {net, name, date: r.date, course: r.course};
-      });
-    });
-    if(best && best.net > 0) records.push({icon:'💰', label:'Biggest Banker Win', value: '+$'+best.net, name: best.name, date: best.date, course: best.course});
-  }
-
-  // Most Stableford wins
-  if(sfRounds.length){
-    let wins = {};
-    sfRounds.forEach(r=>{
-      let max = Math.max(...r.playerTotals);
-      r.players.forEach((name,i)=>{ if(r.playerTotals[i]===max){ wins[name]=(wins[name]||0)+1; } });
-    });
-    let top = Object.entries(wins).sort((a,b)=>b[1]-a[1])[0];
-    if(top) records.push({icon:'🏆', label:'Most Stableford Wins', value: top[1]+' wins', name: top[0], date: null, course: null});
-  }
-
-  // Best scramble vs par
-  let scRounds = all.filter(r=>r.game==='scramble' && r.teamScores && r.teamVsPar);
-  if(scRounds.length){
-    let best = null;
-    scRounds.forEach(r=>{
-      [0,1].forEach(ti=>{
-        let vp = r.teamVsPar[ti];
-        if(vp!=null && (!best || vp < best.vp)){
-          let getLabel = (ti) => {
-            if(r.players && r.players[ti*2]) return [r.players[ti*2], r.players[ti*2+1]].filter(Boolean).join(' & ');
-            return 'Team '+(ti===0?'A':'B');
-          };
-          best = {vp, name: getLabel(ti), date: r.date, course: r.course};
-        }
-      });
-    });
-    if(best) records.push({icon:'⛳', label:'Best Scramble Score', value: fmtVsPar(best.vp), name: best.name, date: best.date, course: best.course});
-  }
-
-  if(!records.length){
-    el.innerHTML = '<div class="empty-state">No records yet.</div>';
-    return;
-  }
-
-  let html = '<div class="hof-grid">' + records.map(rec=>`
-    <div class="hof-card">
-      <div class="hof-icon">${rec.icon}</div>
-      <div class="hof-label">${esc(rec.label)}</div>
-      <div class="hof-value">${esc(rec.value)}</div>
-      <div class="hof-name">${esc(rec.name)}</div>
-      ${rec.date||rec.course ? `<div class="hof-meta">${[rec.course?esc(rec.course):null, rec.date?fmtDate(rec.date):null].filter(Boolean).join(' · ')}</div>` : ''}
-    </div>
-  `).join('') + '</div>';
-
-  el.innerHTML = html;
-}
-
-/* ══════════════════════════════════════
-   HANDICAP TRACKER
-══════════════════════════════════════ */
-function renderHandicap(){
-  let el = document.getElementById('handicapContent');
-  let all = loadHistory();
-  let stRounds = all.filter(r=>
-    (r.game==='stroke' || r.game==='stableford') &&
-    r.players && r.playerTotals &&
-    ((r.holeParDist && r.holeParDist.length) || r.coursePar)
-  );
-  if(!stRounds.length){
-    el.innerHTML = '<div class="empty-state">Play some stroke or Stableford rounds to track handicap index.</div>';
-    return;
-  }
-
+  // Collect all known players
   let playerSet = new Set();
-  stRounds.forEach(r=>r.players.forEach(n=>playerSet.add(n)));
+  all.forEach(r=>{ if(r.players) r.players.forEach(n=>{ if(n) playerSet.add(n); }); });
+  let players = [...playerSet];
 
-  let cards = [];
-  let cardIdx = 0;
-  playerSet.forEach(playerName=>{
-    let myRounds = stRounds
-      .filter(r=>r.players.includes(playerName))
-      .map(r=>{
-        let idx = r.players.indexOf(playerName);
-        let score;
-        if(r.game==='stableford' && r.scoreHistory && r.scoreHistory.length){
-          score = r.scoreHistory.reduce((s,hole)=> s + (hole[idx] != null ? hole[idx] : 0), 0);
-        } else {
-          score = r.playerTotals[idx];
-        }
-        let par = (r.holeParDist && r.holeParDist.length) ? r.holeParDist.reduce((s,h)=>s+(h.par||4),0) : r.coursePar;
-        let slope = r.courseSlope || 113;
-        let rating = r.courseRating || par;
-        let diff = +((score - rating) * 113 / slope).toFixed(1);
-        return {date: r.date, course: r.course||'Unknown', score, par, diff, game: r.game};
-      })
-      .sort((a,b)=>new Date(a.date)-new Date(b.date));
+  // ── Table 1: Player Summary ──────────────────────────────────
+  // For each player: rounds played, avg score vs par, best round, worst round, handicap index
+  let summary = {};
+  players.forEach(n=>{ summary[n]={rounds:0,totalScore:0,totalPar:0,parRounds:0,best:null,worst:null,diffs:[]}; });
 
-    if(!myRounds.length) return;
-
-    let recent = myRounds.slice(-20);
-    let sorted = [...recent].sort((a,b)=>a.diff-b.diff);
-    let useCount = Math.min(8, Math.max(1, Math.floor(recent.length * 0.4)));
-    let best = sorted.slice(0, useCount);
-    let bestDates = new Set(best.map((r,i)=>r.date+'|'+r.diff+'|'+i));
-    // mark counting rounds by identity
-    let countingSet = new Set();
-    let tempCounts = {};
-    sorted.slice(0, useCount).forEach(r=>{
-      let key = r.date+'|'+r.course+'|'+r.diff;
-      tempCounts[key] = (tempCounts[key]||0)+1;
-    });
-    let usedCounts = {};
-    recent.slice().reverse().forEach((r,ri)=>{
-      let key = r.date+'|'+r.course+'|'+r.diff;
-      if(tempCounts[key]){
-        usedCounts[key] = (usedCounts[key]||0)+1;
-        if(usedCounts[key] <= tempCounts[key]) countingSet.add(recent.length-1-ri);
+  let strokeAndStab = all.filter(r=>(r.game==='stroke'||r.game==='stableford') && r.players && r.playerTotals);
+  strokeAndStab.forEach(r=>{
+    let pd = r.holeParDist||[];
+    let par = pd.length ? pd.reduce((s,h)=>s+(h.par||4),0) : null;
+    let slope = r.courseSlope||113, rating = r.courseRating||(par||72);
+    r.players.forEach((name,i)=>{
+      if(!name||!summary[name]) return;
+      let raw = r.playerTotals[i];
+      if(!raw) return;
+      // for stableford, reconstruct raw stroke score from scoreHistory
+      let score = raw;
+      if(r.game==='stableford' && r.scoreHistory && r.scoreHistory.length){
+        score = r.scoreHistory.reduce((s,hole)=>s+(hole[i]??0),0);
+      }
+      summary[name].rounds++;
+      summary[name].totalScore += score;
+      if(par){
+        summary[name].totalPar += par;
+        summary[name].parRounds++;
+        let diff = +((score - rating)*113/slope).toFixed(1);
+        summary[name].diffs.push(diff);
+        let vp = score - par;
+        if(summary[name].best===null || vp < summary[name].best) summary[name].best = vp;
+        if(summary[name].worst===null || vp > summary[name].worst) summary[name].worst = vp;
+      } else {
+        if(summary[name].best===null || score < summary[name].best) summary[name].best = score;
+        if(summary[name].worst===null || score > summary[name].worst) summary[name].worst = score;
       }
     });
-
-    let hcpIdx = +(best.reduce((s,r)=>s+r.diff,0) / best.length * 0.96).toFixed(1);
-    let hcpDisp = String(hcpIdx);
-    let id = 'hcp-'+cardIdx++;
-
-    let rows = recent.slice().reverse().map((r,ri)=>{
-      let isCounting = countingSet.has(recent.length-1-ri);
-      let diffCls = 'hcp-diff '+(r.diff<0?'tag-good':r.diff>15?'tag-bad':'ins-muted');
-      let rowCls = isCounting ? 'hcp-counting' : 'hcp-dimmed';
-      let dot = isCounting ? '<span class="hcp-dot"></span>' : '';
-      let gameTag = r.game === 'stableford' ? '<span style="font-size:8px;font-weight:bold;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,212,71,0.4);margin-left:4px;">SBF</span>' : '';
-      return `<tr class="${rowCls}">
-        <td>${dot}${fmtDate(r.date)}${gameTag}</td>
-        <td style="max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(r.course)}</td>
-        <td style="text-align:center;">${fmtVsPar(r.score-r.par)}</td>
-        <td style="text-align:right;" class="${diffCls}">${r.diff>0?'+':''}${r.diff}</td>
-      </tr>`;
-    }).join('');
-
-    cards.push({ hcpIdx, html: `<div class="hcp-card">
-      <div class="hcp-card-header" onclick="toggleHcp('${id}')">
-        <div>
-          <div class="hcp-player">${esc(playerName)}</div>
-          <div style="font-size:11px;color:rgba(255,212,71,0.4);margin-top:2px;">${recent.length} round${recent.length!==1?'s':''} · best ${useCount} count</div>
-        </div>
-        <div style="display:flex;align-items:center;">
-          <div style="text-align:right;">
-            <div class="hcp-index">${hcpDisp}</div>
-            <div class="hcp-index-label">HCP Index</div>
-          </div>
-          <span class="hcp-chevron" id="${id}-chev">▼</span>
-        </div>
-      </div>
-      <div class="hcp-body" id="${id}">
-        <table class="sboard" style="margin:0;">
-          <thead><tr>
-            <th style="text-align:left;">Date</th>
-            <th style="text-align:left;">Course</th>
-            <th style="text-align:center;">vPar</th>
-            <th style="text-align:right;">Diff</th>
-          </tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </div>
-    </div>` });
   });
 
-  cards.sort((a, b) => a.hcpIdx - b.hcpIdx);
-  el.innerHTML = cards.map(c => c.html).join('') || '<div class="empty-state">No data.</div>';
-}
+  // Compute handicap index
+  function hcpIndex(diffs){
+    if(!diffs.length) return null;
+    let recent = diffs.slice(-20);
+    let sorted = [...recent].sort((a,b)=>a-b);
+    let use = Math.min(8, Math.max(1, Math.floor(recent.length*0.4)));
+    return +(sorted.slice(0,use).reduce((s,d)=>s+d,0)/use*0.96).toFixed(1);
+  }
 
-function toggleHcp(id){
-  let body = document.getElementById(id);
-  let chev = document.getElementById(id+'-chev');
-  let open = body.classList.toggle('open');
-  chev.style.transform = open ? 'rotate(180deg)' : '';
+  let summaryPlayers = players.filter(n=>summary[n].rounds>0)
+    .sort((a,b)=>{
+      let pa=summary[a], pb=summary[b];
+      let avgA = pa.parRounds>0?(pa.totalScore-pa.totalPar)/pa.parRounds:pa.totalScore/pa.rounds;
+      let avgB = pb.parRounds>0?(pb.totalScore-pb.totalPar)/pb.parRounds:pb.totalScore/pb.rounds;
+      return avgA-avgB;
+    });
+
+  let hasPar = summaryPlayers.some(n=>summary[n].parRounds>0);
+
+  let summaryRows = summaryPlayers.map((name,rank)=>{
+    let p = summary[name];
+    let avgDisp, bestDisp, worstDisp;
+    if(p.parRounds>0){
+      let avg = (p.totalScore-p.totalPar)/p.parRounds;
+      avgDisp = `<span class="${avg<0?'tag-good':avg>0?'tag-bad':'ins-muted'}">${avg>=0?'+':''}${avg.toFixed(1)}</span>`;
+      bestDisp = `<span class="tag-good">${p.best>0?'+':''}${p.best}</span>`;
+      worstDisp = `<span class="tag-bad">${p.worst>0?'+':''}${p.worst}</span>`;
+    } else {
+      avgDisp = `<span class="ins-muted">${(p.totalScore/p.rounds).toFixed(1)}</span>`;
+      bestDisp = `<span class="ins-muted">${p.best??'—'}</span>`;
+      worstDisp = `<span class="ins-muted">${p.worst??'—'}</span>`;
+    }
+    let hcp = hcpIndex(p.diffs);
+    let hcpDisp = hcp===null?'—':String(hcp);
+    let avgVal = p.parRounds>0 ? (p.totalScore-p.totalPar)/p.parRounds : p.totalScore/p.rounds;
+    return {
+      cells: [
+        `<span class="rank-num">${rank+1}</span>`,
+        `<span style="font-weight:bold">${esc(name)}</span>`,
+        avgDisp,
+        bestDisp,
+        worstDisp,
+        `<span class="ins-muted">${hcpDisp}</span>`,
+        `<span class="ins-muted">${p.rounds}</span>`
+      ],
+      vals: [rank+1, name, avgVal, p.best??9999, p.worst??-9999, hcp??9999, p.rounds]
+    };
+  });
+
+  // ── Table 2: Format Standings ────────────────────────────────
+  let fmt = {};
+  players.forEach(n=>{ fmt[n]={sfRnds:0,sfTotal:0,sfWins:0,scrWins:0,scrRnds:0,bkNet:0,bkRnds:0,pinWins:0,pinPar3s:0}; });
+
+  // Stableford
+  all.filter(r=>r.game==='stableford'&&r.players&&r.playerTotals).forEach(r=>{
+    let max=Math.max(...r.playerTotals);
+    r.players.forEach((name,i)=>{
+      if(!name||!fmt[name]) return;
+      fmt[name].sfRnds++;
+      fmt[name].sfTotal += r.playerTotals[i]||0;
+      if(r.playerTotals[i]===max) fmt[name].sfWins++;
+    });
+  });
+
+  // Scramble wins (count per player on winning team)
+  all.filter(r=>r.game==='scramble'&&r.teamScores&&r.players).forEach(r=>{
+    let min=Math.min(...r.teamScores);
+    let winTi = r.teamScores.indexOf(min);
+    // unique winner only
+    if(r.teamScores.filter(s=>s===min).length!==1) return;
+    let getTeam = ti => {
+      if(Array.isArray(r.scrTeams?.a)&&Array.isArray(r.scrTeams?.b)) return ti===0?r.scrTeams.a:r.scrTeams.b;
+      if(r.players) return [r.players[ti*2],r.players[ti*2+1]].filter(Boolean);
+      return [];
+    };
+    getTeam(winTi).forEach(name=>{
+      if(!name||!fmt[name]) return;
+      fmt[name].scrWins++;
+    });
+    // count rounds for all players
+    [0,1].forEach(ti=>getTeam(ti).forEach(name=>{
+      if(!name||!fmt[name]) return;
+      fmt[name].scrRnds++;
+    }));
+  });
+
+  // Banker net — standalone banker rounds use playerNetTotals; side-bet on other formats uses bkPlayerNetTotals
+  all.filter(r=>r.players&&(r.playerNetTotals||r.bkPlayerNetTotals)).forEach(r=>{
+    let nets = r.bkPlayerNetTotals || r.playerNetTotals;
+    r.players.forEach((name,i)=>{
+      if(!name||!fmt[name]) return;
+      let net = nets[i]||0;
+      if(net===0) return;
+      fmt[name].bkNet += net;
+      fmt[name].bkRnds++;
+    });
+  });
+
+  // Closest to pin
+  all.filter(r=>r.pinHistory&&r.pinHistory.length&&r.players).forEach(r=>{
+    r.pinHistory.forEach(h=>{
+      if(h.winner==null) return;
+      let name = r.players[h.winner];
+      if(!name||!fmt[name]) return;
+      fmt[name].pinWins++;
+    });
+    // count par 3s played by each player
+    let par3s = (r.holeParDist||[]).filter(h=>h.par===3).length;
+    r.players.forEach(name=>{
+      if(!name||!fmt[name]) return;
+      fmt[name].pinPar3s += par3s;
+    });
+  });
+
+  let hasStab = players.some(n=>fmt[n].sfRnds>0);
+  let hasScr  = players.some(n=>fmt[n].scrRnds>0);
+  let hasBk   = players.some(n=>fmt[n].bkRnds>0||fmt[n].bkNet!==0);
+  let hasPin  = players.some(n=>fmt[n].pinPar3s>0);
+  let hasFmt  = hasStab||hasScr||hasBk||hasPin;
+
+  let fmtRows = players
+    .filter(n=>fmt[n].sfRnds>0||fmt[n].scrRnds>0||fmt[n].bkRnds>0||fmt[n].bkNet!==0||fmt[n].pinPar3s>0)
+    .sort((a,b)=>{
+      // sort by stableford avg desc, then banker net desc
+      let sa = fmt[a].sfRnds>0?fmt[a].sfTotal/fmt[a].sfRnds:0;
+      let sb = fmt[b].sfRnds>0?fmt[b].sfTotal/fmt[b].sfRnds:0;
+      return sb-sa||fmt[b].bkNet-fmt[a].bkNet;
+    })
+    .map((name,rank)=>{
+      let f = fmt[name];
+      let sfDisp = f.sfRnds>0 ? `<span class="ins-val">${(f.sfTotal/f.sfRnds).toFixed(1)}</span>` : '<span class="ins-muted">—</span>';
+      let scrDisp = f.scrRnds>0 ? `<span class="ins-muted">${f.scrWins}W</span>` : '<span class="ins-muted">—</span>';
+      let bkDisp = f.bkRnds>0
+        ? `<span class="${f.bkNet>0?'tag-good':f.bkNet<0?'tag-bad':'ins-muted'}">${f.bkNet>=0?'+$':'-$'}${Math.abs(f.bkNet)}</span>`
+        : '<span class="ins-muted">—</span>';
+      let pinDisp = f.pinPar3s>0 ? `<span class="ins-muted">${f.pinWins}/${f.pinPar3s}</span>` : '<span class="ins-muted">—</span>';
+      let cells = [`<span class="rank-num">${rank+1}</span>`, `<span style="font-weight:bold">${esc(name)}</span>`];
+      let vals  = [rank+1, name];
+      if(hasStab){ cells.push(sfDisp);  vals.push(f.sfRnds>0?f.sfTotal/f.sfRnds:-9999); }
+      if(hasScr) { cells.push(scrDisp); vals.push(f.scrWins); }
+      if(hasBk)  { cells.push(bkDisp);  vals.push(f.bkNet); }
+      if(hasPin) { cells.push(pinDisp); vals.push(f.pinPar3s>0?f.pinWins/f.pinPar3s:-1); }
+      return {cells, vals};
+    });
+
+  let fmtHeaders = ['#','Player'];
+  if(hasStab) fmtHeaders.push('Stbfd');
+  if(hasScr)  fmtHeaders.push('Scr');
+  if(hasBk)   fmtHeaders.push('Banker');
+  if(hasPin)  fmtHeaders.push('Pin');
+
+  let html = '';
+
+  if(summaryRows.length){
+    html += `<div class="ins-panel">
+      <div class="ins-panel-title">Player Summary</div>
+      ${sboardTable(['#','Player','Avg','Best','Worst','HCP','Rnds'], summaryRows, 'summaryTable')}
+    </div>`;
+  }
+
+  if(hasFmt && fmtRows.length){
+    html += `<div class="ins-panel">
+      <div class="ins-panel-title">Format Standings</div>
+      ${sboardTable(fmtHeaders, fmtRows, 'fmtTable')}
+    </div>`;
+  }
+
+  if(!html){
+    el.innerHTML = '<div class="empty-state">No data yet.</div>';
+    return;
+  }
+
+  el.innerHTML = html;
+  attachSortHandlers(document.getElementById('summaryTable'));
+  attachSortHandlers(document.getElementById('fmtTable'));
 }
 
 renderInsights();
-renderHallOfFame();
-renderHandicap();
+
 </script>
 
 <!-- ── Pill nav bar ── -->
 <nav class="bottom-nav">
   <div class="nav-pill">
     <a class="nav-item" href="index.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="8" r="3"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/><line x1="4" y1="14" x2="20" y2="14" stroke-width="1.5" stroke-dasharray="2 2"/>
-      </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/><line x1="4" y1="14" x2="20" y2="14" stroke-width="1.5" stroke-dasharray="2 2"/></svg>
       Rounds
     </a>
+    <a class="nav-item" href="start.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="9.5" cy="10.5" r=".8" fill="currentColor" stroke="none"/><circle cx="12" cy="8.5" r=".8" fill="currentColor" stroke="none"/><circle cx="14.5" cy="10.5" r=".8" fill="currentColor" stroke="none"/></svg>
+      Play
+    </a>
     <a class="nav-item" href="caddy.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 2h12a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><line x1="9" y1="2" x2="9" y2="6"/><line x1="15" y1="2" x2="15" y2="6"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/>
-      </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><line x1="9" y1="2" x2="9" y2="6"/><line x1="15" y1="2" x2="15" y2="6"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
       Caddy
     </a>
-    <a class="nav-center" href="start.html" title="Play a Game">
-      <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" fill="#1a1a0a"/><circle cx="12" cy="12" r="6.2" fill="white"/><circle cx="10.2" cy="11.2" r="1" fill="#ccc"/><circle cx="12" cy="9.5" r="1" fill="#ccc"/><circle cx="13.8" cy="11.2" r="1" fill="#ccc"/></svg>
-    </a>
     <a class="nav-item active" href="history.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/>
-      </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
       Stats
-    </a>
-    <a class="nav-item" href="dossier.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 9h2M15 13h2M5 17c0-2 1.5-3 4-3s4 1 4 3"/></svg>
-      Dossier
     </a>
   </div>
 </nav>
