@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#080f0a">
-<title>Workshop</title>
+<title>Intel</title>
 <link rel="manifest" href="manifest.json">
 <style>
 *,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -31,7 +31,6 @@ input[type=number]{-moz-appearance:textfield;}
 
 /* ── Page header ── */
 .page-header{padding:14px 16px 6px;font-size:22px;font-weight:bold;color:var(--gold);letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;flex-shrink:0;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;}
-.workshop-badge{font-size:9px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);border:1px solid rgba(255,212,71,0.2);border-radius:4px;padding:2px 6px;margin-top:2px;}
 
 /* ── Tab bar ── */
 #tab-bar{display:flex;margin:0 16px 4px;background:var(--bg-card);border:1px solid rgba(255,212,71,0.2);border-radius:12px;overflow:hidden;flex-shrink:0;}
@@ -101,8 +100,7 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
   <div id="content">
 
     <div class="page-header">
-      <span>Workshop</span>
-      <span class="workshop-badge">Hidden</span>
+      <span>Intel</span>
     </div>
 
     <!-- Tab bar -->
@@ -660,7 +658,9 @@ function analyse(){
       sfZeros:0,sf1pt:0,sf2pts:0,sf3pts:0,sf4pts:0,sfHoles:0,
       bankerNet:0,bankerPlayerHoles:0,bankerWins:0,
       bankerBankerHoles:0,bankerSweeps:0,
-      pinWins:0,pinHoles:0,netMoney:0
+      pinWins:0,pinHoles:0,netMoney:0,
+      statHoles:0,statPutts:0,stat3Putt:0,statGIR:0,statFIR:0,statUaDOpps:0,statUaDMade:0,statPenalties:0,statOOP:0,statDblChip:0,
+      hcpDiffs:[]
     };
     return players[name];
   }
@@ -696,29 +696,39 @@ function analyse(){
   }
 
   all.filter(r=>r.game==='stableford'&&r.players&&r.scoreHistory&&r.holeParDist).forEach(r=>{
+    let pd=r.holeParDist, roundPar=pd.length?pd.reduce((s,h)=>s+(h.par||4),0):null;
+    let slope=r.courseSlope||113, rating=r.courseRating||(roundPar||72);
     r.players.forEach((name,pi)=>{
       let p=ensurePlayer(name);p.rounds++;
+      let roundScore=0;
       r.scoreHistory.forEach((hole,hi)=>{
-        let score=hole[pi],par=r.holeParDist[hi]?.par;if(score==null||!par)return;
+        let score=hole[pi],par=pd[hi]?.par;if(score==null||!par)return;
         let diff=score-par;
         p.parBreak[par]&&(p.parBreak[par].diff+=diff,p.parBreak[par].holes++);
         p.sfHoles++;
         if(diff>=2)p.sfZeros++;else if(diff===1)p.sf1pt++;else if(diff===0)p.sf2pts++;else if(diff===-1)p.sf3pts++;else p.sf4pts++;
         trackDist(p,diff);
+        roundScore+=score;
       });
+      if(roundPar) p.hcpDiffs.push(+((roundScore-rating)*113/slope).toFixed(1));
     });
     processBankerSideBet(r);processPinSideBet(r);
   });
 
   all.filter(r=>r.game==='stroke'&&r.players&&r.scoreHistory&&r.holeParDist).forEach(r=>{
+    let pd=r.holeParDist, roundPar=pd.length?pd.reduce((s,h)=>s+(h.par||4),0):null;
+    let slope=r.courseSlope||113, rating=r.courseRating||(roundPar||72);
     r.players.forEach((name,pi)=>{
       let p=ensurePlayer(name);p.rounds++;
+      let roundScore=0;
       r.scoreHistory.forEach((hole,hi)=>{
-        let score=hole[pi],par=r.holeParDist[hi]?.par;if(score==null||!par)return;
+        let score=hole[pi],par=pd[hi]?.par;if(score==null||!par)return;
         let diff=score-par;
         p.parBreak[par]&&(p.parBreak[par].diff+=diff,p.parBreak[par].holes++);
         trackDist(p,diff);
+        roundScore+=score;
       });
+      if(roundPar) p.hcpDiffs.push(+((roundScore-rating)*113/slope).toFixed(1));
     });
     processBankerSideBet(r);processPinSideBet(r);
   });
@@ -749,11 +759,34 @@ function analyse(){
     });
   });
 
+  all.filter(r=>r.players&&r.holeParDist&&r.scoreHistory).forEach(r=>{
+    r.holeParDist.forEach((h,hi)=>{
+      if(!h.checked||!h.putts) return;
+      r.players.forEach((name,pi)=>{
+        if(!h.checked[pi]) return;
+        let p=ensurePlayer(name);
+        let score=r.scoreHistory[hi]?.[pi];
+        p.statHoles++;
+        p.statPutts+=h.putts[pi]||0;
+        if((h.putts[pi]||0)>=3) p.stat3Putt++;
+        if(h.fir&&h.fir[pi]) p.statFIR++;
+        if(h.gir&&h.gir[pi]) p.statGIR++;
+        else {
+          p.statUaDOpps++;
+          if(score!=null&&score<=h.par) p.statUaDMade++;
+        }
+        p.statPenalties+=h.penalties?.[pi]||0;
+        if(h.oop&&h.oop[pi]) p.statOOP++;
+        if(h.dblChip&&h.dblChip[pi]) p.statDblChip++;
+      });
+    });
+  });
+
   let playerNames=Object.keys(players).filter(n=>Object.values(players[n]).some(v=>typeof v==='number'&&v!==0));
   if(!playerNames.length){area.innerHTML='<div class="empty-state">No round data yet.<br>Play some rounds to unlock dossiers.</div>';return;}
   playerNames.sort((a,b)=>players[b].rounds-players[a].rounds);
 
-  let html=`<div style="font-size:11px;color:rgba(255,255,255,0.25);text-align:center;margin-bottom:14px;letter-spacing:.5px;">TAP A PLAYER TO EXPAND</div>`;
+  let html=``;
   playerNames.forEach((name,idx)=>{
     let p=players[name], id='pc-'+idx;
     html+=`<div class="player-card">
@@ -772,17 +805,28 @@ function toggleCard(id){
   body.style.display=open?'block':'none';chev.style.transform=open?'rotate(180deg)':'';
 }
 
+function hcpIndex(diffs){
+  if(!diffs.length) return null;
+  let recent=diffs.slice(-20),sorted=[...recent].sort((a,b)=>a-b);
+  let use=Math.min(8,Math.max(1,Math.floor(recent.length*0.4)));
+  return +(sorted.slice(0,use).reduce((s,d)=>s+d,0)/use*0.96).toFixed(1);
+}
+
 function buildInsights(name,p,allPlayers){
   let sections='';
   function sectionDiv(label){return `<div class="section-divider"><span class="section-divider-label">${label}</span></div>`;}
-  function distBar(label,val,color){
-    let fill=Math.min(100,Math.round(val));
-    return `<div class="par-bar-wrap"><div class="par-bar-label">${label}</div><div class="par-bar-track no-mid"><div class="par-bar-fill" style="left:0;width:${fill}%;background:${color};border-radius:3px;"></div></div><div class="par-bar-val" style="color:${color};">${val}%</div></div>`;
-  }
 
+  let hcp=hcpIndex(p.hcpDiffs);
+  if(hcp!==null){
+    let hcpColor=hcp<=18?'var(--bar-hi)':hcp<=28?'var(--bar-mid)':'rgba(255,255,255,0.7)';
+    sections+=`<div style="text-align:center;padding:14px 0 6px;">
+      <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.4);margin-bottom:6px;">Handicap Index</div>
+      <div style="font-size:36px;font-weight:bold;color:${hcpColor};font-family:'Georgia',serif;">${hcp}</div>
+      <div style="font-size:10px;color:rgba(255,255,255,0.25);margin-top:3px;">based on ${p.hcpDiffs.length} round${p.hcpDiffs.length!==1?'s':''}</div>
+    </div>`;
+  }
   let parData=[3,4,5].map(par=>{let d=p.parBreak[par];return{par,avg:d.holes?d.diff/d.holes:null,holes:d.holes};}).filter(d=>d.holes>0);
   if(parData.length){
-    let worst=[...parData].sort((a,b)=>b.avg-a.avg)[0];
     let barHtml='<div class="par-bars">';
     [3,4,5].forEach(par=>{
       let d=p.parBreak[par];
@@ -794,59 +838,43 @@ function buildInsights(name,p,allPlayers){
       barHtml+=`<div class="par-bar-wrap"><div class="par-bar-label">Par ${par}</div><div class="par-bar-track"><div class="par-bar-fill" style="${fillStyle}"></div></div><div class="par-bar-val" style="color:${color};">${dispStr}</div></div>`;
     });
     barHtml+='</div>';
-    let distHtml='';
-    let sd=p.scoreDist;
-    if(sd.total>=9){
-      let birdiePct=pct(sd.birdie+sd.eagle,sd.total),parPct=pct(sd.par,sd.total),bogeypct=pct(sd.bogey,sd.total),blowupPct=pct(sd.double+sd.worse,sd.total);
-      let birdieColor=birdiePct>=25?'var(--bar-hi)':birdiePct>=10?'var(--bar-mid)':'var(--bar-lo)';
-      let bogeyColor=bogeypct<=25?'var(--bar-mid)':'var(--bar-warn)';
-      let blowupColor=blowupPct>=25?'var(--bar-warn)':blowupPct<=10?'var(--bar-hi)':'var(--bar-mid)';
-      distHtml=`${sectionDiv('Stroke Play')}<div class="insight-section"><div class="par-bars">${distBar('Birdie+',birdiePct,birdieColor)}${distBar('Par',parPct,'var(--bar-mid)')}${distBar('Bogey',bogeypct,bogeyColor)}${distBar('Dbl+',blowupPct,blowupColor)}</div></div>`;
-    }
-    sections+=`${sectionDiv('Scoring by Par')}<div class="insight-section">${barHtml}</div>${distHtml}`;
+    sections+=`${sectionDiv('Scoring by Par')}<div class="insight-section">${barHtml}</div>`;
   }
 
-  if(p.sfHoles>0){
-    let zeroPct=pct(p.sfZeros,p.sfHoles),onePct=pct(p.sf1pt,p.sfHoles),twoPct=pct(p.sf2pts,p.sfHoles),threePlusPct=pct(p.sf3pts+p.sf4pts,p.sfHoles);
-    let avgPts=((p.sf4pts*4)+(p.sf3pts*3)+(p.sf2pts*2)+(p.sf1pt*1))/p.sfHoles;
-    let avgColor=avgPts>=2.5?'var(--bar-hi)':avgPts>=1.8?'var(--bar-mid)':'var(--bar-warn)';
-    let sfBarHtml=`<div class="par-bars">${distBar('3+ pts',threePlusPct,threePlusPct>=25?'var(--bar-hi)':threePlusPct>=10?'var(--bar-mid)':'var(--bar-lo)')}${distBar('2 pts',twoPct,'var(--bar-mid)')}${distBar('1 pt',onePct,'var(--bar-mid)')}${distBar('0 pts',zeroPct,zeroPct>=30?'var(--bar-warn)':zeroPct<=15?'var(--bar-hi)':'var(--bar-mid)')}</div><div style="text-align:center;margin-top:8px;font-size:12px;color:rgba(255,255,255,0.45);">Avg <strong style="color:${avgColor};">${avgPts.toFixed(2)}</strong> pts / hole</div>`;
-    sections+=`${sectionDiv('Stableford')}<div class="insight-section">${sfBarHtml}</div>`;
-  }
+  if(p.statHoles>=3){
+    let firPct=pct(p.statFIR,p.statHoles);
+    let girPct=pct(p.statGIR,p.statHoles);
+    let avgPutts=(p.statPutts/p.statHoles).toFixed(1);
+    let threePuttPct=pct(p.stat3Putt,p.statHoles);
 
-  if(p.bankerPlayerHoles>0||p.bankerBankerHoles>0){
-    let bankerBarHtml='';
-    if(p.bankerPlayerHoles>0){
-      let winPct=pct(p.bankerWins,p.bankerPlayerHoles),losePct=100-winPct;
-      let winColor=winPct>=55?'var(--bar-hi)':winPct<=35?'var(--bar-warn)':'var(--bar-mid)';
-      let loseColor=losePct>=65?'var(--bar-warn)':losePct>=50?'var(--bar-mid)':'var(--bar-lo)';
-      bankerBarHtml+=`<div style="font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;text-align:center;">As Player</div><div class="par-bars">${distBar('Win',winPct,winColor)}${distBar('Loss',losePct,loseColor)}</div>`;
-    }
-    if(p.bankerBankerHoles>0){
-      let sweepPct=pct(p.bankerSweeps,p.bankerBankerHoles),noSweepPct=100-sweepPct;
-      let sweepColor=sweepPct>=50?'var(--bar-hi)':'var(--bar-mid)';
-      bankerBarHtml+=`${p.bankerPlayerHoles>0?'<div style="height:10px;"></div>':''}<div style="font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;text-align:center;">As Banker</div><div class="par-bars">${distBar('Sweep',sweepPct,sweepColor)}${distBar('Beaten',noSweepPct,'var(--bar-lo)')}</div>`;
-    }
-    sections+=`${sectionDiv('Banker')}<div class="insight-section">${bankerBarHtml}</div>`;
-  }
+    let firColor=firPct>=60?'var(--bar-hi)':firPct>=30?'var(--bar-mid)':'var(--bar-lo)';
+    let girColor=girPct>=60?'var(--bar-hi)':girPct>=30?'var(--bar-mid)':'var(--bar-lo)';
+    let threePuttColor=threePuttPct>=20?'var(--bar-warn)':threePuttPct<=10?'var(--bar-hi)':'var(--bar-mid)';
 
-  if(p.pinHoles>0){
-    let pinPct=pct(p.pinWins,p.pinHoles);
-    let pinColor=pinPct>=40?'var(--bar-hi)':pinPct<=10?'var(--bar-warn)':'var(--bar-mid)';
-    let pinBarHtml=`<div class="par-bars" style="justify-content:center;"><div class="par-bar-wrap" style="flex:0 0 70%;"><div class="par-bar-label">Pin Win Rate</div><div class="par-bar-track no-mid"><div class="par-bar-fill" style="left:0;width:${pinPct}%;background:${pinColor};border-radius:3px;"></div></div><div class="par-bar-val" style="color:${pinColor};">${pinPct}% — ${p.pinWins}/${p.pinHoles} holes</div></div></div>`;
-    sections+=`${sectionDiv('Closest to Pin')}<div class="insight-section">${pinBarHtml}</div>`;
-  }
-
-  {
-    let notes=[];
-    if(p.rounds>0&&p.netMoney!==0){let netStr=(p.netMoney>=0?'+$':'-$')+Math.abs(p.netMoney);let clr=p.netMoney>0?'var(--bar-hi)':'var(--bar-warn)';notes.push(`Net <strong style="color:${clr};">${netStr}</strong> across ${p.rounds} round${p.rounds!==1?'s':''}`);}
-    let parTypes=[3,4,5].map(par=>{let d=p.parBreak[par];return{par,avg:d.holes>=3?d.diff/d.holes:null,holes:d.holes};}).filter(d=>d.avg!==null);
-    if(parTypes.length){let worst=[...parTypes].sort((a,b)=>b.avg-a.avg)[0],best=[...parTypes].sort((a,b)=>a.avg-b.avg)[0];if(worst.avg>0.2)notes.push(`Avg <strong>${worst.avg>=0?'+':''}${worst.avg.toFixed(1)}</strong> on par ${worst.par}s`);else if(best.avg<-0.1)notes.push(`Avg <strong>${best.avg>=0?'+':''}${best.avg.toFixed(1)}</strong> on par ${best.par}s`);}
-    if(p.sfHoles>=6){let zeroPct=pct(p.sfZeros,p.sfHoles),birdiePct=pct(p.sf3pts+p.sf4pts,p.sfHoles);if(zeroPct>=30)notes.push(`<strong>${zeroPct}%</strong> of stableford holes score 0 pts`);else if(birdiePct>=35)notes.push(`<strong>${birdiePct}%</strong> of stableford holes score 3+ pts`);}
-    if(p.bankerPlayerHoles>=4){let winPct=pct(p.bankerWins,p.bankerPlayerHoles);if(winPct<=30||winPct>=55)notes.push(`Wins <strong>${winPct}%</strong> of holes as player vs banker`);}
-    if(p.bankerBankerHoles>=4){let sweepPct=pct(p.bankerSweeps,p.bankerBankerHoles);if(sweepPct>=50)notes.push(`Sweeps <strong>${sweepPct}%</strong> of holes as banker`);}
-    if(p.pinHoles>=4){let pinPct=pct(p.pinWins,p.pinHoles);if(pinPct>=40||pinPct<=10)notes.push(`Wins the pin on <strong>${pinPct}%</strong> of par 3s`);}
-    if(notes.length){let top=notes.slice(0,3);let notesHtml=`<div style="display:flex;flex-direction:column;gap:8px;align-items:center;">${top.map(n=>`<div style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.45;text-align:center;"><span style="color:rgba(255,212,71,0.45);margin-right:6px;">✦</span>${n}</div>`).join('')}</div>`;sections+=`${sectionDiv('Summary')}<div class="insight-section">${notesHtml}</div>`;}
+    let statRows=`
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px;">
+        <div style="background:rgba(0,0,0,0.25);border-radius:8px;padding:10px 12px;text-align:center;">
+          <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);margin-bottom:4px;">FIR</div>
+          <div style="font-size:20px;font-weight:bold;color:${firColor};">${firPct}%</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.3);">${p.statFIR}/${p.statHoles} holes</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.25);border-radius:8px;padding:10px 12px;text-align:center;">
+          <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);margin-bottom:4px;">GIR</div>
+          <div style="font-size:20px;font-weight:bold;color:${girColor};">${girPct}%</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.3);">${p.statGIR}/${p.statHoles} holes</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.25);border-radius:8px;padding:10px 12px;text-align:center;">
+          <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);margin-bottom:4px;">Putts / Hole</div>
+          <div style="font-size:20px;font-weight:bold;color:rgba(255,255,255,0.8);">${avgPutts}</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.3);">over ${p.statHoles} holes</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.25);border-radius:8px;padding:10px 12px;text-align:center;">
+          <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);margin-bottom:4px;">3-Putt Rate</div>
+          <div style="font-size:20px;font-weight:bold;color:${threePuttColor};">${threePuttPct}%</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.3);">${p.stat3Putt} holes</div>
+        </div>
+      </div>`;
+    sections+=`${sectionDiv('Round Stats')}<div class="insight-section">${statRows}</div>`;
   }
 
   return (sections||`<div style="padding:16px 14px;font-size:13px;color:rgba(255,255,255,0.3);">Not enough data yet.</div>`)+'<div style="height:6px;"></div>';

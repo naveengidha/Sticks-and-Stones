@@ -277,10 +277,9 @@ function renderInsights(){
         avgDisp,
         bestDisp,
         worstDisp,
-        `<span class="ins-muted">${hcpDisp}</span>`,
         `<span class="ins-muted">${p.rounds}</span>`
       ],
-      vals: [rank+1, name, avgVal, p.best??9999, p.worst??-9999, hcp??9999, p.rounds]
+      vals: [rank+1, name, avgVal, p.best??9999, p.worst??-9999, p.rounds]
     };
   });
 
@@ -391,7 +390,7 @@ function renderInsights(){
   if(summaryRows.length){
     html += `<div class="ins-panel">
       <div class="ins-panel-title">Player Summary</div>
-      ${sboardTable(['#','Player','Avg','Best','Worst','HCP','Rnds'], summaryRows, 'summaryTable')}
+      ${sboardTable(['#','Player','Avg','Best','Worst','Rnds'], summaryRows, 'summaryTable')}
     </div>`;
   }
 

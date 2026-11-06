@@ -388,7 +388,7 @@ function startGame(){
   }
 
   if(m === 'stroke' && strokeMode === 'live'){
-    if(filledPlayers.length < 2){ errEl.textContent='Add at least 2 players.'; errEl.style.display='block'; return; }
+    if(filledPlayers.length < 1){ errEl.textContent='Add at least 1 player.'; errEl.style.display='block'; return; }
     const setup = { game: 'stroke', course, date: date||null, players: filledPlayers, totalHoles: 18 };
     localStorage.setItem('pendingSetup', JSON.stringify(setup));
     window.location.href = 'round.html';

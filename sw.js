@@ -1,4 +1,4 @@
-const CACHE = 'golf-pwa-v536';
+const CACHE = 'golf-pwa-v555';
 const BASE = self.location.pathname.replace(/\/sw\.js$/, '');
 const ASSETS = [
   BASE + '/index.html',
@@ -38,14 +38,18 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Always fetch HTML fresh from network; fall back to cache if offline
-  if(e.request.destination === 'document'){
+  if (e.request.destination === 'document') {
     e.respondWith(
-      fetch(e.request).catch(() => caches.match(e.request))
+      fetch(e.request)
+        .then(r => r)
+        .catch(() => caches.match(e.request).then(cached => cached || new Response('Offline', {status: 503})))
     );
     return;
   }
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request).catch(() => {}))
+    caches.match(e.request).then(cached => {
+      if (cached) return cached;
+      return fetch(e.request).catch(() => new Response('', {status: 503}));
+    })
   );
 });

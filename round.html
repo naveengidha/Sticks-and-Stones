@@ -63,13 +63,46 @@ button{font-family:inherit;cursor:pointer;}
 .sb-grid td.dash{color:rgba(255,255,255,0.15);font-weight:normal;}
 
 /* ── Score input rows (Stroke / Stableford default) ── */
-.score-rows{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:4px;}
-.score-row{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 6px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(0,0,0,0.2);}
-.score-name{font-size:12px;font-weight:bold;color:#a07840;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;text-align:center;}
+.score-rows{display:flex;flex-direction:column;gap:6px;margin-bottom:4px;}
+.score-row{display:flex;flex-direction:column;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(0,0,0,0.2);overflow:hidden;}
+.score-row-top{display:flex;align-items:center;gap:8px;padding:8px 10px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.score-row-top:active{background:rgba(255,255,255,0.03);}
+.score-name{flex:1;font-size:13px;font-weight:bold;color:#a07840;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+.score-chevron{font-size:10px;color:rgba(255,255,255,0.2);flex-shrink:0;transition:transform .2s ease;margin-left:2px;}
+.score-row.open .score-chevron{transform:rotate(180deg);}
+.score-stepper{display:flex;align-items:center;flex-shrink:0;}
 .stepper{display:flex;align-items:center;}
-.step-btn{background:rgba(255,212,71,0.1);border:1px solid rgba(255,212,71,0.25);color:#ffd447;font-size:16px;font-weight:bold;width:30px;height:30px;border-radius:6px;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;}
+.step-btn{background:rgba(255,212,71,0.1);border:1px solid rgba(255,212,71,0.25);color:#ffd447;font-size:16px;font-weight:bold;width:36px;height:36px;border-radius:50%;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;}
 .step-btn:active{background:rgba(255,212,71,0.25);}
-.step-val{font-family:'Courier New',monospace;font-size:18px;font-weight:bold;color:#fff;min-width:32px;text-align:center;}
+.step-val{font-family:'Courier New',monospace;font-size:18px;font-weight:bold;color:#fff;min-width:36px;text-align:center;}
+
+/* ── Stat checklist (collapsible) ── */
+.stat-checklist{display:none;flex-direction:column;gap:0;border-top:1px solid rgba(255,255,255,0.05);}
+.score-row.open .stat-checklist{display:flex;}
+.stat-section-hdr{font-size:7px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:rgba(255,212,71,0.3);padding:7px 12px 3px;background:rgba(255,212,71,0.02);}
+.stat-check-row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.03);}
+.stat-check-row:last-child{border-bottom:none;}
+.stat-check-label{flex:1;font-size:11px;font-weight:bold;color:rgba(255,255,255,0.35);letter-spacing:.3px;}
+.stat-check-row.active .stat-check-label{color:rgba(255,255,255,0.7);}
+.stat-check-row.auto-flag .stat-check-label{color:#ff6b6b;}
+.stat-auto-badge{font-size:9px;font-weight:bold;letter-spacing:.5px;color:rgba(255,255,255,0.15);flex-shrink:0;}
+.stat-auto-badge.flagged{color:#ff6b6b;}
+/* toggle switch */
+.stat-toggle{width:44px;height:26px;border-radius:13px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);cursor:pointer;position:relative;transition:all .18s;flex-shrink:0;}
+.stat-toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,0.25);transition:transform .18s;}
+.stat-toggle.on{background:rgba(46,204,113,0.2);border-color:rgba(46,204,113,0.5);}
+.stat-toggle.on::after{transform:translateX(18px);background:#2ecc71;}
+/* compact stepper */
+.stat-mini-stepper{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.stat-btn{
+  border-radius:50%;width:28px;height:28px;
+  border:1px solid rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.06);
+  color:rgba(255,255,255,0.5);font-size:14px;font-weight:bold;
+  cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;
+}
+.stat-btn:active{background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.3);}
+.stat-val{font-family:'Courier New',monospace;font-size:13px;font-weight:bold;color:rgba(255,255,255,0.65);min-width:22px;text-align:center;}
 
 /* ── Scramble score inputs ── */
 /* ── Scramble team score rows ── */
@@ -347,6 +380,10 @@ let holeYards = 0;
 
 // Per-hole score state
 let holeScores = [];        // [player] = current score (vs par, absolute strokes for stroke)
+let holePutts = [];         // [player] = putts this hole
+let holeGIR = [];           // [player] = bool, green in regulation
+let holeFIR = [];           // [player] = bool, fairway in regulation
+let holeChecked = [];       // [player] = bool, true once any stat is interacted with
 
 // History arrays
 let scoreHistory = [];      // [hole][player] = raw score
@@ -427,6 +464,10 @@ function initGameState() {
   holeYards = 0;
   holeScores = new Array(playerNames.length).fill(null);
   bkScores = new Array(playerNames.length).fill(0);
+  holePutts = new Array(playerNames.length).fill(0);
+  holeGIR = new Array(playerNames.length).fill(false);
+  holeFIR = new Array(playerNames.length).fill(false);
+  holeChecked = new Array(playerNames.length).fill(false);
   playerTotals = new Array(playerNames.length).fill(0);
   scoreHistory = []; pointHistory = []; holeParDist = [];
   scrHistory = []; scrTotals = {a:0,b:0}; scrScores = {a:null,b:null};
@@ -465,6 +506,10 @@ function restoreActiveState() {
   pinWager = s.pinWager || 1; pinHistory = s.pinHistory || [];
   pinNetTotals = s.pinNetTotals || new Array(playerNames.length).fill(0);
   buyIn = s.buyIn || null;
+  holePutts = s.holePutts || new Array(playerNames.length).fill(0);
+  holeGIR = s.holeGIR || new Array(playerNames.length).fill(false);
+  holeFIR = s.holeFIR || new Array(playerNames.length).fill(false);
+  holeChecked = s.holeChecked || new Array(playerNames.length).fill(false);
 
   renderHoleHeader();
   renderScoreInputArea();
@@ -484,6 +529,7 @@ function saveActiveState() {
     scrHistory, scrTotals, bankerActive, pinActive,
     bankerIdx, bkBaseWager, bkMinWager, bkMaxWager, bkCarryovers, bkPlayerNetTotals, bkHistory,
     pinWager, pinHistory, pinNetTotals, buyIn,
+    holePutts, holeGIR, holeFIR, holeChecked,
     startedAt: existing.startedAt || new Date().toISOString()
   }));
 }
@@ -547,6 +593,10 @@ function renderScoreInputArea() {
   const area = document.getElementById('scoreInputArea');
   holeScores = new Array(playerNames.length).fill(null);
   bkScores = new Array(playerNames.length).fill(0);
+  holePutts = new Array(playerNames.length).fill(0);
+  holeGIR = new Array(playerNames.length).fill(false);
+  holeFIR = new Array(playerNames.length).fill(false);
+  holeChecked = new Array(playerNames.length).fill(false);
   pinWinner = null;
 
   if (gameMode === 'scramble') {
@@ -583,21 +633,44 @@ function renderScoreInputArea() {
     return;
   }
 
-  const label = gameMode === 'stableford' ? 'Scores' : 'Scores';
-  document.getElementById('scoreCardLabel').textContent = label;
+  document.getElementById('scoreCardLabel').textContent = 'Scores';
   area.innerHTML = `<div class="score-rows">${
     playerNames.map((name, i) => {
-      let nameColor = '';
+      let nameStyle = '';
       if (stabTeams) {
-        if ((stabTeams.a||[]).includes(name)) nameColor = ' style="color:#ffd447;"';
-        else if ((stabTeams.b||[]).includes(name)) nameColor = ' style="color:#e74c3c;"';
+        if ((stabTeams.a||[]).includes(name)) nameStyle = ' style="color:#ffd447;"';
+        else if ((stabTeams.b||[]).includes(name)) nameStyle = ' style="color:#e74c3c;"';
       }
-      return `<div class="score-row">
-        <div class="score-name"${nameColor}>${esc(name)}</div>
-        <div class="stepper">
-          <button type="button" class="step-btn" onclick="stepScore(${i},-1)">−</button>
-          <div class="step-val" id="sv_${i}">E</div>
-          <button type="button" class="step-btn" onclick="stepScore(${i},1)">+</button>
+      return `<div class="score-row" id="srow_${i}">
+        <div class="score-row-top" onclick="toggleStatChecklist(${i})">
+          <div class="score-name"${nameStyle}>${esc(name)}</div>
+          <div class="score-stepper" onclick="event.stopPropagation()">
+            <button type="button" class="step-btn" onclick="stepScore(${i},-1)">−</button>
+            <div class="step-val" id="sv_${i}">E</div>
+            <button type="button" class="step-btn" onclick="stepScore(${i},1)">+</button>
+          </div>
+          <span class="score-chevron">▼</span>
+        </div>
+        <div class="stat-checklist">
+          <div class="stat-section-hdr">Tee</div>
+          <div class="stat-check-row" id="firrow_${i}">
+            <span class="stat-check-label">Fairway in Regulation</span>
+            <button type="button" class="stat-toggle" id="fir_${i}" onclick="toggleFIR(${i})"></button>
+          </div>
+          <div class="stat-section-hdr">Approach</div>
+          <div class="stat-check-row" id="girrow_${i}">
+            <span class="stat-check-label">Green in Regulation</span>
+            <button type="button" class="stat-toggle" id="gir_${i}" onclick="toggleGIR(${i})"></button>
+          </div>
+          <div class="stat-section-hdr">Green</div>
+          <div class="stat-check-row" id="pttrow_${i}">
+            <span class="stat-check-label">Putts</span>
+            <div class="stat-mini-stepper">
+              <button type="button" class="stat-btn" onclick="stepPutts(${i},-1)">−</button>
+              <div class="stat-val" id="ptt_${i}">0</div>
+              <button type="button" class="stat-btn" onclick="stepPutts(${i},1)">+</button>
+            </div>
+          </div>
         </div>
       </div>`;
     }).join('')
@@ -610,6 +683,38 @@ function stepScore(i, d) {
   const el = document.getElementById('sv_'+i);
   if (el) { el.textContent = fmtScore(diff); el.style.color = diff < 0 ? '#2ecc71' : diff > 0 ? '#ff6b6b' : '#fff'; }
   if (bankerActive) syncBankerScore(i);
+}
+
+function toggleStatChecklist(i) {
+  document.getElementById('srow_'+i).classList.toggle('open');
+}
+
+function markChecked(i) {
+  holeChecked[i] = true;
+}
+
+function stepPutts(i, d) {
+  holePutts[i] = Math.max(0, holePutts[i] + d);
+  markChecked(i);
+  const el = document.getElementById('ptt_'+i);
+  if (el) { el.textContent = holePutts[i]; el.style.color = holePutts[i] >= 3 ? '#ff6b6b' : holePutts[i] === 1 ? '#2ecc71' : 'rgba(255,255,255,0.65)'; }
+  document.getElementById('pttrow_'+i)?.classList.toggle('active', holePutts[i] > 0);
+}
+
+function toggleFIR(i) {
+  holeFIR[i] = !holeFIR[i];
+  markChecked(i);
+  const btn = document.getElementById('fir_'+i);
+  if (btn) btn.classList.toggle('on', holeFIR[i]);
+  document.getElementById('firrow_'+i)?.classList.toggle('active', holeFIR[i]);
+}
+
+function toggleGIR(i) {
+  holeGIR[i] = !holeGIR[i];
+  markChecked(i);
+  const btn = document.getElementById('gir_'+i);
+  if (btn) btn.classList.toggle('on', holeGIR[i]);
+  document.getElementById('girrow_'+i)?.classList.toggle('active', holeGIR[i]);
 }
 
 function stepScrScore(team, d) {
@@ -656,7 +761,12 @@ function renderBankerPlayersGrid() {
 }
 
 function syncBankerScore(i) {
-  bkScores[i] = (holeScores[i] !== null ? holeScores[i] : currentPar) - currentPar;
+  const strokes = holeScores[i] !== null ? holeScores[i] : currentPar;
+  if (gameMode === 'stableford') {
+    bkScores[i] = stablefordPoints(strokes, currentPar);
+  } else {
+    bkScores[i] = strokes - currentPar;
+  }
 }
 
 function onBkDouble(i) {
@@ -868,7 +978,7 @@ function nextHole() {
     }
     scoreHistory.push(scores);
     pointHistory.push(points);
-    holeParDist.push({ par: currentPar, yards: holeYards });
+    holeParDist.push({ par: currentPar, yards: holeYards, putts: [...holePutts], gir: [...holeGIR], fir: [...holeFIR], checked: [...holeChecked] });
   }
 
   // Banker resolution
@@ -913,18 +1023,22 @@ function resolveBanker() {
   const bankerDoubled = document.getElementById('bkdbl_banker')?.checked || false;
   const matchups = [];
   const nonBankers = playerNames.map((_,i)=>i).filter(i => i !== bankerIdx);
+  const isStableford = gameMode === 'stableford';
 
   nonBankers.forEach(i => {
     const playerDoubled = document.getElementById('bkdbl_' + i)?.checked || false;
     const doubles = (bankerDoubled ? 1 : 0) + (playerDoubled ? 1 : 0);
     const holeValue = bkBaseWager * Math.pow(2, doubles) + (bkCarryovers[i] || 0);
     let result;
-    if (bkScoresCopy[i] > bankerScore) {
+    // In stableford higher score = better (player wins); in stroke lower score = better (player wins)
+    const playerBeats = isStableford ? bkScoresCopy[i] > bankerScore : bkScoresCopy[i] < bankerScore;
+    const bankerBeats = isStableford ? bkScoresCopy[i] < bankerScore : bkScoresCopy[i] > bankerScore;
+    if (bankerBeats) {
       result = 'banker';
       bkPlayerNetTotals[bankerIdx] += holeValue;
       bkPlayerNetTotals[i] -= holeValue;
       bkCarryovers[i] = 0;
-    } else if (bkScoresCopy[i] < bankerScore) {
+    } else if (playerBeats) {
       result = 'player';
       bkPlayerNetTotals[i] += holeValue;
       bkPlayerNetTotals[bankerIdx] -= holeValue;
@@ -936,14 +1050,14 @@ function resolveBanker() {
     matchups.push({ playerIdx: i, holeValue, result, doubled: playerDoubled, bankerDoubled });
   });
 
-  // Banker rotation
+  // Banker rotation — next banker is the player who beat the banker by the most
   let nextBankerIdx = bankerIdx;
   const beaters = matchups.filter(m => m.result === 'player')
     .map(m => ({ idx: m.playerIdx, score: bkScoresCopy[m.playerIdx] }))
-    .sort((a, b) => a.score - b.score);
+    .sort((a, b) => isStableford ? b.score - a.score : a.score - b.score);
   if (beaters.length > 0) {
-    const lowest = beaters[0].score;
-    const topBeaters = beaters.filter(b => b.score === lowest);
+    const topScore = beaters[0].score;
+    const topBeaters = beaters.filter(b => b.score === topScore);
     if (topBeaters.length === 1) nextBankerIdx = topBeaters[0].idx;
   }
 
@@ -1079,7 +1193,8 @@ function saveGameResult() {
     bkPlayerNetTotals: bkHistory.length > 0 ? [...bkPlayerNetTotals] : null,
     pinHistory: pinHistory.length > 0 ? [...pinHistory] : null,
     pinNetTotals: pinHistory.length > 0 ? [...pinNetTotals] : null,
-    buyIn: gameMode === 'stableford' && buyIn ? buyIn : null
+    buyIn: gameMode === 'stableford' && buyIn ? buyIn : null,
+    hasStats: gameMode !== 'scramble'
   };
   history.push(record);
   localStorage.setItem('gameHistory', JSON.stringify(history));
@@ -1182,12 +1297,14 @@ function renderFinalScreen() {
     }
   } else {
     // Stroke play — lowest wins
-    const sorted = playerNames.map((n, i) => ({n, t: playerTotals[i], i})).sort((a, b) => a.t - b.t);
+    const totalPar = holeParDist.reduce((s, h) => s + (h.par || 0), 0);
+    const fmtNet = n => n < 0 ? String(n) : n > 0 ? '+' + n : 'E';
+    const sorted = playerNames.map((n, i) => ({n, t: playerTotals[i], net: totalPar ? playerTotals[i] - totalPar : null, i})).sort((a, b) => a.t - b.t);
     const minScore = sorted[0]?.t || 0;
     html += `<div class="final-standings">${sorted.map((p, rank) =>
       `<div class="final-row${p.t === minScore ? ' winner' : ''}">
         <span class="final-name">${esc(p.n)}${p.t === minScore ? ' 🏆' : ''}</span>
-        <span class="final-pts">${p.t || '—'}</span>
+        <span class="final-pts">${p.t || '—'}${p.net !== null ? ` <span style="font-size:12px;color:rgba(255,212,71,0.5);">(${fmtNet(p.net)})</span>` : ''}</span>
       </div>`).join('')}</div>`;
   }
 
@@ -1235,7 +1352,47 @@ function renderFinalScreen() {
     </div>`;
   }
 
+  // Round stats summary (stroke / stableford only — scramble has no per-player stats)
+  if (gameMode !== 'scramble' && holeParDist.length > 0 && holeParDist.some(h => h.putts)) {
+    html += renderStatsCard();
+  }
+
   document.getElementById('finalContent').innerHTML = html;
+}
+
+function renderStatsCard() {
+  const holesWithStats = holeParDist.filter((h, hi) => h.checked && h.checked.some(Boolean));
+  if (!holesWithStats.length) return '';
+
+  const rows = playerNames.map((name, pi) => {
+    const ph = holesWithStats.filter(h => h.checked && h.checked[pi]);
+    if (!ph.length) return `<tr><td style="text-align:left;color:#a07840;font-family:'Georgia',serif;font-size:12px;">${esc(name)}</td><td colspan="3" style="color:rgba(255,255,255,0.25);font-size:11px;">No data</td></tr>`;
+    const totalPutts = ph.reduce((s, h) => s + (h.putts[pi] || 0), 0);
+    const firHoles = ph.filter(h => h.fir && h.fir[pi]).length;
+    const firPct = Math.round(firHoles / ph.length * 100);
+    const girHoles = ph.filter(h => h.gir && h.gir[pi]).length;
+    const girPct = Math.round(girHoles / ph.length * 100);
+
+    return `<tr>
+      <td style="text-align:left;color:#a07840;font-family:'Georgia',serif;font-size:12px;">${esc(name)}</td>
+      <td>${firPct}%</td>
+      <td>${girPct}%</td>
+      <td>${totalPutts}</td>
+    </tr>`;
+  }).join('');
+
+  return `<div class="game-card" style="margin-top:8px;">
+    <div class="game-card-label">Round Stats</div>
+    <table style="width:100%;border-collapse:collapse;margin-top:4px;">
+      <thead><tr>
+        <th style="text-align:left;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.5);padding:0 4px 8px;border:none;"></th>
+        <th style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.5);padding:0 4px 8px;border:none;">FIR</th>
+        <th style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.5);padding:0 4px 8px;border:none;">GIR</th>
+        <th style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.5);padding:0 4px 8px;border:none;">Putts</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
 }
 
 function renderSettlementBlock(netTotals) {
