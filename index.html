@@ -495,25 +495,14 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><line x1="9" y1="2" x2="9" y2="6"/><line x1="15" y1="2" x2="15" y2="6"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
       Caddy
     </a>
-    <a class="nav-item" href="history.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
-      Stats
+    <a class="nav-item" href="dossier.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="13" r="4"/><circle cx="17" cy="13" r="4"/><path d="M7 9V6l3-3h4l3 3v3"/><line x1="11" y1="13" x2="13" y2="13"/></svg>
+      Scout
     </a>
   </div>
 </nav>
 
 <script>
-// Triple-click logo → dossier easter egg
-(function(){
-  let clicks = 0, timer;
-  document.getElementById('logoEl').addEventListener('click', function(){
-    clicks++;
-    clearTimeout(timer);
-    timer = setTimeout(()=>{ clicks=0; }, 600);
-    if(clicks >= 3){ clicks=0; window.location.href='dossier.html'; }
-  });
-})();
-
 (function renderRoundCards(){
   const GAME_LABELS = {
     f1:'Grand Prix', stableford:'Stableford', banker:'Banker',
@@ -562,17 +551,20 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
           return rows.sort((a,b)=>b._sortVal-a._sortVal);
         }
         case 'scramble':{
-          let scores = r.teamScores||[];
-          let getTeamLabel = (ti) => {
-            if(r.players && r.players[ti*2]) {
-              return [r.players[ti*2], r.players[ti*2+1]].filter(Boolean).join(' & ');
-            }
-            if(Array.isArray(r.playerNames) && Array.isArray(r.playerNames[ti])) {
-              return r.playerNames[ti].filter(Boolean).join(' & ');
-            }
-            return `Team ${String.fromCharCode(65+ti)}`;
+          let keys = ['a','b'];
+          let scores = r.scrTotals || {};
+          let teams = r.scrTeams || {};
+          let getTeamLabel = (k) => {
+            let members = Array.isArray(teams[k]) ? teams[k] : [];
+            return members.length ? members.join(' & ') : (k==='a'?'Gold':'Crimson');
           };
-          let rows = [0,1].map(ti=>({ name:getTeamLabel(ti), num:scores[ti], par:r.teamVsPar?.[ti]!=null?fmtVsPar(r.teamVsPar[ti]):'', _sortVal: scores[ti]!=null ? -scores[ti] : -9999 }));
+          // compute vs-par from scrHistory if available
+          let vsPar = {a:null, b:null};
+          if(r.scrHistory && r.scrHistory.length){
+            vsPar.a = r.scrHistory.reduce((s,h)=>s+(h.scoreA-h.par),0);
+            vsPar.b = r.scrHistory.reduce((s,h)=>s+(h.scoreB-h.par),0);
+          }
+          let rows = keys.map(k=>({ name:getTeamLabel(k), num:scores[k]??null, par:vsPar[k]!=null?fmtVsPar(vsPar[k]):'', _sortVal: scores[k]!=null ? -scores[k] : -9999 }));
           return rows.sort((a,b)=>b._sortVal-a._sortVal);
         }
         case 'mixed':{
@@ -684,14 +676,16 @@ table.sc-mini-table tr.sc-current td{background:rgba(255,212,71,0.08);}
 
   function buildScorecard(r){
     try{
-      // Scramble: uses holeHistory + teamNames
-      if(r.game==='scramble' && r.holeHistory && r.holeHistory.length){
-        let teams=r.teamNames||['Team A','Team B'];
-        let thead=`<thead><tr><th>Hole</th><th>Par</th>${teams.map(t=>`<th>${esc(t)}</th>`).join('')}</tr></thead>`;
-        let rows=r.holeHistory.map((h,i)=>`<tr><td>${i+1}</td><td>${h.par||4}</td>${(h.scores||[]).map(s=>`<td>${s??'–'}</td>`).join('')}</tr>`).join('');
-        let totals=(r.teamScores||[]).map(t=>`<td>${t}</td>`).join('');
-        let totalPar=r.holeHistory.reduce((s,h)=>s+(h.par||4),0);
-        return `<table>${thead}<tbody>${rows}</tbody><tfoot><tr><td>Total</td><td>${totalPar}</td>${totals}</tr></tfoot></table>`;
+      // Scramble: uses scrHistory + scrTeams
+      if(r.game==='scramble' && r.scrHistory && r.scrHistory.length){
+        let teamsObj = r.scrTeams || {};
+        let labelA = Array.isArray(teamsObj.a) && teamsObj.a.length ? teamsObj.a.join(' & ') : 'Gold';
+        let labelB = Array.isArray(teamsObj.b) && teamsObj.b.length ? teamsObj.b.join(' & ') : 'Crimson';
+        let totals = r.scrTotals || {a:null,b:null};
+        let thead=`<thead><tr><th>Hole</th><th>Par</th><th>${esc(labelA)}</th><th>${esc(labelB)}</th></tr></thead>`;
+        let rows=r.scrHistory.map((h,i)=>`<tr><td>${i+1}</td><td>${h.par||4}</td><td>${h.scoreA??'–'}</td><td>${h.scoreB??'–'}</td></tr>`).join('');
+        let totalPar=r.scrHistory.reduce((s,h)=>s+(h.par||4),0);
+        return `<table>${thead}<tbody>${rows}</tbody><tfoot><tr><td>Total</td><td>${totalPar}</td><td>${totals.a??'–'}</td><td>${totals.b??'–'}</td></tr></tfoot></table>`;
       }
       // Banker: full hole-by-hole scorecard + settlement
       if(r.game==='banker' && r.players && r.playerNetTotals && r.holeHistory){

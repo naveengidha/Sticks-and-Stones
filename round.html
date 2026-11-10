@@ -32,15 +32,6 @@ button{font-family:inherit;cursor:pointer;}
 .hole-label{font-size:22px;font-weight:bold;color:#ffd447;font-family:'Georgia','Times New Roman',serif;letter-spacing:1px;}
 .hole-sub{font-size:11px;color:rgba(255,255,255,0.35);letter-spacing:.5px;}
 .hole-right{display:flex;align-items:center;gap:8px;}
-.par-cluster{display:flex;flex-direction:column;align-items:center;gap:4px;}
-.par-cluster-lbl{font-size:7px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);}
-.par-dots{display:flex;gap:4px;}
-.par-dot{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:rgba(255,212,71,0.1);border:1px solid rgba(255,212,71,0.2);color:rgba(255,212,71,0.45);font-size:11px;font-weight:bold;cursor:pointer;transition:all .12s;}
-.par-dot.active{background:#ffd447;color:#0e1a12;border-color:#ffd447;}
-.yards-cluster{display:flex;flex-direction:column;align-items:center;gap:4px;}
-.yards-lbl{font-size:7px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,212,71,0.4);}
-.dist-input{width:56px;padding:5px 4px;border-radius:6px;border:1px solid rgba(255,212,71,0.15);border-bottom:2px solid rgba(255,212,71,0.3);background:rgba(0,0,0,0.25);color:rgba(255,255,255,0.7);font-size:13px;text-align:center;font-family:'Courier New',monospace;}
-.dist-input:focus{outline:none;border-color:rgba(255,212,71,0.6);}
 .end-btn{padding:5px 10px;font-size:10px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;border-radius:6px;border:1px solid rgba(255,212,71,0.2);background:transparent;color:rgba(255,212,71,0.45);}
 .end-btn:active{background:rgba(255,212,71,0.06);color:#ffd447;}
 .hole-progress-track{height:2px;background:rgba(255,212,71,0.1);border-radius:2px;overflow:hidden;}
@@ -234,14 +225,6 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
           <div class="hole-sub" id="holeSub"></div>
         </div>
         <div class="hole-right">
-          <div class="par-cluster">
-            <div class="par-cluster-lbl">Par</div>
-            <div class="par-dots" id="parDots"></div>
-          </div>
-          <div class="yards-cluster">
-            <div class="yards-lbl">Yards</div>
-            <input type="number" class="dist-input" id="yardsInput" min="0" max="700" placeholder="Yds" inputmode="numeric" oninput="holeYards=parseInt(this.value)||0">
-          </div>
           <button class="end-btn" onclick="confirmEnd()">End</button>
         </div>
       </div>
@@ -355,9 +338,9 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><line x1="9" y1="2" x2="9" y2="6"/><line x1="15" y1="2" x2="15" y2="6"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
       Caddy
     </a>
-    <a class="nav-item" href="history.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
-      Stats
+    <a class="nav-item" href="dossier.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="13" r="4"/><circle cx="17" cy="13" r="4"/><path d="M7 9V6l3-3h4l3 3v3"/><line x1="11" y1="13" x2="13" y2="13"/></svg>
+      Scout
     </a>
   </div>
 </nav>
@@ -376,13 +359,13 @@ let totalHoles = 18;
 let courseName = '';
 let roundDateStr = '';
 let currentPar = 4;
-let holeYards = 0;
 
 // Per-hole score state
 let holeScores = [];        // [player] = current score (vs par, absolute strokes for stroke)
 let holePutts = [];         // [player] = putts this hole
 let holeGIR = [];           // [player] = bool, green in regulation
 let holeFIR = [];           // [player] = bool, fairway in regulation
+let holePenalties = [];     // [player] = penalty strokes this hole
 let holeChecked = [];       // [player] = bool, true once any stat is interacted with
 
 // History arrays
@@ -467,6 +450,7 @@ function initGameState() {
   holePutts = new Array(playerNames.length).fill(0);
   holeGIR = new Array(playerNames.length).fill(false);
   holeFIR = new Array(playerNames.length).fill(false);
+  holePenalties = new Array(playerNames.length).fill(0);
   holeChecked = new Array(playerNames.length).fill(false);
   playerTotals = new Array(playerNames.length).fill(0);
   scoreHistory = []; pointHistory = []; holeParDist = [];
@@ -509,6 +493,7 @@ function restoreActiveState() {
   holePutts = s.holePutts || new Array(playerNames.length).fill(0);
   holeGIR = s.holeGIR || new Array(playerNames.length).fill(false);
   holeFIR = s.holeFIR || new Array(playerNames.length).fill(false);
+  holePenalties = s.holePenalties || new Array(playerNames.length).fill(0);
   holeChecked = s.holeChecked || new Array(playerNames.length).fill(false);
 
   renderHoleHeader();
@@ -529,7 +514,7 @@ function saveActiveState() {
     scrHistory, scrTotals, bankerActive, pinActive,
     bankerIdx, bkBaseWager, bkMinWager, bkMaxWager, bkCarryovers, bkPlayerNetTotals, bkHistory,
     pinWager, pinHistory, pinNetTotals, buyIn,
-    holePutts, holeGIR, holeFIR, holeChecked,
+    holePutts, holeGIR, holeFIR, holePenalties, holeChecked,
     startedAt: existing.startedAt || new Date().toISOString()
   }));
 }
@@ -541,27 +526,11 @@ function renderHoleHeader() {
   const sub = (courseName ? courseName + ' · ' : '') + hole + ' / ' + totalHoles;
   document.getElementById('holeSub').textContent = sub;
   document.getElementById('holeProgressFill').style.width = (hole / totalHoles * 100).toFixed(1) + '%';
-  renderParDots();
-  const yEl = document.getElementById('yardsInput');
-  yEl.value = holeYards > 0 ? holeYards : '';
   // Back button
   const bb = document.getElementById('backBtn');
   const hasPrev = (gameMode === 'scramble' ? scrHistory.length : scoreHistory.length) > 0;
   bb.style.opacity = hasPrev ? '1' : '0.35';
   bb.style.pointerEvents = hasPrev ? '' : 'none';
-}
-
-function renderParDots() {
-  const container = document.getElementById('parDots');
-  container.innerHTML = [3,4,5].map(p => {
-    const active = currentPar === p;
-    return `<span class="par-dot${active?' active':''}" onclick="setPar(${p})">${p}</span>`;
-  }).join('');
-}
-
-function setPar(p) {
-  currentPar = p;
-  renderParDots();
 }
 
 // ── Per-hole module toggles ────────────────────────────────────────────────────────────
@@ -596,6 +565,7 @@ function renderScoreInputArea() {
   holePutts = new Array(playerNames.length).fill(0);
   holeGIR = new Array(playerNames.length).fill(false);
   holeFIR = new Array(playerNames.length).fill(false);
+  holePenalties = new Array(playerNames.length).fill(0);
   holeChecked = new Array(playerNames.length).fill(false);
   pinWinner = null;
 
@@ -671,6 +641,15 @@ function renderScoreInputArea() {
               <button type="button" class="stat-btn" onclick="stepPutts(${i},1)">+</button>
             </div>
           </div>
+          <div class="stat-section-hdr">Penalties</div>
+          <div class="stat-check-row" id="penrow_${i}">
+            <span class="stat-check-label">Penalty Strokes</span>
+            <div class="stat-mini-stepper">
+              <button type="button" class="stat-btn" onclick="stepPenalties(${i},-1)">−</button>
+              <div class="stat-val" id="pen_${i}">0</div>
+              <button type="button" class="stat-btn" onclick="stepPenalties(${i},1)">+</button>
+            </div>
+          </div>
         </div>
       </div>`;
     }).join('')
@@ -699,6 +678,14 @@ function stepPutts(i, d) {
   const el = document.getElementById('ptt_'+i);
   if (el) { el.textContent = holePutts[i]; el.style.color = holePutts[i] >= 3 ? '#ff6b6b' : holePutts[i] === 1 ? '#2ecc71' : 'rgba(255,255,255,0.65)'; }
   document.getElementById('pttrow_'+i)?.classList.toggle('active', holePutts[i] > 0);
+}
+
+function stepPenalties(i, d) {
+  holePenalties[i] = Math.max(0, holePenalties[i] + d);
+  markChecked(i);
+  const el = document.getElementById('pen_'+i);
+  if (el) { el.textContent = holePenalties[i]; el.style.color = holePenalties[i] > 0 ? '#ff6b6b' : 'rgba(255,255,255,0.65)'; }
+  document.getElementById('penrow_'+i)?.classList.toggle('active', holePenalties[i] > 0);
 }
 
 function toggleFIR(i) {
@@ -960,7 +947,7 @@ function nextHole() {
     const sb = scrScores.b !== null ? scrScores.b : currentPar;
     scrTotals.a += sa;
     scrTotals.b += sb;
-    scrHistory.push({ holeNum: hole, par: currentPar, yards: holeYards, scoreA: sa, scoreB: sb });
+    scrHistory.push({ holeNum: hole, par: currentPar, scoreA: sa, scoreB: sb });
   } else {
     // Resolve each player's score
     const scores = [], points = [];
@@ -978,7 +965,7 @@ function nextHole() {
     }
     scoreHistory.push(scores);
     pointHistory.push(points);
-    holeParDist.push({ par: currentPar, yards: holeYards, putts: [...holePutts], gir: [...holeGIR], fir: [...holeFIR], checked: [...holeChecked] });
+    holeParDist.push({ par: currentPar, putts: [...holePutts], gir: [...holeGIR], fir: [...holeFIR], penalties: [...holePenalties], checked: [...holeChecked] });
   }
 
   // Banker resolution
@@ -1018,6 +1005,8 @@ function nextHole() {
 }
 
 function resolveBanker() {
+  // Ensure all players have current scores synced (covers unstepped = par)
+  playerNames.forEach((_, i) => syncBankerScore(i));
   const bkScoresCopy = [...bkScores];
   const bankerScore = bkScoresCopy[bankerIdx];
   const bankerDoubled = document.getElementById('bkdbl_banker')?.checked || false;
@@ -1122,25 +1111,24 @@ function renderScorecardTable() {
   if (!tbl) return;
 
   if (gameMode === 'scramble') {
-    let html = '<thead><tr><th>#</th><th>Par</th><th>Yds</th><th>Gold</th><th>Crimson</th></tr></thead><tbody>';
+    let html = '<thead><tr><th>#</th><th>Par</th><th>Gold</th><th>Crimson</th></tr></thead><tbody>';
     scrHistory.forEach(h => {
       const aD = h.scoreA - h.par, bD = h.scoreB - h.par;
       const aCls = aD < 0 ? 'sc-pos' : aD > 0 ? 'sc-neg' : '';
       const bCls = bD < 0 ? 'sc-pos' : bD > 0 ? 'sc-neg' : '';
-      html += `<tr><td>${h.holeNum}</td><td>${h.par}</td><td>${h.yards||'—'}</td><td class="${aCls}">${h.scoreA} (${aD>0?'+':''}${aD===0?'E':aD})</td><td class="${bCls}">${h.scoreB} (${bD>0?'+':''}${bD===0?'E':bD})</td></tr>`;
+      html += `<tr><td>${h.holeNum}</td><td>${h.par}</td><td class="${aCls}">${h.scoreA} (${aD>0?'+':''}${aD===0?'E':aD})</td><td class="${bCls}">${h.scoreB} (${bD>0?'+':''}${bD===0?'E':bD})</td></tr>`;
     });
-    html += `<tr style="font-weight:bold;background:rgba(0,0,0,0.3)"><td>Tot</td><td>—</td><td>—</td><td>${scrTotals.a||'—'}</td><td>${scrTotals.b||'—'}</td></tr>`;
+    html += `<tr style="font-weight:bold;background:rgba(0,0,0,0.3)"><td>Tot</td><td>—</td><td>${scrTotals.a||'—'}</td><td>${scrTotals.b||'—'}</td></tr>`;
     html += '</tbody>';
     tbl.innerHTML = html;
     return;
   }
 
-  const cols = ['#', 'Par', 'Yds', ...playerNames];
+  const cols = ['#', 'Par', ...playerNames];
   let html = '<thead><tr>' + cols.map(c => `<th>${esc(String(c))}</th>`).join('') + '</tr></thead><tbody>';
   for (let i = 0; i < scoreHistory.length; i++) {
     const par = holeParDist[i]?.par ?? '—';
-    const yds = holeParDist[i]?.yards || '—';
-    html += `<tr><td>${i+1}</td><td>${par}</td><td>${yds}</td>`;
+    html += `<tr><td>${i+1}</td><td>${par}</td>`;
     for (let j = 0; j < playerNames.length; j++) {
       const sc = scoreHistory[i][j];
       if (gameMode === 'stableford') {
@@ -1155,7 +1143,7 @@ function renderScorecardTable() {
     html += '</tr>';
   }
   // Totals row
-  html += `<tr style="font-weight:bold;background:rgba(0,0,0,0.3)"><td>Tot</td><td>—</td><td>—</td>`;
+  html += `<tr style="font-weight:bold;background:rgba(0,0,0,0.3)"><td>Tot</td><td>—</td>`;
   playerTotals.forEach(t => { html += `<td>${t || '—'}</td>`; });
   html += '</tr></tbody>';
   tbl.innerHTML = html;
@@ -1343,13 +1331,42 @@ function renderFinalScreen() {
     html += '</div>';
   }
 
-  // Combined settlement only when both money games ran
-  if (bkHistory.length > 0 && pinHistory.length > 0) {
-    const combinedNet = playerNames.map((_, i) => (bkPlayerNetTotals[i] || 0) + (pinNetTotals[i] || 0));
-    html += `<div class="game-card" style="margin-top:8px;">
-      <div class="game-card-label">Overall Settlement</div>
-      ${renderSettlementBlock(combinedNet)}
-    </div>`;
+  // Combined settlement — whenever more than one money source ran
+  {
+    const hasBk = bkHistory.length > 0;
+    const hasPin = pinHistory.length > 0;
+    const hasBuyIn = gameMode === 'stableford' && buyIn && buyIn > 0;
+    const moneySourceCount = [hasBk, hasPin, hasBuyIn].filter(Boolean).length;
+    if (moneySourceCount > 1) {
+      let combinedNet = playerNames.map((_, i) => (bkPlayerNetTotals[i] || 0) + (pinNetTotals[i] || 0));
+      if (hasBuyIn) {
+        // Recalculate buy-in prize net
+        if (stabTeams) {
+          const teamPts = team => (stabTeams[team]||[]).reduce((s,n) => { const i=playerNames.indexOf(n); return s+(i>=0?playerTotals[i]:0); }, 0);
+          const ptA = teamPts('a'), ptB = teamPts('b');
+          const tied = ptA === ptB, aWon = ptA > ptB, bWon = ptB > ptA;
+          combinedNet = combinedNet.map((v, i) => {
+            const inA = (stabTeams.a||[]).includes(playerNames[i]);
+            return v + (tied ? 0 : (inA ? (aWon ? buyIn : -buyIn) : (bWon ? buyIn : -buyIn)));
+          });
+        } else {
+          const sorted = playerNames.map((n, i) => ({n, t: playerTotals[i], i})).sort((a, b) => b.t - a.t);
+          const maxPts = sorted[0]?.t || 0;
+          const winners = sorted.filter(p => p.t === maxPts);
+          const losers = sorted.filter(p => p.t < maxPts);
+          const prizePerWinner = losers.length * buyIn / winners.length;
+          combinedNet = combinedNet.map((v, i) => {
+            if (winners.some(w => w.i === i)) return v + prizePerWinner;
+            if (losers.some(l => l.i === i)) return v - buyIn;
+            return v;
+          });
+        }
+      }
+      html += `<div class="game-card" style="margin-top:8px;">
+        <div class="game-card-label">Overall Settlement</div>
+        ${renderSettlementBlock(combinedNet)}
+      </div>`;
+    }
   }
 
   // Round stats summary (stroke / stableford only — scramble has no per-player stats)

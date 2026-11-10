@@ -32,11 +32,6 @@ input[type=number]{-moz-appearance:textfield;}
 /* ── Page header ── */
 .page-header{padding:14px 16px 6px;font-size:22px;font-weight:bold;color:var(--gold);letter-spacing:.5px;font-family:'Georgia','Times New Roman',serif;flex-shrink:0;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;}
 
-/* ── Tab bar ── */
-#tab-bar{display:flex;margin:0 16px 4px;background:var(--bg-card);border:1px solid rgba(255,212,71,0.2);border-radius:12px;overflow:hidden;flex-shrink:0;}
-.wtab{flex:1;padding:11px 4px;text-align:center;font-size:11px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;color:var(--gold-dim);cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;-webkit-user-select:none;border:none;background:none;}
-.wtab.active{color:var(--gold);border-bottom:2px solid var(--gold);}
-
 /* ── Screens ── */
 .wscreen{display:none;flex-direction:column;flex:1;min-height:0;}
 .wscreen.active{display:flex;}
@@ -69,22 +64,6 @@ input[type=number]{-moz-appearance:textfield;}
 .insight-bullets li:last-child{border-bottom:none;}
 .insight-bullets li::before{content:'·';position:absolute;left:4px;color:rgba(255,212,71,0.45);font-size:16px;line-height:1;}
 .insight-bullets li strong{color:#fff;}
-.par-bars{display:flex;gap:8px;margin-top:4px;padding:0 2px;}
-.par-bar-wrap{flex:1;text-align:center;}
-.par-bar-label{font-size:9px;color:rgba(255,255,255,0.75);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
-.par-bar-track{height:6px;background:rgba(255,255,255,0.07);border-radius:3px;overflow:hidden;position:relative;width:80%;margin:0 auto;}
-.par-bar-track::after{content:'';position:absolute;left:50%;top:0;width:1px;height:100%;background:rgba(255,255,255,0.25);z-index:1;}
-.par-bar-track.no-mid::after{display:none;}
-.par-bar-fill{position:absolute;top:0;height:100%;}
-.par-bar-val{font-size:11px;color:rgba(255,255,255,0.6);margin-top:3px;}
-
-/* ── Dispersion (Shots tab) ── */
-.disp-stab{flex:1;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,212,71,0.18);background:transparent;color:var(--gold-dim);font-size:11px;font-weight:bold;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:all .12s;}
-.disp-stab.active{background:rgba(255,212,71,0.1);border-color:rgba(255,212,71,0.5);color:var(--gold);}
-.disp-chip{padding:3px 8px;border-radius:5px;border:1px solid rgba(255,212,71,0.18);background:transparent;color:var(--gold-dim);font-size:9px;font-weight:bold;letter-spacing:.2px;cursor:pointer;font-family:inherit;text-align:center;transition:all .12s;line-height:1.3;white-space:nowrap;min-width:32px;}
-.disp-chip.active{background:rgba(255,212,71,0.12);border-color:rgba(255,212,71,0.55);color:var(--gold);}
-.disp-wrap{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
-#disp-view-log,#disp-view-map{flex:1;min-height:0;}
 
 /* ── Pill nav ── */
 nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;padding:8px 16px max(env(safe-area-inset-bottom),12px);background:linear-gradient(to top,#080f0a 70%,transparent);z-index:100;pointer-events:none;}
@@ -100,84 +79,10 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
   <div id="content">
 
     <div class="page-header">
-      <span>Intel</span>
+      <span>Scout</span>
     </div>
 
-    <!-- Tab bar -->
-    <div id="tab-bar">
-      <button class="wtab active" data-tab="shots">Shots</button>
-      <button class="wtab" data-tab="dossier">Dossier</button>
-    </div>
-
-    <!-- ── SHOTS SCREEN ── -->
-    <div class="wscreen active" id="wscreen-shots" style="position:relative;">
-      <div style="display:flex;gap:8px;padding:10px 16px 8px;flex-shrink:0;align-items:center;">
-        <button class="disp-stab active" data-view="log">Log Shot</button>
-        <button class="disp-stab" data-view="map">View Map</button>
-      </div>
-
-      <div class="disp-wrap">
-        <!-- Log Shot sub-view -->
-        <div id="disp-view-log" style="padding:8px 16px 8px 16px;display:flex;flex-direction:row;gap:8px;overflow:hidden;align-items:flex-start;position:relative;flex:1;min-height:0;">
-          <div id="disp-log-msg" style="position:absolute;bottom:12px;left:0;right:60px;text-align:center;font-size:11px;color:var(--green-ok);pointer-events:none;"></div>
-
-          <!-- Maps column (left) -->
-          <div style="display:flex;flex-direction:column;gap:8px;align-items:center;flex:1;min-width:0;">
-            <!-- Landing map -->
-            <div id="disp-landing-col" style="display:flex;flex-direction:column;align-items:center;">
-              <div id="disp-landing-wrap" style="display:flex;align-items:center;justify-content:center;">
-                <canvas id="disp-landing-canvas" style="border-radius:8px;cursor:crosshair;touch-action:none;border:1px solid rgba(255,212,71,0.12);"></canvas>
-              </div>
-            </div>
-            <!-- First putt input -->
-            <div style="width:100%;height:30px;display:flex;align-items:center;justify-content:center;gap:6px;flex-shrink:0;">
-              <span style="font-size:9px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:rgba(255,212,71,0.4);">1st Putt</span>
-              <input id="disp-putt-input" type="number" inputmode="numeric" min="1" max="999" placeholder="—" style="width:48px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,212,71,0.12);border-radius:6px;color:rgba(255,255,255,0.7);font-size:13px;font-family:'Georgia','Times New Roman',serif;padding:3px 6px;outline:none;text-align:center;">
-              <span style="font-size:9px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:rgba(255,212,71,0.4);">ft</span>
-            </div>
-            <!-- Approach map -->
-            <div id="disp-approach-col" style="display:flex;flex-direction:column;align-items:center;flex:1;min-height:0;">
-              <div id="disp-approach-wrap" style="display:flex;align-items:center;justify-content:center;">
-                <canvas id="disp-approach-canvas" style="border-radius:8px;cursor:crosshair;touch-action:none;border:1px solid rgba(255,212,71,0.12);"></canvas>
-              </div>
-            </div>
-          </div>
-
-          <!-- Club list (right) -->
-          <div id="disp-right-col" style="width:52px;display:flex;flex-direction:column;gap:3px;flex-shrink:0;">
-            <div id="disp-club-list" style="display:contents;"></div>
-            <button id="disp-save-btn" style="width:100%;flex:1;min-height:0;border-radius:6px;border:none;font-size:16px;line-height:1;background:rgba(74,180,100,0.08);color:rgba(74,180,100,0.25);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;" disabled>✓</button>
-            <button id="disp-clear-shot-btn" style="width:100%;flex:1;min-height:0;border-radius:6px;border:none;font-size:13px;font-weight:bold;background:rgba(255,77,77,0.06);color:rgba(255,77,77,0.25);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;" disabled>✕</button>
-          </div>
-        </div>
-
-        <!-- View Map sub-view -->
-        <div id="disp-view-map" style="display:none;padding:8px 16px 8px 16px;flex-direction:row;gap:8px;overflow:hidden;align-items:flex-start;flex:1;min-height:0;">
-          <!-- Maps column (left) -->
-          <div style="display:flex;flex-direction:column;gap:8px;align-items:center;flex:1;min-width:0;">
-            <div style="display:flex;align-items:center;justify-content:center;">
-              <canvas id="disp-map-canvas" style="border-radius:8px;border:1px solid rgba(255,212,71,0.12);cursor:pointer;touch-action:none;"></canvas>
-            </div>
-            <div id="disp-avg-putt" style="width:100%;height:30px;display:flex;align-items:center;justify-content:center;gap:6px;flex-shrink:0;"></div>
-            <div style="position:relative;display:flex;align-items:center;justify-content:center;">
-              <canvas id="disp-map-approach-canvas" style="border-radius:8px;border:1px solid rgba(255,212,71,0.12);touch-action:none;"></canvas>
-              <div id="disp-shot-bubble" style="display:none;position:absolute;z-index:10;background:#0e1a12;border:1px solid rgba(255,212,71,0.35);border-radius:8px;padding:4px 10px;pointer-events:none;white-space:nowrap;box-shadow:0 3px 12px rgba(0,0,0,0.7);">
-                <span id="disp-shot-club" style="font-size:11px;font-weight:bold;color:var(--gold);letter-spacing:.4px;"></span>
-                <span id="disp-shot-dist" style="font-size:11px;color:rgba(255,255,255,0.45);margin-left:6px;"></span>
-              </div>
-            </div>
-          </div>
-          <!-- Club filter + clear (right) -->
-          <div id="disp-map-right-col" style="width:52px;display:flex;flex-direction:column;gap:3px;flex-shrink:0;">
-            <div id="disp-filter-scroll" style="display:contents;"></div>
-            <button id="disp-clear-btn" style="width:100%;flex:1;min-height:0;border-radius:6px;border:none;font-size:12px;font-weight:bold;background:rgba(255,77,77,0.08);color:rgba(255,77,77,0.4);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;transition:all .12s;">✕</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── DOSSIER SCREEN ── -->
-    <div class="wscreen" id="wscreen-dossier">
+    <div class="wscreen active" id="wscreen-dossier">
       <div class="dossier-scroll" id="scrollArea">
         <div style="text-align:center;padding:40px;color:rgba(255,255,255,0.3);">Analysing…</div>
       </div>
@@ -201,9 +106,9 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-conte
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><line x1="9" y1="2" x2="9" y2="6"/><line x1="15" y1="2" x2="15" y2="6"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
       Caddy
     </a>
-    <a class="nav-item" href="history.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
-      Stats
+    <a class="nav-item active" href="dossier.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="13" r="4"/><circle cx="17" cy="13" r="4"/><path d="M7 9V6l3-3h4l3 3v3"/><line x1="11" y1="13" x2="13" y2="13"/></svg>
+      Scout
     </a>
   </div>
 </nav>
@@ -214,431 +119,8 @@ function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
 function loadHistory(){ try{ return JSON.parse(localStorage.getItem('gameHistory')||'[]'); }catch(e){ return []; } }
 function pct(n,d){ return d ? Math.round(n/d*100) : 0; }
 
-// ── Tab switching ─────────────────────────────────────────────────
-document.getElementById('tab-bar').addEventListener('click', e=>{
-  const btn = e.target.closest('.wtab'); if(!btn) return;
-  document.querySelectorAll('.wtab').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
-  document.querySelectorAll('.wscreen').forEach(s=>s.classList.remove('active'));
-  document.getElementById('wscreen-'+btn.dataset.tab).classList.add('active');
-  if(btn.dataset.tab === 'shots') dispActivate();
-  if(btn.dataset.tab === 'dossier') renderDossier();
-});
-
-// ════════════════════════════════════════════════════════════════
-// SHOTS DISPERSION
-// ════════════════════════════════════════════════════════════════
-const CLUBS = [
-  { id:'driver', label:'Driver' },
-  { id:'5w',     label:'5 Wood' },
-  { id:'4h',     label:'4 Hybrid' },
-  { id:'5i',     label:'5 Iron' },
-  { id:'6i',     label:'6 Iron' },
-  { id:'7i',     label:'7 Iron' },
-  { id:'8i',     label:'8 Iron' },
-  { id:'9i',     label:'9 Iron' },
-  { id:'pw',     label:'PW' },
-  { id:'aw',     label:'AW' },
-  { id:'sw',     label:'SW' },
-];
-const DISP_COLORS = ['#5c3317','#8B5E3C','#C4915A','#ffd447','#fff0a0','#ffffff','#b8e8a0','#4db87a','#2e9e5e','#88b8a0','#909090'];
-
-function dispLoad(){ try{ return JSON.parse(localStorage.getItem('shotDispersion')||'[]'); }catch(e){ return []; } }
-function dispSave(arr){ localStorage.setItem('shotDispersion', JSON.stringify(arr)); }
-
-function dispAllClubs(){
-  try{
-    const s = JSON.parse(localStorage.getItem('club-caddy-v3')||'null');
-    const custom = s?.customClubs || [];
-    return [...CLUBS, ...custom.map(c=>({id:'custom_'+c.label, label:c.label}))];
-  }catch(e){ return CLUBS; }
-}
-function dispClubLabel(id){ const c = dispAllClubs().find(c=>c.id===id); return c ? c.label : id; }
-function dispClubColor(id){ const clubs = dispAllClubs(); const idx = clubs.findIndex(c=>c.id===id); return DISP_COLORS[idx < 0 ? 0 : idx % DISP_COLORS.length]; }
-
-const CLUB_SHORT = {driver:'DRV','5w':'5W','4h':'4H','5i':'5I','6i':'6I','7i':'7I','8i':'8I','9i':'9I',pw:'PW',aw:'AW',sw:'SW'};
-function dispClubShort(id){ return CLUB_SHORT[id] || dispClubLabel(id).replace(/\s+/g,'').substring(0,3).toUpperCase(); }
-
-function dispSetupCanvas(canvas, cssW, cssH){
-  const dpr = window.devicePixelRatio || 1;
-  canvas.width  = cssW * dpr; canvas.height = cssH * dpr;
-  canvas.style.width = cssW+'px'; canvas.style.height = cssH+'px';
-  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr); return ctx;
-}
-
-const DISP_MAX_YARDS = 250;
-function dispYToYards(normY){ return Math.round(normY * DISP_MAX_YARDS / 5) * 5; }
-function dispYardsToNormY(yds){ return yds / DISP_MAX_YARDS; }
-
-function dispLogCanvasSize(){
-  const view = document.getElementById('disp-view-log');
-  if(!view) return {aw:140,ah:100,lw:140,lh:140};
-  const availW = view.clientWidth - 32 - 52 - 8;
-  const availH = view.clientHeight - 16 - 30 - 8;
-  let lh, ah;
-  if(availH > 100){ lh = Math.min(availW, Math.round((availH-8)*0.42)); ah = availH-8-lh; }
-  else { lh = Math.round(availW*0.45); ah = Math.round(availW*0.7); }
-  return {aw:availW, ah, lw:availW, lh};
-}
-
-function dispMapCanvasSize(){
-  const view = document.getElementById('disp-view-map') || document.getElementById('disp-view-log');
-  if(!view || view.clientWidth === 0) return {aw:140,ah:100,lw:140,lh:140};
-  const availW = view.clientWidth - 32 - 52 - 8;
-  const availH = view.clientHeight - 16 - 30 - 8;
-  let lh, ah;
-  if(availH > 100){ lh = Math.min(availW, Math.round((availH-8)*0.42)); ah = availH-8-lh; }
-  else { lh = Math.round(availW*0.45); ah = Math.round(availW*0.7); }
-  return {aw:availW, ah, lw:availW, lh};
-}
-
-function dispSyncRightColHeight(){
-  const sl = dispLogCanvasSize();
-  const col = document.getElementById('disp-right-col');
-  if(col) col.style.height = (sl.lh+8+30+8+sl.ah)+'px';
-  const sm = dispMapCanvasSize();
-  const mapCol = document.getElementById('disp-map-right-col');
-  if(mapCol) mapCol.style.height = (sm.lh+8+30+8+sm.ah)+'px';
-}
-
-function dispDrawApproach(canvas, dot, cssW, cssH){
-  if(!cssW||!cssH){ const s=dispLogCanvasSize(); cssW=s.aw; cssH=s.ah; }
-  const ctx=dispSetupCanvas(canvas,cssW,cssH), w=cssW, h=cssH;
-  ctx.fillStyle='#122618'; ctx.fillRect(0,0,w,h);
-  ctx.strokeStyle='rgba(40,90,50,0.35)'; ctx.lineWidth=1;
-  const fwGrass=w*0.6, fxGrass=(w-fwGrass)/2, roughW=fxGrass;
-  const cols=Math.floor(roughW/14), rows=Math.floor(h/22);
-  for(let r=0;r<=rows;r++) for(let c=0;c<cols;c++){
-    const offset=(r%2)*7;
-    const lx=6+c*14+offset, ly=8+r*22;
-    ctx.beginPath();ctx.moveTo(lx-2,ly+3);ctx.lineTo(lx,ly-3);ctx.lineTo(lx+2,ly+3);ctx.stroke();
-    const rx=fxGrass+fwGrass+6+c*14+offset, ry=ly;
-    ctx.beginPath();ctx.moveTo(rx-2,ry+3);ctx.lineTo(rx,ry-3);ctx.lineTo(rx+2,ry+3);ctx.stroke();
-  }
-  const fw=w*0.6, fx=(w-fw)/2;
-  ctx.fillStyle='#1e4d2e'; ctx.fillRect(fx,0,fw,h);
-  ctx.fillStyle='rgba(46,140,70,0.18)'; ctx.fillRect(fx+fw*0.2,0,fw*0.6,h);
-  ctx.setLineDash([4,6]); ctx.strokeStyle='rgba(255,212,71,0.12)'; ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(w/2,0);ctx.lineTo(w/2,h);ctx.stroke(); ctx.setLineDash([]);
-  [50,100,150,200,250].forEach(yds=>{
-    const py=dispYardsToNormY(yds)*h;
-    ctx.setLineDash([3,4]); ctx.strokeStyle='rgba(255,212,71,0.22)'; ctx.lineWidth=1;
-    ctx.beginPath();ctx.moveTo(0,py);ctx.lineTo(w,py);ctx.stroke(); ctx.setLineDash([]);
-    ctx.font='bold 9px Georgia'; ctx.textBaseline='middle'; ctx.fillStyle='rgba(255,212,71,0.55)';
-    ctx.textAlign='left'; ctx.fillText(yds+'y',3,py-5);
-  });
-  ctx.fillStyle='rgba(255,255,255,0.18)'; ctx.fillRect(w/2-8,h-10,16,3);
-  if(dot){
-    const px=dot.x*w, py=dot.y*h;
-    ctx.beginPath();ctx.arc(px,py,7,0,Math.PI*2);
-    ctx.fillStyle='#ffd447';ctx.fill();
-    ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();
-    const yds=dispYToYards(dot.y), label=yds+' yds';
-    ctx.font='10px Georgia'; ctx.textBaseline='middle';
-    const tw=ctx.measureText(label).width, lx=px-tw/2, ly=py+16, pad=4;
-    ctx.fillStyle='rgba(8,15,10,0.75)';
-    ctx.beginPath();ctx.roundRect(lx-pad,ly-9,tw+pad*2,18,4);ctx.fill();
-    ctx.fillStyle='#fff';ctx.textAlign='left';ctx.fillText(label,lx,ly);
-  }
-}
-
-function dispDrawGreen(canvas, dot, cssW, cssH){
-  if(!cssW||!cssH){ const s=dispLogCanvasSize(); cssW=s.lw; cssH=s.lh; }
-  const ctx=dispSetupCanvas(canvas,cssW,cssH), w=cssW, h=cssH, cx=w/2, cy=h/2;
-  const gw=w*0.48, gh=h*0.62, fw=gw*1.18, fh=gh*1.28, gr=gh*0.38, fr=fh*0.28;
-  ctx.fillStyle='#122618'; ctx.fillRect(0,0,w,h);
-  ctx.strokeStyle='rgba(40,90,50,0.35)'; ctx.lineWidth=1;
-  [[0.08,0.12],[0.18,0.22],[0.06,0.55],[0.14,0.78],[0.09,0.88],
-   [0.88,0.10],[0.92,0.32],[0.85,0.60],[0.91,0.82],[0.82,0.92],
-   [0.25,0.06],[0.5,0.04],[0.72,0.07],[0.3,0.94],[0.55,0.96],[0.75,0.93],
-   [0.04,0.38],[0.96,0.50],[0.07,0.70],[0.93,0.70]].forEach(([gx,gy])=>{
-    const px=gx*w,py=gy*h;
-    ctx.beginPath();ctx.moveTo(px-2,py+3);ctx.lineTo(px,py-3);ctx.lineTo(px+2,py+3);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(px+4,py+3);ctx.lineTo(px+5,py-2);ctx.lineTo(px+7,py+3);ctx.stroke();
-  });
-  ctx.beginPath();ctx.roundRect(cx-fw/2,cy-fh/2,fw,fh,fr);ctx.fillStyle='rgba(30,100,50,0.5)';ctx.fill();
-  ctx.beginPath();ctx.roundRect(cx-gw/2,cy-gh/2,gw,gh,gr);ctx.fillStyle='#1e4d2e';ctx.fill();
-  ctx.save();ctx.beginPath();ctx.roundRect(cx-gw/2,cy-gh/2,gw,gh,gr);ctx.clip();
-  ctx.strokeStyle='rgba(255,255,255,0.07)';ctx.lineWidth=1;ctx.setLineDash([3,4]);
-  ctx.beginPath();ctx.moveTo(cx,cy-gh/2);ctx.lineTo(cx,cy+gh/2);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(cx-gw/2,cy);ctx.lineTo(cx+gw/2,cy);ctx.stroke();
-  ctx.setLineDash([]);ctx.restore();
-  if(dot){
-    const px=dot.x*w, py=dot.y*h;
-    ctx.beginPath();ctx.arc(px,py,7,0,Math.PI*2);
-    ctx.fillStyle='#ffd447';ctx.fill();
-    ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();
-  }
-}
-
-function dispDrawMap(shots, highlightShot){
-  const canvas=document.getElementById('disp-map-canvas'); if(!canvas) return;
-  const {lw,lh}=dispMapCanvasSize();
-  dispDrawGreen(canvas,null,lw,lh);
-  const ctx2=canvas.getContext('2d'), dpr=window.devicePixelRatio||1;
-  ctx2.save();ctx2.setTransform(dpr,0,0,dpr,0,0);
-  dispRenderedDots=[];
-  shots.forEach((s,i)=>{
-    let px=s.landingX*lw, py=s.landingY*lh;
-    dispRenderedDots.forEach(d=>{ if(Math.hypot(px-d.cx,py-d.cy)<16) px+=12; });
-    const isHighlit=highlightShot&&s===highlightShot;
-    const color=dispClubColor(s.club);
-    ctx2.beginPath();ctx2.arc(px,py,isHighlit?8:6,0,Math.PI*2);
-    ctx2.fillStyle=isHighlit?'#fff':color;ctx2.fill();
-    if(isHighlit){ctx2.strokeStyle=color;ctx2.lineWidth=2;ctx2.stroke();}
-    dispRenderedDots.push({cx:px,cy:py,shot:s,num:i+1});
-  });
-  ctx2.restore();
-}
-
-function dispDrawMapApproach(highlightShot){
-  const canvas=document.getElementById('disp-map-approach-canvas'); if(!canvas) return;
-  const {aw,ah}=dispMapCanvasSize();
-  dispDrawApproach(canvas,null,aw,ah);
-  const shots=dispApplyFilters(dispMapShots);
-  dispRenderedApproachDots=[];
-  if(!shots.length) return;
-  const ctx=canvas.getContext('2d'), dpr=window.devicePixelRatio||1;
-  ctx.save();ctx.setTransform(dpr,0,0,dpr,0,0);
-  shots.forEach(s=>{
-    if(s.approachX==null||s.approachY==null) return;
-    const px=s.approachX*aw, py=s.approachY*ah;
-    const isHighlit=highlightShot&&s===highlightShot;
-    const color=dispClubColor(s.club);
-    ctx.beginPath();ctx.arc(px,py,isHighlit?8:6,0,Math.PI*2);
-    ctx.fillStyle=isHighlit?'#fff':color;ctx.fill();
-    if(isHighlit){ctx.strokeStyle=color;ctx.lineWidth=2;ctx.stroke();}
-    dispRenderedApproachDots.push({cx:px,cy:py,shot:s});
-  });
-  ctx.restore();
-}
-
-function dispCheckSave(){
-  const btn=document.getElementById('disp-save-btn');
-  const clr=document.getElementById('disp-clear-shot-btn');
-  const ready=dispSelectedClub&&dispApproachPt&&dispLandingPt;
-  const hasAny=dispApproachPt||dispLandingPt;
-  btn.disabled=!ready;
-  btn.style.background=ready?'rgba(74,180,100,0.2)':'rgba(74,180,100,0.08)';
-  btn.style.color=ready?'rgba(74,180,100,1)':'rgba(74,180,100,0.25)';
-  btn.style.boxShadow=ready?'0 0 12px rgba(74,180,100,0.3)':'none';
-  if(clr){
-    clr.disabled=!hasAny;
-    clr.style.background=hasAny?'rgba(255,77,77,0.12)':'rgba(255,77,77,0.06)';
-    clr.style.color=hasAny?'rgba(255,77,77,0.8)':'rgba(255,77,77,0.25)';
-  }
-}
-
-function dispRenderClubList(){
-  const list=document.getElementById('disp-club-list'); if(!list) return;
-  const clubs=dispAllClubs().filter(c=>c.id!=='driver');
-  list.innerHTML=clubs.map(c=>{
-    const isActive=c.id===dispSelectedClub;
-    return `<button data-club="${c.id}" style="width:100%;flex:1;min-height:0;padding:0 4px;border-radius:6px;border:1px solid ${isActive?'rgba(255,212,71,0.5)':'rgba(255,212,71,0.12)'};background:${isActive?'rgba(255,212,71,0.12)':'transparent'};color:${isActive?'var(--gold)':'var(--gold-dim)'};font-size:10px;font-weight:bold;cursor:pointer;font-family:inherit;letter-spacing:.3px;text-align:center;transition:all .12s;">${dispClubShort(c.id)}</button>`;
-  }).join('');
-  list.onclick=e=>{
-    const btn=e.target.closest('[data-club]'); if(!btn) return;
-    dispSelectedClub=btn.dataset.club;
-    dispRenderClubList(); dispCheckSave();
-  };
-}
-
-function dispApplyFilters(shots){
-  if(dispActiveFilter!=='all') return shots.filter(s=>s.club===dispActiveFilter);
-  return shots;
-}
-
-function dispRenderFilterChips(shots){
-  const clubContainer=document.getElementById('disp-filter-scroll');
-  const allClubIds=dispAllClubs().map(c=>c.id).filter(id=>id!=='driver'&&id!=='putter');
-  if(!allClubIds.includes(dispActiveFilter)) dispActiveFilter='all';
-  const clubChips=[{id:'all',label:'ALL'},...allClubIds.map(id=>({id,label:dispClubShort(id)}))];
-  clubContainer.innerHTML=clubChips.map(c=>{
-    const isActive=c.id===dispActiveFilter;
-    return `<button class="disp-chip" data-club="${c.id}" style="width:100%;flex:1;min-height:0;padding:0 4px;border-radius:6px;border:1px solid ${isActive?'rgba(255,212,71,0.5)':'rgba(255,212,71,0.12)'};background:${isActive?'rgba(255,212,71,0.12)':'transparent'};color:${isActive?'var(--gold)':'var(--gold-dim)'};font-size:10px;font-weight:bold;cursor:pointer;font-family:inherit;letter-spacing:.3px;text-align:center;transition:all .12s;">${c.label}</button>`;
-  }).join('');
-  clubContainer.onclick=e=>{
-    const btn=e.target.closest('[data-club]'); if(!btn) return;
-    dispActiveFilter=btn.dataset.club;
-    dispRenderFilterChips(shots);
-    dispDrawMap(dispApplyFilters(shots));
-    dispDrawMapApproach(null);
-  };
-}
-
-function dispShowSubview(name){
-  document.getElementById('disp-view-log').style.display=name==='log'?'flex':'none';
-  document.getElementById('disp-view-map').style.display=name==='map'?'flex':'none';
-  document.querySelectorAll('.disp-stab').forEach(b=>b.classList.toggle('active',b.dataset.view===name));
-  requestAnimationFrame(()=>{
-    if(name==='map') dispRenderMap();
-    if(name==='log'){
-      dispDrawApproach(document.getElementById('disp-approach-canvas'),dispApproachPt);
-      dispDrawGreen(document.getElementById('disp-landing-canvas'),dispLandingPt);
-    }
-  });
-}
-
-document.querySelector('#wscreen-shots').addEventListener('click',e=>{
-  const btn=e.target.closest('.disp-stab'); if(!btn) return;
-  dispShowSubview(btn.dataset.view);
-});
-
-let dispMapShots=[];
-function dispRenderMap(){
-  dispMapShots=dispLoad();
-  dispRenderFilterChips(dispMapShots);
-  dispDrawMap(dispApplyFilters(dispMapShots));
-  dispDrawMapApproach(null);
-  const b=document.getElementById('disp-shot-bubble'); if(b) b.style.display='none';
-  dispSyncRightColHeight();
-  const puttEl=document.getElementById('disp-avg-putt');
-  if(puttEl){
-    const putts=dispMapShots.map(s=>s.firstPuttFt).filter(v=>v>0);
-    if(putts.length){
-      const avg=(putts.reduce((a,b)=>a+b,0)/putts.length).toFixed(1);
-      puttEl.innerHTML=`<span style="font-size:9px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:rgba(255,212,71,0.4);">Avg 1st Putt</span><span style="font-size:13px;font-weight:bold;color:var(--gold);margin-left:6px;">${avg} ft</span>`;
-    } else {
-      puttEl.innerHTML=`<span style="font-size:9px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:rgba(255,212,71,0.4);">Avg 1st Putt</span><span style="font-size:13px;font-weight:bold;color:rgba(255,212,71,0.25);margin-left:6px;">—</span>`;
-    }
-  }
-}
-
-function dispShowShotInfo(shot){
-  const bubble=document.getElementById('disp-shot-bubble'); if(!bubble) return;
-  if(!shot){bubble.style.display='none';return;}
-  document.getElementById('disp-shot-club').textContent=dispClubLabel(shot.club);
-  document.getElementById('disp-shot-dist').textContent=shot.distanceYards>0?shot.distanceYards+' yds':'';
-  const canvas=document.getElementById('disp-map-approach-canvas');
-  if(!canvas){bubble.style.display='block';return;}
-  const {aw,ah}=dispMapCanvasSize();
-  const rect=canvas.getBoundingClientRect();
-  const dotX=(shot.approachX??0.5)*aw*(rect.width/aw);
-  const dotY=(shot.approachY??0.5)*ah*(rect.height/ah);
-  bubble.style.display='block';
-  const bw=bubble.offsetWidth||80;
-  bubble.style.left=Math.max(0,Math.min(dotX-bw/2,rect.width-bw))+'px';
-  bubble.style.top=Math.max(0,dotY-36)+'px';
-}
-
-document.getElementById('disp-view-map').addEventListener('click',e=>{
-  if(!e.target.closest('canvas')&&!e.target.closest('button')){
-    const b=document.getElementById('disp-shot-bubble'); if(b) b.style.display='none';
-    dispDrawMap(dispApplyFilters(dispMapShots));
-    dispDrawMapApproach(null);
-  }
-});
-
-document.addEventListener('pointerdown',e=>{
-  const bubble=document.getElementById('disp-shot-bubble');
-  if(!bubble||bubble.style.display==='none') return;
-  const mapView=document.getElementById('disp-view-map');
-  if(!mapView||mapView.style.display==='none') return;
-  if(!e.target.closest('#disp-map-canvas')&&!e.target.closest('#disp-map-approach-canvas')){
-    bubble.style.display='none';
-    dispDrawMap(dispApplyFilters(dispMapShots));
-    dispDrawMapApproach(null);
-  }
-});
-
-document.getElementById('disp-map-canvas').addEventListener('pointerdown',e=>{
-  const canvas=e.currentTarget, rect=canvas.getBoundingClientRect();
-  const {lw,lh}=dispMapCanvasSize();
-  const mx=(e.clientX-rect.left)*(lw/rect.width);
-  const my=(e.clientY-rect.top)*(lh/rect.height);
-  const hit=dispRenderedDots.find(d=>Math.hypot(mx-d.cx,my-d.cy)<14);
-  const filtered=dispApplyFilters(dispMapShots);
-  if(hit){dispDrawMap(filtered,hit.shot);dispDrawMapApproach(hit.shot);dispShowShotInfo(hit.shot);}
-  else{dispDrawMap(filtered);dispDrawMapApproach(null);dispShowShotInfo(null);}
-});
-
-document.getElementById('disp-map-approach-canvas').addEventListener('pointerdown',e=>{
-  const canvas=e.currentTarget, rect=canvas.getBoundingClientRect();
-  const {aw,ah}=dispMapCanvasSize();
-  const mx=(e.clientX-rect.left)*(aw/rect.width);
-  const my=(e.clientY-rect.top)*(ah/rect.height);
-  const hit=dispRenderedApproachDots.find(d=>Math.hypot(mx-d.cx,my-d.cy)<14);
-  const filtered=dispApplyFilters(dispMapShots);
-  if(hit){dispDrawMap(filtered,hit.shot);dispDrawMapApproach(hit.shot);dispShowShotInfo(hit.shot);}
-  else{dispDrawMap(filtered);dispDrawMapApproach(null);dispShowShotInfo(null);}
-});
-
-document.getElementById('disp-approach-canvas').addEventListener('pointerdown',e=>{
-  e.preventDefault();
-  const rect=e.currentTarget.getBoundingClientRect();
-  dispApproachPt={x:Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width)),y:Math.max(0,Math.min(1,(e.clientY-rect.top)/rect.height))};
-  dispDrawApproach(e.currentTarget,dispApproachPt);
-  dispCheckSave();
-});
-
-document.getElementById('disp-landing-canvas').addEventListener('pointerdown',e=>{
-  e.preventDefault();
-  const rect=e.currentTarget.getBoundingClientRect();
-  dispLandingPt={x:Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width)),y:Math.max(0,Math.min(1,(e.clientY-rect.top)/rect.height))};
-  dispDrawGreen(e.currentTarget,dispLandingPt);
-  dispCheckSave();
-});
-
-document.getElementById('disp-save-btn').addEventListener('click',()=>{
-  if(!dispSelectedClub||!dispApproachPt||!dispLandingPt) return;
-  const puttInput=document.getElementById('disp-putt-input');
-  const puttFt=puttInput&&puttInput.value?parseInt(puttInput.value,10):undefined;
-  const shots=dispLoad();
-  shots.push({club:dispSelectedClub,distanceYards:dispYToYards(dispApproachPt.y),approachX:dispApproachPt.x,approachY:dispApproachPt.y,landingX:dispLandingPt.x,landingY:dispLandingPt.y,tags:[],firstPuttFt:puttFt||undefined});
-  dispSave(shots);
-  dispApproachPt=null;dispLandingPt=null;dispSelectedClub=null;
-  if(puttInput) puttInput.value='';
-  dispDrawApproach(document.getElementById('disp-approach-canvas'),null);
-  dispDrawGreen(document.getElementById('disp-landing-canvas'),null);
-  dispRenderClubList();dispSyncRightColHeight();dispCheckSave();
-  const msg=document.getElementById('disp-log-msg');
-  msg.textContent='Shot logged ✓';setTimeout(()=>{msg.textContent='';},2000);
-});
-
-document.getElementById('disp-clear-shot-btn').addEventListener('click',()=>{
-  dispApproachPt=null;dispLandingPt=null;dispSelectedClub=null;
-  dispDrawApproach(document.getElementById('disp-approach-canvas'),null);
-  dispDrawGreen(document.getElementById('disp-landing-canvas'),null);
-  const puttInput=document.getElementById('disp-putt-input');
-  if(puttInput) puttInput.value='';
-  dispRenderClubList();dispCheckSave();
-});
-
-document.getElementById('disp-clear-btn').addEventListener('click',()=>{
-  if(!confirm('Clear all logged shots?')) return;
-  dispSave([]);dispActiveFilter='all';dispRenderMap();
-});
-
-let dispInitialized=false;
-let dispSelectedClub=null;
-let dispApproachPt=null;
-let dispLandingPt=null;
-let dispActiveFilter='all';
-let dispRenderedDots=[];
-let dispRenderedApproachDots=[];
-
-function dispActivate(){
-  const logView=document.getElementById('disp-view-log');
-  const mapView=document.getElementById('disp-view-map');
-  const isMap=mapView.style.display!=='none';
-  if(!isMap) logView.style.display='flex';
-  requestAnimationFrame(()=>{
-    if(!dispInitialized){
-      dispInitialized=true;
-      dispRenderClubList();
-      dispDrawApproach(document.getElementById('disp-approach-canvas'),null);
-      dispDrawGreen(document.getElementById('disp-landing-canvas'),null);
-      dispSyncRightColHeight();
-    }
-    if(isMap) dispRenderMap();
-  });
-}
-
-// Activate shots on load (it's the default tab)
-dispActivate();
-
 // ════════════════════════════════════════════════════════════════
 // DOSSIER
-// ════════════════════════════════════════════════════════════════
 function renderDossier(){
   try{ analyse(); }catch(e){
     document.getElementById('scrollArea').innerHTML=`<div class="empty-state">Error loading dossier.<br><small style="font-size:11px;opacity:.5;">${e.message}</small></div>`;
@@ -653,7 +135,6 @@ function analyse(){
   function ensurePlayer(name){
     if(!players[name]) players[name]={
       rounds:0,
-      parBreak:{3:{diff:0,holes:0},4:{diff:0,holes:0},5:{diff:0,holes:0}},
       scoreDist:{eagle:0,birdie:0,par:0,bogey:0,double:0,worse:0,total:0},
       sfZeros:0,sf1pt:0,sf2pts:0,sf3pts:0,sf4pts:0,sfHoles:0,
       bankerNet:0,bankerPlayerHoles:0,bankerWins:0,
@@ -704,7 +185,6 @@ function analyse(){
       r.scoreHistory.forEach((hole,hi)=>{
         let score=hole[pi],par=pd[hi]?.par;if(score==null||!par)return;
         let diff=score-par;
-        p.parBreak[par]&&(p.parBreak[par].diff+=diff,p.parBreak[par].holes++);
         p.sfHoles++;
         if(diff>=2)p.sfZeros++;else if(diff===1)p.sf1pt++;else if(diff===0)p.sf2pts++;else if(diff===-1)p.sf3pts++;else p.sf4pts++;
         trackDist(p,diff);
@@ -724,7 +204,6 @@ function analyse(){
       r.scoreHistory.forEach((hole,hi)=>{
         let score=hole[pi],par=pd[hi]?.par;if(score==null||!par)return;
         let diff=score-par;
-        p.parBreak[par]&&(p.parBreak[par].diff+=diff,p.parBreak[par].holes++);
         trackDist(p,diff);
         roundScore+=score;
       });
@@ -752,7 +231,7 @@ function analyse(){
     r.players.forEach((n,i)=>{let p=ensurePlayer(n);p.rounds++;p.netMoney+=r.moneyNet?.[i]||0;});
     (r.holeHistory||[]).forEach(h=>{
       if(!h.par) return;
-      if(h.format!=='pin'){r.players.forEach((n,i)=>{let score=h.scores?.[i];if(score==null)return;let p=ensurePlayer(n);let diff=score-h.par;p.parBreak[h.par]&&(p.parBreak[h.par].diff+=diff,p.parBreak[h.par].holes++);trackDist(p,diff);});}
+      if(h.format!=='pin'){r.players.forEach((n,i)=>{let score=h.scores?.[i];if(score==null)return;let p=ensurePlayer(n);let diff=score-h.par;trackDist(p,diff);});}
       if(h.format==='stableford'){r.players.forEach((n,i)=>{let score=h.scores?.[i];if(score==null)return;let p=ensurePlayer(n);let diff=score-h.par;p.sfHoles++;if(diff>=2)p.sfZeros++;else if(diff===1)p.sf1pt++;else if(diff===0)p.sf2pts++;else if(diff===-1)p.sf3pts++;else p.sf4pts++;});}
       if(h.format==='banker'){let bn=r.players[h.bankerIdx];if(bn){let bp=ensurePlayer(bn);bp.bankerBankerHoles++;if((h.matchups||[]).filter(m=>m.result==='player').length===0)bp.bankerSweeps++;}(h.matchups||[]).forEach(m=>{let n=r.players[m.playerIdx];if(!n)return;let p=ensurePlayer(n);p.bankerPlayerHoles++;if(m.result==='player')p.bankerWins++;});}
       if(h.format==='pin'&&h.pinWinner){ensurePlayer(h.pinWinner).pinWins++;r.players.forEach(n=>ensurePlayer(n).pinHoles++);}
@@ -825,21 +304,6 @@ function buildInsights(name,p,allPlayers){
       <div style="font-size:10px;color:rgba(255,255,255,0.25);margin-top:3px;">based on ${p.hcpDiffs.length} round${p.hcpDiffs.length!==1?'s':''}</div>
     </div>`;
   }
-  let parData=[3,4,5].map(par=>{let d=p.parBreak[par];return{par,avg:d.holes?d.diff/d.holes:null,holes:d.holes};}).filter(d=>d.holes>0);
-  if(parData.length){
-    let barHtml='<div class="par-bars">';
-    [3,4,5].forEach(par=>{
-      let d=p.parBreak[par];
-      if(!d.holes){barHtml+=`<div class="par-bar-wrap"><div class="par-bar-label">Par ${par}</div><div class="par-bar-track"><div class="par-bar-fill" style="width:0%;background:rgba(255,255,255,0.1);"></div></div><div class="par-bar-val">—</div></div>`;return;}
-      let avg=d.diff/d.holes,dispStr=(avg>=0?'+':'')+avg.toFixed(1);
-      let color=avg<-0.1?'var(--bar-hi)':avg<0.5?'var(--bar-mid)':avg<1.2?'var(--bar-warn)':'var(--bar-lo)';
-      let halfPct=Math.min(50,Math.abs(avg)/2*50);
-      let fillStyle=avg<0?`left:${50-halfPct}%;width:${halfPct}%;background:${color};border-radius:3px 0 0 3px;`:`left:50%;width:${halfPct}%;background:${color};border-radius:0 3px 3px 0;`;
-      barHtml+=`<div class="par-bar-wrap"><div class="par-bar-label">Par ${par}</div><div class="par-bar-track"><div class="par-bar-fill" style="${fillStyle}"></div></div><div class="par-bar-val" style="color:${color};">${dispStr}</div></div>`;
-    });
-    barHtml+='</div>';
-    sections+=`${sectionDiv('Scoring by Par')}<div class="insight-section">${barHtml}</div>`;
-  }
 
   if(p.statHoles>=3){
     let firPct=pct(p.statFIR,p.statHoles);
@@ -881,6 +345,7 @@ function buildInsights(name,p,allPlayers){
 }
 
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+renderDossier();
 </script>
 </body>
 </html>
